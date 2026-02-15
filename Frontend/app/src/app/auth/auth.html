@@ -1,0 +1,109 @@
+<div class="min-h-screen flex flex-col justify-center px-6 py-12 bg-gray-900">
+
+  <div class="sm:mx-auto sm:w-full sm:max-w-sm text-center">
+    <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500" 
+         alt="Your Company" 
+         class="mx-auto h-10 w-auto" />
+    <h2 class="mt-10 text-center text-2xl font-bold tracking-tight text-white">
+      {{ isLoginMode ? 'Sign in to your account' : 'Create your account' }}
+    </h2>
+  </div>
+
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    <form *ngIf="isLoginMode"
+          (ngSubmit)="onLogin()"
+          class="space-y-6 bg-gray-800 rounded-lg p-6 shadow-lg">
+
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-300">Email address</label>
+        <div class="mt-2">
+          <input id="email" type="email" name="email" required
+                 [(ngModel)]="loginData.email"
+                 placeholder="you@example.com"
+                 class="block w-full rounded-md bg-white/5 px-3 py-2 text-white placeholder:text-gray-400 
+                        focus:outline-2 focus:outline-indigo-500 focus:outline-offset-2" />
+        </div>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between">
+          <label for="password" class="block text-sm font-medium text-gray-300">Password</label>
+          <!-- <div class="text-sm">
+            <a href="#" class="font-semibold text-indigo-400 hover:text-indigo-300">Forgot password?</a>
+          </div> -->
+        </div>
+        <div class="mt-2">
+          <input id="password" type="password" name="password" required
+                 [(ngModel)]="loginData.password"
+                 placeholder="********"
+                 class="block w-full rounded-md bg-white/5 px-3 py-2 text-white placeholder:text-gray-400
+                        focus:outline-2 focus:outline-indigo-500 focus:outline-offset-2" />
+        </div>
+      </div>
+
+      <div>
+        <button type="submit"
+                class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-2 text-white font-semibold
+                       hover:bg-indigo-400 focus:outline-2 focus:outline-indigo-500 focus:outline-offset-2">
+          Sign in
+        </button>
+      </div>
+
+    </form>
+
+    <form *ngIf="!isLoginMode"
+          (ngSubmit)="onSignup()"
+          class="space-y-6 bg-gray-800 rounded-lg p-6 shadow-lg">
+
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-300">Full Name</label>
+        <div class="mt-2">
+          <input id="name" type="text" name="name" required
+                 [(ngModel)]="signupData.name"
+                 placeholder="Your Name"
+                 class="block w-full rounded-md bg-white/5 px-3 py-2 text-white placeholder:text-gray-400
+                        focus:outline-2 focus:outline-indigo-500 focus:outline-offset-2" />
+        </div>
+      </div>
+
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-300">Email address</label>
+        <div class="mt-2">
+          <input id="email" type="email" name="email" required
+                 [(ngModel)]="signupData.email"
+                 placeholder="you@example.com"
+                 class="block w-full rounded-md bg-white/5 px-3 py-2 text-white placeholder:text-gray-400
+                        focus:outline-2 focus:outline-indigo-500 focus:outline-offset-2" />
+        </div>
+      </div>
+
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-300">Password</label>
+        <div class="mt-2">
+          <input id="password" type="password" name="password" required
+                 [(ngModel)]="signupData.password"
+                 placeholder="********"
+                 class="block w-full rounded-md bg-white/5 px-3 py-2 text-white placeholder:text-gray-400
+                        focus:outline-2 focus:outline-indigo-500 focus:outline-offset-2" />
+        </div>
+      </div>
+
+      <div>
+        <button type="submit"
+                class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-2 text-white font-semibold
+                       hover:bg-indigo-400 focus:outline-2 focus:outline-indigo-500 focus:outline-offset-2">
+          Sign up
+        </button>
+      </div>
+
+    </form>
+
+    <p class="mt-6 text-center text-sm text-gray-400">
+      {{ isLoginMode ? "Not a member?" : "Already have an account?" }}
+      <span (click)="toggleMode()" class="font-semibold text-indigo-400 hover:text-indigo-300 cursor-pointer ml-1">
+        {{ isLoginMode ? "Create Account" : "Sign In" }}
+      </span>
+    </p>
+
+  </div>
+</div>
