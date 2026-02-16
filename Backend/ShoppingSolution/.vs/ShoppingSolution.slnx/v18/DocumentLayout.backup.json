@@ -1,0 +1,92 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{C5F3A813-30A8-4A6D-97ED-15DCF78B3157}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{C5F3A813-30A8-4A6D-97ED-15DCF78B3157}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C5F3A813-30A8-4A6D-97ED-15DCF78B3157}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\shoppingapp.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{C5F3A813-30A8-4A6D-97ED-15DCF78B3157}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\shoppingapp.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C5F3A813-30A8-4A6D-97ED-15DCF78B3157}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C5F3A813-30A8-4A6D-97ED-15DCF78B3157}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C5F3A813-30A8-4A6D-97ED-15DCF78B3157}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\controllers\\testcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C5F3A813-30A8-4A6D-97ED-15DCF78B3157}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\controllers\\testcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "ShoppingApp\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Properties\\launchSettings.json",
+              "RelativeToolTip": "ShoppingApp\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-02-16T12:45:33.708Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ShoppingApp.http",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\ShoppingApp.http",
+              "RelativeDocumentMoniker": "ShoppingApp\\ShoppingApp.http",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\ShoppingApp.http",
+              "RelativeToolTip": "ShoppingApp\\ShoppingApp.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2026-02-16T12:53:07.627Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TestController.cs",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Controllers\\TestController.cs",
+              "RelativeDocumentMoniker": "ShoppingApp\\Controllers\\TestController.cs",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Controllers\\TestController.cs",
+              "RelativeToolTip": "ShoppingApp\\Controllers\\TestController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-16T12:50:51.29Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Program.cs",
+              "RelativeDocumentMoniker": "ShoppingApp\\Program.cs",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Program.cs",
+              "RelativeToolTip": "ShoppingApp\\Program.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAmwB0AAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-16T12:45:35.338Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
