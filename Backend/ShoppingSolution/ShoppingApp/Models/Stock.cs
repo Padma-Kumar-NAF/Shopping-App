@@ -13,12 +13,12 @@ namespace ShoppingApp.Models
         [Required]
         public int Quantity { get; set; }
 
-        [Required]
-        public string ProductName{ get; set; } = string.Empty;
+        //[Required]
+        //public string ProductName{ get; set; } = string.Empty;
 
         [Required]
         public DateTime CreatedAt { get; set; }
 
-        public ICollection<Product>? Products { get; set; }
+        public Product? Product { get; set; }
     }
 }

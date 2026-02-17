@@ -32,9 +32,12 @@ namespace ShoppingApp.Models
         public DateTime CreatedAt { get; set; }
 
         // Navigation 
-        public Category? Category { get; set; } // one to many
+        public Category? Category { get; set; } // many to one
+        public Stock? Stock { get; set; } // one to one
 
-        public ICollection<Order>? Orders { get; set; } // one to many
+        public ICollection<OrderDetails>? OrderDetails { get; set; } // one to many
+        public ICollection<Review>? Reviews { get; set; } // one to many
+        public ICollection<CartItem>? CartItems { get; set; } // one to many
 
 
     }

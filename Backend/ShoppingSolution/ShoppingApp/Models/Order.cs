@@ -11,7 +11,7 @@ namespace ShoppingApp.Models
         public Guid UserId { get; set; }
 
         [Required]
-        public bool IsDelivered { get; set; }
+        public string Status { get; set; } = string.Empty;
 
         [Required]
         public int TotalProductsCount { get; set; }
@@ -25,8 +25,13 @@ namespace ShoppingApp.Models
         [Required]
         public Guid AddressId { get; set; }
 
-        public ICollection<User>? Users { get; set; }
-        public ICollection<Address>? Addresses { get; set; }
+
+        // Navigation
+        public Address? Address { get; set; } // many-to-one
+
+        public User? User { get; set; } // one to many
+
+        public ICollection<OrderDetails>? OrderDetails { get; set; }
 
         // For now this is field is not needed
         //public Guid OrderDetailsId { get; set; }

@@ -23,7 +23,7 @@ namespace ShoppingApp.Models
         public DateTime CreatedAt { get; set; }
 
         // Navigation
-        public User? User { get; set; } // one to one
-        public Product? Product { get; set; } // one to one
+        public User? User { get; set; } // one to many
+        public Product? Product { get; set; } // one to many
     }
 }

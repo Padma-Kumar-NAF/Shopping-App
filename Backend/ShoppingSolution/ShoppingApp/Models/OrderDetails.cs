@@ -7,8 +7,8 @@ namespace ShoppingApp.Models
         [Key]
         public Guid OrderDetailsId { get; set; }
 
-        [Required]
-        public Guid UserId { get; set; }
+        //[Required]
+        //public Guid UserId { get; set; }
 
         [Required]
         public Guid OrderId { get; set; }
@@ -28,8 +28,7 @@ namespace ShoppingApp.Models
         [Required]
         public decimal ProductPrice { get; set; }
 
-        public ICollection<User>? Users { get; set; }
-        public ICollection<Product>? Products { get; set; }
-        public ICollection<Order>? Orders { get; set; }
+        public Order? Order { get; set; }
+        public Product? Product { get; set; }
     }
 }

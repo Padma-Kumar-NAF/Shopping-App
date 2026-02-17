@@ -23,8 +23,8 @@ namespace ShoppingApp.Models
         public Guid UserId { get; set; }
 
         [Required]
-        public DateTime CreatedAt {  get; set; }
+        public DateTime CreatedAt {  get; set; } 
 
-        public ICollection<User>? Users { get; set; }
+        public User? User { get; set; }
     }
 }

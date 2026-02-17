@@ -10,8 +10,9 @@ namespace ShoppingApp.Models
         [Required]
         public Guid UserId { get; set; }
 
-        [Required]
-        public Guid OrderId { get; set; }
+        //[Required]
+        //public Guid OrderId { get; set; }
+
         [Required]
         public string AddressLine1 { get; set; } = string.Empty;
 
@@ -29,5 +30,11 @@ namespace ShoppingApp.Models
 
         [Required]
         public DateTime CreatedAt { get; set; }
+
+
+        // Navigation
+        public User? User { get; set; }
+        public ICollection<Order>? Orders { get; set; }
+
     }
 }

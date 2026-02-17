@@ -25,7 +25,7 @@ namespace ShoppingApp.Models
 
         // Navigation 
         public UserDetails? UserDetails { get; set; } // one to one
-        public Cart? Carts { get; set; } // one to one
+        public Cart? Cart { get; set; } // one to one
 
         public ICollection<Review>? Reviews { get; set; } // one to many
         public ICollection<Log>? Logs { get; set; } // one to many
