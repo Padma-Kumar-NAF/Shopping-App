@@ -5,12 +5,15 @@ namespace ShoppingApp.Models
     public class Category
     {
         [Key]
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
 
         [Required]
-        public int CategoryName { get; set; }
+        public string CategoryName { get; set; } = string.Empty;
 
         [Required]
         public DateTime CreatedAt { get; set; }
+
+        // Navigation 
+        public ICollection<Product>? Products { get; set; } // one to many
     }
 }

@@ -11,6 +11,9 @@ namespace ShoppingApp.Models
         public Guid UserId { get; set; }
 
         [Required]
+        public Guid OrderId { get; set; }
+
+        [Required]
         public Guid ProductId { get; set; }
 
         [Required]
@@ -20,12 +23,13 @@ namespace ShoppingApp.Models
         public int Quantity { get; set; }
 
         [Required]
-        public Guid OrderId { get; set; }
-
-        [Required]
         public DateTime CreatedAt { get; set; }
 
         [Required]
         public decimal ProductPrice { get; set; }
+
+        public ICollection<User>? Users { get; set; }
+        public ICollection<Product>? Products { get; set; }
+        public ICollection<Order>? Orders { get; set; }
     }
 }

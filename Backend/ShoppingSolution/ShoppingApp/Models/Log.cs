@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models
 {
-    public class Logs
+    public class Log
     {
         [Key]
         public Guid LogId { get; set; }
@@ -24,5 +24,7 @@ namespace ShoppingApp.Models
 
         [Required]
         public DateTime CreatedAt {  get; set; }
+
+        public ICollection<User>? Users { get; set; }
     }
 }

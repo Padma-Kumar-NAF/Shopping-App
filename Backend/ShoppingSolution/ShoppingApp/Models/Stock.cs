@@ -18,5 +18,7 @@ namespace ShoppingApp.Models
 
         [Required]
         public DateTime CreatedAt { get; set; }
+
+        public ICollection<Product>? Products { get; set; }
     }
 }

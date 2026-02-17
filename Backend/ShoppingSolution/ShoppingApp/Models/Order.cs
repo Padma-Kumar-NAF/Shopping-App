@@ -22,6 +22,12 @@ namespace ShoppingApp.Models
         [Required]
         public DateTime CreatedAt { get; set; }
 
+        [Required]
+        public Guid AddressId { get; set; }
+
+        public ICollection<User>? Users { get; set; }
+        public ICollection<Address>? Addresses { get; set; }
+
         // For now this is field is not needed
         //public Guid OrderDetailsId { get; set; }
     }

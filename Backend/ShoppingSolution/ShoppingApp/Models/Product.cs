@@ -22,13 +22,20 @@ namespace ShoppingApp.Models
         [Required]
         public string Description { get; set; } = string.Empty;
 
-        [Required]
-        public string CategoryName { get; set; } = string.Empty;
+        //[Required]
+        //public string CategoryName { get; set; } = string.Empty;
 
         [Required]
         public decimal Price { get; set; }
 
         [Required]
         public DateTime CreatedAt { get; set; }
+
+        // Navigation 
+        public Category? Category { get; set; } // one to many
+
+        public ICollection<Order>? Orders { get; set; } // one to many
+
+
     }
 }

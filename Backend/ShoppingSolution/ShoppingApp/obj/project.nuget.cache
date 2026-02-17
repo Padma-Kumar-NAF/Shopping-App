@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "TkD5Zom2Pv4=",
+  "dgSpecHash": "Xj+OpjQnegU=",
   "success": true,
   "projectFilePath": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\ShoppingApp.csproj",
   "expectedPackageFiles": [
@@ -54,5 +54,15 @@
     "C:\\Users\\PadmaKumar.C\\.nuget\\packages\\system.security.cryptography.pkcs\\9.0.4\\system.security.cryptography.pkcs.9.0.4.nupkg.sha512",
     "C:\\Users\\PadmaKumar.C\\.nuget\\packages\\system.security.cryptography.protecteddata\\9.0.4\\system.security.cryptography.protecteddata.9.0.4.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1900",
+      "level": "Warning",
+      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json.",
+      "projectPath": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\ShoppingApp.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\ShoppingApp.csproj",
+      "targetGraphs": []
+    }
+  ]
 }

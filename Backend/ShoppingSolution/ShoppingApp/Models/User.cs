@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShoppingApp.Models
 {
@@ -21,5 +22,14 @@ namespace ShoppingApp.Models
 
         [Required]
         public DateTime CreatedAt { get; set; }
+
+        // Navigation 
+        public UserDetails? UserDetails { get; set; } // one to one
+        public Cart? Carts { get; set; } // one to one
+
+        public ICollection<Review>? Reviews { get; set; } // one to many
+        public ICollection<Log>? Logs { get; set; } // one to many
+        public ICollection<Address>? Addresses { get; set; } // one to many
+        public ICollection<Order>? Orders { get; set; } // one to many
     }
 }
