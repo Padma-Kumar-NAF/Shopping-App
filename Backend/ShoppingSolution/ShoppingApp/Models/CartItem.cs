@@ -5,7 +5,7 @@ namespace ShoppingApp.Models
     public class CartItem
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid CartItemId { get; set; }
 
         [Required]
         public Guid CartId { get; set; }

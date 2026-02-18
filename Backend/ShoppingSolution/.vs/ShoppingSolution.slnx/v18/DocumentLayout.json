@@ -3,24 +3,8 @@
   "WorkspaceRootPath": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\contexts\\shoppingcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\contexts\\shoppingcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\models\\address.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\models\\address.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\models\\cartitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\models\\cartitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\models\\cart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\models\\cart.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -39,63 +23,15 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ShoppingContext.cs",
-              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Contexts\\ShoppingContext.cs",
-              "RelativeDocumentMoniker": "ShoppingApp\\Contexts\\ShoppingContext.cs",
-              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Contexts\\ShoppingContext.cs*",
-              "RelativeToolTip": "ShoppingApp\\Contexts\\ShoppingContext.cs*",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAywC4AAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-18T04:35:20.009Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
               "Title": "User.cs",
               "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Models\\User.cs",
               "RelativeDocumentMoniker": "ShoppingApp\\Models\\User.cs",
               "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Models\\User.cs",
               "RelativeToolTip": "ShoppingApp\\Models\\User.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAYwBYAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-18T10:33:04.644Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Address.cs",
-              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Models\\Address.cs",
-              "RelativeDocumentMoniker": "ShoppingApp\\Models\\Address.cs",
-              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Models\\Address.cs",
-              "RelativeToolTip": "ShoppingApp\\Models\\Address.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAzwA0AAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-18T10:00:12.805Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Cart.cs",
-              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Models\\Cart.cs",
-              "RelativeDocumentMoniker": "ShoppingApp\\Models\\Cart.cs",
-              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Models\\Cart.cs",
-              "RelativeToolTip": "ShoppingApp\\Models\\Cart.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-18T04:36:38.067Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "CartItem.cs",
-              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Models\\CartItem.cs",
-              "RelativeDocumentMoniker": "ShoppingApp\\Models\\CartItem.cs",
-              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Models\\CartItem.cs",
-              "RelativeToolTip": "ShoppingApp\\Models\\CartItem.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAzwAoAAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-18T04:35:41.682Z"
+              "WhenOpened": "2026-02-18T16:25:53.475Z",
+              "EditorCaption": ""
             }
           ]
         }

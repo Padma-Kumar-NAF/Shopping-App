@@ -29,6 +29,12 @@ namespace ShoppingApp.Contexts
                 entity.HasKey(a => a.AddressId)
                     .HasName("PK_Address");
 
+                entity.Property(o => o.AddressId)
+                .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
                 entity.HasOne(a => a.User)
                     .WithMany(u => u.Addresses)
                     .HasForeignKey(a => a.UserId)
@@ -48,6 +54,12 @@ namespace ShoppingApp.Contexts
                 entity.HasKey(c => c.CartId)
                     .HasName("PK_Cart");
 
+                entity.Property(o => o.CartId)
+          .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
                 entity.HasOne(c => c.User)
                     .WithOne(u => u.Cart)
                     .HasForeignKey<Cart>(c => c.UserId)
@@ -63,8 +75,14 @@ namespace ShoppingApp.Contexts
 
             modelBuilder.Entity<CartItem>(entity =>
             {
-                entity.HasKey(ci => ci.Id)
+                entity.HasKey(ci => ci.CartItemId)
                     .HasName("PK_CartItem");
+
+                entity.Property(o => o.CartItemId)
+         .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.HasOne(ci => ci.Cart)
                     .WithMany(c => c.CartItems)
@@ -90,6 +108,13 @@ namespace ShoppingApp.Contexts
                 entity.HasKey(c => c.CategoryId)
                     .HasName("PK_Category");
 
+                entity.Property(o => o.CategoryId)
+         .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+
                 entity.HasIndex(c => c.CategoryName)
                     .IsUnique()
                     .HasDatabaseName("UX_Category_Name");
@@ -105,6 +130,12 @@ namespace ShoppingApp.Contexts
             {
                 entity.HasKey(l => l.LogId)
                     .HasName("PK_Log");
+
+                entity.Property(o => o.LogId)
+         .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.HasOne(l => l.User)
                     .WithMany(u => u.Logs)
@@ -123,6 +154,15 @@ namespace ShoppingApp.Contexts
             {
                 entity.HasKey(l => l.OrderId)
                 .HasName("PK_Order");
+
+                entity.Property(o => o.OrderId)
+         .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.Property(o => o.TotalAmount)
+                .HasPrecision(18, 2);
 
                 entity.HasOne(o => o.User)
                 .WithMany(u => u.Orders)
@@ -148,6 +188,15 @@ namespace ShoppingApp.Contexts
                 entity.HasKey(od => od.OrderDetailsId)
                     .HasName("PK_OrderDetails");
 
+                entity.Property(o => o.OrderDetailsId)
+         .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.Property(od => od.ProductPrice)
+                    .HasPrecision(18, 2);
+
                 entity.HasOne(od => od.Order)
                     .WithMany(o => o.OrderDetails)
                     .HasForeignKey(od => od.OrderId)
@@ -169,6 +218,15 @@ namespace ShoppingApp.Contexts
             {
                 entity.HasKey(p => p.ProductId)
                     .HasName("PK_Product");
+
+                entity.Property(o => o.ProductId)
+         .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.Property(p => p.Price)
+                    .HasPrecision(18, 2);
 
                 entity.HasOne(p => p.Category)
                     .WithMany(c => c.Products)
@@ -194,6 +252,12 @@ namespace ShoppingApp.Contexts
                 entity.HasKey(r => r.ReviewId)
                     .HasName("PK_Review");
 
+                entity.Property(o => o.ReviewId)
+         .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
                 entity.HasOne(r => r.User)
                     .WithMany(u => u.Reviews)
                     .HasForeignKey(r => r.UserId)
@@ -216,6 +280,12 @@ namespace ShoppingApp.Contexts
                 entity.HasKey(s => s.StockId)
                     .HasName("PK_Stock");
 
+                entity.Property(o => o.StockId)
+         .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
                 entity.HasOne(s => s.Product)
                     .WithOne(p => p.Stock)
                     .HasForeignKey<Stock>(s => s.ProductId)
@@ -231,6 +301,12 @@ namespace ShoppingApp.Contexts
             {
                 entity.HasKey(u => u.UserId)
                 .HasName("PK_UserId");
+
+                entity.Property(o => o.UserId)
+         .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.HasMany(u => u.Addresses)
                     .WithOne(a => a.User)
@@ -272,8 +348,14 @@ namespace ShoppingApp.Contexts
 
             modelBuilder.Entity<UserDetails>(entity =>
             {
-                entity.HasKey(ud => ud.UserId)
+                entity.HasKey(ud => ud.UserDetailsId)
                 .HasName("PK_UserDetails");
+
+                entity.Property(o => o.UserDetailsId)
+         .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                      .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.HasOne(u=> u.User)
                 .WithOne(e=>e.UserDetails)
