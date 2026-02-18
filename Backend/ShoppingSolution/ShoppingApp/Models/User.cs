@@ -24,12 +24,12 @@ namespace ShoppingApp.Models
         public DateTime CreatedAt { get; set; }
 
         // Navigation 
-        public UserDetails? UserDetails { get; set; } // one to one
-        public Cart? Cart { get; set; } // one to one
+        public UserDetails? UserDetails { get; set; } 
+        public Cart? Cart { get; set; }
 
-        public ICollection<Review>? Reviews { get; set; } // one to many
-        public ICollection<Log>? Logs { get; set; } // one to many
-        public ICollection<Address>? Addresses { get; set; } // one to many
-        public ICollection<Order>? Orders { get; set; } // one to many
+        public ICollection<Review>? Reviews { get; set; }
+        public ICollection<Log>? Logs { get; set; }
+        public ICollection<Address>? Addresses { get; set; }
+        public ICollection<Order>? Orders { get; set; }
     }
 }

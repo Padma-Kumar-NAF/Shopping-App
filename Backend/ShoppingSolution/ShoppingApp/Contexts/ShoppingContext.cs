@@ -24,95 +24,100 @@ namespace ShoppingApp.Contexts
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Address>(entity =>
+            {
+                entity.HasKey(a => a.AddressId)
+                    .HasName("PK_Address");
 
-            // Primary key
-            modelBuilder.Entity<Address>()
-                .HasKey(a => a.AddressId)
-                .HasName("PK_Address");
+                entity.HasOne(a => a.User)
+                    .WithMany(u => u.Addresses)
+                    .HasForeignKey(a => a.UserId)
+                    .HasConstraintName("FK_Address_User")
+                    .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Cart>()
-                .HasKey(c => c.CartId)
-                .HasName("PK_Cart");
-
-            modelBuilder.Entity<CartItem>()
-                .HasKey(ci => ci.Id)
-                .HasName("PK_CartItem");
-
-            modelBuilder.Entity<Category>()
-                .HasKey(c => c.CategoryId)
-                .HasName("PK_Category");
-
-            modelBuilder.Entity<Log>()
-                .HasKey(l => l.LogId)
-                .HasName("PK_Log");
+                entity.HasMany(a => a.Orders)
+                    .WithOne(o => o.Address)
+                    .HasForeignKey(o => o.AddressId)
+                    .HasConstraintName("FK_Order_Address")
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
 
-            modelBuilder.Entity<OrderDetails>()
-                .HasKey(l => l.OrderDetailsId)
-                .HasName("PK_OrderDetails");
+            modelBuilder.Entity<Cart>(entity =>
+            {
+                entity.HasKey(c => c.CartId)
+                    .HasName("PK_Cart");
 
-            modelBuilder.Entity<Product>()
-                .HasKey(p => p.ProductId)
-                .HasName("PK_Product");
+                entity.HasOne(c => c.User)
+                    .WithOne(u => u.Cart)
+                    .HasForeignKey<Cart>(c => c.UserId)
+                    .HasConstraintName("FK_Cart_User")
+                    .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Review>()
-                .HasKey(p => p.ReviewId)
-                .HasName("PK_Review");
+                entity.HasMany(c => c.CartItems)
+                    .WithOne(ci => ci.Cart)
+                    .HasForeignKey(ci => ci.CartId)
+                    .HasConstraintName("FK_CartItem_Cart")
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
-            modelBuilder.Entity<Stock>()
-                .HasKey(u => u.StockId)
-                .HasName("PK_Stock");
+            modelBuilder.Entity<CartItem>(entity =>
+            {
+                entity.HasKey(ci => ci.Id)
+                    .HasName("PK_CartItem");
 
-            modelBuilder.Entity<User>()
-                .HasKey(u => u.UserId)
-                .HasName("PK_User");
+                entity.HasOne(ci => ci.Cart)
+                    .WithMany(c => c.CartItems)
+                    .HasForeignKey(ci => ci.CartId)
+                    .HasConstraintName("FK_CartItem_Cart")
+                    .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<UserDetails>()
-                .HasKey(u => u.UserDetailsId)
-                .HasName("PK_UserDetails");
+                entity.HasOne(ci => ci.Product)
+                    .WithMany(p => p.CartItems)
+                    .HasForeignKey(ci => ci.ProductId)
+                    .HasConstraintName("FK_CartItem_Product")
+                    .OnDelete(DeleteBehavior.Restrict);
 
-
-
-            // Relations
-            modelBuilder.Entity<Address>()
-            .HasOne(a => a.User)
-            .WithMany(u => u.Addresses)
-            .HasForeignKey(a => a.UserId)
-            .HasConstraintName("FK_Address_User")
-            .OnDelete(DeleteBehavior.Restrict);
-
-
-            modelBuilder.Entity<Cart>()
-            .HasOne(c => c.User)
-            .WithOne(u => u.Cart)
-            .HasForeignKey<Cart>(c => c.UserId)
-            .HasConstraintName("FK_Cart_User")
-            .OnDelete(DeleteBehavior.Restrict);
+                entity.HasIndex(ci => new { ci.CartId, ci.ProductId })
+                    .IsUnique()
+                    .HasDatabaseName("UX_CartItem_Cart_Product");
+            });
 
 
-            modelBuilder.Entity<CartItem>()
-            .HasOne(ci => ci.Cart)
-            .WithMany(c => c.CartItems)
-            .HasForeignKey(ci => ci.CartId)
-            .HasConstraintName("FK_CartItem_Cart")
-            .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.HasKey(c => c.CategoryId)
+                    .HasName("PK_Category");
 
-            modelBuilder.Entity<Category>()
-            .HasMany(c => c.Products)
-            .WithOne(p => p.Category)
-            .HasForeignKey(p => p.CategoryId)
-            .HasConstraintName("FK_Product_Category")
-            .OnDelete(DeleteBehavior.Restrict);
+                entity.HasIndex(c => c.CategoryName)
+                    .IsUnique()
+                    .HasDatabaseName("UX_Category_Name");
 
+                entity.HasMany(c => c.Products)
+                    .WithOne(p => p.Category)
+                    .HasForeignKey(p => p.CategoryId)
+                    .HasConstraintName("FK_Product_Category")
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
-            modelBuilder.Entity<Log>()
-            .HasOne(l => l.User)
-            .WithMany(u => u.Logs)
-            .HasForeignKey(l => l.UserId)
-            .HasConstraintName("FK_Log_User")
-            .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Log>(entity =>
+            {
+                entity.HasKey(l => l.LogId)
+                    .HasName("PK_Log");
 
+                entity.HasOne(l => l.User)
+                    .WithMany(u => u.Logs)
+                    .HasForeignKey(l => l.UserId)
+                    .HasConstraintName("FK_Log_User")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(l => l.UserId)
+                    .HasDatabaseName("IX_Log_UserId");
+
+                entity.HasIndex(l => l.CreatedAt)
+                    .HasDatabaseName("IX_Log_CreatedAt");
+            });
 
             modelBuilder.Entity<Order>(entity =>
             {
@@ -135,7 +140,146 @@ namespace ShoppingApp.Contexts
                 .WithOne(od => od.Order)
                 .HasForeignKey(od => od.OrderId)
                 .HasConstraintName("FK_OrderDetails_Order")
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<OrderDetails>(entity =>
+            {
+                entity.HasKey(od => od.OrderDetailsId)
+                    .HasName("PK_OrderDetails");
+
+                entity.HasOne(od => od.Order)
+                    .WithMany(o => o.OrderDetails)
+                    .HasForeignKey(od => od.OrderId)
+                    .HasConstraintName("FK_OrderDetails_Order")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(od => od.Product)
+                    .WithMany(p => p.OrderDetails)
+                    .HasForeignKey(od => od.ProductId)
+                    .HasConstraintName("FK_OrderDetails_Product")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(od => new { od.OrderId, od.ProductId })
+                    .IsUnique()
+                    .HasDatabaseName("UX_OrderDetails_Order_Product");
+            });
+
+            modelBuilder.Entity<Product>(entity =>
+            {
+                entity.HasKey(p => p.ProductId)
+                    .HasName("PK_Product");
+
+                entity.HasOne(p => p.Category)
+                    .WithMany(c => c.Products)
+                    .HasForeignKey(p => p.CategoryId)
+                    .HasConstraintName("FK_Product_Category")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(p => p.Stock)
+                    .WithOne(s => s.Product)
+                    .HasForeignKey<Product>(p => p.StockId)
+                    .HasConstraintName("FK_Product_Stock")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(p => p.Name)
+                    .HasDatabaseName("IX_Product_Name");
+
+                entity.HasIndex(p => p.CategoryId)
+                    .HasDatabaseName("IX_Product_CategoryId");
+            });
+
+            modelBuilder.Entity<Review>(entity =>
+            {
+                entity.HasKey(r => r.ReviewId)
+                    .HasName("PK_Review");
+
+                entity.HasOne(r => r.User)
+                    .WithMany(u => u.Reviews)
+                    .HasForeignKey(r => r.UserId)
+                    .HasConstraintName("FK_Review_User")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(r => r.Product)
+                    .WithMany(p => p.Reviews)
+                    .HasForeignKey(r => r.ProductId)
+                    .HasConstraintName("FK_Review_Product")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(r => new { r.UserId, r.ProductId })
+                    .IsUnique()
+                    .HasDatabaseName("UX_Review_User_Product");
+            });
+
+            modelBuilder.Entity<Stock>(entity =>
+            {
+                entity.HasKey(s => s.StockId)
+                    .HasName("PK_Stock");
+
+                entity.HasOne(s => s.Product)
+                    .WithOne(p => p.Stock)
+                    .HasForeignKey<Stock>(s => s.ProductId)
+                    .HasConstraintName("FK_Stock_Product")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(s => s.ProductId)
+                    .IsUnique()
+                    .HasDatabaseName("UX_Stock_Product");
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(u => u.UserId)
+                .HasName("PK_UserId");
+
+                entity.HasMany(u => u.Addresses)
+                    .WithOne(a => a.User)
+                    .HasForeignKey(a => a.UserId)
+                    .HasConstraintName("FK_Address_User")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(u => u.Orders)
+                    .WithOne(o => o.User)
+                    .HasForeignKey(o => o.UserId)
+                    .HasConstraintName("FK_Order_User")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(u => u.Logs)
+                    .WithOne(l => l.User)
+                    .HasForeignKey(l => l.UserId)
+                    .HasConstraintName("FK_Log_User")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(u => u.Reviews)
+                    .WithOne(r => r.User)
+                    .HasForeignKey(r => r.UserId)
+                    .HasConstraintName("FK_Review_User")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(u => u.Cart)
+                    .WithOne(c => c.User)
+                    .HasForeignKey<Cart>(c => c.UserId)
+                    .HasConstraintName("FK_Cart_User")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(u => u.UserDetails)
+                    .WithOne(ud => ud.User)
+                    .HasForeignKey<UserDetails>(ud => ud.UserId)
+                    .HasConstraintName("FK_UserDetails_User")
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+
+            modelBuilder.Entity<UserDetails>(entity =>
+            {
+                entity.HasKey(ud => ud.UserId)
+                .HasName("PK_UserDetails");
+
+                entity.HasOne(u=> u.User)
+                .WithOne(e=>e.UserDetails)
+                .HasForeignKey<UserDetails>(e=>e.UserId)
+                .HasConstraintName("FK_User_UserDetails")
+                .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

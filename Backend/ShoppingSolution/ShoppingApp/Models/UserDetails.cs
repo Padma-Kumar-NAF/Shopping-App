@@ -39,7 +39,5 @@ namespace ShoppingApp.Models
 
         // Navigation
         public User? User { get; set; }
-
-
     }
 }
