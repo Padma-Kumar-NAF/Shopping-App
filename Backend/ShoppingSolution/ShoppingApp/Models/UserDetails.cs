@@ -5,6 +5,9 @@ namespace ShoppingApp.Models
     public class UserDetails
     {
         [Key]
+        public Guid UserDetailsId {get;set;}
+
+        [Required]
         public Guid UserId { get; set; }
 
         [Required]
