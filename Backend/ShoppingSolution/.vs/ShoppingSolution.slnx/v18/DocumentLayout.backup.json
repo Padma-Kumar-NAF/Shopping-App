@@ -1,0 +1,41 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 282,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Program.cs",
+              "RelativeDocumentMoniker": "ShoppingApp\\Program.cs",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Program.cs",
+              "RelativeToolTip": "ShoppingApp\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-19T13:32:40.714Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+[
+  {
+    "ContainingType": "ShoppingApp.Controllers.AuthenticationController",
+    "Method": "Register",
+    "RelativePath": "auth/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "requestDTO",
+        "Type": "ShoppingApp.Models.DTOs.CreateUserRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ShoppingApp.Models.DTOs.CreateUserResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  }
+]
