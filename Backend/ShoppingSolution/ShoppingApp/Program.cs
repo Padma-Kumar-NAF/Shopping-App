@@ -1,6 +1,12 @@
 
 using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Contexts;
+using ShoppingApp.Interfaces.Repositories;
+using ShoppingApp.Interfaces.Service;
+using ShoppingApp.Interfaces.Services;
+using ShoppingApp.Models;
+using ShoppingApp.Repositories;
+using ShoppingApp.Services;
 using System.Numerics;
 
 namespace ShoppingApp
@@ -20,6 +26,16 @@ namespace ShoppingApp
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Development"));
             });
+
+            #region Repositories
+            builder.Services.AddScoped<IRepository<Guid, User>, Repository<Guid, User>>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            #endregion
+
+            #region Services
+            builder.Services.AddScoped<IPasswordService, PasswordService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            #endregion
 
             var app = builder.Build();
 

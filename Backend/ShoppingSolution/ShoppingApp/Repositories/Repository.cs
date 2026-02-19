@@ -15,9 +15,13 @@ namespace ShoppingApp.Repositories
 
         public async Task<C?> Add(C item)
         {
-            _context.Add(item);
+            var user = _context.Add(item);
             await _context.SaveChangesAsync();
-            return item;
+            if(user != null)
+            {
+                return item;
+            }
+            return null;
         }
 
         public async Task<C?> Delete(K key)
@@ -56,7 +60,6 @@ namespace ShoppingApp.Repositories
                 return existingItem;
             }
             return null;
-        }
         }
     }
 }

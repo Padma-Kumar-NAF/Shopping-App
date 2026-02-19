@@ -304,7 +304,7 @@ namespace ShoppingApp.Contexts
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(u => u.UserId)
-                .HasName("PK_UserId");
+                .HasName("PK_User");
 
                 entity.Property(o => o.UserId)
                       .HasDefaultValueSql("NEWID()");
@@ -377,7 +377,7 @@ namespace ShoppingApp.Contexts
             modelBuilder.Entity<UserHash>(entity =>
             {
                 entity.HasKey(ud => ud.UserHashId)
-                .HasName("PK_UserDetails");
+                .HasName("PK_UserHash");
 
                 entity.Property(o => o.UserHashId)
                 .HasDefaultValueSql("NEWID()");

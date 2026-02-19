@@ -18,7 +18,7 @@ namespace ShoppingApp.Models
         public string Password { get; set; } = string.Empty;
 
         [Required]
-        public string Role { get; set; } = string.Empty; 
+        public string Role { get; set; } = string.Empty;
 
         [Required]
         public DateTime CreatedAt { get; set; }
