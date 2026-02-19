@@ -1,11 +1,11 @@
 ﻿namespace ShoppingApp.Interfaces.Repositories
 {
-    public interface IRepository<D,C> where C : class
+    public interface IRepository<K,C> where C : class
     {
-        Task<C> GetById(D key);
-        Task<C?> Add(D key);
-        Task<IEnumerable<C>> GetAll();
-        Task<C> Delete(D key);
-        Task<C> Update(D key, C entity);
+        Task<IEnumerable<C>?> GetAll();
+        Task<C?> Get(K key);
+        Task<C?> Add(C item);
+        Task<C?> Delete(K key);
+        Task<C?> Update(K key, C entity);
     }
 }

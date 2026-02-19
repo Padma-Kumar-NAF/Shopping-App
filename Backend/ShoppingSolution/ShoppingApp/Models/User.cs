@@ -26,6 +26,7 @@ namespace ShoppingApp.Models
         // Navigation 
         public UserDetails? UserDetails { get; set; } 
         public Cart? Cart { get; set; }
+        public UserHash? UserHash { get; set; }
 
         public ICollection<Review>? Reviews { get; set; }
         public ICollection<Log>? Logs { get; set; }
