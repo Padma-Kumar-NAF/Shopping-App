@@ -1,6 +1,7 @@
 select * from Stock
 select * from Category
 select * from Products
+select * from Users
 
 INSERT INTO Category (CategoryName)
 VALUES

@@ -2,7 +2,8 @@
 {
     public class GetAllProductsRequest
     {
-        public int limit;
-        public int pageNumber;
+        public int Limit { get; set; }
+        public int PageNumber { get; set; }
+        public Guid CategoryId {  get; set; }
     }
 }

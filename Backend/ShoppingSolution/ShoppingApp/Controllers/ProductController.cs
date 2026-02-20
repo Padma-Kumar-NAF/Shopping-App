@@ -7,23 +7,23 @@ using ShoppingApp.Models.DTOs;
 
 namespace ShoppingApp.Controllers
 {
-    [Route("products")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase , IProductController
     {
         private readonly IProductService _productService;
 
-        public ProductsController(IProductService userService)
+        public ProductsController(IProductService productService)
         {
-            _productService = userService;
+            _productService = productService;
         }
 
         [HttpPost("getAllProducts")]
-        public async Task<ActionResult<IEnumerable<GetAllProductsResponse>>> GetAll(GetAllProductsRequest request)
+        public async Task<ActionResult<IEnumerable<GetAllProductsResponse>>> GetByCategoryWithPagination([FromBody] GetAllProductsRequest request)
         {
             try
             {
-                var product = await _productService.GetAllProducts();
+                var product = await _productService.GetProducts(request);
                 return Ok(product);
             }
             catch (Exception e)

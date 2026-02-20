@@ -111,7 +111,7 @@
         }
       }
     },
-    "/products/getAllProducts": {
+    "/api/Products/getAllProducts": {
       "post": {
         "tags": [
           "Products"
@@ -211,7 +211,29 @@
         }
       },
       "GetAllProductsRequest": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "limit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "categoryId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
       },
       "GetAllProductsResponse": {
         "type": "object",
