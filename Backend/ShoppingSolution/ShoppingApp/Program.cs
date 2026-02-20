@@ -1,9 +1,8 @@
 
 using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Contexts;
-using ShoppingApp.Interfaces.Repositories;
-using ShoppingApp.Interfaces.Service;
-using ShoppingApp.Interfaces.Services;
+using ShoppingApp.Interfaces.RepositoriesInterface;
+using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Repositories;
 using ShoppingApp.Services;
@@ -28,13 +27,15 @@ namespace ShoppingApp
             });
 
             #region Repositories
-            builder.Services.AddScoped<IRepository<Guid, User>, Repository<Guid, User>>();
+            builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IUserHashRepository, UserHashRepository>();
             #endregion
 
             #region Services
             builder.Services.AddScoped<IPasswordService, PasswordService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IUserHashService, UserHashService>();
             #endregion
 
             var app = builder.Build();

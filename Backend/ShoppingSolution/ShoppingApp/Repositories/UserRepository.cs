@@ -1,22 +1,18 @@
-﻿using ShoppingApp.Interfaces.Repositories;
+﻿using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Models;
 
 namespace ShoppingApp.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : MasterRepository<Guid, User> , IUserRepository
     {
-        private readonly IRepository<Guid, User> _repository;
-
-        public UserRepository(IRepository<Guid, User> repository)
+        public UserRepository(IRepository<Guid, User> repository) : base(repository)
         {
-            _repository = repository;
-        }
 
+        }
         public async Task<User?> AddUser(User NewUser)
         {
-            var user = await _repository.Add(NewUser);
+            var user = await _repository.AddAsync(NewUser);
             return user;
         }
-
     }
 }

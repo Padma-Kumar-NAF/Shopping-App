@@ -484,7 +484,7 @@ namespace ShoppingApp.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<string>("HashKey")
+                    b.Property<string>("SaltValue")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

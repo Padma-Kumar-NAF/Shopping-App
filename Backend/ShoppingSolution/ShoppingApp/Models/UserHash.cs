@@ -11,7 +11,7 @@ namespace ShoppingApp.Models
         public Guid UserId { get; set; }
 
         [Required]
-        public string HashKey  { get; set; } = string.Empty;
+        public string SaltValue  { get; set; } = string.Empty;
 
         //[Required]
         //public string Token { get; set; } = string.Empty;

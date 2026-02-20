@@ -160,3 +160,5 @@ C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\bin\Debug\net10.
 C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\bin\Debug\net10.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
 C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\bin\Debug\net10.0\Microsoft.EntityFrameworkCore.InMemory.dll
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\bin\Debug\net10.0\Konscious.Security.Cryptography.Argon2.dll
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\bin\Debug\net10.0\Konscious.Security.Cryptography.Blake2.dll

@@ -355,7 +355,6 @@ namespace ShoppingApp.Contexts
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-
             modelBuilder.Entity<UserDetails>(entity =>
             {
                 entity.HasKey(ud => ud.UserDetailsId)

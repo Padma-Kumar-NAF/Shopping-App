@@ -163,7 +163,7 @@ namespace ShoppingApp.Migrations
                 {
                     UserHashId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    HashKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SaltValue = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
                 },
                 constraints: table =>

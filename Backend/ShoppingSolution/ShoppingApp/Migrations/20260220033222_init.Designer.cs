@@ -12,7 +12,7 @@ using ShoppingApp.Contexts;
 namespace ShoppingApp.Migrations
 {
     [DbContext(typeof(ShoppingContext))]
-    [Migration("20260219104843_init")]
+    [Migration("20260220033222_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -487,7 +487,7 @@ namespace ShoppingApp.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<string>("HashKey")
+                    b.Property<string>("SaltValue")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

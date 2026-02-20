@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Contexts;
-using ShoppingApp.Interfaces.Repositories;
+using ShoppingApp.Interfaces.RepositoriesInterface;
 
 namespace ShoppingApp.Repositories
 {
@@ -13,7 +13,7 @@ namespace ShoppingApp.Repositories
             _context = context;
         }
 
-        public async Task<C?> Add(C item)
+        public async Task<C?> AddAsync(C item)
         {
             var user = _context.Add(item);
             await _context.SaveChangesAsync();
@@ -24,9 +24,9 @@ namespace ShoppingApp.Repositories
             return null;
         }
 
-        public async Task<C?> Delete(K key)
+        public async Task<C?> DeleteAsync(K key)
         {
-            var item = await Get(key);
+            var item = await GetAsync(key);
             if (item != null)
             {
                 _context.Remove(item);
@@ -36,7 +36,7 @@ namespace ShoppingApp.Repositories
             return null;
         }
 
-        public async Task<IEnumerable<C>?> GetAll()
+        public async Task<IEnumerable<C>?> GetAllAsync()
         {
             var items = await _context.Set<C>().ToListAsync();
             if (items.Any())
@@ -44,15 +44,15 @@ namespace ShoppingApp.Repositories
             return null;
         }
 
-        public async Task<C?> Get(K key)
+        public async Task<C?> GetAsync(K key)
         {
             var item = await _context.FindAsync<C>(key);
             return item != null ? item : null;
         }
 
-        public async Task<C?> Update(K key, C item)
+        public async Task<C?> UpdateAsync(K key, C item)
         {
-            var existingItem = await Get(key);
+            var existingItem = await GetAsync(key);
             if (existingItem != null)
             {
                 _context.Entry(existingItem).CurrentValues.SetValues(item);

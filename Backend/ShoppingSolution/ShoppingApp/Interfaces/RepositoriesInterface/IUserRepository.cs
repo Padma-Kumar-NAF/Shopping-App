@@ -1,6 +1,6 @@
 ﻿using ShoppingApp.Models;
 
-namespace ShoppingApp.Interfaces.Repositories
+namespace ShoppingApp.Interfaces.RepositoriesInterface
 {
     public interface IUserRepository
     {
