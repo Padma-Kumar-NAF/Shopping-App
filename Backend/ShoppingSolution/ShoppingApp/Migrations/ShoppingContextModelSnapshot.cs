@@ -302,9 +302,6 @@ namespace ShoppingApp.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid>("StockId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("ProductId")
                         .HasName("PK_Product");
 
@@ -410,6 +407,10 @@ namespace ShoppingApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SaltValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("UserId")
                         .HasName("PK_User");
 
@@ -470,34 +471,6 @@ namespace ShoppingApp.Migrations
                         .IsUnique();
 
                     b.ToTable("UserDetails");
-                });
-
-            modelBuilder.Entity("ShoppingApp.Models.UserHash", b =>
-                {
-                    b.Property<Guid>("UserHashId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<string>("SaltValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("UserHashId")
-                        .HasName("PK_UserHash");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("UserHash");
                 });
 
             modelBuilder.Entity("ShoppingApp.Models.Address", b =>
@@ -656,18 +629,6 @@ namespace ShoppingApp.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ShoppingApp.Models.UserHash", b =>
-                {
-                    b.HasOne("ShoppingApp.Models.User", "User")
-                        .WithOne("UserHash")
-                        .HasForeignKey("ShoppingApp.Models.UserHash", "UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_User_UserToken");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ShoppingApp.Models.Address", b =>
                 {
                     b.Navigation("Orders");
@@ -712,8 +673,6 @@ namespace ShoppingApp.Migrations
                     b.Navigation("Reviews");
 
                     b.Navigation("UserDetails");
-
-                    b.Navigation("UserHash");
                 });
 #pragma warning restore 612, 618
         }

@@ -29,13 +29,12 @@ namespace ShoppingApp
             #region Repositories
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
             builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IUserHashRepository, UserHashRepository>();
             #endregion
 
             #region Services
             builder.Services.AddScoped<IPasswordService, PasswordService>();
             builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IUserHashService, UserHashService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
             #endregion
 
             var app = builder.Build();

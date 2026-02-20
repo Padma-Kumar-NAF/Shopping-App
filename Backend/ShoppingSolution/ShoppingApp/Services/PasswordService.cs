@@ -29,11 +29,10 @@ namespace ShoppingApp.Services
             return (hash,salt);
         }
 
-        public async Task<bool> VerifyPasswordAsync(string password, string storedHash)
+        public async Task<bool> VerifyPasswordAsync(string password, string storedHash,string storedSalt)
         {
-            var parts = storedHash.Split('.');
-            var salt = Convert.FromBase64String(parts[0]);
-            var hash = Convert.FromBase64String(parts[1]);
+            var salt = Convert.FromBase64String(storedSalt);
+            var hash = Convert.FromBase64String(storedHash);
 
             var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password))
             {

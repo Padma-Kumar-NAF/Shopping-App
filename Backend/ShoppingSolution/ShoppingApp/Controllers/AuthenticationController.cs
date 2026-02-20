@@ -15,6 +15,7 @@ namespace ShoppingApp.Controllers
         {
             _userService = userService;
         }
+
         [HttpPost("register")]
         public async Task<ActionResult<CreateUserResponseDTO>> Register(CreateUserRequestDTO requestDTO)
         {

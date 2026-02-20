@@ -32,6 +32,7 @@ namespace ShoppingApp.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SaltValue = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
                 },
@@ -46,7 +47,6 @@ namespace ShoppingApp.Migrations
                 {
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
                     CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StockId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -151,26 +151,6 @@ namespace ShoppingApp.Migrations
                     table.PrimaryKey("PK_UserDetails", x => x.UserDetailsId);
                     table.ForeignKey(
                         name: "FK_User_UserDetails",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserHash",
-                columns: table => new
-                {
-                    UserHashId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SaltValue = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserHash", x => x.UserHashId);
-                    table.ForeignKey(
-                        name: "FK_User_UserToken",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -401,12 +381,6 @@ namespace ShoppingApp.Migrations
                 table: "UserDetails",
                 column: "UserId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserHash_UserId",
-                table: "UserHash",
-                column: "UserId",
-                unique: true);
         }
 
         /// <inheritdoc />
@@ -429,9 +403,6 @@ namespace ShoppingApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserDetails");
-
-            migrationBuilder.DropTable(
-                name: "UserHash");
 
             migrationBuilder.DropTable(
                 name: "Carts");

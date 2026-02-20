@@ -18,6 +18,9 @@ namespace ShoppingApp.Models
         public string Password { get; set; } = string.Empty;
 
         [Required]
+        public string SaltValue { get; set; } = string.Empty;
+
+        [Required]
         public string Role { get; set; } = string.Empty;
 
         [Required]
@@ -26,7 +29,6 @@ namespace ShoppingApp.Models
         // Navigation 
         public UserDetails? UserDetails { get; set; } 
         public Cart? Cart { get; set; }
-        public UserHash? UserHash { get; set; }
 
         public ICollection<Review>? Reviews { get; set; }
         public ICollection<Log>? Logs { get; set; }

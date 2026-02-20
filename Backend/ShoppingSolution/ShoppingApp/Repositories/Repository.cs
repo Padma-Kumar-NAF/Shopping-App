@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Contexts;
 using ShoppingApp.Interfaces.RepositoriesInterface;
+using System.Linq.Expressions;
 
 namespace ShoppingApp.Repositories
 {
@@ -36,12 +37,21 @@ namespace ShoppingApp.Repositories
             return null;
         }
 
-        public async Task<IEnumerable<C>?> GetAllAsync()
+        //public async Task<IEnumerable<C>?> GetAllAsync()
+        //{
+        //    var items = await _context.Set<C>().ToListAsync();
+        //    if (items.Any())
+        //        return items;
+        //    return null;
+        //}
+        public async Task<IEnumerable<C>> GetAllAsync()
         {
-            var items = await _context.Set<C>().ToListAsync();
-            if (items.Any())
-                return items;
-            return null;
+            return await _context.Set<C>().ToListAsync();
+        }
+
+        public IQueryable<C> GetQueryable()
+        {
+            return _context.Set<C>();
         }
 
         public async Task<C?> GetAsync(K key)
@@ -60,6 +70,11 @@ namespace ShoppingApp.Repositories
                 return existingItem;
             }
             return null;
+        }
+
+        public async Task<C?> FirstOrDefaultAsync(Expression<Func<C, bool>> predicate)
+        {
+            return await _context.Set<C>().FirstOrDefaultAsync(predicate);
         }
     }
 }
