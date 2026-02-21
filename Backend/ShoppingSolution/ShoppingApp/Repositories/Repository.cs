@@ -37,21 +37,9 @@ namespace ShoppingApp.Repositories
             return null;
         }
 
-        //public async Task<IEnumerable<C>?> GetAllAsync()
-        //{
-        //    var items = await _context.Set<C>().ToListAsync();
-        //    if (items.Any())
-        //        return items;
-        //    return null;
-        //}
         public async Task<IEnumerable<C>> GetAllAsync()
         {
             return await _context.Set<C>().ToListAsync();
-        }
-
-        public IQueryable<C> GetQueryable()
-        {
-            return _context.Set<C>();
         }
 
         public async Task<C?> GetAsync(K key)
@@ -72,9 +60,26 @@ namespace ShoppingApp.Repositories
             return null;
         }
 
+        //-------------------------------------------------------------------------//
         public async Task<C?> FirstOrDefaultAsync(Expression<Func<C, bool>> predicate)
         {
             return await _context.Set<C>().FirstOrDefaultAsync(predicate);
+        }
+
+        public IQueryable<C> GetQueryable()
+        {
+            return _context.Set<C>();
+        }
+
+        public async Task<IEnumerable<C>> GetAllByForeignKeyAsync(Expression<Func<C, bool>> predicate,
+        int limit,
+        int pageNumber)
+        {
+            return await _context.Set<C>()
+                .Where(predicate)
+                .Skip((pageNumber - 1) * limit)
+                .Take(limit)
+                .ToListAsync();
         }
     }
 }

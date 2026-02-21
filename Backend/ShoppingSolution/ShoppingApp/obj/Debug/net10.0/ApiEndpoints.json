@@ -52,6 +52,32 @@
     ]
   },
   {
+    "ContainingType": "ShoppingApp.Controllers.CartController",
+    "Method": "GetCart",
+    "RelativePath": "Cart/GetUserCart",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.GetCartRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.GetCartResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "ShoppingApp.Controllers.ProductsController",
     "Method": "GetProducts",
     "RelativePath": "Products/getProducts",
@@ -61,13 +87,13 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "ShoppingApp.Models.DTOs.GetAllProductsRequest",
+        "Type": "ShoppingApp.Models.DTOs.GetAllProductsRequestDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.GetAllProductsResponse, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -93,7 +119,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.GetAllProductsResponse, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",

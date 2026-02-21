@@ -9,7 +9,10 @@ namespace ShoppingApp.Interfaces.RepositoriesInterface
         Task<C?> AddAsync(C item);
         Task<C?> DeleteAsync(K key);
         Task<C?> UpdateAsync(K key, C entity);
+
+
         Task<C?> FirstOrDefaultAsync(Expression<Func<C, bool>> predicate);
         IQueryable<C> GetQueryable();
+        public Task<IEnumerable<C>> GetAllByForeignKeyAsync(Expression<Func<C, bool>> predicate,int limit,int pageNumber);
     }
 }

@@ -111,26 +111,26 @@
         }
       }
     },
-    "/Products/getProducts": {
+    "/Cart/GetUserCart": {
       "post": {
         "tags": [
-          "Products"
+          "Cart"
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GetAllProductsRequest"
+                "$ref": "#/components/schemas/GetCartRequestDTO"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/GetAllProductsRequest"
+                "$ref": "#/components/schemas/GetCartRequestDTO"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/GetAllProductsRequest"
+                "$ref": "#/components/schemas/GetCartRequestDTO"
               }
             }
           },
@@ -144,7 +144,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GetAllProductsResponse"
+                    "$ref": "#/components/schemas/GetCartResponseDTO"
                   }
                 }
               },
@@ -152,7 +152,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GetAllProductsResponse"
+                    "$ref": "#/components/schemas/GetCartResponseDTO"
                   }
                 }
               },
@@ -160,7 +160,65 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GetAllProductsResponse"
+                    "$ref": "#/components/schemas/GetCartResponseDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Products/getProducts": {
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAllProductsRequestDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAllProductsRequestDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAllProductsRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetAllProductsResponseDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetAllProductsResponseDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetAllProductsResponseDTO"
                   }
                 }
               }
@@ -202,7 +260,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GetAllProductsResponse"
+                    "$ref": "#/components/schemas/GetAllProductsResponseDTO"
                   }
                 }
               },
@@ -210,7 +268,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GetAllProductsResponse"
+                    "$ref": "#/components/schemas/GetAllProductsResponseDTO"
                   }
                 }
               },
@@ -218,7 +276,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GetAllProductsResponse"
+                    "$ref": "#/components/schemas/GetAllProductsResponseDTO"
                   }
                 }
               }
@@ -268,7 +326,7 @@
           }
         }
       },
-      "GetAllProductsRequest": {
+      "GetAllProductsRequestDTO": {
         "type": "object",
         "properties": {
           "limit": {
@@ -296,7 +354,7 @@
           }
         }
       },
-      "GetAllProductsResponse": {
+      "GetAllProductsResponseDTO": {
         "type": "object",
         "properties": {
           "productId": {
@@ -326,6 +384,73 @@
               "string"
             ],
             "format": "double"
+          }
+        }
+      },
+      "GetCartRequestDTO": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "GetCartResponseDTO": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "categoryId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "cartId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "imagePath": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -391,6 +516,9 @@
   "tags": [
     {
       "name": "Authentication"
+    },
+    {
+      "name": "Cart"
     },
     {
       "name": "Products"

@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs
 {
-    public class GetAllProductsRequest
+    public class GetAllProductsRequestDTO
     {
         public int Limit { get; set; }
         public int PageNumber { get; set; }

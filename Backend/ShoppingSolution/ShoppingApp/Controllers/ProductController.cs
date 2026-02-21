@@ -20,7 +20,7 @@ namespace ShoppingApp.Controllers
         }
 
         [HttpPost("getProducts")]
-        public async Task<ActionResult<IEnumerable<GetAllProductsResponse>>> GetProducts([FromBody] GetAllProductsRequest request)
+        public async Task<ActionResult<IEnumerable<GetAllProductsResponseDTO>>> GetProducts([FromBody] GetAllProductsRequestDTO request)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace ShoppingApp.Controllers
         }
 
         [HttpPost("search")]
-        public async Task<ActionResult<IEnumerable<GetAllProductsResponse>>> GetProductByName([FromBody] SearchProductRequestDTO request)
+        public async Task<ActionResult<IEnumerable<GetAllProductsResponseDTO>>> GetProductByName([FromBody] SearchProductRequestDTO request)
         {
             try
             {

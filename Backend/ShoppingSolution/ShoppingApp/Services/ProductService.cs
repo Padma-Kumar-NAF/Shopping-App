@@ -16,7 +16,7 @@ namespace ShoppingApp.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<GetAllProductsResponse>> GetProducts(GetAllProductsRequest request)
+        public async Task<IEnumerable<GetAllProductsResponseDTO>> GetProducts(GetAllProductsRequestDTO request)
         {
             var query = _repository.GetQueryable().AsNoTracking();
 
@@ -37,7 +37,7 @@ namespace ShoppingApp.Services
                 var totalCount = await query.CountAsync();
 
                 if (totalCount == 0)
-                    return new List<GetAllProductsResponse>();
+                    return new List<GetAllProductsResponseDTO>();
 
                 var random = new Random();
 
@@ -50,7 +50,7 @@ namespace ShoppingApp.Services
             }
 
             var products = await query
-                .Select(p => new GetAllProductsResponse
+                .Select(p => new GetAllProductsResponseDTO
                 {
                     ProductId = p.ProductId,
                     CategoryId = p.CategoryId,
@@ -67,9 +67,9 @@ namespace ShoppingApp.Services
             return products;
         }
 
-        public async Task<IEnumerable<GetAllProductsResponse>> SearchProducts(SearchProductRequestDTO request)
+        public async Task<IEnumerable<GetAllProductsResponseDTO>> SearchProducts(SearchProductRequestDTO request)
         {
-            var result = new List<GetAllProductsResponse>();
+            var result = new List<GetAllProductsResponseDTO>();
 
             var query = _repository.GetQueryable().AsNoTracking();
 
@@ -83,7 +83,7 @@ namespace ShoppingApp.Services
             {
                 var searchedProduct = await query
                     .Where(p => p.ProductId == request.ProductId)
-                    .Select(p => new GetAllProductsResponse
+                    .Select(p => new GetAllProductsResponseDTO
                     {
                         ProductId = p.ProductId,
                         CategoryId = p.CategoryId,
@@ -102,7 +102,7 @@ namespace ShoppingApp.Services
             if (request.CategoryId == Guid.Empty)
                 return result;
 
-            var categoryRequest = new GetAllProductsRequest
+            var categoryRequest = new GetAllProductsRequestDTO
             {
                 CategoryId = request.CategoryId,
                 PageNumber = request.PageNumber,

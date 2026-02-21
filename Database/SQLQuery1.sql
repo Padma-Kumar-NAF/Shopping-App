@@ -2,6 +2,23 @@ select * from Stock
 select * from Category
 select * from Products
 select * from Users
+select * from Carts
+select * from CartItems
+
+INSERT INTO Carts (UserId)
+VALUES ('7D5C9FBB-96C5-4922-9EB2-0EE165B3A44A');
+
+DECLARE @CartId UNIQUEIDENTIFIER;
+
+SELECT @CartId = CartId
+FROM Carts
+WHERE UserId = '7D5C9FBB-96C5-4922-9EB2-0EE165B3A44A';
+
+INSERT INTO CartItems (CartId, ProductId, Quantity)
+VALUES
+(@CartId, '9B86691D-998C-4290-B203-1E66BAE9F1D3', 1),
+(@CartId, 'E0244232-AAE2-43ED-9523-477F47B9E453', 1),
+(@CartId, '2AE00D55-29DA-44EB-90F8-6FAB1AF56348', 2);
 
 INSERT INTO Category (CategoryName)
 VALUES

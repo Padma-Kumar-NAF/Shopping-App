@@ -15,11 +15,9 @@ namespace ShoppingApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            // Add services to the container.
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-
+            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
             builder.Services.AddDbContext<ShoppingContext>(options =>
             {
@@ -29,12 +27,15 @@ namespace ShoppingApp
             #region Repositories
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
             #endregion
 
             #region Services
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<ICartItemsService, CartItemsService>();
             builder.Services.AddScoped<IPasswordService, PasswordService>();
-            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             #endregion
 
             var app = builder.Build();
