@@ -18,7 +18,7 @@ namespace ShoppingApp.Services
 
         public async Task<IEnumerable<GetAllProductsResponse>> GetProducts(GetAllProductsRequest request)
         {
-            var query = _repository.GetQueryable();
+            var query = _repository.GetQueryable().AsNoTracking();
 
             if (request.PageNumber <= 0)
                 request.PageNumber = 1;
@@ -26,11 +26,11 @@ namespace ShoppingApp.Services
             if (request.Limit <= 0)
                 request.Limit = 10;
 
-            if (request.CategoryId != Guid.Empty)
+            if (request.CategoryId.HasValue && request.CategoryId.Value != Guid.Empty)
             {
                 query = query
-                    .Where(p => p.CategoryId == request.CategoryId)
-                    .OrderBy(p => p.ProductId);
+                    .Where(p => p.CategoryId == request.CategoryId.Value)
+                    .OrderBy(p => p.Name);
             }
             else
             {
@@ -45,7 +45,7 @@ namespace ShoppingApp.Services
                 int randomSkip = random.Next(0, maxSkip + 1);
 
                 query = query
-                    .OrderBy(p => p.ProductId)
+                    .OrderBy(p => p.Name)
                     .Skip(randomSkip);
             }
 
@@ -65,6 +65,59 @@ namespace ShoppingApp.Services
                 .ToListAsync();
 
             return products;
+        }
+
+        public async Task<IEnumerable<GetAllProductsResponse>> SearchProducts(SearchProductRequestDTO request)
+        {
+            var result = new List<GetAllProductsResponse>();
+
+            var query = _repository.GetQueryable().AsNoTracking();
+
+            if (request.PageNumber <= 0)
+                request.PageNumber = 1;
+
+            if (request.Limit <= 0)
+                request.Limit = 10;
+
+            if (request.ProductId != Guid.Empty)
+            {
+                var searchedProduct = await query
+                    .Where(p => p.ProductId == request.ProductId)
+                    .Select(p => new GetAllProductsResponse
+                    {
+                        ProductId = p.ProductId,
+                        CategoryId = p.CategoryId,
+                        Name = p.Name,
+                        ImagePath = p.ImagePath,
+                        Description = p.Description,
+                        CategoryName = p.Category!.CategoryName,
+                        Price = p.Price
+                    })
+                    .FirstOrDefaultAsync();
+
+                if (searchedProduct != null)
+                    result.Add(searchedProduct);
+            }
+
+            if (request.CategoryId == Guid.Empty)
+                return result;
+
+            var categoryRequest = new GetAllProductsRequest
+            {
+                CategoryId = request.CategoryId,
+                PageNumber = request.PageNumber,
+                Limit = request.Limit
+            };
+
+            var categoryProducts = await GetProducts(categoryRequest);
+            
+
+            var filteredCategoryProducts = categoryProducts // -> This is for remove duplicates
+                .Where(p => p.ProductId != request.ProductId);
+
+            result.AddRange(filteredCategoryProducts);
+
+            return result;
         }
     }
 }
