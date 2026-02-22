@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
-using ShoppingApp.Models.DTOs;
+using ShoppingApp.Models.DTOs.Product;
 using System.ComponentModel;
 
 namespace ShoppingApp.Controllers

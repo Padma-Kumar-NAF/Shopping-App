@@ -1,5 +1,6 @@
 ﻿using ShoppingApp.Models;
-using ShoppingApp.Models.DTOs;
+using ShoppingApp.Models.DTOs.Cart;
+using ShoppingApp.Models.DTOs.Stock;
 
 namespace ShoppingApp.Interfaces.ServicesInterface
 {

@@ -1,4 +1,4 @@
-﻿using ShoppingApp.Models.DTOs;
+﻿using ShoppingApp.Models.DTOs.User;
 
 namespace ShoppingApp.Interfaces.ServicesInterface
 {

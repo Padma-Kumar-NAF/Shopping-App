@@ -2,7 +2,8 @@
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
-using ShoppingApp.Models.DTOs;
+using ShoppingApp.Models.DTOs.Cart;
+using ShoppingApp.Models.DTOs.Stock;
 using ShoppingApp.Repositories;
 
 namespace ShoppingApp.Services
@@ -25,7 +26,6 @@ namespace ShoppingApp.Services
                 request.UserId,
                 request.PageNumber,
                 request.Limit);
-
             return items;
         }
     }

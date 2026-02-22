@@ -144,7 +144,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GetCartResponseDTO"
+                    "$ref": "#/components/schemas/GetStockResponseDTO"
                   }
                 }
               },
@@ -152,7 +152,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GetCartResponseDTO"
+                    "$ref": "#/components/schemas/GetStockResponseDTO"
                   }
                 }
               },
@@ -160,7 +160,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/GetCartResponseDTO"
+                    "$ref": "#/components/schemas/GetStockResponseDTO"
                   }
                 }
               }
@@ -277,6 +277,64 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/GetAllProductsResponseDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Stock/GetStock": {
+      "post": {
+        "tags": [
+          "Stock"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetStockRequestDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetStockRequestDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetStockRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetStockResponseDTO"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetStockResponseDTO"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetStockResponseDTO"
                   }
                 }
               }
@@ -412,29 +470,47 @@
           }
         }
       },
-      "GetCartResponseDTO": {
+      "GetStockRequestDTO": {
         "type": "object",
         "properties": {
+          "limit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "GetStockResponseDTO": {
+        "type": "object",
+        "properties": {
+          "stockId": {
+            "type": "string",
+            "format": "uuid"
+          },
           "productId": {
             "type": "string",
             "format": "uuid"
           },
+          "productName": {
+            "type": "string"
+          },
+          "productImage": {
+            "type": "string"
+          },
           "categoryId": {
             "type": "string",
             "format": "uuid"
-          },
-          "cartId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "name": {
-            "type": "string"
-          },
-          "imagePath": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
           },
           "price": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
@@ -443,6 +519,9 @@
               "string"
             ],
             "format": "double"
+          },
+          "categoryName": {
+            "type": "string"
           },
           "quantity": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -522,6 +601,9 @@
     },
     {
       "name": "Products"
+    },
+    {
+      "name": "Stock"
     }
   ]
 }

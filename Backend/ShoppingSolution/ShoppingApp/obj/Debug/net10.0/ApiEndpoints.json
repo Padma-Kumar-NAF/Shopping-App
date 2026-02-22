@@ -9,13 +9,13 @@
     "Parameters": [
       {
         "Name": "requestDTO",
-        "Type": "ShoppingApp.Models.DTOs.LoginRequestDTO",
+        "Type": "ShoppingApp.Models.DTOs.User.LoginRequestDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "ShoppingApp.Models.DTOs.LoginResponseDTO",
+        "Type": "ShoppingApp.Models.DTOs.User.LoginResponseDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -35,13 +35,13 @@
     "Parameters": [
       {
         "Name": "requestDTO",
-        "Type": "ShoppingApp.Models.DTOs.CreateUserRequestDTO",
+        "Type": "ShoppingApp.Models.DTOs.User.CreateUserRequestDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "ShoppingApp.Models.DTOs.CreateUserResponseDTO",
+        "Type": "ShoppingApp.Models.DTOs.User.CreateUserResponseDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -61,13 +61,13 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "ShoppingApp.Models.DTOs.GetCartRequestDTO",
+        "Type": "ShoppingApp.Models.DTOs.Cart.GetCartRequestDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.GetCartResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.Stock.GetStockResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -87,13 +87,13 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "ShoppingApp.Models.DTOs.GetAllProductsRequestDTO",
+        "Type": "ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -113,13 +113,39 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "ShoppingApp.Models.DTOs.SearchProductRequestDTO",
+        "Type": "ShoppingApp.Models.DTOs.Product.SearchProductRequestDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.StockController",
+    "Method": "GetStock",
+    "RelativePath": "Stock/GetStock",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Stock.GetStockRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.Stock.GetStockResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",

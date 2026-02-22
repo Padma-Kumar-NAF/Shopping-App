@@ -1,5 +1,5 @@
 ﻿using ShoppingApp.Models;
-using ShoppingApp.Models.DTOs;
+using ShoppingApp.Models.DTOs.Product;
 
 namespace ShoppingApp.Interfaces.ServicesInterface
 {

@@ -2,7 +2,7 @@
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
-using ShoppingApp.Models.DTOs;
+using ShoppingApp.Models.DTOs.User;
 using ShoppingApp.Repositories;
 
 namespace ShoppingApp.Services
@@ -18,6 +18,11 @@ namespace ShoppingApp.Services
         }
         public async Task<CreateUserResponseDTO> CreateUser(CreateUserRequestDTO request)
         {
+            var email = await _userRepository.GetUserByMail(request.Email);
+            if(email != null)
+            {
+                throw new UnAuthorizedException("Email already exists");
+            }
             var (hash, salt) = await _passwordService.HashPasswordAsync(request.Password);
 
             string HashedPassword = Convert.ToBase64String(hash);

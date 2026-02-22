@@ -3,8 +3,20 @@
   "WorkspaceRootPath": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\repositories\\cartitemrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\repositories\\cartitemrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\repositories\\stockrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\repositories\\stockrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\services\\stockservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\services\\stockservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\controllers\\stockcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\controllers\\stockcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -13,45 +25,78 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedHeight": 422,
-          "SelectedChildIndex": 1,
+          "DockedHeight": 517,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "CartItemRepository.cs",
-              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Repositories\\CartItemRepository.cs",
-              "RelativeDocumentMoniker": "ShoppingApp\\Repositories\\CartItemRepository.cs",
-              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Repositories\\CartItemRepository.cs",
-              "RelativeToolTip": "ShoppingApp\\Repositories\\CartItemRepository.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAQwCAAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-21T17:36:59.558Z",
-              "EditorCaption": ""
             }
           ]
         },
         {
-          "DockedHeight": 142,
-          "SelectedChildIndex": -1,
+          "DockedHeight": 47,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            }
-          ]
-        },
-        {
-          "DockedHeight": 118,
-          "SelectedChildIndex": -1,
-          "Children": [
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "StockRepository.cs",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Repositories\\StockRepository.cs",
+              "RelativeDocumentMoniker": "ShoppingApp\\Repositories\\StockRepository.cs",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Repositories\\StockRepository.cs",
+              "RelativeToolTip": "ShoppingApp\\Repositories\\StockRepository.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABUAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T17:36:01.558Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "StockService.cs",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Services\\StockService.cs",
+              "RelativeDocumentMoniker": "ShoppingApp\\Services\\StockService.cs",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Services\\StockService.cs",
+              "RelativeToolTip": "ShoppingApp\\Services\\StockService.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwBUAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T17:35:50.007Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "StockController.cs",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Controllers\\StockController.cs",
+              "RelativeDocumentMoniker": "ShoppingApp\\Controllers\\StockController.cs",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Controllers\\StockController.cs",
+              "RelativeToolTip": "ShoppingApp\\Controllers\\StockController.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAxwBMAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T17:33:32.453Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Program.cs",
+              "RelativeDocumentMoniker": "ShoppingApp\\Program.cs",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Program.cs",
+              "RelativeToolTip": "ShoppingApp\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T17:32:06.5Z",
+              "EditorCaption": ""
             }
           ]
         }

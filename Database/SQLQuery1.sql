@@ -5,6 +5,12 @@ select * from Users
 select * from Carts
 select * from CartItems
 
+delete from Users 
+where UserId = 'D19C949A-FC76-4D08-A11F-FC6EEF8C3D46'
+
+select * from Products
+where ProductId = '1B73DB65-27F7-4BE6-BABF-94BDF75A46C8'
+
 INSERT INTO Carts (UserId)
 VALUES ('7D5C9FBB-96C5-4922-9EB2-0EE165B3A44A');
 

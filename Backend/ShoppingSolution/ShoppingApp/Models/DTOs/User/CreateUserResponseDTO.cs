@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ShoppingApp.Models.DTOs
+namespace ShoppingApp.Models.DTOs.User
 {
-    public class CreateUserRequestDTO
+    public class CreateUserResponseDTO
     {
         [Required]
         public string Name { get; set; } = string.Empty;

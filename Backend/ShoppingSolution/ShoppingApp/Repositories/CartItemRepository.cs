@@ -2,12 +2,12 @@
 using ShoppingApp.Contexts;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Models;
-using ShoppingApp.Models.DTOs;
+using ShoppingApp.Models.DTOs.Cart;
+using ShoppingApp.Models.DTOs.Stock;
 
 namespace ShoppingApp.Repositories
 {
-    public class CartItemRepository
-    : Repository<Guid, CartItem>, ICartItemRepository
+    public class CartItemRepository : Repository<Guid, CartItem>, ICartItemRepository
     {
         public CartItemRepository(ShoppingContext context) : base(context)
         {
@@ -17,16 +17,16 @@ namespace ShoppingApp.Repositories
         public async Task<IEnumerable<GetCartResponseDTO>> GetCartItemsByUserAsync(Guid userId,int pageNumber,int pageSize)
         {
             return await _context.CartItems
-            .Where(ci => ci.Cart.UserId == userId)
+            .Where(ci => ci.Cart!.UserId == userId)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .Select(ci => new GetCartResponseDTO
             {
                 CartId = ci.CartId,
                 ProductId = ci.ProductId,
-                CategoryId = ci.Product.CategoryId,
+                CategoryId = ci.Product!.CategoryId,
                 Name = ci.Product.Name,
-                ImagePath = ci.Product.ImagePath,
+                ImagePath = ci.Product.ImagePath, // imagepath inside the Product class,It will know automatically
                 Description = ci.Product.Description,
                 Price = ci.Product.Price,
                 Quantity = ci.Quantity

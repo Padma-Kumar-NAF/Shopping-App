@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
-using ShoppingApp.Models.DTOs;
+using ShoppingApp.Models.DTOs.User;
 
 namespace ShoppingApp.Controllers
 {
     [Route("auth")]
     [ApiController]
-    public class AuthenticationController : ControllerBase , IAuthenticationControllerInterface
+    public class AuthenticationController : ControllerBase , IAuthenticationController
     {
         private readonly IUserService _userService;
 
