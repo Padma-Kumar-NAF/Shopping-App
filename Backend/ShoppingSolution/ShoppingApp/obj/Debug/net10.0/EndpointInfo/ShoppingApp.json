@@ -169,6 +169,55 @@
         }
       }
     },
+    "/Category/AddCategory": {
+      "post": {
+        "tags": [
+          "Category"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCategoryRequestDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCategoryRequestDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCategoryRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddCategoryResponseDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddCategoryResponseDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddCategoryResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/Order/GetUserOrders": {
       "post": {
         "tags": [
@@ -453,6 +502,26 @@
   },
   "components": {
     "schemas": {
+      "AddCategoryRequestDTO": {
+        "type": "object",
+        "properties": {
+          "categoryName": {
+            "type": "string"
+          }
+        }
+      },
+      "AddCategoryResponseDTO": {
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "categoryName": {
+            "type": "string"
+          }
+        }
+      },
       "AddressDTO": {
         "type": "object",
         "properties": {
@@ -891,6 +960,9 @@
     },
     {
       "name": "Cart"
+    },
+    {
+      "name": "Category"
     },
     {
       "name": "Order"

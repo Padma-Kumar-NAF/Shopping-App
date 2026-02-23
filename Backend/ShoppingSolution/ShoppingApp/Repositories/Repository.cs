@@ -14,7 +14,7 @@ namespace ShoppingApp.Repositories
             _context = context;
         }
 
-        public async Task<C?> AddAsync(C item)
+        public async Task<C> AddAsync(C item)
         {
             var user = _context.Add(item);
             await _context.SaveChangesAsync();

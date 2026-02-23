@@ -78,6 +78,58 @@
     ]
   },
   {
+    "ContainingType": "ShoppingApp.Controllers.CategoryController",
+    "Method": "AddCategory",
+    "RelativePath": "Category/AddCategory",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Category.AddCategoryRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ShoppingApp.Models.DTOs.Category.AddCategoryResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.CategoryController",
+    "Method": "GetAllCategories",
+    "RelativePath": "Category/GetAllCategories",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Category.GetAllCategoryRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.Category, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "ShoppingApp.Controllers.OrderController",
     "Method": "GetOrderByUserId",
     "RelativePath": "Order/GetUserOrders",
@@ -146,6 +198,58 @@
     "ReturnTypes": [
       {
         "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.ReviewController",
+    "Method": "AddReview",
+    "RelativePath": "Review/AddReview",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Review.AddReviewRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ShoppingApp.Models.DTOs.Review.AddReviewResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.ReviewController",
+    "Method": "DeleteReview",
+    "RelativePath": "Review/DeleteReview",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Review.DeleteReviewRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ShoppingApp.Models.DTOs.Review.DeleteReviewResponseDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",

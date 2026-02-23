@@ -33,10 +33,12 @@ namespace ShoppingApp
             #region Services
             builder.Services.AddScoped<ICartItemsService, CartItemsService>();
             builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IPasswordService, PasswordService>();
             builder.Services.AddScoped<IProductService, ProductService>();
-            builder.Services.AddScoped<IStockService, StockService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<IUserService, UserService>();
             #endregion
 
