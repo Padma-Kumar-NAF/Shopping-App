@@ -23,6 +23,11 @@ namespace ShoppingApp.Controllers
         [HttpPost("GetUserCart")]
         public async Task<ActionResult<IEnumerable<GetStockResponseDTO>>> GetCart([FromBody] GetCartRequestDTO request)
         {
+            //Console.WriteLine("----------");
+            //Console.WriteLine(request.Limit);
+            //Console.WriteLine(request.PageNumber);
+            //Console.WriteLine(request.UserId);
+            //Console.WriteLine("----------");
             var CartId = await _cartService.GetCarts(request.UserId);
             if(CartId == null)
             {

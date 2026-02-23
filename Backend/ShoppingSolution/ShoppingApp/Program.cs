@@ -6,7 +6,6 @@ using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Repositories;
 using ShoppingApp.Services;
-using System.Numerics;
 
 namespace ShoppingApp
 {
@@ -34,6 +33,7 @@ namespace ShoppingApp
             #region Services
             builder.Services.AddScoped<ICartItemsService, CartItemsService>();
             builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IPasswordService, PasswordService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IStockService, StockService>();

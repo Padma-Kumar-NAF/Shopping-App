@@ -4,6 +4,7 @@ namespace ShoppingApp.Models.DTOs.Cart
 {
     public class GetCartResponseDTO
     {
+        // Add collection of cartitems
         public Guid ProductId { get; set; }
         public Guid CategoryId { get; set; }
         public Guid CartId { get; set; }

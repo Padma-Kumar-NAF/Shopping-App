@@ -19,7 +19,7 @@ namespace ShoppingApp.Services
             var Cart = await _repository.GetAsync(UserId);
             if(Cart == null)
             {
-                throw new NotFoundException("No Cart Found");
+                return new Cart();
             }
             return Cart;
         }

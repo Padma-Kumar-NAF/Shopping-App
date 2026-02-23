@@ -2,8 +2,13 @@ select * from Stock
 select * from Category
 select * from Products
 select * from Users
+select * from UserDetails
 select * from Carts
 select * from CartItems
+select * from Addresses
+
+select * from Orders
+select * from OrderDetails
 
 delete from Users 
 where UserId = 'D19C949A-FC76-4D08-A11F-FC6EEF8C3D46'
@@ -19,6 +24,75 @@ DECLARE @CartId UNIQUEIDENTIFIER;
 SELECT @CartId = CartId
 FROM Carts
 WHERE UserId = '7D5C9FBB-96C5-4922-9EB2-0EE165B3A44A';
+
+INSERT INTO Addresses
+(UserId, AddressLine1, AddressLine2, State, City, Pincode)
+VALUES
+
+-- Padma
+('DAF096B8-0C48-4574-9E6F-02C19503874A',
+ 'Flat No 12, MG Residency',
+ 'Near Metro Station, Andheri East',
+ 'Maharashtra',
+ 'Mumbai',
+ '400069'
+),
+
+-- Padma Kumar
+('7D5C9FBB-96C5-4922-9EB2-0EE165B3A44A',
+ 'No 45, Anna Salai',
+ 'Opposite Express Avenue Mall',
+ 'Tamil Nadu',
+ 'Chennai',
+ '600002'
+),
+
+-- Kumar
+('1B6B8DBB-3D30-423E-BF3F-9035772CA730',
+ '78 Residency Road',
+ 'Near Brigade Road Signal',
+ 'Karnataka',
+ 'Bengaluru',
+ '560025'
+);
+
+Insert Into Orders
+(UserId , Status , TotalProductsCount , TotalAmount , 
+
+INSERT INTO UserDetails
+( UserId, Name, Email, PhoneNumber, AddressLine1, AddressLine2, State, City, Pincode)
+VALUES
+( 'DAF096B8-0C48-4574-9E6F-02C19503874A',
+ 'Padma',
+ 'dcd@gmail.com',
+ '9876543210',
+ '12 MG Road',
+ 'Near Metro Station',
+ 'Maharashtra',
+ 'Mumbai',
+ '400001'
+),
+
+('7D5C9FBB-96C5-4922-9EB2-0EE165B3A44A',
+ 'Padma Kumar',
+ 'abc@gmail.com',
+ '9123456780',
+ '45 Anna Salai',
+ 'Opposite City Mall',
+ 'Tamil Nadu',
+ 'Chennai',
+ '600002'
+),
+
+('1B6B8DBB-3D30-423E-BF3F-9035772CA730',
+ 'Kumar',
+ 'efg@gmail.com',
+ '9988776655',
+ '78 Residency Road',
+ 'Near Park',
+ 'Karnataka',
+ 'Bengaluru',
+ '560025');
 
 INSERT INTO CartItems (CartId, ProductId, Quantity)
 VALUES

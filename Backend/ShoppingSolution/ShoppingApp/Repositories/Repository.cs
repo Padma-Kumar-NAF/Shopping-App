@@ -71,6 +71,7 @@ namespace ShoppingApp.Repositories
             return _context.Set<C>();
         }
 
+        // This is for get details from one table
         public async Task<IEnumerable<C>> GetAllByForeignKeyAsync(Expression<Func<C, bool>> predicate,
         int limit,
         int pageNumber)

@@ -17,7 +17,7 @@ namespace ShoppingApp.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<CreateUserResponseDTO>> Register(CreateUserRequestDTO requestDTO)
+        public async Task<ActionResult<CreateUserResponseDTO>> Register([FromBody] CreateUserRequestDTO requestDTO)
         {
             try
             {
