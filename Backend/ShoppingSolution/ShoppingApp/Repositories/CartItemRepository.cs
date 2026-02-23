@@ -14,24 +14,28 @@ namespace ShoppingApp.Repositories
 
         }
 
-        public async Task<IEnumerable<GetCartResponseDTO>> GetCartItemsByUserAsync(Guid userId,int pageNumber,int pageSize)
+        public async Task<IEnumerable<GetCartResponseDTO>> GetCartItemsByUserAsync(Guid userId, int pageNumber, int pageSize)
         {
-            return await _context.CartItems
-            .Where(ci => ci.Cart!.UserId == userId)
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .Select(ci => new GetCartResponseDTO
-            {
-                CartId = ci.CartId,
-                ProductId = ci.ProductId,
-                CategoryId = ci.Product!.CategoryId,
-                Name = ci.Product.Name,
-                ImagePath = ci.Product.ImagePath, // imagepath inside the Product class,It will know automatically
-                Description = ci.Product.Description,
-                Price = ci.Product.Price,
-                Quantity = ci.Quantity
-            }).OrderBy(c=>c.Name)
-            .ToListAsync();
+            return await _context.Carts
+                .Where(c => c.UserId == userId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => new GetCartResponseDTO
+                {
+                    CartId = c.CartId,
+                    UserId = c.UserId,
+                    Items = c.CartItems!.Select(ci => new CartItemDTO
+                    {
+                        ProductId = ci.ProductId,
+                        CategoryId = ci.Product!.CategoryId,
+                        ProductName = ci.Product.Name,
+                        ImagePath = ci.Product.ImagePath,
+                        Description = ci.Product.Description,
+                        Price = ci.Product.Price,
+                        Quantity = ci.Quantity
+                    }).ToList()
+                })
+                .ToListAsync();
         }
     }
 }
