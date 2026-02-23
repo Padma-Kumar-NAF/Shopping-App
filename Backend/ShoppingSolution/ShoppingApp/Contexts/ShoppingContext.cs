@@ -134,11 +134,9 @@ namespace ShoppingApp.Contexts
                 entity.HasKey(l => l.LogId)
                     .HasName("PK_Log");
 
-                entity.Property(o => o.LogId)
-         .HasDefaultValueSql("NEWID()");
+                entity.Property(o => o.LogId).HasDefaultValueSql("NEWID()");
 
-                entity.Property(o => o.CreatedAt)
-                      .HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(o => o.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
 
                 entity.HasOne(l => l.User)
                     .WithMany(u => u.Logs)

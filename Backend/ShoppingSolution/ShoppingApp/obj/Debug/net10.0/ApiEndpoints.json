@@ -154,5 +154,31 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.UserController",
+    "Method": "GetAllUsers",
+    "RelativePath": "User/GetAllUsers",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.User.GetUsersRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ShoppingApp.Models.DTOs.User.GetUsersResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   }
 ]

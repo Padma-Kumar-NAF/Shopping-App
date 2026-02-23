@@ -69,5 +69,15 @@ namespace ShoppingApp.Services
             Console.WriteLine("----------------------------");
             return response;
         }
+
+        public async Task<IEnumerable<GetUsersResponseDTO>> GetAllUsers(GetUsersRequestDTO request)
+        {
+            var UsersList = await _userRepository.GetUsers(request.Limit , request.PageNumber);
+            if(UsersList == null || !UsersList.Any())
+            {
+                throw new Exception("No Users Found");
+            }
+            return UsersList;
+        }
     }
 }

@@ -342,6 +342,55 @@
           }
         }
       }
+    },
+    "/User/GetAllUsers": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUsersRequestDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUsersRequestDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetUsersRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUsersResponseDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUsersResponseDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUsersResponseDTO"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -533,6 +582,67 @@
           }
         }
       },
+      "GetUsersRequestDTO": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "GetUsersResponseDTO": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userDetailsId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "addressLine1": {
+            "type": "string"
+          },
+          "addressLine2": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "pincode": {
+            "type": "string"
+          }
+        }
+      },
       "LoginRequestDTO": {
         "type": "object",
         "properties": {
@@ -604,6 +714,9 @@
     },
     {
       "name": "Stock"
+    },
+    {
+      "name": "User"
     }
   ]
 }
