@@ -7,6 +7,7 @@ namespace ShoppingApp.Models.DTOs.Product
         public Guid ProductId { get; set; }
 
         public Guid CategoryId { get; set; }
+        public Guid StockId { get; set; }
 
         public string Name { get; set; } = string.Empty;
 
@@ -17,6 +18,7 @@ namespace ShoppingApp.Models.DTOs.Product
         public string CategoryName { get; set; } = string.Empty;
 
         public decimal Price { get; set; }
+        public int Quantity { get; set; }
 
     }
 }

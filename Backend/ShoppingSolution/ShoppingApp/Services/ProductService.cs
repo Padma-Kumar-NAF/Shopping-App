@@ -58,7 +58,9 @@ namespace ShoppingApp.Services
                     ImagePath = p.ImagePath,
                     Description = p.Description,
                     CategoryName = p.Category!.CategoryName,
-                    Price = p.Price
+                    Price = p.Price,
+                    StockId = p.Stock!.StockId,
+                    Quantity = p.Stock.Quantity
                 })
                 .Skip((request.PageNumber - 1) * request.Limit)
                 .Take(request.Limit)
@@ -67,6 +69,7 @@ namespace ShoppingApp.Services
             return products;
         }
 
+        // This is wrong , get the name from user and return the results
         public async Task<IEnumerable<GetAllProductsResponseDTO>> SearchProducts(SearchProductRequestDTO request)
         {
             var result = new List<GetAllProductsResponseDTO>();
@@ -91,7 +94,9 @@ namespace ShoppingApp.Services
                         ImagePath = p.ImagePath,
                         Description = p.Description,
                         CategoryName = p.Category!.CategoryName,
-                        Price = p.Price
+                        Price = p.Price,
+                        StockId = p.Stock!.StockId,
+                        Quantity = p.Stock.Quantity
                     })
                     .FirstOrDefaultAsync();
 

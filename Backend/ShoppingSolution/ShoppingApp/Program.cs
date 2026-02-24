@@ -26,6 +26,7 @@ namespace ShoppingApp
             #region Repositories
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
             builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IStockRepository, StockRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             #endregion

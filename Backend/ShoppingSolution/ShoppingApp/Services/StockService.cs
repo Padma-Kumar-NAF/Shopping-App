@@ -22,5 +22,30 @@ namespace ShoppingApp.Services
             }
             return stocks;
         }
+
+        public async Task<AddNewStockResponseDTO> AddStock(AddNewStockRequestDTO request)
+        {
+            try
+            {
+                Stock stock = new Stock();
+                stock.ProductId = request.ProductId;
+                stock.Quantity = request.Quantity;
+
+                var addedStock = await _stockRepository.AddNewStock(stock);
+
+                AddNewStockResponseDTO newStock = new AddNewStockResponseDTO();
+
+                newStock.StockId = addedStock.StockId;
+                newStock.ProductId = stock.ProductId;
+                newStock.Quantity = stock.Quantity;
+
+                return newStock;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

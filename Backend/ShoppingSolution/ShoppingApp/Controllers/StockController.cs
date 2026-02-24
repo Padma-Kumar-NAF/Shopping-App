@@ -17,6 +17,20 @@ namespace ShoppingApp.Controllers
             _stockService = stockService;
         }
 
+        [HttpPost("AddNewStock")]
+        public async Task<ActionResult<AddNewStockResponseDTO>> AddStock(AddNewStockRequestDTO request)
+        {
+            try
+            {
+                var result = await _stockService.AddStock(request);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpPost("GetStock")]
         public async Task<ActionResult<IEnumerable<GetStockResponseDTO>>> GetStock([FromBody] GetStockRequestDTO request)
         {

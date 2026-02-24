@@ -13,6 +13,13 @@ namespace ShoppingApp.Repositories
 
         }
 
+        public async Task<Stock> AddNewStock(Stock newStock)
+        {
+            var result = await _context.Stock.AddAsync(newStock);
+            await _context.SaveChangesAsync();
+            return result.Entity;
+        }
+
         public async Task<IEnumerable<GetStockResponseDTO>> GetStockAsync(int Limit, int pageNumber)
         {
             var stocks = await _context.Stock

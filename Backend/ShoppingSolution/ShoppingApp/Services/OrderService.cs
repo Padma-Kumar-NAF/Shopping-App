@@ -9,11 +9,15 @@ namespace ShoppingApp.Services
     public class OrderService : IOrderService
     {
         IRepository<Guid, Order> _repository;
-        IRepository<Guid, OrderDetails> _orderDetailsRepository;
-        public OrderService(IRepository<Guid, Order> repository, IRepository<Guid, OrderDetails> orderDetailsRepository)
+        IOrderRepository _orderRepository;
+        //IRepository<Guid, OrderDetails> _orderDetailsRepository;
+        //IRepository<Guid, Stock> _stockRepository;
+        public OrderService(IRepository<Guid, Order> repository, IOrderRepository orderRepository)
         {
             _repository = repository;
-            _orderDetailsRepository = orderDetailsRepository;
+            _orderRepository = orderRepository;
+            //_orderDetailsRepository = orderDetailsRepository;
+            //_stockRepository = stockRepository;
         }
         public async Task<IEnumerable<GetUserOrderDetailsResponseDTO>> GetUserOrderById(GetUserOrderDetailsRequestDTO request)
         {
@@ -61,74 +65,15 @@ namespace ShoppingApp.Services
 
         public async Task<GetUserOrderDetailsResponseDTO> PlaceOrder(PlaceOrderRequestDTO request)
         {
-            Order order = new Order
+            try
             {
-                UserId = request.UserId,
-                Status = "Not Delivered",
-                TotalAmount = request.TotalAmount,
-                TotalProductsCount = request.TotalProductsCount,
-                AddressId = request.AddressId,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            var addedOrder = await _repository.AddAsync(order);
-
-            if (addedOrder == null)
-                throw new Exception("Unable to place order, Try after sometime");
-
-            foreach (var item in request.Items)
-            {
-                OrderDetails orderDetails = new OrderDetails
-                {
-                    OrderId = addedOrder.OrderId,
-                    ProductId = item.ProductId,
-                    ProductName = item.ProductName,
-                    ProductPrice = item.ProductPrice,
-                    Quantity = item.Quantity,
-                };
-
-                var addedOrderDetails = await _orderDetailsRepository.AddAsync(orderDetails);
-
-                if (addedOrderDetails == null)
-                    throw new Exception("Unable to add order details");
+                var order = await _orderRepository.PlaceOrder(request);
+                return order;
             }
-
-            var createdOrder = await _repository.GetQueryable()
-                .Where(o => o.OrderId == addedOrder.OrderId)
-                .Select(o => new GetUserOrderDetailsResponseDTO
-                {
-                    OrderId = o.OrderId,
-                    UserId = o.UserId,
-                    Status = o.Status,
-                    TotalProductsCount = o.TotalProductsCount,
-                    TotalAmount = o.TotalAmount,
-
-                    Address = new AddressDTO
-                    {
-                        AddressId = o.Address!.AddressId,
-                        AddressLine1 = o.Address.AddressLine1,
-                        AddressLine2 = o.Address.AddressLine2,
-                        State = o.Address.State,
-                        City = o.Address.City,
-                        Pincode = o.Address.Pincode
-                    },
-
-                    Items = o.OrderDetails!
-                        .Select(od => new OrderDetailsDTO
-                        {
-                            OrderDetailsId = od.OrderDetailsId,
-                            ProductId = od.ProductId,
-                            ProductName = od.ProductName,
-                            Quantity = od.Quantity,
-                            ProductPrice = od.ProductPrice,
-                            ImagePath = od.Product!.ImagePath
-                        })
-                        .OrderBy(od => od.ProductName)
-                        .ToList()
-                })
-                .FirstAsync();
-
-            return createdOrder;
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

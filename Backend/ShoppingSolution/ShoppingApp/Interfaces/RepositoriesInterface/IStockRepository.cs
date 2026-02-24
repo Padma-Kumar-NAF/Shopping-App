@@ -1,9 +1,11 @@
-﻿using ShoppingApp.Models.DTOs.Stock;
+﻿using ShoppingApp.Models;
+using ShoppingApp.Models.DTOs.Stock;
 
 namespace ShoppingApp.Interfaces.RepositoriesInterface
 {
     public interface IStockRepository
     {
         public Task<IEnumerable<GetStockResponseDTO>> GetStockAsync(int pageNumber, int pageSize);
+        public Task<Stock> AddNewStock(Stock newStock);
     }
 }
