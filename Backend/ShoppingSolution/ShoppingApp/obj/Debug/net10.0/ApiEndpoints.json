@@ -53,6 +53,37 @@
   },
   {
     "ContainingType": "ShoppingApp.Controllers.AuthenticationController",
+    "Method": "GenerateToken",
+    "RelativePath": "auth",
+    "HttpMethod": "",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "UserName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Role",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.AuthenticationController",
     "Method": "Login",
     "RelativePath": "auth/login",
     "HttpMethod": "POST",

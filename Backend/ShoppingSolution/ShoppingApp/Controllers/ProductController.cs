@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
@@ -19,6 +20,7 @@ namespace ShoppingApp.Controllers
             _productService = productService;
         }
 
+        [Authorize]
         [HttpPost("getProducts")]
         public async Task<ActionResult<IEnumerable<GetAllProductsResponseDTO>>> GetProducts([FromBody] GetAllProductsRequestDTO request)
         {

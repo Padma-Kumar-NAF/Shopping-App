@@ -64,6 +64,7 @@ namespace ShoppingApp.Services
                 throw new UnAuthorizedException("Invalid Password");
             }
             LoginResponseDTO response = new LoginResponseDTO();
+            response.Name = user.Name;
             response.Email = request.Email;
             response.Password = request.Password;
             response.Role = user.Role;

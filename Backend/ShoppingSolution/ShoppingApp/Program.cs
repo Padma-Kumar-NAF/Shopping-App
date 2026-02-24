@@ -1,11 +1,13 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using ShoppingApp.Contexts;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Repositories;
 using ShoppingApp.Services;
+using System.Text;
 
 namespace ShoppingApp
 {
@@ -22,6 +24,24 @@ namespace ShoppingApp
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Development"));
             });
+
+            builder.Services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        //ValidateIssuer = true,
+                        ValidateIssuer = false,
+                        //ValidateAudience = true,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = "",
+                        ValidAudience = "",
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes("ThisIsMySuperSecureKey123456789PadmaKumar"))
+                    };
+                });
 
             #region Repositories
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
@@ -54,7 +74,10 @@ namespace ShoppingApp
             }
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
             app.UseAuthorization();
+
             app.MapControllers();
             app.Run();
         }
