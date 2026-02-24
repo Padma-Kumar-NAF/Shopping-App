@@ -16,6 +16,8 @@ namespace ShoppingApp.Services
             _userRepository = userRepository;
             _passwordService = passwordService;
         }
+
+
         public async Task<CreateUserResponseDTO> CreateUser(CreateUserRequestDTO request)
         {
             var email = await _userRepository.GetUserByMail(request.Email);
@@ -35,8 +37,13 @@ namespace ShoppingApp.Services
             User.Role = "User";
 
             var AddedUser = await _userRepository.AddUser(User);
+            if(AddedUser == null)
+            {
+                throw new Exception("Try again");
+            }
 
             CreateUserResponseDTO response = new CreateUserResponseDTO();
+            response.UserId = AddedUser.UserId;
             response.Password = HashedPassword;
             response.Email = request.Email;
             response.Name = request.Name;
@@ -60,13 +67,13 @@ namespace ShoppingApp.Services
             response.Email = request.Email;
             response.Password = request.Password;
             response.Role = user.Role;
-            Console.WriteLine("----------------------------");
-            Console.WriteLine(user.UserId);
-            Console.WriteLine(user.Name);
-            Console.WriteLine(user.Password);
-            Console.WriteLine(user.Role);
-            Console.WriteLine(user.SaltValue);
-            Console.WriteLine("----------------------------");
+            //Console.WriteLine("----------------------------");
+            //Console.WriteLine(user.UserId);
+            //Console.WriteLine(user.Name);
+            //Console.WriteLine(user.Password);
+            //Console.WriteLine(user.Role);
+            //Console.WriteLine(user.SaltValue);
+            //Console.WriteLine("----------------------------");
             return response;
         }
 
@@ -79,5 +86,7 @@ namespace ShoppingApp.Services
             }
             return UsersList;
         }
+
+        
     }
 }

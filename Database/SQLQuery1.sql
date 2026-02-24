@@ -1,20 +1,39 @@
 select * from Stock
 select * from Category
 select * from Products
+
 select * from Users
 select * from UserDetails
+
 select * from Carts
 select * from CartItems
+
 select * from Addresses
 
 select * from Orders
 select * from OrderDetails
 
-delete from Users 
-where UserId = 'D19C949A-FC76-4D08-A11F-FC6EEF8C3D46'
+select * from Reviews
+
+delete from Orders
+delete from OrderDetails
+
+delete from Users
+where UserId = '8F5FBFF8-ABD1-449E-89E4-F967B6B66FA3'
+
+UPDATE Orders
+SET TotalAmount = 1098,
+    TotalProductsCount = 2
+WHERE OrderId = 'F654FDA4-4A95-4251-9F8E-D5ED9F38552B';
+
+delete from Orders
+where TotalProductsCount = 1
+
+Select * from Carts 
+where UserId = '7D5C9FBB-96C5-4922-9EB2-0EE165B3A44A'
 
 select * from Products
-where ProductId = '1B73DB65-27F7-4BE6-BABF-94BDF75A46C8'
+where ProductId = '9B86691D-998C-4290-B203-1E66BAE9F1D3'
 
 INSERT INTO Carts (UserId)
 VALUES ('7D5C9FBB-96C5-4922-9EB2-0EE165B3A44A');
@@ -24,6 +43,25 @@ DECLARE @CartId UNIQUEIDENTIFIER;
 SELECT @CartId = CartId
 FROM Carts
 WHERE UserId = '7D5C9FBB-96C5-4922-9EB2-0EE165B3A44A';
+
+insert into OrderDetails
+(OrderId , ProductId , ProductName , Quantity , ProductPrice)
+values(
+'F654FDA4-4A95-4251-9F8E-D5ED9F38552B',
+'40591F10-D29C-4649-94AE-38B41B0BA0B7',
+'Basmati Rice 5kg',
+1,
+699
+)
+
+Insert Into Orders
+(UserId , Status , TotalProductsCount , TotalAmount , AddressId)
+Values('1B6B8DBB-3D30-423E-BF3F-9035772CA730',
+'Not Delivered',
+1,
+399,
+'ED00BDCF-BCAF-433D-8E9E-1BFCB24B7EEC'
+);
 
 INSERT INTO Addresses
 (UserId, AddressLine1, AddressLine2, State, City, Pincode)
@@ -55,9 +93,6 @@ VALUES
  'Bengaluru',
  '560025'
 );
-
-Insert Into Orders
-(UserId , Status , TotalProductsCount , TotalAmount , 
 
 INSERT INTO UserDetails
 ( UserId, Name, Email, PhoneNumber, AddressLine1, AddressLine2, State, City, Pincode)

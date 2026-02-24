@@ -7,6 +7,6 @@ namespace ShoppingApp.Interfaces.ControllerInterface
 {
     public interface ICartController
     {
-        public Task<ActionResult<IEnumerable<GetStockResponseDTO>>> GetCart([FromBody] GetCartRequestDTO request);
+        public Task<ActionResult<GetCartResponseDTO>> GetCart([FromBody] GetCartRequestDTO request);
     }
 }

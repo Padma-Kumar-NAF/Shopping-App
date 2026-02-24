@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.Cart;
@@ -9,7 +10,7 @@ namespace ShoppingApp.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class CartController : ControllerBase
+    public class CartController : ControllerBase , ICartController
     {
         private readonly ICartItemsService _cartItemService;
         private readonly ICartService _cartService;
@@ -21,7 +22,7 @@ namespace ShoppingApp.Controllers
         }
 
         [HttpPost("GetUserCart")]
-        public async Task<ActionResult<IEnumerable<GetStockResponseDTO>>> GetCart([FromBody] GetCartRequestDTO request)
+        public async Task<ActionResult<GetCartResponseDTO>> GetCart([FromBody] GetCartRequestDTO request)
         {
             //Console.WriteLine("----------");
             //Console.WriteLine(request.Limit);

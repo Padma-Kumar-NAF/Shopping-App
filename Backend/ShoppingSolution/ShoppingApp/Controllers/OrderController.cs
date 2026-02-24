@@ -29,5 +29,19 @@ namespace ShoppingApp.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("PlaceOrder")]
+        public async Task<ActionResult<GetUserOrderDetailsResponseDTO>> PlaceOrder(PlaceOrderRequestDTO request)
+        {
+            try
+            {
+                var orders = await _orderService.PlaceOrder(request);
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

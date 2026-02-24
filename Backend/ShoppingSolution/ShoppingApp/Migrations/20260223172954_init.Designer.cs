@@ -12,7 +12,7 @@ using ShoppingApp.Contexts;
 namespace ShoppingApp.Migrations
 {
     [DbContext(typeof(ShoppingContext))]
-    [Migration("20260220103531_init")]
+    [Migration("20260223172954_init")]
     partial class init
     {
         /// <inheritdoc />
