@@ -58,5 +58,19 @@ namespace ShoppingApp.Controllers
                     "An unexpected error occurred.");
             }
         }
+
+        [HttpPost("AddProduct")]
+        public async Task<ActionResult<GetAllProductsResponseDTO>> AddProduct(AddNewProductRequestDTO request)
+        {
+            try
+            {
+                var newProduct = await _productService.AddProduct(request);
+                return Ok(newProduct);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

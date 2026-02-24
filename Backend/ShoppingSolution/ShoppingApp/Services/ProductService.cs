@@ -10,119 +10,51 @@ namespace ShoppingApp.Services
 {
     public class ProductService : IProductService
     {
-        IRepository<Guid ,Product> _repository;
-        public ProductService(IRepository<Guid, Product> repository)
+        IProductRepository _productRepository;
+        public ProductService(IProductRepository productRepository)
         {
-            _repository = repository;
+            _productRepository = productRepository;
+        }
+
+        public async Task<GetAllProductsResponseDTO> AddProduct(AddNewProductRequestDTO request)
+        {
+            try
+            {
+                var addedProduct = await _productRepository.AddProduct(request);
+                return addedProduct;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<IEnumerable<GetAllProductsResponseDTO>> GetProducts(GetAllProductsRequestDTO request)
         {
-            var query = _repository.GetQueryable().AsNoTracking();
-
-            if (request.PageNumber <= 0)
-                request.PageNumber = 1;
-
-            if (request.Limit <= 0)
-                request.Limit = 10;
-
-            if (request.CategoryId.HasValue && request.CategoryId.Value != Guid.Empty)
+            try
             {
-                query = query
-                    .Where(p => p.CategoryId == request.CategoryId.Value)
-                    .OrderBy(p => p.Name);
+                var productList = await _productRepository.GetProducts(request);
+                return productList;
             }
-            else
+            catch (Exception ex)
             {
-                var totalCount = await query.CountAsync();
-
-                if (totalCount == 0)
-                    return new List<GetAllProductsResponseDTO>();
-
-                var random = new Random();
-
-                int maxSkip = Math.Max(0, totalCount - request.Limit);
-                int randomSkip = random.Next(0, maxSkip + 1);
-
-                query = query
-                    .OrderBy(p => p.Name)
-                    .Skip(randomSkip);
+                throw new Exception(ex.Message);
             }
-
-            var products = await query
-                .Select(p => new GetAllProductsResponseDTO
-                {
-                    ProductId = p.ProductId,
-                    CategoryId = p.CategoryId,
-                    Name = p.Name,
-                    ImagePath = p.ImagePath,
-                    Description = p.Description,
-                    CategoryName = p.Category!.CategoryName,
-                    Price = p.Price,
-                    StockId = p.Stock!.StockId,
-                    Quantity = p.Stock.Quantity
-                })
-                .Skip((request.PageNumber - 1) * request.Limit)
-                .Take(request.Limit)
-                .ToListAsync();
-
-            return products;
         }
 
         // This is wrong , get the name from user and return the results
         public async Task<IEnumerable<GetAllProductsResponseDTO>> SearchProducts(SearchProductRequestDTO request)
         {
-            var result = new List<GetAllProductsResponseDTO>();
 
-            var query = _repository.GetQueryable().AsNoTracking();
-
-            if (request.PageNumber <= 0)
-                request.PageNumber = 1;
-
-            if (request.Limit <= 0)
-                request.Limit = 10;
-
-            if (request.ProductId != Guid.Empty)
+            try
             {
-                var searchedProduct = await query
-                    .Where(p => p.ProductId == request.ProductId)
-                    .Select(p => new GetAllProductsResponseDTO
-                    {
-                        ProductId = p.ProductId,
-                        CategoryId = p.CategoryId,
-                        Name = p.Name,
-                        ImagePath = p.ImagePath,
-                        Description = p.Description,
-                        CategoryName = p.Category!.CategoryName,
-                        Price = p.Price,
-                        StockId = p.Stock!.StockId,
-                        Quantity = p.Stock.Quantity
-                    })
-                    .FirstOrDefaultAsync();
-
-                if (searchedProduct != null)
-                    result.Add(searchedProduct);
+                var searchedProduct = await _productRepository.SearchProducts(request);
+                return searchedProduct;
             }
-
-            if (request.CategoryId == Guid.Empty)
-                return result;
-
-            var categoryRequest = new GetAllProductsRequestDTO
+            catch (Exception ex)
             {
-                CategoryId = request.CategoryId,
-                PageNumber = request.PageNumber,
-                Limit = request.Limit
-            };
-
-            var categoryProducts = await GetProducts(categoryRequest);
-            
-
-            var filteredCategoryProducts = categoryProducts // -> This is for remove duplicates
-                .Where(p => p.ProductId != request.ProductId);
-
-            result.AddRange(filteredCategoryProducts);
-
-            return result;
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

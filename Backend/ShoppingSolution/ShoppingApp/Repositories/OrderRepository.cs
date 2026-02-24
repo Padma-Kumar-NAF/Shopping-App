@@ -21,6 +21,62 @@ namespace ShoppingApp.Repositories
             _orderDetailsRepository = orderDetailsRepository;
         }
 
+        public async Task<GetUserOrderDetailsResponseDTO> CancelOrder(CancelOrderRequestDTO request)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var order = await _context.Orders
+                    .Include(o => o.OrderDetails!)
+                    .Include(o => o.Address)
+                    .FirstOrDefaultAsync(o => o.OrderId == request.OrderId);
+
+                if (order == null)
+                    throw new Exception("Order not found.");
+
+                if (order.Status == "Cancelled")
+                    throw new Exception("Order already cancelled.");
+
+                if (order.Status == "Shipped" || order.Status == "Delivered")
+                    throw new Exception("Cannot cancel shipped/delivered order.");
+
+                foreach (var item in order.OrderDetails!)
+                {
+                    var stock = await _stockRepository
+                        .GetQueryable()
+                        .FirstOrDefaultAsync(s => s.ProductId == item.ProductId);
+
+                    if (stock == null)
+                        throw new Exception($"Stock not found for product {item.ProductId}");
+
+                    stock.Quantity += item.Quantity;
+
+                    await _stockRepository.UpdateAsync(stock.StockId, stock);
+                }
+
+                order.Status = "Cancelled";
+                _context.Orders.Update(order);
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return new GetUserOrderDetailsResponseDTO
+                {
+                    OrderId = order.OrderId,
+                    UserId = order.UserId,
+                    Status = order.Status,
+                    TotalProductsCount = order.TotalProductsCount,
+                    TotalAmount = order.TotalAmount
+                };
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
         public async Task<GetUserOrderDetailsResponseDTO> PlaceOrder(PlaceOrderRequestDTO request)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();

@@ -1,0 +1,12 @@
+﻿namespace ShoppingApp.Models.DTOs.Product
+{
+    public class AddNewProductRequestDTO
+    {
+        public Guid CategoryId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string ImagePath { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+    }
+}
