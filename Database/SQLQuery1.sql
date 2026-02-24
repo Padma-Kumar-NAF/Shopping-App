@@ -1,6 +1,8 @@
 select * from Stock
-select * from Category
+
 select * from Products
+
+select * from Category
 
 select * from Users
 select * from UserDetails
@@ -17,6 +19,16 @@ select * from Reviews
 
 delete from Orders
 delete from OrderDetails
+
+INSERT INTO Stock(ProductId, Quantity)
+VALUES
+('C7C4C773-23F7-4875-B117-745DDFEB13FD', 2),
+('829CFAF7-1BA9-463F-B773-781591B4AB98', 2),
+('2F709E2A-4402-4039-81E0-E042D93F9FB7', 2),
+('0F4E7234-AD03-4606-8B0D-EAFC415148CB', 2),
+('E16E5E8E-6BD9-4115-BDD5-F83B09EF6F77', 2),
+('D1F94529-6816-46B9-AD3A-FDDC010FD901', 2);
+
 
 delete from Users
 where UserId = '8F5FBFF8-ABD1-449E-89E4-F967B6B66FA3'
@@ -147,67 +159,67 @@ VALUES
 
 INSERT INTO Products (CategoryId, Name, ImagePath, Description, Price)
 VALUES
-('22F82DDB-9081-4903-901A-E9DDC2406CEE',
+('AE8E8053-8B19-49EE-A8F0-A6B7EB0E3065',
  'iPhone 15',
  '/images/products/iphone15.jpg',
  'Latest Apple smartphone with A17 chip and improved battery performance',
  79999.00),
 
-('22F82DDB-9081-4903-901A-E9DDC2406CEE',
+('AE8E8053-8B19-49EE-A8F0-A6B7EB0E3065',
  'Samsung 55 Inch 4K TV',
  '/images/products/samsung-tv.jpg',
  'Ultra HD Smart TV with HDR and Dolby Audio',
  55999.00),
 
-('C97494A6-4139-4AE2-B659-525828C2DB5C',
+('AA78D257-40E9-49CC-8A6E-79254BF56857',
  'Men Slim Fit T-Shirt',
  '/images/products/tshirt.jpg',
  'Cotton slim fit casual t-shirt',
  799.00),
 
-('C97494A6-4139-4AE2-B659-525828C2DB5C',
+('58D3537C-4FB0-4D52-8769-EE89CF4043A3',
  'Women Running Shoes',
  '/images/products/shoes.jpg',
  'Lightweight breathable sports shoes',
  2499.00),
 
-('2C613B87-5F61-416D-A46B-73EF6A14ED1A',
+('728F6AF7-CB36-4CB1-B64D-70AC56819D8F',
  'Clean Code',
  '/images/products/cleancode.jpg',
  'A Handbook of Agile Software Craftsmanship',
  499.00),
 
-('2C613B87-5F61-416D-A46B-73EF6A14ED1A',
+('728F6AF7-CB36-4CB1-B64D-70AC56819D8F',
  'Atomic Habits',
  '/images/products/atomichabits.jpg',
  'An Easy & Proven Way to Build Good Habits',
  399.00),
 
-('CD690BB0-64AB-4276-B8FF-9777FC20BDE7',
+('C371BE48-B5D6-4123-A879-E3AC959666ED',
  'Basmati Rice 5kg',
  '/images/products/rice.jpg',
  'Premium long grain basmati rice',
  699.00),
 
-('CD690BB0-64AB-4276-B8FF-9777FC20BDE7',
+('C371BE48-B5D6-4123-A879-E3AC959666ED',
  'Sunflower Oil 1L',
  '/images/products/oil.jpg',
  'Refined sunflower cooking oil',
  149.00),
 
-('AEBFFF3F-976F-49A6-A152-3DEA5A451D66',
+('043D941D-FD73-4C70-905D-14DA67AB2050',
  'LG Double Door Refrigerator',
  '/images/products/fridge.jpg',
  'Frost free inverter refrigerator',
  38999.00),
 
-('5DFA807A-AD29-4FF1-900A-100988C58B29',
+('58D3537C-4FB0-4D52-8769-EE89CF4043A3',
  'Dumbbell Set 10kg',
  '/images/products/dumbbell.jpg',
  'Adjustable iron dumbbell set',
  1999.00),
 
-('7F6212B2-8C0A-48FC-8ABF-9B8F0ACA557B',
+('AA78D257-40E9-49CC-8A6E-79254BF56857',
  'Aloe Vera Face Wash',
  '/images/products/facewash.jpg',
  'Natural aloe vera face cleanser',

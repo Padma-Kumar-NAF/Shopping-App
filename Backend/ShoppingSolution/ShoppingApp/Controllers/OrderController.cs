@@ -5,9 +5,9 @@ using ShoppingApp.Models.DTOs.Order;
 
 namespace ShoppingApp.Controllers
 {
-    [Route("[controller]")]
+    [Route("orders")]
     [ApiController]
-    public class OrderController : ControllerBase , IOrderController
+    public class OrderController : ControllerBase, IOrderController
     {
         private readonly IOrderService _orderService;
 
@@ -16,12 +16,43 @@ namespace ShoppingApp.Controllers
             _orderService = orderService;
         }
 
-        [HttpPost("GetUserOrders")]
-        public async Task<ActionResult<IEnumerable<GetUserOrderDetailsResponseDTO>>> GetOrderByUserId(GetUserOrderDetailsRequestDTO request)
+        [HttpPut("CancelOrder")]
+        public async Task<ActionResult<GetUserOrderDetailsResponseDTO>> CancelOrder(CancelOrderRequestDTO request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                var result = await _orderService.CancelOrder(request);
+
+                if (result == null)
+                    return NotFound("Order not found or already cancelled.");
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("user/{userId}")]
+        [HttpPost("GetUserOrders")]
+        public async Task<ActionResult<IEnumerable<GetUserOrderDetailsResponseDTO>>> GetOrderByUserId([FromBody] GetUserOrderDetailsRequestDTO request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (request.PageNumber <= 0 || request.Limit <= 0)
+                return BadRequest("Invalid pagination values.");
+
             try
             {
                 var orders = await _orderService.GetUserOrderById(request);
+
+                if (!orders.Any())
+                    return NotFound("No orders found.");
+
                 return Ok(orders);
             }
             catch (Exception ex)
@@ -31,17 +62,18 @@ namespace ShoppingApp.Controllers
         }
 
         [HttpPost("PlaceOrder")]
-        public async Task<ActionResult<GetUserOrderDetailsResponseDTO>> PlaceOrder(PlaceOrderRequestDTO request)
+        public async Task<ActionResult<GetUserOrderDetailsResponseDTO>> PlaceOrder([FromBody] PlaceOrderRequestDTO request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             try
             {
                 var orders = await _orderService.PlaceOrder(request);
-                return Ok(orders);
-            }
-            catch (Exception ex)
-            {
+                return Ok(orders); 
+            } catch (Exception ex) 
+            { 
                 return BadRequest(ex.Message);
-            }
+            } 
         }
     }
 }

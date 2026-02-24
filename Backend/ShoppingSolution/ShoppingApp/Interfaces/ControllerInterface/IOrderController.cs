@@ -7,5 +7,6 @@ namespace ShoppingApp.Interfaces.ControllerInterface
     {
         public Task<ActionResult<IEnumerable<GetUserOrderDetailsResponseDTO>>> GetOrderByUserId(GetUserOrderDetailsRequestDTO request);
         public Task<ActionResult<GetUserOrderDetailsResponseDTO>> PlaceOrder(PlaceOrderRequestDTO request);
+        public Task<ActionResult<GetUserOrderDetailsResponseDTO>> CancelOrder(CancelOrderRequestDTO request);
     }
 }
