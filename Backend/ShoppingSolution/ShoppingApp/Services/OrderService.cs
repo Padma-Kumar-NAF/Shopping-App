@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ShoppingApp.Contexts;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
@@ -10,10 +11,12 @@ namespace ShoppingApp.Services
     {
         IRepository<Guid, Order> _repository;
         IOrderRepository _orderRepository;
-        public OrderService(IRepository<Guid, Order> repository, IOrderRepository orderRepository)
+        private readonly ShoppingContext _context;
+        public OrderService(IRepository<Guid, Order> repository, IOrderRepository orderRepository, ShoppingContext context)
         {
             _repository = repository;
             _orderRepository = orderRepository;
+            _context = context;
         }
 
         public async Task<GetUserOrderDetailsResponseDTO> CancelOrder(CancelOrderRequestDTO request)
@@ -77,6 +80,23 @@ namespace ShoppingApp.Services
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public async Task<bool> UpdateOrder(Guid OrderId, string Status)
+        {
+            Console.WriteLine(OrderId);
+            Console.WriteLine(Status);
+            var order = await _context.Orders
+                .FirstOrDefaultAsync(o => o.OrderId == OrderId);
+
+            if (order == null)
+                return false;
+
+            order.Status = Status;
+
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }

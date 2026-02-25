@@ -7,6 +7,8 @@ select * from Category
 select * from Users
 select * from UserDetails
 
+sp_help Orders
+
 select * from Carts
 select * from CartItems
 

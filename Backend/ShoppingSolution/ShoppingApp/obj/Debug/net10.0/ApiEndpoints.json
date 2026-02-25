@@ -344,6 +344,32 @@
   },
   {
     "ContainingType": "ShoppingApp.Controllers.OrderController",
+    "Method": "UpdateOrder",
+    "RelativePath": "orders/UpdateOrderStatus",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Order.UpdateOrderRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ShoppingApp.Models.DTOs.Order.UpdateOrderResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.OrderController",
     "Method": "GetOrderByUserId",
     "RelativePath": "orders/user/{userId}",
     "HttpMethod": "GET",

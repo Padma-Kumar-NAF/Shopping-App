@@ -54,7 +54,6 @@ namespace ShoppingApp.Controllers
 
                 if (!orders.Any())
                     return NotFound("No orders found.");
-
                 return Ok(orders);
             }
             catch (Exception ex)
@@ -76,6 +75,25 @@ namespace ShoppingApp.Controllers
             { 
                 return BadRequest(ex.Message);
             } 
+        }
+
+        [HttpPost("UpdateOrderStatus")]
+        public async Task<ActionResult<UpdateOrderResponseDTO>> UpdateOrder(UpdateOrderRequestDTO request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                var orders = await _orderService.UpdateOrder(request.OrderId,request.OrderStatus);
+                return Ok(new UpdateOrderResponseDTO()
+                {
+                    IsUpdated = orders
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
