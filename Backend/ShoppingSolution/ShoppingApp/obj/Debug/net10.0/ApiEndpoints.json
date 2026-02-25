@@ -136,6 +136,32 @@
   },
   {
     "ContainingType": "ShoppingApp.Controllers.CartController",
+    "Method": "AddToCart",
+    "RelativePath": "Cart/AddToCart",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Cart.AddToCartRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ShoppingApp.Models.DTOs.Cart.GetCartResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.CartController",
     "Method": "GetCart",
     "RelativePath": "Cart/GetUserCart",
     "HttpMethod": "POST",
@@ -151,6 +177,32 @@
     "ReturnTypes": [
       {
         "Type": "ShoppingApp.Models.DTOs.Cart.GetCartResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.CartController",
+    "Method": "RemoveAllByCartId",
+    "RelativePath": "Cart/RemoveAllFromCart",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Cart.RemoveAllFromCartRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ShoppingApp.Models.DTOs.Cart.RemoveAllFromCartResponseDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",

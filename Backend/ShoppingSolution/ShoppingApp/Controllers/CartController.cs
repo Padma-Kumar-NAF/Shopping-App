@@ -23,6 +23,20 @@ namespace ShoppingApp.Controllers
             _cartService = cartService;
         }
 
+        [HttpPost("AddToCart")]
+        public async Task<ActionResult<GetCartResponseDTO>> AddToCart([FromBody] AddToCartRequestDTO request)
+        {
+            try
+            {
+                var response = await _cartService.AddCart(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         //[Authorize(Roles = "User")]
         [HttpPost("GetUserCart")]
         public async Task<ActionResult<GetCartResponseDTO>> GetCart([FromBody] GetCartRequestDTO request)
@@ -34,6 +48,29 @@ namespace ShoppingApp.Controllers
             }
             var result = await _cartItemService.GetCartItems(request);
             return Ok(result);
+        }
+
+        //[Authorize(Roles = "User")]
+        [HttpPost("RemoveAllFromCart")]
+        public async Task<ActionResult<RemoveAllFromCartResponseDTO>> RemoveAllByCartId([FromBody] RemoveAllFromCartRequestDTO request)
+        {
+            if (request.UserId == Guid.Empty)
+                return BadRequest("Invalid UserId");
+
+            var flag = await _cartService.RemoveAllFromCartByUserID(request.UserId);
+
+            var response = new RemoveAllFromCartResponseDTO
+            {
+                IsRemoved = flag,
+                Message = flag
+                    ? "All items removed successfully."
+                    : "Cart not found or already empty."
+            };
+
+            if (!flag)
+                return NotFound(response);
+
+            return Ok(response);
         }
     }
 }

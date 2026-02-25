@@ -1,23 +1,21 @@
 ﻿using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using ShoppingApp.Contexts;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.Cart;
-using ShoppingApp.Models.DTOs.Stock;
-using ShoppingApp.Repositories;
 
 namespace ShoppingApp.Services
 {
     public class CartItemsService : ICartItemsService
     {
-        IRepository<Guid, CartItem> _repository;
         ICartItemRepository _cartItemRepository;
-        ICartService _cartService;
-        public CartItemsService(IRepository<Guid, CartItem> repository, ICartService cartService, ICartItemRepository cartItemRepository)
+        private readonly ShoppingContext _context;
+        public CartItemsService( ICartItemRepository cartItemRepository, ShoppingContext context)
         {
-            _repository = repository;
-            _cartService = cartService;
             _cartItemRepository = cartItemRepository;
+            _context = context;
         }
 
         public async Task<IEnumerable<GetCartResponseDTO>> GetCartItems(GetCartRequestDTO request)
@@ -27,6 +25,15 @@ namespace ShoppingApp.Services
                 request.PageNumber,
                 request.Limit);
             return items;
+        }
+
+        public async Task<bool> RemoveAllByCartId(Guid cartId)
+        {
+            var affectedRows = await _context.CartItems
+                .Where(ci => ci.CartId == cartId)
+                .ExecuteDeleteAsync();
+
+            return affectedRows > 0;
         }
     }
 }
