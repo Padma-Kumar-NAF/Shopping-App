@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
@@ -8,6 +9,7 @@ using ShoppingApp.Services;
 
 namespace ShoppingApp.Controllers
 {
+    //[Authorize]
     [Route("[controller]")]
     [ApiController]
     public class CartController : ControllerBase , ICartController
@@ -21,14 +23,10 @@ namespace ShoppingApp.Controllers
             _cartService = cartService;
         }
 
+        //[Authorize(Roles = "User")]
         [HttpPost("GetUserCart")]
         public async Task<ActionResult<GetCartResponseDTO>> GetCart([FromBody] GetCartRequestDTO request)
         {
-            //Console.WriteLine("----------");
-            //Console.WriteLine(request.Limit);
-            //Console.WriteLine(request.PageNumber);
-            //Console.WriteLine(request.UserId);
-            //Console.WriteLine("----------");
             var CartId = await _cartService.GetCarts(request.UserId);
             if(CartId == null)
             {

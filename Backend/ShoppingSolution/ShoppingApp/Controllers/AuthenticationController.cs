@@ -64,8 +64,8 @@ namespace ShoppingApp.Controllers
             };
 
             var token = new JwtSecurityToken(
-                issuer : "",
-                audience : "",
+                issuer : "ShoppingApp",
+                audience : "ShoppingAppUsers",
                 claims : ClaimList,
                 expires : DateTime.Now.AddDays(1),
                 signingCredentials : new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ThisIsMySuperSecureKey123456789PadmaKumar")) , SecurityAlgorithms.HmacSha256)

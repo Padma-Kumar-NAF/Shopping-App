@@ -1,4 +1,5 @@
 ﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
@@ -7,6 +8,7 @@ using ShoppingApp.Models.DTOs.Category;
 
 namespace ShoppingApp.Controllers
 {
+    //[Authorize]
     [Route("[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase, ICategoryController
@@ -17,6 +19,7 @@ namespace ShoppingApp.Controllers
             _categoryService = categoryService;
         }
 
+        //[Authorize(Roles = "Admin")]
         [HttpPost("AddCategory")]
         public async Task<ActionResult<AddCategoryResponseDTO>> AddCategory(AddCategoryRequestDTO request)
         {
@@ -34,6 +37,7 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        //[Authorize(Roles = "Admin,User")]
         [HttpPost("GetAllCategories")]
         public async Task<ActionResult<IEnumerable<Category>>> GetAllCategories([FromBody] GetAllCategoryRequestDTO request)
         {

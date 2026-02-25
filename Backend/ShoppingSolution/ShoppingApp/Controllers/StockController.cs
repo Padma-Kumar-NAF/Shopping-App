@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models.DTOs.Product;
@@ -7,6 +8,7 @@ using ShoppingApp.Services;
 
 namespace ShoppingApp.Controllers
 {
+    //[Authorize(Roles = "Admin")]
     [Route("[controller]")]
     [ApiController]
     public class StockController : ControllerBase , IStockController

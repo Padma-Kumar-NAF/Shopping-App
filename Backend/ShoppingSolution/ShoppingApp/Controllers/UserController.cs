@@ -6,6 +6,7 @@ using ShoppingApp.Models.DTOs.User;
 
 namespace ShoppingApp.Controllers 
 {
+    //[Authorize]
     [Route("[controller]")]
     [ApiController]
     public class UserController : ControllerBase , IUserController
@@ -19,6 +20,7 @@ namespace ShoppingApp.Controllers
             _userDetailsService = userDetailsService;
         }
 
+        //[Authorize(Roles = "User")]
         [HttpPost("AddUserDetails")]
         public async Task<ActionResult<AddUserDetailsResponseDTO>> AddUserDetails(AddUserDetailsRequestDTO request)
         {
@@ -35,6 +37,7 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        //[Authorize(Roles = "Admin")]
         [HttpPost("GetAllUsers")]
         public async Task<ActionResult<GetUsersResponseDTO>> GetAllUsers(GetUsersRequestDTO request)
         {

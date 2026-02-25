@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models.DTOs.Order;
 
 namespace ShoppingApp.Controllers
 {
+    //[Authorize(Roles = "Admin,User")]
     [Route("orders")]
     [ApiController]
     public class OrderController : ControllerBase, IOrderController

@@ -9,6 +9,7 @@ using System.ComponentModel;
 
 namespace ShoppingApp.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase, IProductController
@@ -20,7 +21,7 @@ namespace ShoppingApp.Controllers
             _productService = productService;
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin,User")]
         [HttpPost("getProducts")]
         public async Task<ActionResult<IEnumerable<GetAllProductsResponseDTO>>> GetProducts([FromBody] GetAllProductsRequestDTO request)
         {
@@ -39,6 +40,7 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,User")]
         [HttpPost("search")]
         public async Task<ActionResult<IEnumerable<GetAllProductsResponseDTO>>> GetProductByName([FromBody] SearchProductRequestDTO request)
         {
@@ -61,6 +63,7 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("AddProduct")]
         public async Task<ActionResult<GetAllProductsResponseDTO>> AddProduct(AddNewProductRequestDTO request)
         {

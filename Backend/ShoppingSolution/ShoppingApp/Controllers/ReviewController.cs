@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models.DTOs.Review;
 
 namespace ShoppingApp.Controllers
 {
+    //[Authorize(Roles = "User")]
     [Route("[controller]")]
     [ApiController]
     public class ReviewController : ControllerBase , IReviewController

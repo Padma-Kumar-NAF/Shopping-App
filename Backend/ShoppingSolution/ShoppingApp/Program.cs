@@ -8,6 +8,7 @@ using ShoppingApp.Models;
 using ShoppingApp.Repositories;
 using ShoppingApp.Services;
 using System.Text;
+using AspNetCoreRateLimit;
 
 namespace ShoppingApp
 {
@@ -20,6 +21,13 @@ namespace ShoppingApp
             builder.Services.AddOpenApi();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
+            //builder.Services.AddAutoMapper(typeof(CustomerProfile)); // This is for mapper
+
+            builder.Services.AddMemoryCache();
+            builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
+            builder.Services.AddInMemoryRateLimiting();
+            builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
             builder.Services.AddDbContext<ShoppingContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Development"));
@@ -30,18 +38,20 @@ namespace ShoppingApp
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        //ValidateIssuer = true,
-                        ValidateIssuer = false,
-                        //ValidateAudience = true,
-                        ValidateAudience = false,
+                        ValidateIssuer = true,
+                        //ValidateIssuer = false,
+                        ValidateAudience = true,
+                        //ValidateAudience = false,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = "",
-                        ValidAudience = "",
+                        ValidIssuer = "ShoppingApp",
+                        ValidAudience = "ShoppingAppUsers",
                         IssuerSigningKey = new SymmetricSecurityKey(
                             Encoding.UTF8.GetBytes("ThisIsMySuperSecureKey123456789PadmaKumar"))
                     };
                 });
+
+            builder.Services.AddAuthorization();
 
             #region Repositories
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
@@ -77,6 +87,8 @@ namespace ShoppingApp
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseIpRateLimiting();
 
             app.MapControllers();
             app.Run();
