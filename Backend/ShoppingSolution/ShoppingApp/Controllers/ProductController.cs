@@ -9,7 +9,7 @@ using System.ComponentModel;
 
 namespace ShoppingApp.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase, IProductController
@@ -70,6 +70,20 @@ namespace ShoppingApp.Controllers
             try
             {
                 var newProduct = await _productService.AddProduct(request);
+                return Ok(newProduct);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("UpdateProduct")]
+        public async Task<ActionResult<UpdateProductResponseDTO>> UpdateProduct(UpdateProductRequestDTO request)
+        {
+            try
+            {
+                var newProduct = await _productService.UpdateProduct(request);
                 return Ok(newProduct);
             }
             catch (Exception e)

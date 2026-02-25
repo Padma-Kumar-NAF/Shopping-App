@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
+using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.User;
 
 namespace ShoppingApp.Controllers 
@@ -52,5 +53,18 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        [HttpPost("UpdateUserDetails")]
+        public async Task<ActionResult<UpdateProfileResponseDTO>> UpdateUserDetails(UpdateProfileRequestDTO request)
+        {
+            try
+            {
+                var result = await _userDetailsService.UpdateUserDetails(request);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

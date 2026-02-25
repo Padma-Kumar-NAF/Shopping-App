@@ -13,6 +13,7 @@ select * from Carts
 select * from CartItems
 
 select * from Addresses
+select * from Users
 
 select * from Orders
 select * from OrderDetails
