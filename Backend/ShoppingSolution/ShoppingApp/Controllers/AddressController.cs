@@ -20,6 +20,8 @@ namespace ShoppingApp.Controllers
         [HttpPost("CreateAddress")]
         public async Task<ActionResult<CreateNewAddressResponseDTO>> AddAddress(CreateNewAddressRequestDTO request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             try
             {
                 var newAddress = await _addressService.AddAddress(request);
@@ -31,7 +33,7 @@ namespace ShoppingApp.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -41,11 +43,14 @@ namespace ShoppingApp.Controllers
             try
             {
                 var addressList = await _addressService.GetUserAddress(request);
+                if (addressList == null)
+                    return NotFound("No addresses found for this user.");
+
                 return Ok(addressList);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
     }

@@ -10,21 +10,34 @@ namespace ShoppingApp.Services
 {
     public class CartItemsService : ICartItemsService
     {
-        ICartItemRepository _cartItemRepository;
         private readonly ShoppingContext _context;
-        public CartItemsService( ICartItemRepository cartItemRepository, ShoppingContext context)
+        public CartItemsService(ShoppingContext context)
         {
-            _cartItemRepository = cartItemRepository;
             _context = context;
         }
 
         public async Task<IEnumerable<GetCartResponseDTO>> GetCartItems(GetCartRequestDTO request)
         {
-            var items = await _cartItemRepository.GetCartItemsByUserAsync(
-                request.UserId,
-                request.PageNumber,
-                request.Limit);
-            return items;
+            return await _context.Carts
+                .Where(c => c.UserId == request.UserId)
+                .Skip((request.PageNumber - 1) * request.Limit)
+                .Take(request.Limit)
+                .Select(c => new GetCartResponseDTO
+                {
+                    CartId = c.CartId,
+                    UserId = c.UserId,
+                    Items = c.CartItems!.Select(ci => new CartItemDTO
+                    {
+                        ProductId = ci.ProductId,
+                        CategoryId = ci.Product!.CategoryId,
+                        ProductName = ci.Product.Name,
+                        ImagePath = ci.Product.ImagePath,
+                        Description = ci.Product.Description,
+                        Price = ci.Product.Price,
+                        Quantity = ci.Quantity
+                    }).ToList()
+                })
+                .ToListAsync();
         }
 
         public async Task<bool> RemoveAllByCartId(Guid cartId)

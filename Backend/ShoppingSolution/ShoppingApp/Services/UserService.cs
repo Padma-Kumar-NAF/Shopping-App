@@ -1,4 +1,6 @@
 ﻿using FirstAPI.Exceptions;
+using Microsoft.EntityFrameworkCore;
+using ShoppingApp.Contexts;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
@@ -9,85 +11,102 @@ namespace ShoppingApp.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository;
+        private readonly ShoppingContext _context;
         private readonly IPasswordService _passwordService;
-        public UserService(IUserRepository userRepository, IPasswordService passwordService)
+
+        public UserService(ShoppingContext context, IPasswordService passwordService)
         {
-            _userRepository = userRepository;
+            _context = context;
             _passwordService = passwordService;
         }
 
-
         public async Task<CreateUserResponseDTO> CreateUser(CreateUserRequestDTO request)
         {
-            var email = await _userRepository.GetUserByMail(request.Email);
-            if(email != null)
-            {
+            var existingUser = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == request.Email);
+
+            if (existingUser != null)
                 throw new UnAuthorizedException("Email already exists");
-            }
+
             var (hash, salt) = await _passwordService.HashPasswordAsync(request.Password);
 
-            string HashedPassword = Convert.ToBase64String(hash);
-
-            User User = new User();
-            User.Name = request.Name;
-            User.Email = request.Email;
-            User.Password = HashedPassword;
-            User.SaltValue = Convert.ToBase64String(salt);
-            User.Role = "User";
-
-            var AddedUser = await _userRepository.AddUser(User);
-            if(AddedUser == null)
+            var user = new User
             {
-                throw new Exception("Try again");
-            }
+                UserId = Guid.NewGuid(),
+                Name = request.Name,
+                Email = request.Email,
+                Password = Convert.ToBase64String(hash),
+                SaltValue = Convert.ToBase64String(salt),
+                Role = "User"
+            };
 
-            CreateUserResponseDTO response = new CreateUserResponseDTO();
-            response.UserId = AddedUser.UserId;
-            response.Password = HashedPassword;
-            response.Email = request.Email;
-            response.Name = request.Name;
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
 
-            return response;
+            return new CreateUserResponseDTO
+            {
+                UserId = user.UserId,
+                Name = user.Name,
+                Email = user.Email,
+                Password = user.Password
+            };
         }
 
         public async Task<LoginResponseDTO> LoginUser(LoginRequestDTO request)
         {
-            var user = await _userRepository.GetUserByMail(request.Email);
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == request.Email);
+
             if (user == null)
-            {
                 throw new UnAuthorizedException("Invalid Email");
-            }
-            bool isValidUser = await _passwordService.VerifyPasswordAsync(request.Password,user.Password, user.SaltValue);
-            if (!isValidUser)
-            {
+
+            bool isValid = await _passwordService.VerifyPasswordAsync(
+                request.Password,
+                user.Password,
+                user.SaltValue);
+
+            if (!isValid)
                 throw new UnAuthorizedException("Invalid Password");
-            }
-            LoginResponseDTO response = new LoginResponseDTO();
-            response.Name = user.Name;
-            response.Email = request.Email;
-            //response.Password = request.Password;
-            response.Role = user.Role;
-            //Console.WriteLine("----------------------------");
-            //Console.WriteLine(user.UserId);
-            //Console.WriteLine(user.Name);
-            //Console.WriteLine(user.Password);
-            //Console.WriteLine(user.Role);
-            //Console.WriteLine(user.SaltValue);
-            //Console.WriteLine("----------------------------");
-            return response;
+
+            return new LoginResponseDTO
+            {
+                Name = user.Name,
+                Email = user.Email,
+                Role = user.Role
+            };
         }
 
         public async Task<IEnumerable<GetUsersResponseDTO>> GetAllUsers(GetUsersRequestDTO request)
         {
-            var UsersList = await _userRepository.GetUsers(request.Limit , request.PageNumber);
-            if(UsersList == null || !UsersList.Any())
-            {
-                throw new Exception("No Users Found");
-            }
-            return UsersList;
-        }
+            if (request.PageNumber <= 0) request.PageNumber = 1;
+            if (request.Limit <= 0) request.Limit = 10;
 
-        
+            var users = await _context.Users
+                .AsNoTracking()
+                .Include(u => u.UserDetails)
+                .OrderBy(u => u.Name)
+                .Skip((request.PageNumber - 1) * request.Limit)
+                .Take(request.Limit)
+                .Select(u => new GetUsersResponseDTO
+                {
+                    UserId = u.UserId,
+                    UserDetailsId = u.UserDetails!.UserDetailsId,
+                    Name = u.Name,
+                    Email = u.Email,
+                    Role = u.Role,
+                    PhoneNumber = u.UserDetails.PhoneNumber,
+                    AddressLine1 = u.UserDetails.AddressLine1,
+                    AddressLine2 = u.UserDetails.AddressLine2,
+                    State = u.UserDetails.State,
+                    City = u.UserDetails.City,
+                    Pincode = u.UserDetails.Pincode
+                })
+                .ToListAsync();
+
+            if (!users.Any())
+                throw new Exception("No Users Found");
+
+            return users;
+        }
     }
 }

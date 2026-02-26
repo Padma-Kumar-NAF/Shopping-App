@@ -4,29 +4,22 @@ using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.Order;
-using ShoppingApp.Repositories;
-using System.Runtime.CompilerServices;
 
 namespace ShoppingApp.Services
 {
     public class OrderService : IOrderService
     {
         private readonly IRepository<Guid, Stock> _stockRepository;
-        private readonly IRepository<Guid, OrderDetails> _orderDetailsRepository;
-
         private readonly IRepository<Guid, Order> _repository;
-        private readonly IOrderRepository _orderRepository;
         
         private readonly ShoppingContext _context;
 
-        public OrderService(IRepository<Guid, Order> repository, IOrderRepository orderRepository, ShoppingContext context, IRepository<Guid, Stock> stockRepository
-            , IRepository<Guid, OrderDetails> orderDetailsRepository)
+        public OrderService(IRepository<Guid, Order> repository, ShoppingContext context, IRepository<Guid, Stock> stockRepository)
         {
             _repository = repository;
-            _orderRepository = orderRepository;
-            _context = context;
             _stockRepository = stockRepository;
-            _orderDetailsRepository = orderDetailsRepository;
+
+            _context = context;
         }
 
         public async Task<GetUserOrderDetailsResponseDTO> CancelOrder(CancelOrderRequestDTO request)
