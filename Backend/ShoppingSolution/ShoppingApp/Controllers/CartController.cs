@@ -6,6 +6,7 @@ using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.Cart;
 using ShoppingApp.Models.DTOs.Stock;
 using ShoppingApp.Services;
+using System.Security.Claims;
 
 namespace ShoppingApp.Controllers
 {
@@ -23,9 +24,19 @@ namespace ShoppingApp.Controllers
             _cartService = cartService;
         }
 
+        private Guid GetUserId()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Guid.Parse(userId!);
+        }
+
         [HttpPost("AddToCart")]
         public async Task<ActionResult<GetCartResponseDTO>> AddToCart([FromBody] AddToCartRequestDTO request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            request.Cart.UserId = GetUserId();
             try
             {
                 var response = await _cartService.AddCart(request);
@@ -41,6 +52,9 @@ namespace ShoppingApp.Controllers
         [HttpPost("GetUserCart")]
         public async Task<ActionResult<GetCartResponseDTO>> GetCart([FromBody] GetCartRequestDTO request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            request.UserId = GetUserId();
             var CartId = await _cartService.GetCarts(request.UserId);
             if(CartId == null)
             {
@@ -53,6 +67,11 @@ namespace ShoppingApp.Controllers
         [HttpPost("OrderAllFromCart")]
         public async Task<ActionResult<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCarts(OrderAllFromCartRequestDTO request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            request.UserId = GetUserId();
+
             if (request.UserId == Guid.Empty)
                 return BadRequest("Invalid UserId");
 
@@ -60,36 +79,36 @@ namespace ShoppingApp.Controllers
             isOrdered = await _cartService.PlaceOrderAllFromCart(request.CartId, request.UserId,request.AddressId);
 
             if (!isOrdered)
+                return BadRequest("Order failed. Try again.");
+
+            return Ok(new OrderAllFromCartResponseDTO
             {
-                return BadRequest("Try again !");
-            }
-            return Ok(new OrderAllFromCartResponseDTO()
-            {
-                IsSuccess = isOrdered
+                IsSuccess = true
             });
         }
 
         //[Authorize(Roles = "User")]
         [HttpPost("RemoveAllFromCart")]
-        public async Task<ActionResult<RemoveAllFromCartResponseDTO>> RemoveAllByCartId([FromBody] RemoveAllFromCartRequestDTO request)
+        public async Task<ActionResult<RemoveAllFromCartResponseDTO>> ClearCart([FromBody] RemoveAllFromCartRequestDTO request)
         {
+            var userId = GetUserId();
             if (request.UserId == Guid.Empty)
                 return BadRequest("Invalid UserId");
 
             var flag = await _cartService.RemoveAllFromCartByUserID(request.UserId);
 
-            var response = new RemoveAllFromCartResponseDTO
-            {
-                IsRemoved = flag,
-                Message = flag
-                    ? "All items removed successfully."
-                    : "Cart not found or already empty."
-            };
-
             if (!flag)
-                return NotFound(response);
+                return NotFound(new RemoveAllFromCartResponseDTO
+                {
+                    IsRemoved = false,
+                    Message = "Cart not found or already empty."
+                });
 
-            return Ok(response);
+            return Ok(new RemoveAllFromCartResponseDTO
+            {
+                IsRemoved = true,
+                Message = "All items removed successfully."
+            });
         }
 
         [HttpDelete("RemoveFromCart")]
@@ -109,7 +128,7 @@ namespace ShoppingApp.Controllers
             return Ok(new RemoveFromCartResponseDTO
             {
                 Success = true,
-                Message = "Product removed from cart successfully"
+                Message = "Product removed successfully"
             });
         }
     }

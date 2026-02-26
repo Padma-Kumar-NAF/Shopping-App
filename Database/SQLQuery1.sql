@@ -9,14 +9,20 @@ select * from UserDetails
 
 sp_help Orders
 
+select * from Stock
+
 select * from Carts
 select * from CartItems
+
+select * from Products
 
 select * from Addresses
 select * from Users
 
 select * from Orders
 select * from OrderDetails
+
+delete from Orders
 
 select * from Reviews
 

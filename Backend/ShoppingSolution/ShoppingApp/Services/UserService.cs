@@ -70,6 +70,7 @@ namespace ShoppingApp.Services
 
             return new LoginResponseDTO
             {
+                UserId = user.UserId,
                 Name = user.Name,
                 Email = user.Email,
                 Role = user.Role
