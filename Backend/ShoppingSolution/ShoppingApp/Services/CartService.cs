@@ -29,8 +29,7 @@ namespace ShoppingApp.Services
                 {
                     cart = new Cart
                     {
-                        UserId = request.Cart.UserId,
-                        CreatedAt = DateTime.UtcNow
+                        UserId = request.Cart.UserId
                     };
 
                     await _context.Carts.AddAsync(cart);
@@ -84,6 +83,83 @@ namespace ShoppingApp.Services
                 ?? new Cart();
         }
 
+        public async Task<bool> PlaceOrderAllFromCart(Guid cartId, Guid userId,Guid AddressId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var cart = await _context.Carts
+                    .Include(c => c.CartItems!)
+                        .ThenInclude(ci => ci.Product)
+                    .FirstOrDefaultAsync(c => c.CartId == cartId && c.UserId == userId);
+
+                if (cart == null || !cart.CartItems!.Any())
+                    return false;
+
+                var cartItems = cart.CartItems!.ToList();
+                var productIds = cartItems.Select(ci => ci.ProductId).ToList();
+
+                var stocks = await _context.Stock
+                    .Where(s => productIds.Contains(s.ProductId))
+                    .ToListAsync();
+
+                foreach (var item in cartItems)
+                {
+                    var stock = stocks.FirstOrDefault(s => s.ProductId == item.ProductId);
+
+                    if (stock == null)
+                        throw new Exception($"Stock not found for product {item.Product!.Name}");
+
+                    if (stock.Quantity < item.Quantity)
+                        throw new Exception($"Insufficient stock for product {item.Product!.Name}");
+                }
+
+
+                var order = new Order
+                {
+                    UserId = userId,
+                    Status = "Not Delivered",
+                    TotalProductsCount = cartItems.Sum(x => x.Quantity),
+                    TotalAmount = cartItems.Sum(x => x.Quantity * x.Product!.Price),
+                    AddressId = AddressId,
+                    OrderDetails = new List<OrderDetails>()
+                };
+
+
+                foreach (var item in cartItems)
+                {
+                    var stock = stocks.First(s => s.ProductId == item.ProductId);
+                    stock.Quantity -= item.Quantity;
+
+                    order.OrderDetails!.Add(new OrderDetails
+                    {
+                        ProductId = item.ProductId,
+                        ProductName = item.Product!.Name,
+                        ProductPrice = item.Product.Price,
+                        Quantity = item.Quantity
+                    });
+                }
+
+                await _context.Orders.AddAsync(order);
+
+                _context.CartItems.RemoveRange(cartItems);
+
+                _context.Carts.Remove(cart);
+
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                return true;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
         public async Task<bool> RemoveAllFromCartByUserID(Guid userId)
         {
             var cartId = await _context.Carts
@@ -109,10 +185,10 @@ namespace ShoppingApp.Services
                 {
                     CartId = c.CartId,
                     UserId = c.UserId,
-                    Items = c.CartItems.Select(ci => new CartItemDTO
+                    Items = c.CartItems!.Select(ci => new CartItemDTO
                     {
                         ProductId = ci.ProductId,
-                        CategoryId = ci.Product.CategoryId,
+                        CategoryId = ci.Product!.CategoryId,
                         ProductName = ci.Product.Name,
                         ImagePath = ci.Product.ImagePath,
                         Description = ci.Product.Description,

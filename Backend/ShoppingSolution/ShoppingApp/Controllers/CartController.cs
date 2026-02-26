@@ -50,6 +50,25 @@ namespace ShoppingApp.Controllers
             return Ok(result);
         }
 
+        [HttpPost("OrderAllFromCart")]
+        public async Task<ActionResult<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCarts(OrderAllFromCartRequestDTO request)
+        {
+            if (request.UserId == Guid.Empty)
+                return BadRequest("Invalid UserId");
+
+            bool isOrdered = false;
+            isOrdered = await _cartService.PlaceOrderAllFromCart(request.CartId, request.UserId,request.AddressId);
+
+            if (!isOrdered)
+            {
+                return BadRequest("Try again !");
+            }
+            return Ok(new OrderAllFromCartResponseDTO()
+            {
+                IsSuccess = isOrdered
+            });
+        }
+
         //[Authorize(Roles = "User")]
         [HttpPost("RemoveAllFromCart")]
         public async Task<ActionResult<RemoveAllFromCartResponseDTO>> RemoveAllByCartId([FromBody] RemoveAllFromCartRequestDTO request)
