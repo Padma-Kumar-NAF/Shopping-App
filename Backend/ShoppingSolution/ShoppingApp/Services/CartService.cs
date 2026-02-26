@@ -177,6 +177,21 @@ namespace ShoppingApp.Services
             return affectedRows > 0;
         }
 
+        public async Task<bool> RemoveFromCart(Guid cartId, Guid productId)
+        {
+            var cartItem = await _context.CartItems
+                .FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == productId);
+
+            if (cartItem == null)
+                return false;
+
+            _context.CartItems.Remove(cartItem);
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
         private async Task<GetCartResponseDTO> BuildCartResponse(Guid cartId)
         {
             return await _context.Carts

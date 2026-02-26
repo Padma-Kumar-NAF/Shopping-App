@@ -91,5 +91,26 @@ namespace ShoppingApp.Controllers
 
             return Ok(response);
         }
+
+        [HttpDelete("RemoveFromCart")]
+        public async Task<ActionResult<RemoveFromCartResponseDTO>> RemoveFromCart( [FromBody] RemoveFromCartRequestDTO request)
+        {
+            var result = await _cartService.RemoveFromCart(request.CartId, request.ProductId);
+
+            if (!result)
+            {
+                return NotFound(new RemoveFromCartResponseDTO
+                {
+                    Success = false,
+                    Message = "Product not found in cart"
+                });
+            }
+
+            return Ok(new RemoveFromCartResponseDTO
+            {
+                Success = true,
+                Message = "Product removed from cart successfully"
+            });
+        }
     }
 }

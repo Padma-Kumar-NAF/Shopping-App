@@ -11,6 +11,7 @@ namespace ShoppingApp.Interfaces.ControllerInterface
         public Task<ActionResult<GetCartResponseDTO>> AddToCart([FromBody] AddToCartRequestDTO request);
         public Task<ActionResult<RemoveAllFromCartResponseDTO>> RemoveAllByCartId([FromBody] RemoveAllFromCartRequestDTO request);
         public Task<ActionResult<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCarts(OrderAllFromCartRequestDTO request);
+        public Task<ActionResult<RemoveFromCartResponseDTO>> RemoveFromCart(RemoveFromCartRequestDTO request);
 
     }
 }

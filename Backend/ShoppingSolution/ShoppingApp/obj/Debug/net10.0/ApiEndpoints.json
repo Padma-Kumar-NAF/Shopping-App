@@ -239,6 +239,32 @@
     ]
   },
   {
+    "ContainingType": "ShoppingApp.Controllers.CartController",
+    "Method": "RemoveFromCart",
+    "RelativePath": "Cart/RemoveFromCart",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Cart.RemoveFromCartRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ShoppingApp.Models.DTOs.Cart.RemoveFromCartResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "ShoppingApp.Controllers.CategoryController",
     "Method": "AddCategory",
     "RelativePath": "Category/AddCategory",
