@@ -12,7 +12,6 @@ namespace ShoppingApp.Controllers
     public class OrderController : ControllerBase, IOrderController
     {
         private readonly IOrderService _orderService;
-
         public OrderController(IOrderService orderService)
         {
             _orderService = orderService;
@@ -38,7 +37,7 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        [HttpGet("user/{userId}")]
+        //[HttpGet("user")]
         [HttpPost("GetUserOrders")]
         public async Task<ActionResult<IEnumerable<GetUserOrderDetailsResponseDTO>>> GetOrderByUserId([FromBody] GetUserOrderDetailsRequestDTO request)
         {

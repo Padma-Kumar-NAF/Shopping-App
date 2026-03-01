@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models.DTOs.Address;
+using System.Security.Claims;
 
 namespace ShoppingApp.Controllers
 {
@@ -17,32 +17,51 @@ namespace ShoppingApp.Controllers
             _addressService = addressService;
         }
 
+        private Guid GetUserId()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Guid.Parse(userId!);
+        }
+
         [HttpPost("CreateAddress")]
         public async Task<ActionResult<CreateNewAddressResponseDTO>> AddAddress(CreateNewAddressRequestDTO request)
         {
+            if (request == null)
+                return BadRequest("Invalid request");
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            try
-            {
-                var newAddress = await _addressService.AddAddress(request);
-                if (newAddress == null)
+            //try
+            //{
+                request.UserId = GetUserId();
+                if(request.UserId == Guid.Empty)
                 {
-                    throw new Exception("Unable to add a Address");
+                    return BadRequest("User not found");
                 }
-                return Ok(newAddress);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+                var result = await _addressService.AddAddress(request);
+                if (result == null)
+                    return StatusCode(500, "Unable to create address at the moment");
+            //return Ok(result);
+            return CreatedAtAction(nameof(AddAddress), result);
         }
 
         [HttpPost("GetUserAddress")]
         public async Task<ActionResult<GetUserAddressResposneDTO>> GetUserAddress(GetUserAddressRequestDTO request)
         {
+            if (request == null)
+                return BadRequest("Invalid request");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             try
             {
+                request.UserId = GetUserId();
+                if (request.UserId == Guid.Empty)
+                {
+                    return BadRequest("User not authenticated");
+                }
                 var addressList = await _addressService.GetUserAddress(request);
+
                 if (addressList == null)
                     return NotFound("No addresses found for this user.");
 
@@ -52,6 +71,24 @@ namespace ShoppingApp.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        [HttpDelete("DeleteUserAddress")]
+        public async Task<ActionResult<bool>> DeleteUserAddress(DeleteUserAddressRequestDTO request)
+        {
+            if (request == null || request.AddressId == Guid.Empty)
+                return BadRequest("Invalid request");
+
+            request.UserId = GetUserId();
+            if (request.UserId == Guid.Empty)
+                return Unauthorized("User not authenticated");
+
+            var result = await _addressService.DeleteUserAddress(request);
+
+            if (!result)
+                return NotFound("Address not found or does not belong to user");
+
+            return Ok(true);
         }
     }
 }

@@ -20,53 +20,68 @@ namespace ShoppingApp.Services
             _passwordService = passwordService;
         }
 
-        public async Task<CreateUserResponseDTO> CreateUser(CreateUserRequestDTO request)
+        public async Task<CreateUserResponseDTO?> CreateUser(CreateUserRequestDTO request)
         {
+            var email = request.Email.Trim().ToLower();
+
             var existingUser = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == request.Email);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Email == email);
 
             if (existingUser != null)
-                throw new UnAuthorizedException("Email already exists");
+                return null;
 
             var (hash, salt) = await _passwordService.HashPasswordAsync(request.Password);
 
             var user = new User
             {
-                UserId = Guid.NewGuid(),
-                Name = request.Name,
-                Email = request.Email,
+                Name = request.Name.Trim(),
+                Email = email,
                 Password = Convert.ToBase64String(hash),
                 SaltValue = Convert.ToBase64String(salt),
-                Role = "User"
+                Role = "User",
+                CreatedAt = DateTime.UtcNow
             };
 
             await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+            var result = await _context.SaveChangesAsync();
+
+            if (result <= 0)
+                return null;
 
             return new CreateUserResponseDTO
             {
                 UserId = user.UserId,
                 Name = user.Name,
-                Email = user.Email,
-                Password = user.Password
+                Email = user.Email
             };
         }
 
-        public async Task<LoginResponseDTO> LoginUser(LoginRequestDTO request)
+        public async Task<LoginResponseDTO?> LoginUser(LoginRequestDTO request)
         {
+            if (request == null)
+                return null;
+
+            var email = request.Email.Trim().ToLower();
+
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == request.Email);
+                .FirstOrDefaultAsync(u => u.Email == email);
 
             if (user == null)
-                throw new UnAuthorizedException("Invalid Email");
+                throw new Exception("Email not found");
 
             bool isValid = await _passwordService.VerifyPasswordAsync(
                 request.Password,
                 user.Password,
                 user.SaltValue);
 
+            //Console.WriteLine("Verify");
+            //Console.WriteLine(isValid);
+            //Console.WriteLine("-----------------");
+            //Console.WriteLine(user.UserId);
+
             if (!isValid)
-                throw new UnAuthorizedException("Invalid Password");
+                throw new Exception("Invalid Credentials");
 
             return new LoginResponseDTO
             {

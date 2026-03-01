@@ -78,6 +78,8 @@ namespace ShoppingApp
                 app.MapOpenApi();
             }
 
+            app.UseExceptionHandler("/error");
+
             app.UseHttpsRedirection();
 
             app.UseAuthentication();

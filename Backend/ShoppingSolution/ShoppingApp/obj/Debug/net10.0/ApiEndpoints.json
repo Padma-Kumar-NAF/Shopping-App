@@ -27,6 +27,32 @@
   },
   {
     "ContainingType": "ShoppingApp.Controllers.AddressController",
+    "Method": "DeleteUserAddress",
+    "RelativePath": "Address/DeleteUserAddress",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Address.DeleteUserAddressRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.AddressController",
     "Method": "GetUserAddress",
     "RelativePath": "Address/GetUserAddress",
     "HttpMethod": "POST",
@@ -53,39 +79,8 @@
   },
   {
     "ContainingType": "ShoppingApp.Controllers.AuthenticationController",
-    "Method": "GenerateToken",
-    "RelativePath": "auth",
-    "HttpMethod": "",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "UserName",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Role",
-        "Type": "System.String",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.String",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "ShoppingApp.Controllers.AuthenticationController",
     "Method": "Login",
-    "RelativePath": "auth/login",
+    "RelativePath": "api/auth/login",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -111,7 +106,7 @@
   {
     "ContainingType": "ShoppingApp.Controllers.AuthenticationController",
     "Method": "Register",
-    "RelativePath": "auth/register",
+    "RelativePath": "api/auth/register",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -214,7 +209,7 @@
   },
   {
     "ContainingType": "ShoppingApp.Controllers.CartController",
-    "Method": "RemoveAllByCartId",
+    "Method": "ClearCart",
     "RelativePath": "Cart/RemoveAllFromCart",
     "HttpMethod": "POST",
     "IsController": true,
@@ -411,37 +406,6 @@
     "ReturnTypes": [
       {
         "Type": "ShoppingApp.Models.DTOs.Order.UpdateOrderResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "ShoppingApp.Controllers.OrderController",
-    "Method": "GetOrderByUserId",
-    "RelativePath": "orders/user/{userId}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "request",
-        "Type": "ShoppingApp.Models.DTOs.Order.GetUserOrderDetailsRequestDTO",
-        "IsRequired": true
-      },
-      {
-        "Name": "userId",
-        "Type": "",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.Order.GetUserOrderDetailsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",

@@ -9,6 +9,7 @@ namespace ShoppingApp.Models.DTOs.Order
         public string Status { get; set; } = string.Empty;
         public int TotalProductsCount { get; set; }
         public decimal TotalAmount { get; set; }
+        public DateTime DeliveryDate { get; set; }
         public AddressDTO Address { get; set; } = null!;
         public ICollection<OrderDetailsDTO> Items { get; set; } = new List<OrderDetailsDTO>();
     }

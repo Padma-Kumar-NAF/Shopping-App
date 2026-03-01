@@ -25,6 +25,8 @@ namespace ShoppingApp.Controllers
         [HttpPost("AddUserDetails")]
         public async Task<ActionResult<AddUserDetailsResponseDTO>> AddUserDetails(AddUserDetailsRequestDTO request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             try
             {
                 var Id = await _userDetailsService.AddUserDetails(request);
@@ -42,6 +44,8 @@ namespace ShoppingApp.Controllers
         [HttpPost("GetAllUsers")]
         public async Task<ActionResult<GetUsersResponseDTO>> GetAllUsers(GetUsersRequestDTO request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             try
             {
                 var result = await _userService.GetAllUsers(request);
@@ -56,6 +60,8 @@ namespace ShoppingApp.Controllers
         [HttpPost("UpdateUserDetails")]
         public async Task<ActionResult<UpdateProfileResponseDTO>> UpdateUserDetails(UpdateProfileRequestDTO request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             try
             {
                 var result = await _userDetailsService.UpdateUserDetails(request);

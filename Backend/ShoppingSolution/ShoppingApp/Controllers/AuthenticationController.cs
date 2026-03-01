@@ -25,45 +25,67 @@ namespace ShoppingApp.Controllers
             _configuration = configuration;
         }
 
+
         [HttpPost("register")]
-        public async Task<ActionResult<CreateUserResponseDTO>> Register(
-            [FromBody] CreateUserRequestDTO requestDTO)
+        public async Task<ActionResult<CreateUserResponseDTO>> Register([FromBody] CreateUserRequestDTO requestDTO)
         {
+
+            if (requestDTO == null)
+                return BadRequest("Invalid request");
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var result = await _userService.CreateUser(requestDTO);
 
-            return StatusCode(201, result); // 201 Created
+            if (result == null)
+                return Conflict("Email already exists");
+
+            return StatusCode(201, result);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<LoginResponseDTO>> Login(
-            [FromBody] LoginRequestDTO requestDTO)
+        public async Task<ActionResult<LoginResponseDTO>> Login( [FromBody] LoginRequestDTO requestDTO)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            var result = await _userService.LoginUser(requestDTO);
+                if (requestDTO == null)
+                    return BadRequest("Invalid request");
 
-            var token = GenerateToken(
-                result.UserId,
-                result.Name,
-                result.Email,
-                result.Role
-            );
+                var result = await _userService.LoginUser(requestDTO);
 
-            result.Token = token;
+                if (result == null)
+                {
+                    return NotFound();
+                }
 
-            return Ok(result);
+                var token = GenerateToken(
+                    result.UserId,
+                    result.Name,
+                    result.Email,
+                    result.Role
+                );
+
+                result.Token = token;
+
+                return Ok(result);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        private string GenerateToken(
-            Guid userId,
-            string userName,
-            string email,
-            string role)
+        private string GenerateToken(Guid userId,string userName,string email,string role)
         {
+            var keyValue = _configuration["Jwt:Key"];
+            if (string.IsNullOrWhiteSpace(keyValue))
+                throw new InvalidOperationException("JWT Key is not configured.");
+
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
@@ -73,17 +95,16 @@ namespace ShoppingApp.Controllers
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!)
-            );
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyValue));
 
-            var credentials = new SigningCredentials(
-                key,
-                SecurityAlgorithms.HmacSha256
-            );
+            var credentials = new SigningCredentials(key,SecurityAlgorithms.HmacSha256);
 
-            var expiryMinutes =
-                Convert.ToDouble(_configuration["Jwt:DurationInMinutes"]);
+            var durationValue = _configuration["Jwt:DurationInMinutes"];
+            if (!double.TryParse(durationValue, out var expiryMinutes))
+                expiryMinutes = 60;
+
+            //var expiryMinutes =
+            //    Convert.ToDouble(_configuration["Jwt:DurationInMinutes"]);
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],

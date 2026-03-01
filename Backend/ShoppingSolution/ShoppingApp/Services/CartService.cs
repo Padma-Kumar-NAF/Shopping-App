@@ -9,15 +9,18 @@ namespace ShoppingApp.Services
     public class CartService : ICartService
     {
         private readonly ShoppingContext _context;
-        private readonly ICartItemsService _cartItemsService;
+        //private readonly ICartItemsService _cartItemsService;
         public CartService(ShoppingContext context, ICartItemsService cartItemsService)
         {
             _context = context;
-            _cartItemsService = cartItemsService;
+            //_cartItemsService = cartItemsService;
         }
 
-        public async Task<GetCartResponseDTO> AddCart(AddToCartRequestDTO request)
+        public async Task<GetCartResponseDTO?> AddCart(AddToCartRequestDTO request)
         {
+            if (request == null || request.Items == null || !request.Items.Any())
+                return null;
+
             await using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
@@ -27,11 +30,7 @@ namespace ShoppingApp.Services
 
                 if (cart == null)
                 {
-                    cart = new Cart
-                    {
-                        UserId = request.Cart.UserId
-                    };
-
+                    cart = new Cart { UserId = request.Cart.UserId };
                     await _context.Carts.AddAsync(cart);
                     await _context.SaveChangesAsync();
                 }
@@ -42,6 +41,9 @@ namespace ShoppingApp.Services
 
                 foreach (var item in request.Items)
                 {
+                    if (item.ProductId == Guid.Empty)
+                        continue;
+
                     var existingItem = existingItems
                         .FirstOrDefault(ci => ci.ProductId == item.ProductId);
 
@@ -71,20 +73,21 @@ namespace ShoppingApp.Services
             catch
             {
                 await transaction.RollbackAsync();
-                throw;
+                return null;
             }
         }
 
-        public async Task<Cart> GetCarts(Guid userId)
+        public async Task<Cart?> GetCarts(Guid userId)
         {
-            return await _context.Carts
-                .Include(c => c.CartItems)
-                .FirstOrDefaultAsync(c => c.UserId == userId)
-                ?? new Cart();
+            return await _context.Carts.AsNoTracking()
+                .FirstOrDefaultAsync(c => c.UserId == userId);
         }
 
-        public async Task<bool> PlaceOrderAllFromCart(Guid cartId, Guid userId,Guid AddressId)
+        public async Task<bool> PlaceOrderAllFromCart(Guid cartId, Guid userId,Guid addressId)
         {
+            if (cartId == Guid.Empty || userId == Guid.Empty || addressId == Guid.Empty)
+                return false;
+
             using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
@@ -94,7 +97,12 @@ namespace ShoppingApp.Services
                         .ThenInclude(ci => ci.Product)
                     .FirstOrDefaultAsync(c => c.CartId == cartId && c.UserId == userId);
 
-                if (cart == null || !cart.CartItems!.Any())
+                if (cart == null || cart.CartItems == null || !cart.CartItems.Any())
+                    return false;
+
+                var addressExists = await _context.Addresses.AnyAsync(a => a.AddressId == addressId && a.UserId == userId);
+
+                if (!addressExists)
                     return false;
 
                 var cartItems = cart.CartItems!.ToList();
@@ -104,15 +112,28 @@ namespace ShoppingApp.Services
                     .Where(s => productIds.Contains(s.ProductId))
                     .ToListAsync();
 
+                Console.WriteLine("FIrst");
+
                 foreach (var item in cartItems)
                 {
                     var stock = stocks.FirstOrDefault(s => s.ProductId == item.ProductId);
 
                     if (stock == null)
-                        throw new Exception($"Stock not found for product {item.Product!.Name}");
+                        return false;
 
                     if (stock.Quantity < item.Quantity)
-                        throw new Exception($"Insufficient stock for product {item.Product!.Name}");
+                        return false;
+
+                    if (item.Product == null)
+                        return false;
+                    //if (stock == null)
+                    //    throw new Exception($"Stock not found for product {item.Product!.Name}");
+
+                    //if (stock.Quantity < item.Quantity)
+                    //    throw new Exception($"Insufficient stock for product {item.Product!.Name}");
+
+                    //if (item.Product == null)
+                    //    throw new Exception($"Product Not Found");
                 }
 
 
@@ -122,14 +143,19 @@ namespace ShoppingApp.Services
                     Status = "Not Delivered",
                     TotalProductsCount = cartItems.Sum(x => x.Quantity),
                     TotalAmount = cartItems.Sum(x => x.Quantity * x.Product!.Price),
-                    AddressId = AddressId,
+                    AddressId = addressId,
+                    DeliveryDate = DateTime.UtcNow,
                     OrderDetails = new List<OrderDetails>()
                 };
-
+                Console.WriteLine("Inside for loop");
 
                 foreach (var item in cartItems)
                 {
                     var stock = stocks.First(s => s.ProductId == item.ProductId);
+                    
+                    if (stock == null || item.Product == null)
+                        return false;
+
                     stock.Quantity -= item.Quantity;
 
                     order.OrderDetails!.Add(new OrderDetails
@@ -156,7 +182,7 @@ namespace ShoppingApp.Services
             catch
             {
                 await transaction.RollbackAsync();
-                throw;
+                return false;
             }
         }
 
@@ -168,15 +194,21 @@ namespace ShoppingApp.Services
                 .FirstOrDefaultAsync();
 
             if (cartId == Guid.Empty)
-                return false; 
+                return false;
 
-            var affectedRows = await _context.CartItems
+            await _context.CartItems
                 .Where(ci => ci.CartId == cartId)
                 .ExecuteDeleteAsync();
 
-            return affectedRows > 0;
+            var affectedRowsInCart = await _context.Carts
+                .Where(c => c.UserId == userId)
+                .ExecuteDeleteAsync();
+
+            return affectedRowsInCart > 0;
         }
 
+
+        // If user removes all items from Cart items then remove the cart from Cart table
         public async Task<bool> RemoveFromCart(Guid cartId, Guid productId)
         {
             var cartItem = await _context.CartItems

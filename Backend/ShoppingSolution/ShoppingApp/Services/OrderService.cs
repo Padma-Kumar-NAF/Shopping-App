@@ -94,6 +94,7 @@ namespace ShoppingApp.Services
                     Status = o.Status,
                     TotalProductsCount = o.TotalProductsCount,
                     TotalAmount = o.TotalAmount,
+                    DeliveryDate = (DateTime)o.DeliveryDate!,
 
                     Address = new AddressDTO
                     {
@@ -152,6 +153,7 @@ namespace ShoppingApp.Services
                     TotalAmount = request.TotalAmount,
                     TotalProductsCount = request.TotalProductsCount,
                     AddressId = request.AddressId,
+                    DeliveryDate = DateTime.Now,
                     OrderDetails = new List<OrderDetails>()
                 };
 

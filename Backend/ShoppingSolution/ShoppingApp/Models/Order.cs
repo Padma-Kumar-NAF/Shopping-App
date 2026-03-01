@@ -25,6 +25,8 @@ namespace ShoppingApp.Models
         [Required]
         public Guid AddressId { get; set; }
 
+        [Required]
+        public DateTime? DeliveryDate { get; set; }
 
         // Navigation
         public Address? Address { get; set; } // many-to-one
@@ -32,8 +34,5 @@ namespace ShoppingApp.Models
         public User? User { get; set; } // one to many
 
         public ICollection<OrderDetails>? OrderDetails { get; set; }
-
-        // For now this is field is not needed
-        //public Guid OrderDetailsId { get; set; }
     }
 }

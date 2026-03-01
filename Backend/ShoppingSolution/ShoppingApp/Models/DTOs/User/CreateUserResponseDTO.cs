@@ -12,9 +12,6 @@ namespace ShoppingApp.Models.DTOs.User
         [Required]
         public string Email { get; set; } = string.Empty;
 
-        [Required]
-        public string Password { get; set; } = string.Empty;
-
         public CreateUserDetailsDTO UserDetails { get; set; } = new CreateUserDetailsDTO();
 
     }

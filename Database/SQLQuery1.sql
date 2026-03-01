@@ -1,4 +1,6 @@
 select * from Stock
+select * from Users
+select * from Addresses
 
 select * from Products
 
@@ -7,20 +9,43 @@ select * from Category
 select * from Users
 select * from UserDetails
 
-sp_help Orders
-
-select * from Stock
-
 select * from Carts
 select * from CartItems
 
+select * from Orders
+select * from OrderDetails
+
+select * from Reviews
+
+update Stock
+set Quantity = 100
+
+select * from Stock
+
+
+
+delete from CartItems
+
+delete from Carts
+
+
+delete from OrderDetails
+delete from Orders
+
 select * from Products
+
+delete from UserDetails
 
 select * from Addresses
 select * from Users
 
 select * from Orders
 select * from OrderDetails
+
+delete from UserDetails
+delete from Users
+
+delete from Addresses
 
 delete from Orders
 

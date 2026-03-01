@@ -6,7 +6,7 @@ namespace ShoppingApp.Interfaces.ServicesInterface
 {
     public interface ICartItemsService
     {
-        public Task<IEnumerable<GetCartResponseDTO>> GetCartItems(GetCartRequestDTO request);
+        public Task<GetCartResponseDTO> GetCartItems(Guid CartId, Guid UserId, int Limit, int PageNumber);
         public Task<bool> RemoveAllByCartId(Guid CartId);
     }
 }

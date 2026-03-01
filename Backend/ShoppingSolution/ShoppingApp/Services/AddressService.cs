@@ -19,15 +19,19 @@ namespace ShoppingApp.Services
 
         public async Task<CreateNewAddressResponseDTO> AddAddress(CreateNewAddressRequestDTO request)
         {
-            Address newAddress = new Address();
-            newAddress.UserId = request.UserId;
-            newAddress.AddressLine1 = request.AddressLine1;
-            newAddress.AddressLine2 = request.AddressLine2;
-            newAddress.State = request.State;
-            newAddress.City = request.City;
-            newAddress.Pincode = request.PinCode;
+            var newAddress = new Address
+            {
+                UserId = request.UserId,
+                AddressLine1 = request.AddressLine1.Trim(),
+                AddressLine2 = request.AddressLine2.Trim(),
+                State = request.State.Trim(),
+                City = request.City.Trim(),
+                Pincode = request.PinCode.Trim(),
+                CreatedAt = DateTime.UtcNow
+            };
 
             var address = await _repository.AddAsync(newAddress);
+
             if(address == null)
             {
                 throw new Exception("Unable to add a address for this moment");
@@ -48,8 +52,15 @@ namespace ShoppingApp.Services
 
         public async Task<GetUserAddressResposneDTO> GetUserAddress(GetUserAddressRequestDTO request)
         {
-            if (request.PageNumber <= 0 || request.Limit <= 0)
-                throw new ArgumentException("Invalid pagination values.");
+            if (request == null)
+                return new GetUserAddressResposneDTO
+                {
+                    UserId = request.UserId,
+                    AddressList = new List<AddressDTO>()
+                };
+
+            //if (request.PageNumber <= 0 || request.Limit <= 0)
+            //    throw new ArgumentException("Invalid pagination values.");
 
             var query = _repository.GetQueryable()
                 .Where(a => a.UserId == request.UserId);
@@ -74,6 +85,24 @@ namespace ShoppingApp.Services
                 UserId = request.UserId,
                 AddressList = addressList
             };
+        }
+
+        public async Task<bool> DeleteUserAddress(DeleteUserAddressRequestDTO request)
+        {
+            if (request == null || request.AddressId == Guid.Empty)
+                return false;
+
+            // Check if address exists and belongs to this user
+            var address = await _repository.FirstOrDefaultAsync(a =>
+                a.AddressId == request.AddressId &&
+                a.UserId == request.UserId);
+
+            if (address == null)
+                return false;
+
+            var deleted = await _repository.DeleteAsync(request.AddressId);
+
+            return deleted != null;
         }
     }
 }

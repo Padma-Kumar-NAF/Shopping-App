@@ -4,11 +4,12 @@ namespace ShoppingApp.Models.DTOs.Cart
 {
     public class AddToCartRequestDTO
     {
-        [Required]
+        //[Required]
         public CartDTO Cart { get; set; }
 
         [Required]
-        public ICollection<CartItemsDTO> Items { get; set; }
+        [MinLength(1, ErrorMessage = "At least one item is required")]
+        public ICollection<CartItemsDTO> Items { get; set; } = new List<CartItemsDTO>();
     }
     public class CartDTO
     {
@@ -16,7 +17,10 @@ namespace ShoppingApp.Models.DTOs.Cart
     }
     public class CartItemsDTO
     {
+        [Required]
         public Guid ProductId { get; set; }
+
+        [Range(0, 1000, ErrorMessage = "Quantity must be between 0 and 1000")]
         public int Quantity { get; set; }
     }
 }

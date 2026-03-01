@@ -19,6 +19,8 @@ namespace ShoppingApp.Controllers
             _stockService = stockService;
         }
 
+
+        // No need to add a stock in this way , the product service will add the stock automatically
         [HttpPost("AddNewStock")]
         public async Task<ActionResult<AddNewStockResponseDTO>> AddStock(AddNewStockRequestDTO request)
         {
@@ -33,6 +35,8 @@ namespace ShoppingApp.Controllers
             }
         }
 
+
+        // 
         [HttpPost("GetStock")]
         public async Task<ActionResult<IEnumerable<GetStockResponseDTO>>> GetStock([FromBody] GetStockRequestDTO request)
         {

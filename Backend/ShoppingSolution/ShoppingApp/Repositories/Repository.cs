@@ -11,17 +11,31 @@ namespace ShoppingApp.Repositories
 
         public Repository(ShoppingContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<C> AddAsync(C item)
+        //public async Task<C> AddAsync(C item)
+        //{
+        //    var user = _context.Add(item);
+        //    await _context.SaveChangesAsync();
+        //    if(user != null)
+        //    {
+        //        return item;
+        //    }
+        //    return null;
+        //}
+        public async Task<C?> AddAsync(C item)
         {
-            var user = _context.Add(item);
-            await _context.SaveChangesAsync();
-            if(user != null)
-            {
+            if (item == null)
+                return null;
+
+            await _context.Set<C>().AddAsync(item);
+
+            var result = await _context.SaveChangesAsync();
+
+            if (result > 0)
                 return item;
-            }
+
             return null;
         }
 
@@ -48,16 +62,31 @@ namespace ShoppingApp.Repositories
             return item != null ? item : null;
         }
 
+        //public async Task<C?> UpdateAsync(K key, C item)
+        //{
+        //    var existingItem = await GetAsync(key);
+        //    if (existingItem != null)
+        //    {
+        //        _context.Entry(existingItem).CurrentValues.SetValues(item);
+        //        await _context.SaveChangesAsync();
+        //        return existingItem;
+        //    }
+        //    return null;
+        //}
+
         public async Task<C?> UpdateAsync(K key, C item)
         {
+            if (item == null)
+                return null;
+
             var existingItem = await GetAsync(key);
-            if (existingItem != null)
-            {
-                _context.Entry(existingItem).CurrentValues.SetValues(item);
-                await _context.SaveChangesAsync();
-                return existingItem;
-            }
-            return null;
+            if (existingItem == null)
+                return null;
+
+            _context.Entry(existingItem).CurrentValues.SetValues(item);
+            var result = await _context.SaveChangesAsync();
+
+            return result > 0 ? existingItem : null;
         }
 
         //-------------------------------------------------------------------------//

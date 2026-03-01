@@ -7,5 +7,7 @@ namespace ShoppingApp.Interfaces.ServicesInterface
     {
         public Task<CreateNewAddressResponseDTO> AddAddress(CreateNewAddressRequestDTO request);
         public Task<GetUserAddressResposneDTO> GetUserAddress(GetUserAddressRequestDTO request);
+
+        public Task<bool> DeleteUserAddress(DeleteUserAddressRequestDTO request);
     }
 }
