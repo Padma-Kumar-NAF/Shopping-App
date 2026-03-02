@@ -122,58 +122,32 @@ namespace ShoppingApp.Services
             return products;
         }
 
-        // This is wrong , get the name from user and return the results
-        public async Task<IEnumerable<GetAllProductsResponseDTO>> SearchProducts(SearchProductRequestDTO request)
+        public async Task<IEnumerable<GetAllProductsResponseDTO>> SearchProductByName(SearchProductRequestDTO request)
         {
-            var result = new List<GetAllProductsResponseDTO>();
+            var searchText = request.ProductName.Trim();
 
-            var query = _productRepository.GetQueryable().AsNoTracking();
+            var query = _productRepository
+                .GetQueryable()
+                .AsNoTracking()
+                .Where(p => EF.Functions.Like(p.Name, $"%{searchText}%"));
 
-            if (request.PageNumber <= 0)
-                request.PageNumber = 1;
-
-            if (request.Limit <= 0)
-                request.Limit = 10;
-
-            if (request.ProductId != Guid.Empty)
-            {
-                var searchedProduct = await query
-                    .Where(p => p.ProductId == request.ProductId)
-                    .Select(p => new GetAllProductsResponseDTO
-                    {
-                        ProductId = p.ProductId,
-                        CategoryId = p.CategoryId,
-                        Name = p.Name,
-                        ImagePath = p.ImagePath,
-                        Description = p.Description,
-                        CategoryName = p.Category!.CategoryName,
-                        Price = p.Price,
-                        StockId = p.Stock!.StockId,
-                        Quantity = p.Stock.Quantity
-                    })
-                    .FirstOrDefaultAsync();
-
-                if (searchedProduct != null)
-                    result.Add(searchedProduct);
-            }
-
-            if (request.CategoryId == Guid.Empty)
-                return result;
-
-            var categoryRequest = new GetAllProductsRequestDTO
-            {
-                CategoryId = request.CategoryId,
-                PageNumber = request.PageNumber,
-                Limit = request.Limit
-            };
-
-            var categoryProducts = await GetProducts(categoryRequest);
-
-
-            var filteredCategoryProducts = categoryProducts // -> This is for remove duplicates
-                .Where(p => p.ProductId != request.ProductId);
-
-            result.AddRange(filteredCategoryProducts);
+            var result = await query
+                .OrderBy(p => p.Name)
+                .Skip((request.PageNumber - 1) * request.Limit)
+                .Take(request.Limit)
+                .Select(p => new GetAllProductsResponseDTO
+                {
+                    ProductId = p.ProductId,
+                    CategoryId = p.CategoryId,
+                    Name = p.Name,
+                    ImagePath = p.ImagePath,
+                    Description = p.Description,
+                    CategoryName = p.Category!.CategoryName,
+                    Price = p.Price,
+                    StockId = p.Stock!.StockId,
+                    Quantity = p.Stock.Quantity
+                })
+                .ToListAsync();
 
             return result;
         }

@@ -39,19 +39,25 @@ namespace ShoppingApp.Services
             return response;
         }
 
-        public async Task<DeleteReviewResponseDTO> DeleteReview(Guid ReviewID)
+        public async Task<DeleteReviewResponseDTO> DeleteReview(Guid userId, Guid reviewId)
         {
-            var review = await _repository.DeleteAsync(ReviewID);
-            if(review == null)
+            var review = await _repository.GetAsync(reviewId);
+
+            if (review == null)
+                throw new Exception($"Review with Id {reviewId} not found");
+
+            if (review.UserId != userId)
+                throw new UnauthorizedAccessException("You are not allowed to delete this review");
+
+            await _repository.DeleteAsync(reviewId);
+
+            return new DeleteReviewResponseDTO
             {
-                throw new Exception($"Unable to delete {ReviewID}");
-            }
-            DeleteReviewResponseDTO response = new DeleteReviewResponseDTO();
-            response.Summary = review.Summary;
-            response.UserId = review.UserId;
-            response.ProductId = review.ProductId;
-            response.ReviewPoints = review.ReviewPoints;
-            return response;
+                Summary = review.Summary,
+                UserId = review.UserId,
+                ProductId = review.ProductId,
+                ReviewPoints = review.ReviewPoints
+            };
         }
     }
 }

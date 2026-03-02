@@ -572,58 +572,6 @@
     ]
   },
   {
-    "ContainingType": "ShoppingApp.Controllers.StockController",
-    "Method": "AddStock",
-    "RelativePath": "Stock/AddNewStock",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "request",
-        "Type": "ShoppingApp.Models.DTOs.Stock.AddNewStockRequestDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.Stock.AddNewStockResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "ShoppingApp.Controllers.StockController",
-    "Method": "GetStock",
-    "RelativePath": "Stock/GetStock",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "request",
-        "Type": "ShoppingApp.Models.DTOs.Stock.GetStockRequestDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.Stock.GetStockResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
     "ContainingType": "ShoppingApp.Controllers.UserController",
     "Method": "AddUserDetails",
     "RelativePath": "User/AddUserDetails",

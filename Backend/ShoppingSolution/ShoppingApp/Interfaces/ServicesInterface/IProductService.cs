@@ -7,7 +7,7 @@ namespace ShoppingApp.Interfaces.ServicesInterface
     public interface IProductService
     {
         public Task<IEnumerable<GetAllProductsResponseDTO>> GetProducts(GetAllProductsRequestDTO request);
-        public Task<IEnumerable<GetAllProductsResponseDTO>> SearchProducts(SearchProductRequestDTO request);
+        public Task<IEnumerable<GetAllProductsResponseDTO>> SearchProductByName(SearchProductRequestDTO request);
         public Task<GetAllProductsResponseDTO> AddProduct(AddNewProductRequestDTO request);
         public Task<UpdateProductResponseDTO> UpdateProduct(UpdateProductRequestDTO request);
 

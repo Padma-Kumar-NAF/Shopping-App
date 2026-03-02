@@ -5,6 +5,7 @@ using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.Category;
+using System.Security.Claims;
 
 namespace ShoppingApp.Controllers
 {
@@ -17,6 +18,18 @@ namespace ShoppingApp.Controllers
         public CategoryController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
+        }
+
+        private Guid GetUserId()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrWhiteSpace(userIdClaim))
+                return Guid.Empty;
+
+            return Guid.TryParse(userIdClaim, out var userId)
+                ? userId
+                : Guid.Empty;
         }
 
         //[Authorize(Roles = "Admin")]

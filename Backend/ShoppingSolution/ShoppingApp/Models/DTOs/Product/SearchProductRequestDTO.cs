@@ -1,11 +1,17 @@
-﻿namespace ShoppingApp.Models.DTOs.Product
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ShoppingApp.Models.DTOs.Product
 {
     public class SearchProductRequestDTO
     {
-        public int Limit { get; set; }
-        public int PageNumber { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Page number must be greater than 0")]
+        public int PageNumber { get; set; } = 1;
+
+        [Range(1, 100, ErrorMessage = "Limit must be between 1 and 100")]
+        public int Limit { get; set; } = 10;
+
+        [Required(ErrorMessage = "Product name is required")]
+        [MinLength(2, ErrorMessage = "Product name must be at least 2 characters")]
         public string ProductName { get; set; } = string.Empty;
-        public Guid ProductId { get; set; }
-        public Guid CategoryId { get; set; }
     }
 }

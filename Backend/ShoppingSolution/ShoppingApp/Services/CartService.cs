@@ -26,11 +26,11 @@ namespace ShoppingApp.Services
             try
             {
                 var cart = await _context.Carts
-                    .FirstOrDefaultAsync(c => c.UserId == request.Cart.UserId);
+                    .FirstOrDefaultAsync(c => c.UserId == request.UserId);
 
                 if (cart == null)
                 {
-                    cart = new Cart { UserId = request.Cart.UserId };
+                    cart = new Cart { UserId = request.UserId };
                     await _context.Carts.AddAsync(cart);
                     await _context.SaveChangesAsync();
                 }

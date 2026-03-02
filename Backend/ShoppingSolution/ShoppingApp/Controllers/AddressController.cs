@@ -19,8 +19,14 @@ namespace ShoppingApp.Controllers
 
         private Guid GetUserId()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return Guid.Parse(userId!);
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrWhiteSpace(userIdClaim))
+                return Guid.Empty;
+
+            return Guid.TryParse(userIdClaim, out var userId)
+                ? userId
+                : Guid.Empty;
         }
 
         [HttpPost("CreateAddress")]
@@ -76,6 +82,9 @@ namespace ShoppingApp.Controllers
         [HttpDelete("DeleteUserAddress")]
         public async Task<ActionResult<bool>> DeleteUserAddress(DeleteUserAddressRequestDTO request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (request == null || request.AddressId == Guid.Empty)
                 return BadRequest("Invalid request");
 

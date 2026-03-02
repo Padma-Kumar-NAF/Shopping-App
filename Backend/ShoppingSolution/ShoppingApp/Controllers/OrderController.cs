@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models.DTOs.Order;
+using System.Security.Claims;
 
 namespace ShoppingApp.Controllers
 {
@@ -17,18 +18,35 @@ namespace ShoppingApp.Controllers
             _orderService = orderService;
         }
 
+        private Guid GetUserId()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrWhiteSpace(userIdClaim))
+                return Guid.Empty;
+
+            return Guid.TryParse(userIdClaim, out var userId)
+                ? userId
+                : Guid.Empty;
+        }
+
         [HttpPut("CancelOrder")]
-        public async Task<ActionResult<GetUserOrderDetailsResponseDTO>> CancelOrder(CancelOrderRequestDTO request)
+        public async Task<ActionResult<GetUserOrderDetailsResponseDTO>> CancelOrder([FromBody] CancelOrderRequestDTO request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            request.UserId = GetUserId();
+            if (request.UserId == Guid.Empty)
+            {
+                return BadRequest("User not authenticated");
+            }
+
             try
             {
                 var result = await _orderService.CancelOrder(request);
-
                 if (result == null)
                     return NotFound("Order not found or already cancelled.");
-
                 return Ok(result);
             }
             catch (Exception ex)
@@ -46,6 +64,12 @@ namespace ShoppingApp.Controllers
 
             if (request.PageNumber <= 0 || request.Limit <= 0)
                 return BadRequest("Invalid pagination values.");
+
+            request.UserId = GetUserId();
+            if(request.UserId == Guid.Empty)
+            {
+                return BadRequest("User not authenticated");
+            }
 
             try
             {
@@ -66,6 +90,11 @@ namespace ShoppingApp.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            request.UserId = GetUserId();
+            if (request.UserId == Guid.Empty)
+            {
+                return BadRequest("User not authenticated");
+            }
             try
             {
                 var orders = await _orderService.PlaceOrder(request);

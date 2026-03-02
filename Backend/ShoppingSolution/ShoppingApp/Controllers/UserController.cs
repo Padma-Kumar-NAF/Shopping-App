@@ -4,6 +4,7 @@ using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.User;
+using System.Security.Claims;
 
 namespace ShoppingApp.Controllers 
 {
@@ -21,12 +22,31 @@ namespace ShoppingApp.Controllers
             _userDetailsService = userDetailsService;
         }
 
+        private Guid GetUserId()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrWhiteSpace(userIdClaim))
+                return Guid.Empty;
+
+            return Guid.TryParse(userIdClaim, out var userId)
+                ? userId
+                : Guid.Empty;
+        }
+
         //[Authorize(Roles = "User")]
         [HttpPost("AddUserDetails")]
         public async Task<ActionResult<AddUserDetailsResponseDTO>> AddUserDetails(AddUserDetailsRequestDTO request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            request.UserId = GetUserId();
+            if (request.UserId == Guid.Empty)
+            {
+                return BadRequest("User not authenticated");
+            }
+
             try
             {
                 var Id = await _userDetailsService.AddUserDetails(request);
@@ -46,6 +66,12 @@ namespace ShoppingApp.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            request.UserId = GetUserId();
+            if (request.UserId == Guid.Empty)
+            {
+                return BadRequest("User not authenticated");
+            }
+
             try
             {
                 var result = await _userService.GetAllUsers(request);
@@ -62,6 +88,11 @@ namespace ShoppingApp.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            request.UserId = GetUserId();
+            if (request.UserId == Guid.Empty)
+            {
+                return BadRequest("User not authenticated");
+            }
             try
             {
                 var result = await _userDetailsService.UpdateUserDetails(request);

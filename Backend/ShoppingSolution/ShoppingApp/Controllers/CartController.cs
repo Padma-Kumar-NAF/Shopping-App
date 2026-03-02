@@ -36,15 +36,19 @@ namespace ShoppingApp.Controllers
         [HttpPost("AddToCart")]
         public async Task<ActionResult<GetCartResponseDTO>> AddToCart([FromBody] AddToCartRequestDTO request)
         {
-            if (request == null)
-                return BadRequest("Invalid request");
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            request.Cart.UserId = GetUserId();
+            if (request == null)
+                return BadRequest("Invalid request");
 
-            if (request.Cart.UserId == Guid.Empty)
+            //request.Cart.UserId = GetUserId();
+            request.UserId = GetUserId();
+
+            //if (request.Cart.UserId == Guid.Empty)
+            //    return Unauthorized("User not authenticated");
+            
+            if (request.UserId == Guid.Empty)
                 return Unauthorized("User not authenticated");
 
             try
@@ -83,29 +87,6 @@ namespace ShoppingApp.Controllers
             var result = await _cartItemService.GetCartItems(Cart.CartId, request.UserId,request.Limit,request.PageNumber);
             return Ok(result);
         }
-
-        //[HttpPost("OrderAllFromCart")]
-        //public async Task<ActionResult<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCarts(OrderAllFromCartRequestDTO request)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
-
-        //    request.UserId = GetUserId();
-
-        //    if (request.UserId == Guid.Empty)
-        //        return BadRequest("Invalid UserId");
-
-        //    bool isOrdered = false;
-        //    isOrdered = await _cartService.PlaceOrderAllFromCart(request.CartId, request.UserId,request.AddressId);
-
-        //    if (!isOrdered)
-        //        return BadRequest("Order failed. Try again.");
-
-        //    return Ok(new OrderAllFromCartResponseDTO
-        //    {
-        //        IsSuccess = true
-        //    });
-        //}
 
         [HttpPost("OrderAllFromCart")]
         public async Task<ActionResult<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCarts([FromBody] OrderAllFromCartRequestDTO request)
@@ -176,7 +157,6 @@ namespace ShoppingApp.Controllers
             }
 
             // Check the user have a cart or not
-
             var result = await _cartService.RemoveFromCart(request.CartId, request.ProductId);
 
             if (!result)    

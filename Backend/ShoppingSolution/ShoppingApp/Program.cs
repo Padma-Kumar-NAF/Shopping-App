@@ -66,7 +66,7 @@ namespace ShoppingApp
             builder.Services.AddScoped<IPasswordService, PasswordService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
-            builder.Services.AddScoped<IStockService, StockService>();
+            //builder.Services.AddScoped<IStockService, StockService>();
             builder.Services.AddScoped<IUserDetailsService, UserDetailsService>();
             builder.Services.AddScoped<IUserService, UserService>();
             #endregion
