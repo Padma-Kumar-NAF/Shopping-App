@@ -1,39 +1,128 @@
-﻿using ShoppingApp.Interfaces.Repositories;
-using ShoppingApp.Interfaces.Services;
+﻿using FirstAPI.Exceptions;
+using Microsoft.EntityFrameworkCore;
+using ShoppingApp.Contexts;
+using ShoppingApp.Interfaces.RepositoriesInterface;
+using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
-using ShoppingApp.Models.DTOs;
+using ShoppingApp.Models.DTOs.User;
+using ShoppingApp.Repositories;
 
 namespace ShoppingApp.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        private readonly ShoppingContext _context;
+        private readonly IPasswordService _passwordService;
+
+        public UserService(ShoppingContext context, IPasswordService passwordService)
         {
-            _userRepository = userRepository;
-        }
-        public async Task<CreateUserResponseDTO> CreateUser(CreateUserRequestDTO request)
-        {
-            // Do the pass hash
-            User User = new User();
-            User.Name = request.Name;
-            User.Email = request.Email;
-            User.Password = request.Password;
-            User.Role = "User";
-
-            var AddedUser = await _userRepository.AddUser(User);
-
-            CreateUserResponseDTO response = new CreateUserResponseDTO();
-            response.Password = request.Password;
-            response.Email = request.Email;
-            response.Name = request.Name;
-
-            return response;
+            _context = context;
+            _passwordService = passwordService;
         }
 
-        public async Task<LoginResponseDTO> LoginUser(LoginRequestDTO request)
+        public async Task<CreateUserResponseDTO?> CreateUser(CreateUserRequestDTO request)
         {
-            throw new NotImplementedException();
+            var email = request.Email.Trim().ToLower();
+
+            var existingUser = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Email == email);
+
+            if (existingUser != null)
+                return null;
+
+            var (hash, salt) = await _passwordService.HashPasswordAsync(request.Password);
+
+            var user = new User
+            {
+                Name = request.Name.Trim(),
+                Email = email,
+                Password = Convert.ToBase64String(hash),
+                SaltValue = Convert.ToBase64String(salt),
+                Role = "User",
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _context.Users.AddAsync(user);
+            var result = await _context.SaveChangesAsync();
+
+            if (result <= 0)
+                return null;
+
+            return new CreateUserResponseDTO
+            {
+                UserId = user.UserId,
+                Name = user.Name,
+                Email = user.Email
+            };
+        }
+
+        public async Task<LoginResponseDTO?> LoginUser(LoginRequestDTO request)
+        {
+            if (request == null)
+                return null;
+
+            var email = request.Email.Trim().ToLower();
+
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null)
+                throw new Exception("Email not found");
+
+            bool isValid = await _passwordService.VerifyPasswordAsync(
+                request.Password,
+                user.Password,
+                user.SaltValue);
+
+            //Console.WriteLine("Verify");
+            //Console.WriteLine(isValid);
+            //Console.WriteLine("-----------------");
+            //Console.WriteLine(user.UserId);
+
+            if (!isValid)
+                throw new Exception("Invalid Credentials");
+
+            return new LoginResponseDTO
+            {
+                UserId = user.UserId,
+                Name = user.Name,
+                Email = user.Email,
+                Role = user.Role
+            };
+        }
+
+        public async Task<IEnumerable<GetUsersResponseDTO>> GetAllUsers(GetUsersRequestDTO request)
+        {
+            if (request.PageNumber <= 0) request.PageNumber = 1;
+            if (request.Limit <= 0) request.Limit = 10;
+
+            var users = await _context.Users
+                .AsNoTracking()
+                .Include(u => u.UserDetails)
+                .OrderBy(u => u.Name)
+                .Skip((request.PageNumber - 1) * request.Limit)
+                .Take(request.Limit)
+                .Select(u => new GetUsersResponseDTO
+                {
+                    UserId = u.UserId,
+                    UserDetailsId = u.UserDetails!.UserDetailsId,
+                    Name = u.Name,
+                    Email = u.Email,
+                    Role = u.Role,
+                    PhoneNumber = u.UserDetails.PhoneNumber,
+                    AddressLine1 = u.UserDetails.AddressLine1,
+                    AddressLine2 = u.UserDetails.AddressLine2,
+                    State = u.UserDetails.State,
+                    City = u.UserDetails.City,
+                    Pincode = u.UserDetails.Pincode
+                })
+                .ToListAsync();
+
+            if (!users.Any())
+                throw new Exception("No Users Found");
+
+            return users;
         }
     }
 }

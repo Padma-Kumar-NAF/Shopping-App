@@ -1,12 +1,50 @@
-﻿using ShoppingApp.Interfaces.Service;
+﻿using Konscious.Security.Cryptography;
+using ShoppingApp.Interfaces.ServicesInterface;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ShoppingApp.Services
 {
     public class PasswordService : IPasswordService
     {
-        public byte[] HashPassword(string password, byte[]? dbHashKey, out byte[]? hashkey)
+        private const int saltSize = 16;
+        private const int degreeOfParallelism = 8;
+        private const int iterations = 4;
+        private const int memorySize = 1024 * 64;
+
+        public async Task<(byte[], byte[])> HashPasswordAsync(string password)
         {
-            throw new NotImplementedException();
+            byte[] salt = RandomNumberGenerator.GetBytes(saltSize);
+
+            var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password))
+            {
+                Salt = salt,
+                DegreeOfParallelism = degreeOfParallelism,
+                MemorySize = memorySize,
+                Iterations = iterations
+            };
+
+            byte[] hash = await argon2.GetBytesAsync(32);
+
+            return (hash,salt);
+        }
+
+        public async Task<bool> VerifyPasswordAsync(string password, string storedHash,string storedSalt)
+        {
+            var salt = Convert.FromBase64String(storedSalt);
+            var hash = Convert.FromBase64String(storedHash);
+
+            var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password))
+            {
+                Salt = salt,
+                DegreeOfParallelism = degreeOfParallelism,
+                MemorySize = memorySize,
+                Iterations = iterations
+            };
+
+            var newHash = await argon2.GetBytesAsync(32);
+
+            return CryptographicOperations.FixedTimeEquals(newHash, hash);
         }
     }
 }

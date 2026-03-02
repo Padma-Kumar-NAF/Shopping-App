@@ -17,7 +17,6 @@ namespace ShoppingApp.Contexts
         public DbSet<Stock> Stock { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserDetails> UserDetails { get; set; }
-        public DbSet<UserHash> UserHash { get; set; }
 
         // Store procedure
         public DbSet<Category> categoriesSP { get; set; }
@@ -135,11 +134,9 @@ namespace ShoppingApp.Contexts
                 entity.HasKey(l => l.LogId)
                     .HasName("PK_Log");
 
-                entity.Property(o => o.LogId)
-         .HasDefaultValueSql("NEWID()");
+                entity.Property(o => o.LogId).HasDefaultValueSql("NEWID()");
 
-                entity.Property(o => o.CreatedAt)
-                      .HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(o => o.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
 
                 entity.HasOne(l => l.User)
                     .WithMany(u => u.Logs)
@@ -236,12 +233,6 @@ namespace ShoppingApp.Contexts
                     .WithMany(c => c.Products)
                     .HasForeignKey(p => p.CategoryId)
                     .HasConstraintName("FK_Product_Category")
-                    .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(p => p.Stock)
-                    .WithOne(s => s.Product)
-                    .HasForeignKey<Product>(p => p.StockId)
-                    .HasConstraintName("FK_Product_Stock")
                     .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasIndex(p => p.Name)
@@ -347,14 +338,7 @@ namespace ShoppingApp.Contexts
                     .HasForeignKey<UserDetails>(ud => ud.UserId)
                     .HasConstraintName("FK_UserDetails_User")
                     .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(u=> u.UserHash)
-                    .WithOne(c => c.User)
-                    .HasForeignKey<UserHash>(c => c.UserId)
-                    .HasConstraintName("FK_UserHash_User")
-                    .OnDelete(DeleteBehavior.Restrict);
             });
-
 
             modelBuilder.Entity<UserDetails>(entity =>
             {
@@ -371,24 +355,6 @@ namespace ShoppingApp.Contexts
                 .WithOne(e=>e.UserDetails)
                 .HasForeignKey<UserDetails>(e=>e.UserId)
                 .HasConstraintName("FK_User_UserDetails")
-                .OnDelete(DeleteBehavior.Restrict);
-            });
-
-            modelBuilder.Entity<UserHash>(entity =>
-            {
-                entity.HasKey(ud => ud.UserHashId)
-                .HasName("PK_UserHash");
-
-                entity.Property(o => o.UserHashId)
-                .HasDefaultValueSql("NEWID()");
-
-                entity.Property(o => o.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()");
-
-                entity.HasOne(u=> u.User)
-                .WithOne(e=>e.UserHash)
-                .HasForeignKey<UserHash>(e=>e.UserId)
-                .HasConstraintName("FK_User_UserToken")
                 .OnDelete(DeleteBehavior.Restrict);
             });
         }

@@ -11,9 +11,6 @@ namespace ShoppingApp.Models
         public Guid CategoryId { get; set; }
 
         [Required]
-        public Guid StockId { get; set; }
-
-        [Required]
         public string Name { get; set; } = string.Empty;
 
         [Required]

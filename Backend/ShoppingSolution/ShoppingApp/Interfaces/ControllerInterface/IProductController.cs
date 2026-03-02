@@ -1,0 +1,15 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using ShoppingApp.Models;
+using ShoppingApp.Models.DTOs.Product;
+
+namespace ShoppingApp.Interfaces.ControllerInterface
+{
+    public interface IProductController
+    {
+        //public Task<ActionResult<IEnumerable<GetAllProductsResponse>>> GetAll(GetAllProductsRequest request);
+        public Task<ActionResult<IEnumerable<GetAllProductsResponseDTO>>> GetProducts(GetAllProductsRequestDTO request);
+        public Task<ActionResult<IEnumerable<GetAllProductsResponseDTO>>> GetProductByName(SearchProductRequestDTO request);
+        public Task<ActionResult<GetAllProductsResponseDTO>> AddProduct(AddNewProductRequestDTO request);
+        public Task<ActionResult<UpdateProductResponseDTO>> UpdateProduct(UpdateProductRequestDTO request);
+    }
+}

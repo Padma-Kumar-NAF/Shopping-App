@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Contexts;
-using ShoppingApp.Interfaces.Repositories;
+using ShoppingApp.Interfaces.RepositoriesInterface;
+using System.Linq.Expressions;
 
 namespace ShoppingApp.Repositories
 {
@@ -10,23 +11,37 @@ namespace ShoppingApp.Repositories
 
         public Repository(ShoppingContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<C?> Add(C item)
+        //public async Task<C> AddAsync(C item)
+        //{
+        //    var user = _context.Add(item);
+        //    await _context.SaveChangesAsync();
+        //    if(user != null)
+        //    {
+        //        return item;
+        //    }
+        //    return null;
+        //}
+        public async Task<C?> AddAsync(C item)
         {
-            var user = _context.Add(item);
-            await _context.SaveChangesAsync();
-            if(user != null)
-            {
+            if (item == null)
+                return null;
+
+            await _context.Set<C>().AddAsync(item);
+
+            var result = await _context.SaveChangesAsync();
+
+            if (result > 0)
                 return item;
-            }
+
             return null;
         }
 
-        public async Task<C?> Delete(K key)
+        public async Task<C?> DeleteAsync(K key)
         {
-            var item = await Get(key);
+            var item = await GetAsync(key);
             if (item != null)
             {
                 _context.Remove(item);
@@ -36,30 +51,65 @@ namespace ShoppingApp.Repositories
             return null;
         }
 
-        public async Task<IEnumerable<C>?> GetAll()
+        public async Task<IEnumerable<C>> GetAllAsync()
         {
-            var items = await _context.Set<C>().ToListAsync();
-            if (items.Any())
-                return items;
-            return null;
+            return await _context.Set<C>().ToListAsync();
         }
 
-        public async Task<C?> Get(K key)
+        public async Task<C?> GetAsync(K key)
         {
             var item = await _context.FindAsync<C>(key);
             return item != null ? item : null;
         }
 
-        public async Task<C?> Update(K key, C item)
+        //public async Task<C?> UpdateAsync(K key, C item)
+        //{
+        //    var existingItem = await GetAsync(key);
+        //    if (existingItem != null)
+        //    {
+        //        _context.Entry(existingItem).CurrentValues.SetValues(item);
+        //        await _context.SaveChangesAsync();
+        //        return existingItem;
+        //    }
+        //    return null;
+        //}
+
+        public async Task<C?> UpdateAsync(K key, C item)
         {
-            var existingItem = await Get(key);
-            if (existingItem != null)
-            {
-                _context.Entry(existingItem).CurrentValues.SetValues(item);
-                await _context.SaveChangesAsync();
-                return existingItem;
-            }
-            return null;
+            if (item == null)
+                return null;
+
+            var existingItem = await GetAsync(key);
+            if (existingItem == null)
+                return null;
+
+            _context.Entry(existingItem).CurrentValues.SetValues(item);
+            var result = await _context.SaveChangesAsync();
+
+            return result > 0 ? existingItem : null;
+        }
+
+        //-------------------------------------------------------------------------//
+        public async Task<C?> FirstOrDefaultAsync(Expression<Func<C, bool>> predicate)
+        {
+            return await _context.Set<C>().FirstOrDefaultAsync(predicate);
+        }
+
+        public IQueryable<C> GetQueryable()
+        {
+            return _context.Set<C>();
+        }
+
+        // This is for get details from one table
+        public async Task<IEnumerable<C>> GetAllByForeignKeyAsync(Expression<Func<C, bool>> predicate,
+        int limit,
+        int pageNumber)
+        {
+            return await _context.Set<C>()
+                .Where(predicate)
+                .Skip((pageNumber - 1) * limit)
+                .Take(limit)
+                .ToListAsync();
         }
     }
 }

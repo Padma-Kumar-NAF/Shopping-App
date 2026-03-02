@@ -1,13 +1,14 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using ShoppingApp.Contexts;
-using ShoppingApp.Interfaces.Repositories;
-using ShoppingApp.Interfaces.Service;
-using ShoppingApp.Interfaces.Services;
+using ShoppingApp.Interfaces.RepositoriesInterface;
+using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Repositories;
 using ShoppingApp.Services;
-using System.Numerics;
+using System.Text;
+using AspNetCoreRateLimit;
 
 namespace ShoppingApp
 {
@@ -16,24 +17,57 @@ namespace ShoppingApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            // Add services to the container.
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
+            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
+            //builder.Services.AddAutoMapper(typeof(CustomerProfile)); // This is for mapper
+
+            builder.Services.AddMemoryCache();
+            builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
+            builder.Services.AddInMemoryRateLimiting();
+            builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
             builder.Services.AddDbContext<ShoppingContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Development"));
             });
 
+            builder.Services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        //ValidateIssuer = false,
+                        ValidateAudience = true,
+                        //ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = "ShoppingApp",
+                        ValidAudience = "ShoppingAppUsers",
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes("ThisIsMySuperSecureKey123456789PadmaKumar"))
+                    };
+                });
+
+            builder.Services.AddAuthorization();
+
             #region Repositories
-            builder.Services.AddScoped<IRepository<Guid, User>, Repository<Guid, User>>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
             #endregion
 
             #region Services
+            builder.Services.AddScoped<IAddressService, AddressService>();
+            builder.Services.AddScoped<ICartItemsService, CartItemsService>();
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IPasswordService, PasswordService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
+            builder.Services.AddScoped<IStockService, StockService>();
+            builder.Services.AddScoped<IUserDetailsService, UserDetailsService>();
             builder.Services.AddScoped<IUserService, UserService>();
             #endregion
 
@@ -44,8 +78,15 @@ namespace ShoppingApp
                 app.MapOpenApi();
             }
 
+            app.UseExceptionHandler("/error");
+
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseIpRateLimiting();
+
             app.MapControllers();
             app.Run();
         }
