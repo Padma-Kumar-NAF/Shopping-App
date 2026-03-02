@@ -11,6 +11,7 @@ select * from UserDetails
 
 select * from Carts
 select * from CartItems
+    
 
 select * from Orders
 select * from OrderDetails
@@ -19,6 +20,9 @@ select * from Reviews
 
 update Stock
 set Quantity = 100
+
+update Orders
+set Status = 'Not Delivered'
 
 select * from Stock
 

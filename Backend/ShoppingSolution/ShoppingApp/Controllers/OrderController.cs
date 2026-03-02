@@ -73,7 +73,7 @@ namespace ShoppingApp.Controllers
             } catch (Exception ex) 
             { 
                 return BadRequest(ex.Message);
-            } 
+            }
         }
 
         [HttpPost("UpdateOrderStatus")]

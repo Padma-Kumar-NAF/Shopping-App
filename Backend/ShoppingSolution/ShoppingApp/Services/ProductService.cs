@@ -37,16 +37,17 @@ namespace ShoppingApp.Services
                 };
 
                 await _context.Products.AddAsync(product);
+                await _context.SaveChangesAsync();
 
                 var stock = new Stock
                 {
-                    ProductId = product.ProductId,
+                    ProductId = product.ProductId, 
                     Quantity = request.Quantity
                 };
 
                 await _context.Stock.AddAsync(stock);
+                await _context.SaveChangesAsync(); 
 
-                await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
                 return new GetAllProductsResponseDTO
@@ -61,7 +62,7 @@ namespace ShoppingApp.Services
                     StockId = stock.StockId
                 };
             }
-            catch
+            catch (Exception ex)
             {
                 await transaction.RollbackAsync();
                 throw;

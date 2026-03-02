@@ -42,6 +42,7 @@ namespace ShoppingApp.Services
                 if (order.Status == "Shipped" || order.Status == "Delivered")
                     throw new Exception("Cannot cancel shipped/delivered order.");
 
+                // Restore stock
                 foreach (var item in order.OrderDetails!)
                 {
                     var stock = await _stockRepository
@@ -68,7 +69,28 @@ namespace ShoppingApp.Services
                     UserId = order.UserId,
                     Status = order.Status,
                     TotalProductsCount = order.TotalProductsCount,
-                    TotalAmount = order.TotalAmount
+                    TotalAmount = order.TotalAmount,
+                    DeliveryDate = (DateTime)order.DeliveryDate,
+
+                    Address = new AddressDTO
+                    {
+                        AddressId = order.Address!.AddressId,
+                        AddressLine1 = order.Address.AddressLine1,
+                        AddressLine2 = order.Address.AddressLine2,
+                        City = order.Address.City,
+                        State = order.Address.State,
+                        Pincode = order.Address.Pincode
+                    },
+
+                    Items = order.OrderDetails.Select(item => new OrderDetailsDTO
+                    {
+                        OrderDetailsId = item.OrderDetailsId,
+                        ProductId = item.ProductId,
+                        ProductName = item.ProductName,
+                        //ImagePath = item.ImagePath,
+                        Quantity = item.Quantity,
+                        ProductPrice = item.ProductPrice
+                    }).ToList()
                 };
             }
             catch

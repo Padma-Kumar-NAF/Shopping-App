@@ -17,9 +17,7 @@ namespace ShoppingApp.Controllers
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
 
-        public AuthenticationController(
-            IUserService userService,
-            IConfiguration configuration)
+        public AuthenticationController(IUserService userService, IConfiguration configuration)
         {
             _userService = userService;
             _configuration = configuration;

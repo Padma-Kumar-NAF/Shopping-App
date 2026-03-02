@@ -21,7 +21,7 @@ namespace ShoppingApp.Controllers
             _productService = productService;
         }
 
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         [HttpPost("getProducts")]
         public async Task<ActionResult<IEnumerable<GetAllProductsResponseDTO>>> GetProducts([FromBody] GetAllProductsRequestDTO request)
         {
@@ -40,7 +40,7 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         [HttpPost("search")]
         public async Task<ActionResult<IEnumerable<GetAllProductsResponseDTO>>> GetProductByName([FromBody] SearchProductRequestDTO request)
         {
@@ -63,7 +63,7 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost("AddProduct")]
         public async Task<ActionResult<GetAllProductsResponseDTO>> AddProduct(AddNewProductRequestDTO request)
         {
