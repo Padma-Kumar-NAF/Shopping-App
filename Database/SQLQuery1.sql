@@ -11,12 +11,19 @@ select * from UserDetails
 
 select * from Carts
 select * from CartItems
-    
 
 select * from Orders
 select * from OrderDetails
 
 select * from Reviews
+
+-- User - Payment -> One to many ==
+-- User - Refund -> one to many ==
+-- User - WishList -> One to many ==
+-- WishList - WishListItems -> one to many =
+-- WishListItems - Products -> many to many =
+-- Payment - Order -> one to one =
+-- Payment - Refund -> one to one
 
 update Stock
 set Quantity = 100
@@ -26,12 +33,9 @@ set Status = 'Not Delivered'
 
 select * from Stock
 
-
-
 delete from CartItems
 
 delete from Carts
-
 
 delete from OrderDetails
 delete from Orders

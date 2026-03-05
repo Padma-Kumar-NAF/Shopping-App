@@ -1,11 +1,13 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Auth } from "./auth/auth";
-// import { Home } from './home/home';
+import {Auth} from './components/auth/auth'
+import { Home } from './components/home/home';
+import { Profile } from './components/profile/profile';
+
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Auth],
+  imports: [RouterOutlet, Auth,Home,Profile],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

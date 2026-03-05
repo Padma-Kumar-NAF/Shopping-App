@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ShoppingApp.Contexts;
@@ -22,6 +21,17 @@ namespace ShoppingApp
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
             //builder.Services.AddAutoMapper(typeof(CustomerProfile)); // This is for mapper
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngular",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:4200")
+                              .AllowAnyHeader()
+                              .AllowAnyMethod();
+                    });
+            });
 
             builder.Services.AddMemoryCache();
             builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));

@@ -1,0 +1,12 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ShoppingApp.Models.DTOs.Wishlist
+{
+    public class RemoveProductFromWishListRequestDTO
+    {
+        [Required(ErrorMessage = "Product Id is required")]
+        public Guid ProductId { get; set; }
+        [Required(ErrorMessage = "WishList Id is required")]
+        public Guid WishListId { get; set; }
+    }
+}

@@ -12,11 +12,15 @@ namespace ShoppingApp.Contexts
         public DbSet<Log> Logs { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetails> OrderDetails { get; set; }
+        public DbSet<Payment> Payments { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Refund> Refunds { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Stock> Stock { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserDetails> UserDetails { get; set; }
+        public DbSet<WishList> WishList { get; set; }
+        public DbSet<WishListItems> WishListItems { get; set; }
 
         // Store procedure
         public DbSet<Category> categoriesSP { get; set; }
@@ -221,10 +225,10 @@ namespace ShoppingApp.Contexts
                     .HasName("PK_Product");
 
                 entity.Property(o => o.ProductId)
-         .HasDefaultValueSql("NEWID()");
+                    .HasDefaultValueSql("NEWID()");
 
                 entity.Property(o => o.CreatedAt)
-                      .HasDefaultValueSql("GETUTCDATE()");
+                     .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.Property(p => p.Price)
                     .HasPrecision(18, 2);
@@ -248,10 +252,10 @@ namespace ShoppingApp.Contexts
                     .HasName("PK_Review");
 
                 entity.Property(o => o.ReviewId)
-         .HasDefaultValueSql("NEWID()");
+                    .HasDefaultValueSql("NEWID()");
 
                 entity.Property(o => o.CreatedAt)
-                      .HasDefaultValueSql("GETUTCDATE()");
+                    .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.HasOne(r => r.User)
                     .WithMany(u => u.Reviews)
@@ -276,10 +280,10 @@ namespace ShoppingApp.Contexts
                     .HasName("PK_Stock");
 
                 entity.Property(o => o.StockId)
-         .HasDefaultValueSql("NEWID()");
+                    .HasDefaultValueSql("NEWID()");
 
                 entity.Property(o => o.CreatedAt)
-                      .HasDefaultValueSql("GETUTCDATE()");
+                    .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.HasOne(s => s.Product)
                     .WithOne(p => p.Stock)
@@ -338,24 +342,85 @@ namespace ShoppingApp.Contexts
                     .HasForeignKey<UserDetails>(ud => ud.UserId)
                     .HasConstraintName("FK_UserDetails_User")
                     .OnDelete(DeleteBehavior.Restrict);
+                
+                entity.HasMany(u => u.Payments)
+                    .WithOne(l => l.User)
+                    .HasForeignKey(l => l.UserId)
+                    .HasConstraintName("FK_Payments_User")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(u => u.Refunds)
+                    .WithOne(r => r.User)
+                    .HasForeignKey(r => r.UserId)
+                    .HasConstraintName("FK_Refund_User")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(u => u.WishLists)
+                    .WithOne(l => l.User)
+                    .HasForeignKey(l => l.UserId)
+                    .HasConstraintName("FK_WishList_User")
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<UserDetails>(entity =>
             {
                 entity.HasKey(ud => ud.UserDetailsId)
-                .HasName("PK_UserDetails");
+                    .HasName("PK_UserDetails");
 
                 entity.Property(o => o.UserDetailsId)
-                .HasDefaultValueSql("NEWID()");
+                    .HasDefaultValueSql("NEWID()");
 
                 entity.Property(o => o.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()");
+                    .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.HasOne(u=> u.User)
-                .WithOne(e=>e.UserDetails)
-                .HasForeignKey<UserDetails>(e=>e.UserId)
-                .HasConstraintName("FK_User_UserDetails")
-                .OnDelete(DeleteBehavior.Restrict);
+                    .WithOne(e=>e.UserDetails)
+                    .HasForeignKey<UserDetails>(e=>e.UserId)
+                    .HasConstraintName("FK_User_UserDetails")
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<WishList>(entity =>
+            {
+                entity.HasKey(w => w.WhishListId)
+                    .HasName("Pk_WishList");
+                
+                entity.Property(w => w.WhishListId)
+                    .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                    .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.HasMany(w => w.WishListItems)
+                    .WithOne(wi => wi.WishList)
+                    .HasForeignKey(wi => wi.WishListId)
+                    .HasConstraintName("FK_WishListItem_WishList")
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<WishListItems>(entity =>
+            {
+                entity.HasKey(wi => wi.WishListItemsId)
+                    .HasName("Pk_WishListItems");
+
+                entity.Property(wi => wi.WishListItemsId)
+                    .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                    .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.HasOne(w => w.WishList)
+                    .WithMany(wl => wl.WishListItems)
+                    .HasForeignKey(w => w.WishListId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+
+                entity.HasOne(w => w.Products)
+                    .WithMany(p => p.WishListItems)
+                    .HasForeignKey(w => w.ProductId)
+                    .HasConstraintName("FK_WishListItem_Product")
+                    .OnDelete(DeleteBehavior.Restrict);
+
             });
         }
     }

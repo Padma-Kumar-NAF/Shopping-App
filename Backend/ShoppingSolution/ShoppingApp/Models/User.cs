@@ -27,8 +27,12 @@ namespace ShoppingApp.Models
         public DateTime CreatedAt { get; set; }
 
         // Navigation 
-        public UserDetails? UserDetails { get; set; } 
+        public UserDetails? UserDetails { get; set; }
         public Cart? Cart { get; set; }
+
+        public ICollection<WishList>? WishLists { get; set; }
+        public ICollection<Payment>? Payments { get; set; }
+        public ICollection<Refund>? Refunds { get; set; }
 
         public ICollection<Review>? Reviews { get; set; }
         public ICollection<Log>? Logs { get; set; }

@@ -9,8 +9,8 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './auth.html',
   styleUrls: ['./auth.css']
 })
-export class Auth {
 
+export class Auth {
   isLoginMode = true;
 
   loginData = {

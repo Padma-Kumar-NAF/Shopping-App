@@ -1,0 +1,105 @@
+<div class="min-h-screen bg-gray-200 flex items-center justify-center px-4 py-10">
+
+  <div class="w-full max-w-5xl bg-gray-300 rounded-3xl p-6 md:p-10">
+
+    <!-- Title -->
+    <h1 class="text-center text-2xl font-semibold mb-6">
+      Profile
+    </h1>
+
+    <!-- Tabs -->
+    <div class="flex flex-wrap justify-center border-b mb-8">
+
+      <button
+        (click)="setTab('profile')"
+        [ngClass]="activeTab() === 'profile' ? 
+        'bg-[#007765] text-white' : 'text-gray-700'"
+        class="px-6 py-2 rounded-t-xl transition-all duration-200">
+        Profile
+      </button>
+
+      <button
+        (click)="setTab('cart')"
+        [ngClass]="activeTab() === 'cart' ? 
+        'bg-[#007765] text-white' : 'text-gray-700'"
+        class="px-6 py-2 transition-all duration-200">
+        Cart
+      </button>
+
+      <button
+        (click)="setTab('wishlist')"
+        [ngClass]="activeTab() === 'wishlist' ? 
+        'bg-[#007765] text-white' : 'text-gray-700'"
+        class="px-6 py-2 transition-all duration-200">
+        Wish list
+      </button>
+
+      <button
+        (click)="setTab('orders')"
+        [ngClass]="activeTab() === 'orders' ? 
+        'bg-[#007765] text-white' : 'text-gray-700'"
+        class="px-6 py-2 transition-all duration-200">
+        Orders
+      </button>
+
+      <button
+        (click)="setTab('address')"
+        [ngClass]="activeTab() === 'address' ? 
+        'bg-[#007765] text-white' : 'text-gray-700'"
+        class="px-6 py-2 transition-all duration-200">
+        Address list
+      </button>
+
+    </div>
+
+    <!-- PROFILE TAB -->
+    <div *ngIf="activeTab() === 'profile'"
+         class="flex flex-col md:flex-row items-center md:items-start gap-10">
+
+      <!-- Profile Image -->
+      <div class="w-40 h-40 bg-white rounded-full"></div>
+
+      <!-- User Details -->
+      <div class="space-y-4 text-center md:text-left">
+        <p class="text-lg font-medium">{{ user().username }}</p>
+        <p>{{ user().email }}</p>
+        <p>{{ user().phone }}</p>
+        <p>{{ user().addressLine1 }}, {{ user().addressLine2 }}</p>
+        <p>{{ user().state }}</p>
+        <p>{{ user().city }}</p>
+        <p>{{ user().pincode }}</p>
+      </div>
+    </div>
+
+    <!-- CART TAB -->
+    <div *ngIf="activeTab() === 'cart'" class="text-center py-20 text-gray-600">
+      No cart items
+    </div>
+
+    <!-- WISHLIST TAB -->
+    <div *ngIf="activeTab() === 'wishlist'" class="text-center py-20 text-gray-600">
+      No wishlist items
+    </div>
+
+    <!-- ORDERS TAB -->
+    <div *ngIf="activeTab() === 'orders'" class="text-center py-20 text-gray-600">
+      No orders
+    </div>
+
+    <!-- ADDRESS TAB -->
+    <div *ngIf="activeTab() === 'address'" class="text-center py-20 text-gray-600">
+      No addresses
+    </div>
+
+    <!-- Logout Button -->
+    <div class="flex justify-end mt-10">
+      <button
+        (click)="logout()"
+        class="bg-[#FF5151] hover:opacity-90 text-white px-6 py-2 rounded-md transition">
+        Logout →
+      </button>
+    </div>
+
+  </div>
+
+</div>
