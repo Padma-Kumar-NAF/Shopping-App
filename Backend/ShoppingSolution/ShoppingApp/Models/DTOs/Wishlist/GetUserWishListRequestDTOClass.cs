@@ -8,5 +8,6 @@ namespace ShoppingApp.Models.DTOs.Wishlist
         public int Limit { get; set; }
         [Required(ErrorMessage = "Page number is required")]
         public int PageNumber { get; set; }
+        public Guid UserId { get; set; }
     }
 }

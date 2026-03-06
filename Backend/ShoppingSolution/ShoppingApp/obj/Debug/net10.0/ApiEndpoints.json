@@ -443,6 +443,32 @@
   },
   {
     "ContainingType": "ShoppingApp.Controllers.ProductsController",
+    "Method": "GetProductById",
+    "RelativePath": "Products/GetProductById",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Product.SearchProductByIdRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.ProductsController",
     "Method": "GetProducts",
     "RelativePath": "Products/getProducts",
     "HttpMethod": "POST",

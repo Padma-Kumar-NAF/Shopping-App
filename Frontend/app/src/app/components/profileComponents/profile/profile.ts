@@ -2,12 +2,13 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { Cart } from '../cart/cart';
+import { WishlistComponent } from "../wishlist/wishlist";
 
 type TabType = 'profile' | 'cart' | 'wishlist' | 'orders' | 'address';
 
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule,MatIconModule,Cart],
+  imports: [CommonModule, MatIconModule, Cart,WishlistComponent],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })

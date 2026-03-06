@@ -1,4 +1,4 @@
-<div class="flex items-center justify-center px-4 py-10 bg-gray-100">
+<div class="flex items-center justify-center px-4 py-10 ">
   <div class="w-full max-w-5xl bg-white shadow-xl rounded-3xl p-6 md:p-10">
     <div class="flex items-center justify-between mb-8">
       <h1 class="text-2xl font-semibold">Profile</h1>
@@ -124,8 +124,8 @@
       <app-cart></app-cart>
     </div>
 
-    <div *ngIf="activeTab() === 'wishlist'" class="text-center py-20 text-gray-500">
-      No wishlist items
+    <div *ngIf="activeTab() === 'wishlist'" class="">
+      <app-wishlist></app-wishlist>
     </div>
 
     <div *ngIf="activeTab() === 'orders'" class="text-center py-20 text-gray-500">No orders</div>

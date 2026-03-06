@@ -3,6 +3,7 @@ select * from Users
 select * from Addresses
 
 select * from Products
+select * from Payments
 
 select * from Category
 
@@ -20,7 +21,7 @@ select * from Reviews
 -- User - Payment -> One to many ==
 -- User - Refund -> one to many ==
 -- User - WishList -> One to many ==
--- WishList - WishListItems -> one to many =
+-- WishList - WishListItems -> one to many ==
 -- WishListItems - Products -> many to many =
 -- Payment - Order -> one to one =
 -- Payment - Refund -> one to one

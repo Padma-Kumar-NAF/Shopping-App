@@ -113,5 +113,21 @@ namespace ShoppingApp.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpPost("GetProductById")]
+        public async Task<ActionResult<GetAllProductsResponseDTO>> GetProductById(SearchProductByIdRequestDTO request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                var product = await _productService.SearchProductById(request);
+                return Ok(product);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

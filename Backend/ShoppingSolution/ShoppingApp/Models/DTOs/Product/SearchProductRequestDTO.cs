@@ -10,7 +10,7 @@ namespace ShoppingApp.Models.DTOs.Product
         [Range(1, 100, ErrorMessage = "Limit must be between 1 and 100")]
         public int Limit { get; set; } = 10;
 
-        [Required(ErrorMessage = "Product Id is required")]
-        public Guid ProductId{ get; set; }
+        [Required(ErrorMessage = "Product Name is required")]
+        public string ProductName{ get; set; } = string.Empty;
     }
 }

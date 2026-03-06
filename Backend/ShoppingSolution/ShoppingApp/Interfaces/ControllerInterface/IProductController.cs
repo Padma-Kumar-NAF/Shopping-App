@@ -9,6 +9,7 @@ namespace ShoppingApp.Interfaces.ControllerInterface
         //public Task<ActionResult<IEnumerable<GetAllProductsResponse>>> GetAll(GetAllProductsRequest request);
         public Task<ActionResult<IEnumerable<GetAllProductsResponseDTO>>> GetProducts(GetAllProductsRequestDTO request);
         public Task<ActionResult<IEnumerable<GetAllProductsResponseDTO>>> GetProductByName(SearchProductRequestDTO request);
+        public Task<ActionResult<GetAllProductsResponseDTO>> GetProductById(SearchProductByIdRequestDTO request);
         public Task<ActionResult<GetAllProductsResponseDTO>> AddProduct(AddNewProductRequestDTO request);
         public Task<ActionResult<UpdateProductResponseDTO>> UpdateProduct(UpdateProductRequestDTO request);
     }

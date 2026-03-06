@@ -15,16 +15,16 @@
 
         <button
           (click)="removeAllCart()"
-          class="px-4 py-2 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600"
+          class="px-4 py-1.5 text-sm rounded-lg border bg-red-100 text-red-600 hover:bg-red-200"
         >
-          Remove All
+          > Remove All
         </button>
 
         <button
           (click)="placeAllOrders()"
-          class="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700"
+          class="px-4 py-1.5 text-sm rounded-lg border bg-green-100 text-green-600 hover:bg-green-200"
         >
-          Place Order
+          > Place Order
         </button>
       </div>
     </div>
@@ -72,30 +72,23 @@
     </div>
 
     <div class="flex justify-center items-center mt-8 gap-4">
+      <button
+        (click)="prevPage()"
+        [disabled]="currentPage === 1"
+        class="px-4 py-1.5 text-sm rounded-lg border bg-white hover:bg-gray-100 disabled:opacity-40"
+      >
+        ← Prev
+      </button>
 
-  <!-- Prev -->
-  <button
-    (click)="prevPage()"
-    [disabled]="currentPage === 1"
-    class="px-4 py-1.5 text-sm rounded-lg border bg-white hover:bg-gray-100 disabled:opacity-40"
-  >
-    ← Prev
-  </button>
+      <span class="text-sm font-medium text-gray-600"> {{ currentPage }} / {{ totalPages }} </span>
 
-  <!-- Page Info -->
-  <span class="text-sm font-medium text-gray-600">
-    {{ currentPage }} / {{ totalPages }}
-  </span>
-
-  <!-- Next -->
-  <button
-    (click)="nextPage()"
-    [disabled]="currentPage === totalPages"
-    class="px-4 py-1.5 text-sm rounded-lg border bg-white hover:bg-gray-100 disabled:opacity-40"
-  >
-    Next →
-  </button>
-
-</div>
+      <button
+        (click)="nextPage()"
+        [disabled]="currentPage === totalPages"
+        class="px-4 py-1.5 text-sm rounded-lg border bg-white hover:bg-gray-100 disabled:opacity-40"
+      >
+        Next →
+      </button>
+    </div>
   }
 </div>

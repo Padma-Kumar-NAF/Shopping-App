@@ -65,7 +65,7 @@ namespace ShoppingApp.Services
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                throw;
+                throw new Exception(ex.Message);
             }
         }
 
@@ -120,6 +120,32 @@ namespace ShoppingApp.Services
                 .ToListAsync();
 
             return products;
+        }
+
+        public async Task<GetAllProductsResponseDTO?> SearchProductById(SearchProductByIdRequestDTO request)
+        {
+            var product = await _productRepository
+                .GetQueryable()
+                .Where(p => p.ProductId == request.ProductId)
+                .Select(p => new GetAllProductsResponseDTO
+                {
+                    ProductId = p.ProductId,
+                    CategoryId = p.CategoryId,
+                    StockId = p.Stock!.StockId,
+                    Name = p.Name,
+                    ImagePath = p.ImagePath,
+                    Description = p.Description,
+                    Price = p.Price,
+
+                    CategoryName = p.Category!.CategoryName,
+                    Quantity = p.Stock!.Quantity
+                })
+                .FirstOrDefaultAsync();
+
+            if (product == null)
+                throw new Exception("Product not found");
+
+            return product;
         }
 
         public async Task<IEnumerable<GetAllProductsResponseDTO>> SearchProductByName(SearchProductRequestDTO request)

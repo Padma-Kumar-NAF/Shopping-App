@@ -1,0 +1,69 @@
+<div class="flex flex-col lg:flex-row gap-6">
+  <!-- Wishlist Sidebar -->
+  <div class="w-full lg:w-1/4 border-r pr-4">
+    <h2 class="text-xl font-semibold mb-4">Wishlists</h2>
+
+    @if (isEmpty()) {
+      <div class="text-gray-500">No wishlists available</div>
+    }
+    
+    @else {
+      <ul class="space-y-2">
+        @for (list of wishLists(); track list.id) {
+          <li class="flex justify-between items-center p-2 rounded-lg cursor-pointer transition-all"
+              [class.bg-blue-100]="selectedWishlistId() === list.id"
+              [class.hover:bg-gray-100]="selectedWishlistId() !== list.id"
+              (click)="selectWishlist(list.id)">
+            <span class="font-medium">{{ list.name }}</span>
+            <button (click)="removeWishlist(list.id); $event.stopPropagation()" 
+                    class="text-red-500 hover:text-red-600 ml-2">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <!-- Products Section -->
+  <div class="w-full lg:w-3/4">
+    <h2 class="text-xl font-semibold mb-4">Products</h2>
+
+    @if (isEmpty()) {
+      <div class="text-gray-500">No wishlists available</div>
+    }
+
+    @else {
+      @if (selectedWishlist(); as list) {
+        <div>
+          <h3 class="font-medium mb-4 text-lg">{{ list.name }}</h3>
+
+          @if (list.products.length === 0) {
+            <div class="text-gray-500">No products in this wishlist</div>
+          }
+
+          @else {
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              @for (product of list.products; track product.id) {
+                <div class="bg-white border rounded-xl p-4 flex flex-col items-center hover:shadow-md transition-shadow">
+                  <img [src]="product.image" 
+                       [alt]="product.name" 
+                       class="w-32 h-32 object-cover rounded-lg mb-2" />
+                  <h4 class="text-sm font-medium text-center mb-1">{{ product.name }}</h4>
+                  <p class="text-lg font-semibold text-green-600 mb-2">₹{{ product.price }}</p>
+                  <button (click)="removeProduct(list.id, product.id)" 
+                          class="px-3 py-1 text-sm text-red-500 border border-red-200 rounded hover:bg-red-50 transition-colors">
+                    Remove
+                  </button>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      @else {
+        <div class="text-gray-500">Select a wishlist to view products</div>
+      }
+    }
+</div>
