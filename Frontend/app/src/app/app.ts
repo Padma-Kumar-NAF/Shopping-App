@@ -3,11 +3,13 @@ import { RouterOutlet } from '@angular/router';
 import {Auth} from './components/auth/auth'
 import { Home } from './components/home/home';
 import { Profile } from './components/profile/profile';
+import { NgxSonnerToaster  } from 'ngx-sonner';
+import { Spinner } from './components/spinner/spinner';
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Auth,Home,Profile],
+  imports: [RouterOutlet, Auth,Home,Profile,NgxSonnerToaster,Spinner],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

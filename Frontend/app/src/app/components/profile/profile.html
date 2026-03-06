@@ -1,105 +1,137 @@
-<div class="min-h-screen bg-gray-200 flex items-center justify-center px-4 py-10">
-
-  <div class="w-full max-w-5xl bg-gray-300 rounded-3xl p-6 md:p-10">
-
-    <!-- Title -->
-    <h1 class="text-center text-2xl font-semibold mb-6">
-      Profile
-    </h1>
-
-    <!-- Tabs -->
-    <div class="flex flex-wrap justify-center border-b mb-8">
+<div class="flex items-center justify-center px-4 py-10 bg-gray-100">
+  <div class="w-full max-w-5xl bg-white shadow-xl rounded-3xl p-6 md:p-10">
+    <div class="flex items-center justify-between mb-8">
+      <h1 class="text-2xl font-semibold">Profile</h1>
 
       <button
+        (click)="goHome()"
+        class="flex items-center gap-2 px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+      >
+        <!-- <mat-icon>arrow_back</mat-icon> -->
+        Back to Home
+      </button>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-5 border-b mb-10 text-center text-sm md:text-base">
+      <button
         (click)="setTab('profile')"
-        [ngClass]="activeTab() === 'profile' ? 
-        'bg-[#007765] text-white' : 'text-gray-700'"
-        class="px-6 py-2 rounded-t-xl transition-all duration-200">
+        [ngClass]="activeTab() === 'profile' ? 'nav-button' : 'text-gray-700'"
+        class="py-3 flex items-center justify-center gap-2"
+      >
+        <mat-icon class="text-blue-500">person</mat-icon>
         Profile
       </button>
 
       <button
         (click)="setTab('cart')"
-        [ngClass]="activeTab() === 'cart' ? 
-        'bg-[#007765] text-white' : 'text-gray-700'"
-        class="px-6 py-2 transition-all duration-200">
+        [ngClass]="activeTab() === 'cart' ? 'nav-button' : 'text-gray-700'"
+        class="py-3 flex items-center justify-center gap-2"
+      >
+        <mat-icon class="text-green-500">shopping_cart</mat-icon>
         Cart
       </button>
 
       <button
         (click)="setTab('wishlist')"
-        [ngClass]="activeTab() === 'wishlist' ? 
-        'bg-[#007765] text-white' : 'text-gray-700'"
-        class="px-6 py-2 transition-all duration-200">
-        Wish list
+        [ngClass]="activeTab() === 'wishlist' ? 'nav-button' : 'text-gray-700'"
+        class="py-3 flex items-center justify-center gap-2"
+      >
+        <mat-icon class="text-red-500">favorite</mat-icon>
+        Wishlist
       </button>
 
       <button
         (click)="setTab('orders')"
-        [ngClass]="activeTab() === 'orders' ? 
-        'bg-[#007765] text-white' : 'text-gray-700'"
-        class="px-6 py-2 transition-all duration-200">
+        [ngClass]="activeTab() === 'orders' ? 'nav-button' : 'text-gray-700'"
+        class="py-3 flex items-center justify-center gap-2"
+      >
+        <mat-icon class="text-purple-500">receipt_long</mat-icon>
         Orders
       </button>
 
       <button
         (click)="setTab('address')"
-        [ngClass]="activeTab() === 'address' ? 
-        'bg-[#007765] text-white' : 'text-gray-700'"
-        class="px-6 py-2 transition-all duration-200">
-        Address list
+        [ngClass]="activeTab() === 'address' ? 'nav-button' : 'text-gray-700'"
+        class="py-3 flex items-center justify-center gap-2"
+      >
+        <mat-icon class="text-orange-500">location_on</mat-icon>
+        Address
       </button>
-
     </div>
 
-    <!-- PROFILE TAB -->
-    <div *ngIf="activeTab() === 'profile'"
-         class="flex flex-col md:flex-row items-center md:items-start gap-10">
+    <div *ngIf="activeTab() === 'profile'">
+      <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <div class="flex items-center gap-5">
+          <div class="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
+            <mat-icon class="text-4xl text-gray-600">person</mat-icon>
+          </div>
 
-      <!-- Profile Image -->
-      <div class="w-40 h-40 bg-white rounded-full"></div>
+          <div>
+            <h2 class="text-xl font-semibold">{{ user().username }}</h2>
+            <p class="text-gray-500">{{ user().email }}</p>
+          </div>
+        </div>
 
-      <!-- User Details -->
-      <div class="space-y-4 text-center md:text-left">
-        <p class="text-lg font-medium">{{ user().username }}</p>
-        <p>{{ user().email }}</p>
-        <p>{{ user().phone }}</p>
-        <p>{{ user().addressLine1 }}, {{ user().addressLine2 }}</p>
-        <p>{{ user().state }}</p>
-        <p>{{ user().city }}</p>
-        <p>{{ user().pincode }}</p>
+        <button
+          class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition"
+        >
+          <!-- <mat-icon>edit</mat-icon> -->
+          Edit Profile
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-gray-50 p-5 rounded-xl space-y-3">
+          <p class="flex items-center gap-2">
+            <mat-icon class="text-indigo-500">call</mat-icon>
+            {{ user().phone }}
+          </p>
+
+          <p class="flex items-center gap-2">
+            <mat-icon class="text-pink-500">location_city</mat-icon>
+            {{ user().city }}
+          </p>
+
+          <p class="flex items-center gap-2">
+            <mat-icon class="text-purple-500">map</mat-icon>
+            {{ user().state }}
+          </p>
+        </div>
+
+        <div class="bg-gray-50 p-5 rounded-xl space-y-3">
+          <p class="flex items-center gap-2">
+            <mat-icon class="text-orange-500">home</mat-icon>
+            {{ user().addressLine1 }}, {{ user().addressLine2 }}
+          </p>
+
+          <p class="flex items-center gap-2">
+            <mat-icon class="text-gray-600">pin_drop</mat-icon>
+            {{ user().pincode }}
+          </p>
+        </div>
+      </div>
+
+      <div class="flex justify-end mt-10">
+        <button
+          (click)="logout()"
+          class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg transition"
+        >
+          Logout
+        </button>
       </div>
     </div>
 
-    <!-- CART TAB -->
-    <div *ngIf="activeTab() === 'cart'" class="text-center py-20 text-gray-600">
-      No cart items
+    <div *ngIf="activeTab() === 'cart'" class="">
+      <app-cart></app-cart>
     </div>
 
-    <!-- WISHLIST TAB -->
-    <div *ngIf="activeTab() === 'wishlist'" class="text-center py-20 text-gray-600">
+    <div *ngIf="activeTab() === 'wishlist'" class="text-center py-20 text-gray-500">
       No wishlist items
     </div>
 
-    <!-- ORDERS TAB -->
-    <div *ngIf="activeTab() === 'orders'" class="text-center py-20 text-gray-600">
-      No orders
-    </div>
+    <div *ngIf="activeTab() === 'orders'" class="text-center py-20 text-gray-500">No orders</div>
 
-    <!-- ADDRESS TAB -->
-    <div *ngIf="activeTab() === 'address'" class="text-center py-20 text-gray-600">
+    <div *ngIf="activeTab() === 'address'" class="text-center py-20 text-gray-500">
       No addresses
     </div>
-
-    <!-- Logout Button -->
-    <div class="flex justify-end mt-10">
-      <button
-        (click)="logout()"
-        class="bg-[#FF5151] hover:opacity-90 text-white px-6 py-2 rounded-md transition">
-        Logout →
-      </button>
-    </div>
-
   </div>
-
 </div>

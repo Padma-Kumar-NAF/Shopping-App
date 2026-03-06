@@ -1,16 +1,17 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { Cart } from '../cart/cart';
 
 type TabType = 'profile' | 'cart' | 'wishlist' | 'orders' | 'address';
 
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule],
+  imports: [CommonModule,MatIconModule,Cart],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
 export class Profile {
-
   activeTab = signal<TabType>('profile');
 
   user = signal({
@@ -26,6 +27,10 @@ export class Profile {
 
   setTab(tab: TabType) {
     this.activeTab.set(tab);
+  }
+
+  goHome(){
+    console.log("back to home")
   }
 
   logout() {
