@@ -10,7 +10,7 @@ namespace ShoppingApp.Controllers
     //[Authorize]
     [Route("[controller]")]
     [ApiController]
-    public class CartController : ControllerBase , ICartController
+    public class CartController : BaseController , ICartController
     {
         private readonly ICartItemsService _cartItemService;
         private readonly ICartService _cartService;
@@ -19,18 +19,6 @@ namespace ShoppingApp.Controllers
         {
             _cartItemService = cartItemService;
             _cartService = cartService;
-        }
-
-        private Guid GetUserId()
-        {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (string.IsNullOrWhiteSpace(userIdClaim))
-                return Guid.Empty;
-
-            return Guid.TryParse(userIdClaim, out var userId)
-                ? userId
-                : Guid.Empty;
         }
 
         [HttpPost("AddToCart")]

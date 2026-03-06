@@ -8,10 +8,10 @@
     {
         public Guid WishListId { get; set; }
         public string WishListName { get; set; } = string.Empty;
-        public ICollection<WishListItems>? WishListItems { get; set; }
+        public ICollection<WishListItemsDTO>? WishListItems { get; set; }
     }
 
-    public class WishListItems
+    public class WishListItemsDTO
     {
         public Guid WishListItemsId { get; set; }
         public Guid ProductId { get; set; }

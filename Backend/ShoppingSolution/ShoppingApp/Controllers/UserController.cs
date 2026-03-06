@@ -11,7 +11,7 @@ namespace ShoppingApp.Controllers
     //[Authorize]
     [Route("[controller]")]
     [ApiController]
-    public class UserController : ControllerBase , IUserController
+    public class UserController : BaseController, IUserController
     {
         private readonly IUserService _userService;
         private readonly IUserDetailsService _userDetailsService;
@@ -20,18 +20,6 @@ namespace ShoppingApp.Controllers
         {
             _userService = userService;
             _userDetailsService = userDetailsService;
-        }
-
-        private Guid GetUserId()
-        {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (string.IsNullOrWhiteSpace(userIdClaim))
-                return Guid.Empty;
-
-            return Guid.TryParse(userIdClaim, out var userId)
-                ? userId
-                : Guid.Empty;
         }
 
         //[Authorize(Roles = "User")]

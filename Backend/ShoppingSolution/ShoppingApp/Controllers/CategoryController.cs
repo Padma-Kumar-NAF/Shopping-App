@@ -12,24 +12,12 @@ namespace ShoppingApp.Controllers
     //[Authorize]
     [Route("[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase, ICategoryController
+    public class CategoryController : BaseController, ICategoryController
     {
         private readonly ICategoryService _categoryService;
         public CategoryController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
-        }
-
-        private Guid GetUserId()
-        {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (string.IsNullOrWhiteSpace(userIdClaim))
-                return Guid.Empty;
-
-            return Guid.TryParse(userIdClaim, out var userId)
-                ? userId
-                : Guid.Empty;
         }
 
         //[Authorize(Roles = "Admin")]

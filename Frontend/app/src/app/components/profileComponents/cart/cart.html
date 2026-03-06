@@ -15,14 +15,14 @@
 
         <button
           (click)="removeAllCart()"
-          class="px-4 py-1.5 text-sm rounded-lg border bg-red-100 text-red-600 hover:bg-red-200"
+          class="cursor-pointer px-4 py-1.5 text-sm rounded-lg border bg-red-100 text-red-600 hover:bg-red-200"
         >
           > Remove All
         </button>
 
         <button
           (click)="placeAllOrders()"
-          class="px-4 py-1.5 text-sm rounded-lg border bg-green-100 text-green-600 hover:bg-green-200"
+          class="cursor-pointer px-4 py-1.5 text-sm rounded-lg border bg-green-100 text-green-600 hover:bg-green-200"
         >
           > Place Order
         </button>
@@ -31,18 +31,19 @@
 
     <div class="flex flex-wrap gap-4">
       @for (item of paginatedItems; track item.id) {
-        <div
-          class="bg-gray-50 border rounded-xl p-4 w-full md:w-[48%] lg:w-[32%] flex gap-4 items-center"
-        >
+        <div class="bg-gray-50 border rounded-xl p-4 w-full md:w-[48%] lg:w-[32%] relative flex gap-4 items-center">
+          <button (click)="removeFromCart(item)" 
+                  class="cursor-pointer absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center transition-colors shadow-md z-10"
+                  mat-icon-button>
+            <mat-icon class="text-sm">close</mat-icon>
+          </button>
+
           <img [src]="item.image" alt="product" class="w-16 h-16 object-cover rounded-lg" />
-
-          <div class="flex-1">
-            <h2 class="font-medium text-sm">
-              {{ item.name }}
-            </h2>
-
+          
+          <div class="flex-1 pt-2">
+            <h2 class="font-medium text-sm">{{ item.name }}</h2>
             <p class="text-gray-500 text-sm">₹{{ item.price }}</p>
-
+            
             <div class="flex items-center gap-2 mt-2">
               <button
                 (click)="decreaseQty(item)"
@@ -50,11 +51,7 @@
               >
                 -
               </button>
-
-              <span class="text-sm">
-                {{ item.quantity }}
-              </span>
-
+              <span class="text-sm">{{ item.quantity }}</span>
               <button
                 (click)="increaseQty(item)"
                 class="w-6 h-6 bg-gray-200 rounded hover:bg-gray-300"
@@ -63,10 +60,6 @@
               </button>
             </div>
           </div>
-
-          <button (click)="removeFromCart(item)" class="text-red-500 text-sm hover:text-red-600">
-            Remove
-          </button>
         </div>
       }
     </div>
@@ -75,17 +68,15 @@
       <button
         (click)="prevPage()"
         [disabled]="currentPage === 1"
-        class="px-4 py-1.5 text-sm rounded-lg border bg-white hover:bg-gray-100 disabled:opacity-40"
+        class="cursor-pointer px-4 py-1.5 text-sm rounded-lg border bg-white hover:bg-gray-100 disabled:opacity-40"
       >
         ← Prev
       </button>
-
       <span class="text-sm font-medium text-gray-600"> {{ currentPage }} / {{ totalPages }} </span>
-
       <button
         (click)="nextPage()"
         [disabled]="currentPage === totalPages"
-        class="px-4 py-1.5 text-sm rounded-lg border bg-white hover:bg-gray-100 disabled:opacity-40"
+        class="cursor-pointer px-4 py-1.5 text-sm rounded-lg border bg-white hover:bg-gray-100 disabled:opacity-40"
       >
         Next →
       </button>

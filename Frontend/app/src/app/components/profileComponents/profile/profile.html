@@ -5,7 +5,7 @@
 
       <button
         (click)="goHome()"
-        class="flex items-center gap-2 px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+        class="cursor-pointer px-4 py-1.5 text-sm rounded-lg border bg-indigo-100 text-indigo-600 hover:bg-indigo-200"
       >
         <!-- <mat-icon>arrow_back</mat-icon> -->
         Back to Home
@@ -15,7 +15,7 @@
       <button
         (click)="setTab('profile')"
         [ngClass]="activeTab() === 'profile' ? 'nav-button' : 'text-gray-700'"
-        class="py-3 flex items-center justify-center gap-2"
+        class="cursor-pointer py-3 flex items-center justify-center gap-2"
       >
         <mat-icon class="text-blue-500">person</mat-icon>
         Profile
@@ -24,7 +24,7 @@
       <button
         (click)="setTab('cart')"
         [ngClass]="activeTab() === 'cart' ? 'nav-button' : 'text-gray-700'"
-        class="py-3 flex items-center justify-center gap-2"
+        class="cursor-pointer py-3 flex items-center justify-center gap-2"
       >
         <mat-icon class="text-green-500">shopping_cart</mat-icon>
         Cart
@@ -33,7 +33,7 @@
       <button
         (click)="setTab('wishlist')"
         [ngClass]="activeTab() === 'wishlist' ? 'nav-button' : 'text-gray-700'"
-        class="py-3 flex items-center justify-center gap-2"
+        class="cursor-pointer py-3 flex items-center justify-center gap-2"
       >
         <mat-icon class="text-red-500">favorite</mat-icon>
         Wishlist
@@ -42,7 +42,7 @@
       <button
         (click)="setTab('orders')"
         [ngClass]="activeTab() === 'orders' ? 'nav-button' : 'text-gray-700'"
-        class="py-3 flex items-center justify-center gap-2"
+        class="cursor-pointer py-3 flex items-center justify-center gap-2"
       >
         <mat-icon class="text-purple-500">receipt_long</mat-icon>
         Orders
@@ -51,7 +51,7 @@
       <button
         (click)="setTab('address')"
         [ngClass]="activeTab() === 'address' ? 'nav-button' : 'text-gray-700'"
-        class="py-3 flex items-center justify-center gap-2"
+        class="cursor-pointer py-3 flex items-center justify-center gap-2"
       >
         <mat-icon class="text-orange-500">location_on</mat-icon>
         Address
@@ -72,9 +72,8 @@
         </div>
 
         <button
-          class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition"
+          class="cursor-pointer px-4 py-1.5 text-sm rounded-lg border bg-indigo-100 text-indigo-600 hover:bg-indigo-200"
         >
-          <!-- <mat-icon>edit</mat-icon> -->
           Edit Profile
         </button>
       </div>
@@ -113,7 +112,7 @@
       <div class="flex justify-end mt-10">
         <button
           (click)="logout()"
-          class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg transition"
+          class="cursor-pointer px-4 py-1.5 text-sm rounded-lg border bg-red-100 text-red-600 hover:bg-red-200"
         >
           Logout
         </button>

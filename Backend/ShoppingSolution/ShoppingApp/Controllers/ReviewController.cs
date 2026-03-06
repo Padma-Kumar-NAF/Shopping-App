@@ -10,24 +10,12 @@ namespace ShoppingApp.Controllers
     //[Authorize(Roles = "User")]
     [Route("[controller]")]
     [ApiController]
-    public class ReviewController : ControllerBase , IReviewController
+    public class ReviewController : BaseController, IReviewController
     {
         private readonly IReviewService _reviewService;
         public ReviewController(IReviewService reviewService)
         {
             _reviewService = reviewService;
-        }
-
-        private Guid GetUserId()
-        {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (string.IsNullOrWhiteSpace(userIdClaim))
-                return Guid.Empty;
-
-            return Guid.TryParse(userIdClaim, out var userId)
-                ? userId
-                : Guid.Empty;
         }
 
         [HttpPost("AddReview")]

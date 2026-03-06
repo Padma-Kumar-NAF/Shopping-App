@@ -12,7 +12,7 @@ namespace ShoppingApp.Controllers
 {
     [Route("api/auth")]
     [ApiController]
-    public class AuthenticationController : ControllerBase, IAuthenticationController
+    public class AuthenticationController : BaseController, IAuthenticationController
     {
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;

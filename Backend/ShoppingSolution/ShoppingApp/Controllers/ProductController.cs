@@ -13,25 +13,13 @@ namespace ShoppingApp.Controllers
     //[Authorize]
     [Route("[controller]")]
     [ApiController]
-    public class ProductsController : ControllerBase, IProductController
+    public class ProductsController : BaseController, IProductController
     {
         private readonly IProductService _productService;
 
         public ProductsController(IProductService productService)
         {
             _productService = productService;
-        }
-
-        private Guid GetUserId()
-        {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (string.IsNullOrWhiteSpace(userIdClaim))
-                return Guid.Empty;
-
-            return Guid.TryParse(userIdClaim, out var userId)
-                ? userId
-                : Guid.Empty;
         }
 
         //[Authorize(Roles = "Admin,User")]

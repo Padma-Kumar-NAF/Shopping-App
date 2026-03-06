@@ -10,6 +10,9 @@ select * from Category
 select * from Users
 select * from UserDetails
 
+select * from WishList
+select * from WishListItems
+
 select * from Carts
 select * from CartItems
 

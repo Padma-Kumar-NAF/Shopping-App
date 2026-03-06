@@ -10,24 +10,12 @@ namespace ShoppingApp.Controllers
     //[Authorize(Roles = "Admin,User")]
     [Route("orders")]
     [ApiController]
-    public class OrderController : ControllerBase, IOrderController
+    public class OrderController : BaseController, IOrderController
     {
         private readonly IOrderService _orderService;
         public OrderController(IOrderService orderService)
         {
             _orderService = orderService;
-        }
-
-        private Guid GetUserId()
-        {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (string.IsNullOrWhiteSpace(userIdClaim))
-                return Guid.Empty;
-
-            return Guid.TryParse(userIdClaim, out var userId)
-                ? userId
-                : Guid.Empty;
         }
 
         [HttpPut("CancelOrder")]

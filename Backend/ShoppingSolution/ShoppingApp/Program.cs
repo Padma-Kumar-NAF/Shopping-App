@@ -79,6 +79,7 @@ namespace ShoppingApp
             //builder.Services.AddScoped<IStockService, StockService>();
             builder.Services.AddScoped<IUserDetailsService, UserDetailsService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IWishListService, WishListService > ();
             #endregion
 
             var app = builder.Build();
