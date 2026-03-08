@@ -4,8 +4,8 @@
     {
         public Guid PaymentId { get; set; }
         public Guid UserId { get; set; }
-        public Guid OrderID { get; set; }
-        public int TotalAmount { get; set; }
+        public Guid OrderId { get; set; }
+        public decimal TotalAmount { get; set; }
         public string PaymentType { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
 

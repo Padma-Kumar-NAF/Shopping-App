@@ -30,7 +30,6 @@ namespace ShoppingApp.Controllers
             if (request == null)
                 return BadRequest("Invalid request");
 
-            //request.Cart.UserId = GetUserId();
             request.UserId = GetUserId();
 
             //if (request.Cart.UserId == Guid.Empty)
@@ -93,7 +92,8 @@ namespace ShoppingApp.Controllers
             var isOrdered = await _cartService.PlaceOrderAllFromCart(
                 request.CartId,
                 request.UserId,
-                request.AddressId);
+                request.AddressId,
+                request.PaymentType);
 
             if (!isOrdered)
                 return BadRequest("Order failed. Please check cart, stock, or address.");

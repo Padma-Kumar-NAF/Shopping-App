@@ -10,5 +10,7 @@ namespace ShoppingApp.Models.DTOs.Cart
         public Guid CartId { get; set; }
         [Required(ErrorMessage = "Address Id is required")]
         public Guid AddressId { get; set; }
+        [Required(ErrorMessage="Payment type is required")]
+        public string PaymentType { get; set; } = string.Empty;
     }
 }

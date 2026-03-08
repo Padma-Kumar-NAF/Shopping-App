@@ -7,8 +7,7 @@
         (click)="goHome()"
         class="cursor-pointer px-4 py-1.5 text-sm rounded-lg border bg-indigo-100 text-indigo-600 hover:bg-indigo-200"
       >
-        <!-- <mat-icon>arrow_back</mat-icon> -->
-        Back to Home
+      Back to Home
       </button>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-5 border-b mb-10 text-center text-sm md:text-base">
@@ -127,10 +126,12 @@
       <app-wishlist></app-wishlist>
     </div>
 
-    <div *ngIf="activeTab() === 'orders'" class="text-center py-20 text-gray-500">No orders</div>
+    <div *ngIf="activeTab() === 'orders'" class="">
+      <app-orders></app-orders>
+    </div>
 
-    <div *ngIf="activeTab() === 'address'" class="text-center py-20 text-gray-500">
-      No addresses
+    <div *ngIf="activeTab() === 'address'" class="">
+      <app-address></app-address>
     </div>
   </div>
 </div>

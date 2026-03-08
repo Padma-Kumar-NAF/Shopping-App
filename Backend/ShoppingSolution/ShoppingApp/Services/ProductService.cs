@@ -103,6 +103,8 @@ namespace ShoppingApp.Services
             }
 
             var products = await query
+                .Skip((request.PageNumber - 1) * request.Limit)
+                .Take(request.Limit)
                 .Select(p => new GetAllProductsResponseDTO
                 {
                     ProductId = p.ProductId,
@@ -113,16 +115,22 @@ namespace ShoppingApp.Services
                     CategoryName = p.Category!.CategoryName,
                     Price = p.Price,
                     StockId = p.Stock!.StockId,
-                    Quantity = p.Stock.Quantity
+                    Quantity = p.Stock.Quantity,
+
+                    Review = p.Reviews
+                    .Select(r => new ReviewDTO
+                    {
+                        Summary = r.Summary,
+                        ReviewPoints = r.ReviewPoints
+                    })
+                    .ToList()
                 })
-                .Skip((request.PageNumber - 1) * request.Limit)
-                .Take(request.Limit)
                 .ToListAsync();
 
             return products;
         }
 
-        public async Task<GetAllProductsResponseDTO?> SearchProductById(SearchProductByIdRequestDTO request)
+        public async Task<GetAllProductsResponseDTO> SearchProductById(SearchProductByIdRequestDTO request)
         {
             var product = await _productRepository
                 .GetQueryable()
@@ -138,7 +146,14 @@ namespace ShoppingApp.Services
                     Price = p.Price,
 
                     CategoryName = p.Category!.CategoryName,
-                    Quantity = p.Stock!.Quantity
+                    Quantity = p.Stock!.Quantity,
+                    Review = p.Reviews
+                    .Select(r => new ReviewDTO
+                    {
+                        Summary = r.Summary,
+                        ReviewPoints = r.ReviewPoints
+                    })
+                    .ToList()
                 })
                 .FirstOrDefaultAsync();
 
@@ -171,7 +186,14 @@ namespace ShoppingApp.Services
                     CategoryName = p.Category!.CategoryName,
                     Price = p.Price,
                     StockId = p.Stock!.StockId,
-                    Quantity = p.Stock.Quantity
+                    Quantity = p.Stock.Quantity,
+                    Review = p.Reviews
+                    .Select(r => new ReviewDTO
+                    {
+                        Summary = r.Summary,
+                        ReviewPoints = r.ReviewPoints
+                    })
+                    .ToList()
                 })
                 .ToListAsync();
 

@@ -278,27 +278,32 @@ namespace ShoppingApp.Migrations
                 {
                     b.Property<Guid>("PaymentId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<Guid>("OrderID")
+                    b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("PaymentType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TotalAmount")
-                        .HasColumnType("int");
+                    b.Property<decimal>("TotalAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("PaymentId");
+                    b.HasKey("PaymentId")
+                        .HasName("PK_Payment");
 
-                    b.HasIndex("OrderID")
+                    b.HasIndex("OrderId")
                         .IsUnique();
 
                     b.HasIndex("UserId");
@@ -353,10 +358,13 @@ namespace ShoppingApp.Migrations
                 {
                     b.Property<Guid>("RefundId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
@@ -364,13 +372,18 @@ namespace ShoppingApp.Migrations
                     b.Property<Guid>("PaymentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("RefundAmount")
-                        .HasColumnType("int");
+                    b.Property<decimal>("RefundAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("RefundId");
+                    b.HasKey("RefundId")
+                        .HasName("PK_Refund");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
 
                     b.HasIndex("PaymentId")
                         .IsUnique();
@@ -541,7 +554,7 @@ namespace ShoppingApp.Migrations
 
             modelBuilder.Entity("ShoppingApp.Models.WishList", b =>
                 {
-                    b.Property<Guid>("WhishListId")
+                    b.Property<Guid>("WishListId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
@@ -558,7 +571,7 @@ namespace ShoppingApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("WhishListId")
+                    b.HasKey("WishListId")
                         .HasName("Pk_WishList");
 
                     b.HasIndex("UserId");
@@ -697,9 +710,10 @@ namespace ShoppingApp.Migrations
                 {
                     b.HasOne("ShoppingApp.Models.Order", "Order")
                         .WithOne("Payment")
-                        .HasForeignKey("ShoppingApp.Models.Payment", "OrderID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ShoppingApp.Models.Payment", "OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Payment_Order");
 
                     b.HasOne("ShoppingApp.Models.User", "User")
                         .WithMany("Payments")
@@ -727,11 +741,18 @@ namespace ShoppingApp.Migrations
 
             modelBuilder.Entity("ShoppingApp.Models.Refund", b =>
                 {
+                    b.HasOne("ShoppingApp.Models.Order", "Order")
+                        .WithOne("Refund")
+                        .HasForeignKey("ShoppingApp.Models.Refund", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ShoppingApp.Models.Payment", "Payment")
                         .WithOne("Refund")
                         .HasForeignKey("ShoppingApp.Models.Refund", "PaymentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Refund_Payment");
 
                     b.HasOne("ShoppingApp.Models.User", "User")
                         .WithMany("Refunds")
@@ -739,6 +760,8 @@ namespace ShoppingApp.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_Refund_User");
+
+                    b.Navigation("Order");
 
                     b.Navigation("Payment");
 
@@ -843,6 +866,8 @@ namespace ShoppingApp.Migrations
                     b.Navigation("OrderDetails");
 
                     b.Navigation("Payment");
+
+                    b.Navigation("Refund");
                 });
 
             modelBuilder.Entity("ShoppingApp.Models.Payment", b =>

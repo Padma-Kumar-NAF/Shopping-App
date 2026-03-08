@@ -31,6 +31,8 @@ namespace ShoppingApp.Contexts
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Category>().HasNoKey();
+
             modelBuilder.Entity<Address>(entity =>
             {
                 entity.HasKey(a => a.AddressId)
@@ -161,7 +163,7 @@ namespace ShoppingApp.Contexts
                 .HasName("PK_Order");
 
                 entity.Property(o => o.OrderId)
-         .HasDefaultValueSql("NEWID()");
+                    .HasDefaultValueSql("NEWID()");
 
                 entity.Property(o => o.CreatedAt)
                       .HasDefaultValueSql("GETUTCDATE()");
@@ -194,10 +196,10 @@ namespace ShoppingApp.Contexts
                     .HasName("PK_OrderDetails");
 
                 entity.Property(o => o.OrderDetailsId)
-         .HasDefaultValueSql("NEWID()");
+                    .HasDefaultValueSql("NEWID()");
 
                 entity.Property(o => o.CreatedAt)
-                      .HasDefaultValueSql("GETUTCDATE()");
+                    .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.Property(od => od.ProductPrice)
                     .HasPrecision(18, 2);
@@ -217,6 +219,27 @@ namespace ShoppingApp.Contexts
                 entity.HasIndex(od => new { od.OrderId, od.ProductId })
                     .IsUnique()
                     .HasDatabaseName("UX_OrderDetails_Order_Product");
+            });
+
+            modelBuilder.Entity<Payment>(entity =>
+            {
+                entity.HasKey(p => p.PaymentId)
+                    .HasName("PK_Payment");
+
+                entity.Property(o => o.PaymentId)
+                    .HasDefaultValueSql("NEWID()");
+
+                entity.Property(p => p.TotalAmount)
+                    .HasPrecision(18, 2);
+
+                entity.HasOne(p => p.Order)
+                  .WithOne(o => o.Payment)
+                  .HasForeignKey<Payment>(p => p.OrderId)
+                  .HasConstraintName("FK_Payment_Order")
+                  .OnDelete(DeleteBehavior.Restrict);
+
+                entity.Property(o => o.CreatedAt)
+                     .HasDefaultValueSql("GETUTCDATE()");
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -244,6 +267,30 @@ namespace ShoppingApp.Contexts
 
                 entity.HasIndex(p => p.CategoryId)
                     .HasDatabaseName("IX_Product_CategoryId");
+            });
+
+            modelBuilder.Entity<Refund>(entity =>
+            {
+                entity.HasKey(p => p.RefundId)
+                    .HasName("PK_Refund");
+
+                entity.Property(o => o.RefundId)
+                    .HasDefaultValueSql("NEWID()");
+
+                entity.HasOne(o => o.Order)
+                    .WithOne(o => o.Refund);
+
+                entity.HasOne(r => r.Payment)
+                    .WithOne(p => p.Refund)
+                    .HasForeignKey<Refund>(r => r.PaymentId)
+                    .HasConstraintName("FK_Refund_Payment")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.Property(p => p.RefundAmount)
+                    .HasPrecision(18, 2);
+
+                entity.Property(o => o.CreatedAt)
+                     .HasDefaultValueSql("GETUTCDATE()");
             });
 
             modelBuilder.Entity<Review>(entity =>
@@ -382,10 +429,10 @@ namespace ShoppingApp.Contexts
 
             modelBuilder.Entity<WishList>(entity =>
             {
-                entity.HasKey(w => w.WhishListId)
+                entity.HasKey(w => w.WishListId)
                     .HasName("Pk_WishList");
                 
-                entity.Property(w => w.WhishListId)
+                entity.Property(w => w.WishListId)
                     .HasDefaultValueSql("NEWID()");
 
                 entity.Property(o => o.CreatedAt)

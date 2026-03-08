@@ -49,9 +49,7 @@ namespace ShoppingApp
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
-                        //ValidateIssuer = false,
                         ValidateAudience = true,
-                        //ValidateAudience = false,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = "ShoppingApp",

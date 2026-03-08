@@ -18,6 +18,9 @@ namespace ShoppingApp.Models.DTOs.Order
         [Required(ErrorMessage = "Order items are required")]
         [MinLength(1, ErrorMessage = "At least one item is required")]
         public List<PlaceOrderItemDTO> Items { get; set; } = new();
+
+        [Required(ErrorMessage = "Payment type is required")]
+        public string PaymentType { get; set; } = string.Empty;
     }
 
     public class PlaceOrderItemDTO

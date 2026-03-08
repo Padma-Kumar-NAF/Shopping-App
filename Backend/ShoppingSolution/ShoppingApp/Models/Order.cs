@@ -26,6 +26,8 @@ namespace ShoppingApp.Models
         public User? User { get; set; } // one to many
         public Payment? Payment { get; set; } // one to one 
 
+        public Refund? Refund { get; set; }
+
         public ICollection<OrderDetails>? OrderDetails { get; set; }
     }
 }

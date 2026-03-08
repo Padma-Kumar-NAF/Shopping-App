@@ -12,7 +12,7 @@ using ShoppingApp.Contexts;
 namespace ShoppingApp.Migrations
 {
     [DbContext(typeof(ShoppingContext))]
-    [Migration("20260223172954_init")]
+    [Migration("20260307113545_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -209,6 +209,9 @@ namespace ShoppingApp.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
+                    b.Property<DateTime>("DeliveryDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -274,6 +277,43 @@ namespace ShoppingApp.Migrations
                     b.ToTable("OrderDetails");
                 });
 
+            modelBuilder.Entity("ShoppingApp.Models.Payment", b =>
+                {
+                    b.Property<Guid>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PaymentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("PaymentId")
+                        .HasName("PK_Payment");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("ShoppingApp.Models.Product", b =>
                 {
                     b.Property<Guid>("ProductId")
@@ -315,6 +355,42 @@ namespace ShoppingApp.Migrations
                         .HasDatabaseName("IX_Product_Name");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("ShoppingApp.Models.Refund", b =>
+                {
+                    b.Property<Guid>("RefundId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PaymentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("RefundAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("RefundId")
+                        .HasName("PK_Refund");
+
+                    b.HasIndex("PaymentId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Refunds");
                 });
 
             modelBuilder.Entity("ShoppingApp.Models.Review", b =>
@@ -476,6 +552,61 @@ namespace ShoppingApp.Migrations
                     b.ToTable("UserDetails");
                 });
 
+            modelBuilder.Entity("ShoppingApp.Models.WishList", b =>
+                {
+                    b.Property<Guid>("WishListId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("WhishListName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("WishListId")
+                        .HasName("Pk_WishList");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("WishList");
+                });
+
+            modelBuilder.Entity("ShoppingApp.Models.WishListItems", b =>
+                {
+                    b.Property<Guid>("WishListItemsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("WishListId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("WishListItemsId")
+                        .HasName("Pk_WishListItems");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("WishListId");
+
+                    b.ToTable("WishListItems");
+                });
+
             modelBuilder.Entity("ShoppingApp.Models.Address", b =>
                 {
                     b.HasOne("ShoppingApp.Models.User", "User")
@@ -575,6 +706,27 @@ namespace ShoppingApp.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("ShoppingApp.Models.Payment", b =>
+                {
+                    b.HasOne("ShoppingApp.Models.Order", "Order")
+                        .WithOne("Payment")
+                        .HasForeignKey("ShoppingApp.Models.Payment", "OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Payment_Order");
+
+                    b.HasOne("ShoppingApp.Models.User", "User")
+                        .WithMany("Payments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Payments_User");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ShoppingApp.Models.Product", b =>
                 {
                     b.HasOne("ShoppingApp.Models.Category", "Category")
@@ -585,6 +737,27 @@ namespace ShoppingApp.Migrations
                         .HasConstraintName("FK_Product_Category");
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("ShoppingApp.Models.Refund", b =>
+                {
+                    b.HasOne("ShoppingApp.Models.Payment", "Payment")
+                        .WithOne("Refund")
+                        .HasForeignKey("ShoppingApp.Models.Refund", "PaymentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Refund_Payment");
+
+                    b.HasOne("ShoppingApp.Models.User", "User")
+                        .WithMany("Refunds")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Refund_User");
+
+                    b.Navigation("Payment");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ShoppingApp.Models.Review", b =>
@@ -632,6 +805,39 @@ namespace ShoppingApp.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ShoppingApp.Models.WishList", b =>
+                {
+                    b.HasOne("ShoppingApp.Models.User", "User")
+                        .WithMany("WishLists")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_WishList_User");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ShoppingApp.Models.WishListItems", b =>
+                {
+                    b.HasOne("ShoppingApp.Models.Product", "Products")
+                        .WithMany("WishListItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_WishListItem_Product");
+
+                    b.HasOne("ShoppingApp.Models.WishList", "WishList")
+                        .WithMany("WishListItems")
+                        .HasForeignKey("WishListId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_WishListItem_WishList");
+
+                    b.Navigation("Products");
+
+                    b.Navigation("WishList");
+                });
+
             modelBuilder.Entity("ShoppingApp.Models.Address", b =>
                 {
                     b.Navigation("Orders");
@@ -650,6 +856,13 @@ namespace ShoppingApp.Migrations
             modelBuilder.Entity("ShoppingApp.Models.Order", b =>
                 {
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("Payment");
+                });
+
+            modelBuilder.Entity("ShoppingApp.Models.Payment", b =>
+                {
+                    b.Navigation("Refund");
                 });
 
             modelBuilder.Entity("ShoppingApp.Models.Product", b =>
@@ -661,6 +874,8 @@ namespace ShoppingApp.Migrations
                     b.Navigation("Reviews");
 
                     b.Navigation("Stock");
+
+                    b.Navigation("WishListItems");
                 });
 
             modelBuilder.Entity("ShoppingApp.Models.User", b =>
@@ -673,9 +888,20 @@ namespace ShoppingApp.Migrations
 
                     b.Navigation("Orders");
 
+                    b.Navigation("Payments");
+
+                    b.Navigation("Refunds");
+
                     b.Navigation("Reviews");
 
                     b.Navigation("UserDetails");
+
+                    b.Navigation("WishLists");
+                });
+
+            modelBuilder.Entity("ShoppingApp.Models.WishList", b =>
+                {
+                    b.Navigation("WishListItems");
                 });
 #pragma warning restore 612, 618
         }

@@ -16,7 +16,7 @@ namespace ShoppingApp.Services
 
         public async Task<bool> AddToWishListAsync(Guid UserId, Guid ProductId, Guid WishListId)
         {
-            var wishList = await _context.WishList.FirstOrDefaultAsync(x => x.WhishListId == WishListId && x.UserId == UserId);
+            var wishList = await _context.WishList.FirstOrDefaultAsync(x => x.WishListId == WishListId && x.UserId == UserId);
 
             if (wishList == null)
                 throw new Exception("Wishlist not found");
@@ -62,7 +62,7 @@ namespace ShoppingApp.Services
         {
             var wishList = await _context.WishList
                 .Include(x => x.WishListItems)
-                .FirstOrDefaultAsync(x => x.WhishListId == WishListId && x.UserId == UserId);
+                .FirstOrDefaultAsync(x => x.WishListId == WishListId && x.UserId == UserId);
 
             if (wishList == null)
                 throw new Exception("Wishlist not found");
@@ -91,7 +91,7 @@ namespace ShoppingApp.Services
             {
                 WishList = wishlists.Select(w => new WishListDTO
                 {
-                    WishListId = w.WhishListId,
+                    WishListId = w.WishListId,
                     WishListName = w.WhishListName,
 
                     WishListItems = w.WishListItems!.Select(i => new WishListItemsDTO

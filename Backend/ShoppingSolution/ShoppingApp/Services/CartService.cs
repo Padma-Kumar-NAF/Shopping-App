@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure.Core;
+using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Contexts;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
@@ -65,6 +66,7 @@ namespace ShoppingApp.Services
                     }
                 }
 
+
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
@@ -83,7 +85,7 @@ namespace ShoppingApp.Services
                 .FirstOrDefaultAsync(c => c.UserId == userId);
         }
 
-        public async Task<bool> PlaceOrderAllFromCart(Guid cartId, Guid userId,Guid addressId)
+        public async Task<bool> PlaceOrderAllFromCart(Guid cartId, Guid userId,Guid addressId,string PaymentType)
         {
             if (cartId == Guid.Empty || userId == Guid.Empty || addressId == Guid.Empty)
                 return false;
@@ -144,7 +146,7 @@ namespace ShoppingApp.Services
                     TotalProductsCount = cartItems.Sum(x => x.Quantity),
                     TotalAmount = cartItems.Sum(x => x.Quantity * x.Product!.Price),
                     AddressId = addressId,
-                    DeliveryDate = DateTime.UtcNow,
+                    DeliveryDate = DateTime.Now.AddDays(2),
                     OrderDetails = new List<OrderDetails>()
                 };
                 Console.WriteLine("Inside for loop");
@@ -168,6 +170,16 @@ namespace ShoppingApp.Services
                 }
 
                 await _context.Orders.AddAsync(order);
+
+                var payment = new Payment()
+                {
+                    UserId = userId,
+                    OrderId = order.OrderId,
+                    TotalAmount = cartItems.Sum(x => x.Quantity * x.Product!.Price),
+                    PaymentType = PaymentType
+                };
+
+                await _context.Payments.AddAsync(payment);
 
                 _context.CartItems.RemoveRange(cartItems);
 

@@ -2,7 +2,7 @@
 {
     public class WishList
     {
-        public Guid WhishListId { get; set; }
+        public Guid WishListId { get; set; }
         public Guid UserId { get; set; }
         public string WhishListName { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }

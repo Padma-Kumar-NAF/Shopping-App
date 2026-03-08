@@ -8,5 +8,6 @@ namespace ShoppingApp.Models.DTOs.Order
 
         [Required(ErrorMessage = "Order Id is required")]
         public Guid OrderId { get; set; }
+
     }
 }
