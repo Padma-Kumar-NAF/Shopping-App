@@ -108,10 +108,11 @@ namespace ShoppingApp.Controllers
         [HttpPost("RemoveAllFromCart")]
         public async Task<ActionResult<RemoveAllFromCartResponseDTO>> ClearCart([FromBody] RemoveAllFromCartRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            //if (!ModelState.IsValid)
+            //    return BadRequest(ModelState);
 
-            var userId = GetUserId();
+            request.UserId = GetUserId();
+
             if (request.UserId == Guid.Empty)
                 return BadRequest("Invalid UserId");
 

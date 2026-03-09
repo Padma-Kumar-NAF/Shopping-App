@@ -2,6 +2,8 @@
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
+using ShoppingApp.Models.DTOs.Category;
+using ShoppingApp.Models.DTOs.Product;
 
 namespace ShoppingApp.Services
 {
@@ -26,26 +28,52 @@ namespace ShoppingApp.Services
             return await _repository.AddAsync(category);
         }
 
-        public async Task<IEnumerable<Category>> GetAllCategories(int Limit, int PageNumber)
+        public async Task<ICollection<GetAllCategoryResponseDTO>> GetAllCategories(int limit, int pageNumber)
         {
-            if (Limit <= 0)
+            if (limit <= 0)
                 throw new ArgumentException("Limit must be greater than 0.");
 
-            if (PageNumber <= 0)
+            if (pageNumber <= 0)
                 throw new ArgumentException("PageNumber must be greater than 0.");
 
-            return await _repository
+            var categories = await _repository
                 .GetQueryable()
                 .AsNoTracking()
+                .Include(c => c.Products)!
+                .ThenInclude(p => p.Stock)
+                .Include(c => c.Products)!
+                .ThenInclude(p => p.Reviews)
                 .OrderBy(c => c.CategoryName)
-                .Skip((PageNumber - 1) * Limit)
-                .Take(Limit)
+                .Skip((pageNumber - 1) * limit)
+                .Take(limit)
                 .ToListAsync();
+
+            return categories.Select(c => new GetAllCategoryResponseDTO
+            {
+                CategoryId = c.CategoryId,
+                CategoryName = c.CategoryName,
+
+                Products = c.Products.Select(p => new GetAllProductsResponseDTO
+                {
+                    ProductId = p.ProductId,
+                    CategoryId = p.CategoryId,
+                    StockId = p.Stock.StockId,
+                    Name = p.Name,
+                    ImagePath = p.ImagePath,
+                    Description = p.Description,
+                    CategoryName = c.CategoryName,
+                    Price = p.Price,
+                    Quantity = p.Stock.Quantity,
+
+                    Review = p.Reviews.Select(r => new ReviewDTO
+                    {
+                        Summary = r.Summary,
+                        ReviewPoints = r.ReviewPoints
+                    }).ToList()
+
+                }).ToList()
+
+            }).ToList();
         }
-
-        //public Task<Category> DeleteCategory(Guid CategoryId)
-        //{
-
-        //}
     }
 }

@@ -6,7 +6,7 @@ select * from Products
 
 select * from Payments
 select * from Orders
-    
+
 select * from Refunds
 
 select * from Category
@@ -24,7 +24,6 @@ select * from Orders
 select * from OrderDetails
 
 select * from Reviews
-sp_help Reviews
 
 -- User - Payment -> One to many ==
 -- User - Refund -> one to many ==
@@ -40,8 +39,8 @@ sp_help Reviews
 --update Orders
 --set Status = 'Not Delivered'
 
---select * from Stock
-
+--delete from products
+--delete from Stock
 --delete from CartItems
 
 --delete from Carts
@@ -51,252 +50,98 @@ sp_help Reviews
 --delete from Payments
 
 --delete from Refunds
-
---select * from Products
-
 --delete from UserDetails
-
---select * from Addresses
---select * from Users
-
---select * from Orders
---select * from OrderDetails
 
 --delete from UserDetails
 --delete from Users
 
 --delete from Addresses
-
+--delete from reviews
 --delete from Orders
-
---select * from Reviews
 
 --delete from Orders
 --delete from OrderDetails
 
---INSERT INTO Stock(ProductId, Quantity)
---VALUES
---('C7C4C773-23F7-4875-B117-745DDFEB13FD', 2),
---('829CFAF7-1BA9-463F-B773-781591B4AB98', 2),
---('2F709E2A-4402-4039-81E0-E042D93F9FB7', 2),
---('0F4E7234-AD03-4606-8B0D-EAFC415148CB', 2),
---('E16E5E8E-6BD9-4115-BDD5-F83B09EF6F77', 2),
---('D1F94529-6816-46B9-AD3A-FDDC010FD901', 2);
-
-
---delete from Users
---where UserId = '8F5FBFF8-ABD1-449E-89E4-F967B6B66FA3'
-
---UPDATE Orders
---SET TotalAmount = 1098,
---    TotalProductsCount = 2
---WHERE OrderId = 'F654FDA4-4A95-4251-9F8E-D5ED9F38552B';
-
---delete from Orders
---where TotalProductsCount = 1
-
---Select * from Carts 
---where UserId = '7D5C9FBB-96C5-4922-9EB2-0EE165B3A44A'
-
---select * from Products
---where ProductId = '9B86691D-998C-4290-B203-1E66BAE9F1D3'
-
---INSERT INTO Carts (UserId)
---VALUES ('7D5C9FBB-96C5-4922-9EB2-0EE165B3A44A');
-
---DECLARE @CartId UNIQUEIDENTIFIER;
-
---SELECT @CartId = CartId
---FROM Carts
---WHERE UserId = '7D5C9FBB-96C5-4922-9EB2-0EE165B3A44A';
-
---insert into OrderDetails
---(OrderId , ProductId , ProductName , Quantity , ProductPrice)
---values(
---'F654FDA4-4A95-4251-9F8E-D5ED9F38552B',
---'40591F10-D29C-4649-94AE-38B41B0BA0B7',
---'Basmati Rice 5kg',
---1,
---699
---)
-
---Insert Into Orders
---(UserId , Status , TotalProductsCount , TotalAmount , AddressId)
---Values('1B6B8DBB-3D30-423E-BF3F-9035772CA730',
---'Not Delivered',
---1,
---399,
---'ED00BDCF-BCAF-433D-8E9E-1BFCB24B7EEC'
---);
-
---INSERT INTO Addresses
---(UserId, AddressLine1, AddressLine2, State, City, Pincode)
---VALUES
-
----- Padma
---('6A3AC425-EDF3-41D5-AB40-D26C1955C7FC',
--- 'Flat No 12, MG Residency',
--- 'Near Metro Station, Andheri East',
--- 'Maharashtra',
--- 'Mumbai',
--- '400069'
---),
-
----- Padma Kumar
---('7D5C9FBB-96C5-4922-9EB2-0EE165B3A44A',
--- 'No 45, Anna Salai',
--- 'Opposite Express Avenue Mall',
--- 'Tamil Nadu',
--- 'Chennai',
--- '600002'
---),
-
----- Kumar
---('1B6B8DBB-3D30-423E-BF3F-9035772CA730',
--- '78 Residency Road',
--- 'Near Brigade Road Signal',
--- 'Karnataka',
--- 'Bengaluru',
--- '560025'
---);
-
---INSERT INTO UserDetails
---( UserId, Name, Email, PhoneNumber, AddressLine1, AddressLine2, State, City, Pincode)
---VALUES
---( 'DAF096B8-0C48-4574-9E6F-02C19503874A',
--- 'Padma',
--- 'dcd@gmail.com',
--- '9876543210',
--- '12 MG Road',
--- 'Near Metro Station',
--- 'Maharashtra',
--- 'Mumbai',
--- '400001'
---),
-
---('7D5C9FBB-96C5-4922-9EB2-0EE165B3A44A',
--- 'Padma Kumar',
--- 'abc@gmail.com',
--- '9123456780',
--- '45 Anna Salai',
--- 'Opposite City Mall',
--- 'Tamil Nadu',
--- 'Chennai',
--- '600002'
---),
-
---('1B6B8DBB-3D30-423E-BF3F-9035772CA730',
--- 'Kumar',
--- 'efg@gmail.com',
--- '9988776655',
--- '78 Residency Road',
--- 'Near Park',
--- 'Karnataka',
--- 'Bengaluru',
--- '560025');
-
---INSERT INTO CartItems (CartId, ProductId, Quantity)
---VALUES
---(@CartId, '9B86691D-998C-4290-B203-1E66BAE9F1D3', 1),
---(@CartId, 'E0244232-AAE2-43ED-9523-477F47B9E453', 1),
---(@CartId, '2AE00D55-29DA-44EB-90F8-6FAB1AF56348', 2);
-
---INSERT INTO Category (CategoryName)
---VALUES
---('Electronics'),
---('Fashion'),
---('Groceries'),
---('Home Appliances'),
---('Books'),
---('Beauty & Personal Care'),
---('Sports & Fitness');
 
 --INSERT INTO Products (CategoryId, Name, ImagePath, Description, Price)
 --VALUES
---('AE8E8053-8B19-49EE-A8F0-A6B7EB0E3065',
--- 'iPhone 15',
--- '/images/products/iphone15.jpg',
--- 'Latest Apple smartphone with A17 chip and improved battery performance',
--- 79999.00),
+--('B9FA9336-6EC3-4578-9BFD-DEE49AFB4884','Essence Mascara Lash Princess','https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/1.webp','Volumizing and lengthening mascara',9.99),
 
---('AE8E8053-8B19-49EE-A8F0-A6B7EB0E3065',
--- 'Samsung 55 Inch 4K TV',
--- '/images/products/samsung-tv.jpg',
--- 'Ultra HD Smart TV with HDR and Dolby Audio',
--- 55999.00),
+--('B9FA9336-6EC3-4578-9BFD-DEE49AFB4884','Eyeshadow Palette with Mirror','https://cdn.dummyjson.com/product-images/beauty/eyeshadow-palette-with-mirror/1.webp','Eyeshadow palette with mirror',19.99),
 
---('AA78D257-40E9-49CC-8A6E-79254BF56857',
--- 'Men Slim Fit T-Shirt',
--- '/images/products/tshirt.jpg',
--- 'Cotton slim fit casual t-shirt',
--- 799.00),
+--('B9FA9336-6EC3-4578-9BFD-DEE49AFB4884','Powder Canister','https://cdn.dummyjson.com/product-images/beauty/powder-canister/1.webp','Setting powder with matte finish',14.99),
 
---('58D3537C-4FB0-4D52-8769-EE89CF4043A3',
--- 'Women Running Shoes',
--- '/images/products/shoes.jpg',
--- 'Lightweight breathable sports shoes',
--- 2499.00),
+--('B9FA9336-6EC3-4578-9BFD-DEE49AFB4884','Red Lipstick','https://cdn.dummyjson.com/product-images/beauty/red-lipstick/1.webp','Creamy red lipstick',12.99),
 
---('728F6AF7-CB36-4CB1-B64D-70AC56819D8F',
--- 'Clean Code',
--- '/images/products/cleancode.jpg',
--- 'A Handbook of Agile Software Craftsmanship',
--- 499.00),
+--('B9FA9336-6EC3-4578-9BFD-DEE49AFB4884','Red Nail Polish','https://cdn.dummyjson.com/product-images/beauty/red-nail-polish/1.webp','Glossy red nail polish',8.99),
 
---('728F6AF7-CB36-4CB1-B64D-70AC56819D8F',
--- 'Atomic Habits',
--- '/images/products/atomichabits.jpg',
--- 'An Easy & Proven Way to Build Good Habits',
--- 399.00),
+--('B9FA9336-6EC3-4578-9BFD-DEE49AFB4884','Calvin Klein CK One','https://cdn.dummyjson.com/product-images/fragrances/calvin-klein-ck-one/1.webp','Fresh unisex fragrance',49.99),
 
---('C371BE48-B5D6-4123-A879-E3AC959666ED',
--- 'Basmati Rice 5kg',
--- '/images/products/rice.jpg',
--- 'Premium long grain basmati rice',
--- 699.00),
+--('B9FA9336-6EC3-4578-9BFD-DEE49AFB4884','Chanel Coco Noir Eau De','https://cdn.dummyjson.com/product-images/fragrances/chanel-coco-noir-eau-de/1.webp','Elegant evening fragrance',129.99),
 
---('C371BE48-B5D6-4123-A879-E3AC959666ED',
--- 'Sunflower Oil 1L',
--- '/images/products/oil.jpg',
--- 'Refined sunflower cooking oil',
--- 149.00),
+--('B9FA9336-6EC3-4578-9BFD-DEE49AFB4884','Dior J adore','https://cdn.dummyjson.com/product-images/fragrances/dior-j adore/1.webp','Floral luxury fragrance',89.99),
 
---('043D941D-FD73-4C70-905D-14DA67AB2050',
--- 'LG Double Door Refrigerator',
--- '/images/products/fridge.jpg',
--- 'Frost free inverter refrigerator',
--- 38999.00),
+--('B9FA9336-6EC3-4578-9BFD-DEE49AFB4884','Dolce Shine Eau De','https://cdn.dummyjson.com/product-images/fragrances/dolce-shine-eau-de/1.webp','Fruity vibrant fragrance',69.99),
 
---('58D3537C-4FB0-4D52-8769-EE89CF4043A3',
--- 'Dumbbell Set 10kg',
--- '/images/products/dumbbell.jpg',
--- 'Adjustable iron dumbbell set',
--- 1999.00),
+--('B9FA9336-6EC3-4578-9BFD-DEE49AFB4884','Gucci Bloom Eau De','https://cdn.dummyjson.com/product-images/fragrances/gucci-bloom-eau-de/1.webp','Romantic floral fragrance',79.99),
 
---('AA78D257-40E9-49CC-8A6E-79254BF56857',
--- 'Aloe Vera Face Wash',
--- '/images/products/facewash.jpg',
--- 'Natural aloe vera face cleanser',
--- 249.00);
+--('6CDA086A-E4FF-437C-8594-BFA848F0D74A','Annibale Colombo Bed','https://cdn.dummyjson.com/product-images/furniture/annibale-colombo-bed/1.webp','Luxury bed frame',1899.99),
+
+--('6CDA086A-E4FF-437C-8594-BFA848F0D74A','Annibale Colombo Sofa','https://cdn.dummyjson.com/product-images/furniture/annibale-colombo-sofa/1.webp','Premium sofa',2499.99),
+
+--('6CDA086A-E4FF-437C-8594-BFA848F0D74A','Bedside Table African Cherry','https://cdn.dummyjson.com/product-images/furniture/bedside-table-african-cherry/1.webp','Stylish bedside table',299.99),
+
+--('6CDA086A-E4FF-437C-8594-BFA848F0D74A','Knoll Saarinen Executive Conference Chair','https://cdn.dummyjson.com/product-images/furniture/knoll-saarinen-executive-conference-chair/1.webp','Ergonomic office chair',499.99),
+
+--('6CDA086A-E4FF-437C-8594-BFA848F0D74A','Wooden Bathroom Sink With Mirror','https://cdn.dummyjson.com/product-images/furniture/wooden-bathroom-sink-with-mirror/1.webp','Bathroom sink with mirror',799.99),
+
+--('653BCA28-BE62-4C4E-AA9E-CAEF3BE028C4','Apple','https://cdn.dummyjson.com/product-images/groceries/apple/1.webp','Fresh apples',1.99),
+
+--('653BCA28-BE62-4C4E-AA9E-CAEF3BE028C4','Beef Steak','https://cdn.dummyjson.com/product-images/groceries/beef-steak/1.webp','High quality beef steak',12.99),
+
+--('653BCA28-BE62-4C4E-AA9E-CAEF3BE028C4','Cat Food','https://cdn.dummyjson.com/product-images/groceries/cat-food/1.webp','Nutritious cat food',8.99),
+
+--('653BCA28-BE62-4C4E-AA9E-CAEF3BE028C4','Chicken Meat','https://cdn.dummyjson.com/product-images/groceries/chicken-meat/1.webp','Fresh chicken meat',9.99),
+
+--('653BCA28-BE62-4C4E-AA9E-CAEF3BE028C4','Cooking Oil','https://cdn.dummyjson.com/product-images/groceries/cooking-oil/1.webp','Multipurpose cooking oil',4.99),
+
+--('653BCA28-BE62-4C4E-AA9E-CAEF3BE028C4','Cucumber','https://cdn.dummyjson.com/product-images/groceries/cucumber/1.webp','Fresh cucumber',1.49),
+
+--('653BCA28-BE62-4C4E-AA9E-CAEF3BE028C4','Dog Food','https://cdn.dummyjson.com/product-images/groceries/dog-food/1.webp','Dog nutrition food',10.99),
+
+--('653BCA28-BE62-4C4E-AA9E-CAEF3BE028C4','Eggs','https://cdn.dummyjson.com/product-images/groceries/eggs/1.webp','Fresh eggs',2.99),
+
+--('653BCA28-BE62-4C4E-AA9E-CAEF3BE028C4','Fish Steak','https://cdn.dummyjson.com/product-images/groceries/fish-steak/1.webp','Fish steak',14.99),
+
+--('653BCA28-BE62-4C4E-AA9E-CAEF3BE028C4','Green Bell Pepper','https://cdn.dummyjson.com/product-images/groceries/green-bell-pepper/1.webp','Green bell pepper',1.29),
+
+--('653BCA28-BE62-4C4E-AA9E-CAEF3BE028C4','Green Chili Pepper','https://cdn.dummyjson.com/product-images/groceries/green-chili-pepper/1.webp','Spicy chili pepper',0.99);
 
 
---INSERT INTO Stock (ProductId, Quantity)
---VALUES
 
---((SELECT ProductId FROM Products WHERE Name = 'iPhone 15'), 120),
---((SELECT ProductId FROM Products WHERE Name = 'Samsung 55 Inch 4K TV'), 40),
-
---((SELECT ProductId FROM Products WHERE Name = 'Men Slim Fit T-Shirt'), 200),
---((SELECT ProductId FROM Products WHERE Name = 'Women Running Shoes'), 150),
-
---((SELECT ProductId FROM Products WHERE Name = 'Clean Code'), 90),
---((SELECT ProductId FROM Products WHERE Name = 'Atomic Habits'), 110),
-
---((SELECT ProductId FROM Products WHERE Name = 'Basmati Rice 5kg'), 300),
---((SELECT ProductId FROM Products WHERE Name = 'Sunflower Oil 1L'), 500),
-
---((SELECT ProductId FROM Products WHERE Name = 'LG Double Door Refrigerator'), 25),
-
---((SELECT ProductId FROM Products WHERE Name = 'Dumbbell Set 10kg'), 75),
-
---((SELECT ProductId FROM Products WHERE Name = 'Aloe Vera Face Wash'), 180);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('0D78DCD3-628C-4F64-878F-01E2C3EC3D54', 120);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('51DE8804-4D89-4046-9918-08B8A5AB459A', 15);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('BC7931A8-7641-4A69-B6FE-09691D3B4FD0', 8);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('43D214B0-394F-483A-BC85-0C695167B1F7', 60);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('FEFECA38-59BC-48B1-9E24-0CA776A3FC21', 50);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('B0293BB1-2E51-4316-AA50-0E6D83A6F351', 40);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('09E92916-803C-4EEE-916B-1D0A0DC5314F', 90);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('264D6E10-370E-4A51-9451-39CAFDCA01E0', 6);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('BEEA56F5-0B6C-4790-9952-6480DFBFF29E', 200);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('75CFBD51-99CF-4D82-82FF-70FC18CF9939', 150);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('7D5FE242-73B7-42BC-A5C0-718D68EA1E5D', 35);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('F81144D0-E3D8-4DBA-97F9-7A6804F5751D', 30);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('7EC3DDE1-E20F-4C53-980B-7A69B5487BE8', 45);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('BB7094BB-0546-4150-B749-81DAE66BE1A0', 100);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('1BD14CC4-D261-4C73-9037-89F3F4ABA63A', 70);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('9B161467-0312-4358-B4AC-9B2345F1C203', 120);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('78734743-D66F-4489-854B-9EFCEA6D3108', 25);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('CDC238B6-B084-4A54-9E68-9FC27EEB5707', 5);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('22370DE9-2E86-4953-8F51-A15D8926579D', 140);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('F7ECF731-8C44-4E04-B8CB-ACEEEEB3A26C', 50);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('FCACB67F-8B1A-4F23-95D5-B60D3A582E2A', 85);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('BFF73A72-443D-4D1C-816E-B8E1FB1A723F', 35);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('20C08473-8BC4-4265-8D8E-BA6498D25BF2', 12);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('D0EB6C8E-CF92-4645-BACF-C3BDC6E4746E', 110);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('FB71B9B2-31E8-4429-87C0-F28D04FE71AC', 90);
+--INSERT INTO Stock (ProductId, Quantity) VALUES ('DA259070-1F1A-42A6-A015-FE1500AD9219', 40);

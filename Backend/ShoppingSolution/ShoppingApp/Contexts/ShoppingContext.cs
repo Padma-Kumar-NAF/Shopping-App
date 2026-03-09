@@ -317,8 +317,8 @@ namespace ShoppingApp.Contexts
                     .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasIndex(r => new { r.UserId, r.ProductId })
-                    .IsUnique()
-                    .HasDatabaseName("UX_Review_User_Product");
+                .IsUnique()
+                .HasDatabaseName("UX_Review_User_Product");
             });
 
             modelBuilder.Entity<Stock>(entity =>
@@ -421,52 +421,52 @@ namespace ShoppingApp.Contexts
                     .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.HasOne(u=> u.User)
-                    .WithOne(e=>e.UserDetails)
-                    .HasForeignKey<UserDetails>(e=>e.UserId)
-                    .HasConstraintName("FK_User_UserDetails")
-                    .OnDelete(DeleteBehavior.Restrict);
+                .WithOne(e=>e.UserDetails)
+                .HasForeignKey<UserDetails>(e=>e.UserId)
+                .HasConstraintName("FK_User_UserDetails")
+                .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<WishList>(entity =>
             {
                 entity.HasKey(w => w.WishListId)
-                    .HasName("Pk_WishList");
+                .HasName("Pk_WishList");
                 
                 entity.Property(w => w.WishListId)
-                    .HasDefaultValueSql("NEWID()");
+                .HasDefaultValueSql("NEWID()");
 
                 entity.Property(o => o.CreatedAt)
-                    .HasDefaultValueSql("GETUTCDATE()");
+                .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.HasMany(w => w.WishListItems)
-                    .WithOne(wi => wi.WishList)
-                    .HasForeignKey(wi => wi.WishListId)
-                    .HasConstraintName("FK_WishListItem_WishList")
-                    .OnDelete(DeleteBehavior.Restrict);
+                .WithOne(wi => wi.WishList)
+                .HasForeignKey(wi => wi.WishListId)
+                .HasConstraintName("FK_WishListItem_WishList")
+                .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<WishListItems>(entity =>
             {
                 entity.HasKey(wi => wi.WishListItemsId)
-                    .HasName("Pk_WishListItems");
+                .HasName("Pk_WishListItems");
 
                 entity.Property(wi => wi.WishListItemsId)
-                    .HasDefaultValueSql("NEWID()");
+                .HasDefaultValueSql("NEWID()");
 
                 entity.Property(o => o.CreatedAt)
-                    .HasDefaultValueSql("GETUTCDATE()");
+                .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.HasOne(w => w.WishList)
-                    .WithMany(wl => wl.WishListItems)
-                    .HasForeignKey(w => w.WishListId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(wl => wl.WishListItems)
+                .HasForeignKey(w => w.WishListId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
                 entity.HasOne(w => w.Products)
-                    .WithMany(p => p.WishListItems)
-                    .HasForeignKey(w => w.ProductId)
-                    .HasConstraintName("FK_WishListItem_Product")
-                    .OnDelete(DeleteBehavior.Restrict);
+                .WithMany(p => p.WishListItems)
+                .HasForeignKey(w => w.ProductId)
+                .HasConstraintName("FK_WishListItem_Product")
+                .OnDelete(DeleteBehavior.Restrict);
 
             });
         }

@@ -20,7 +20,7 @@ namespace ShoppingApp.Services
         public async Task<GetCartResponseDTO?> AddCart(AddToCartRequestDTO request)
         {
             if (request == null || request.Items == null || !request.Items.Any())
-                return null;
+                throw new ArgumentException("Cart items cannot be empty");
 
             await using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -36,14 +36,21 @@ namespace ShoppingApp.Services
                     await _context.SaveChangesAsync();
                 }
 
-                 var existingItems = await _context.CartItems
-                        .Where(ci => ci.CartId == cart.CartId)
-                        .ToListAsync();
+                var existingItems = await _context.CartItems
+                    .Where(ci => ci.CartId == cart.CartId)
+                    .ToListAsync();
 
                 foreach (var item in request.Items)
                 {
                     if (item.ProductId == Guid.Empty)
                         continue;
+
+                    // 🔹 Check product exists
+                    var productExists = await _context.Products
+                        .AnyAsync(p => p.ProductId == item.ProductId);
+
+                    if (!productExists)
+                        throw new Exception($"Product not found for ProductId: {item.ProductId}");
 
                     var existingItem = existingItems
                         .FirstOrDefault(ci => ci.ProductId == item.ProductId);
@@ -66,7 +73,6 @@ namespace ShoppingApp.Services
                     }
                 }
 
-
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
@@ -75,7 +81,7 @@ namespace ShoppingApp.Services
             catch
             {
                 await transaction.RollbackAsync();
-                return null;
+                throw;
             }
         }
 
@@ -114,28 +120,19 @@ namespace ShoppingApp.Services
                     .Where(s => productIds.Contains(s.ProductId))
                     .ToListAsync();
 
-                Console.WriteLine("FIrst");
 
                 foreach (var item in cartItems)
                 {
                     var stock = stocks.FirstOrDefault(s => s.ProductId == item.ProductId);
 
                     if (stock == null)
-                        return false;
+                        throw new Exception($"Stock not found for product {item.Product!.Name}");
 
                     if (stock.Quantity < item.Quantity)
-                        return false;
+                        throw new Exception($"Insufficient stock for product {item.Product!.Name}");
 
                     if (item.Product == null)
-                        return false;
-                    //if (stock == null)
-                    //    throw new Exception($"Stock not found for product {item.Product!.Name}");
-
-                    //if (stock.Quantity < item.Quantity)
-                    //    throw new Exception($"Insufficient stock for product {item.Product!.Name}");
-
-                    //if (item.Product == null)
-                    //    throw new Exception($"Product Not Found");
+                        throw new Exception($"Product Not Found");
                 }
 
 
@@ -149,7 +146,6 @@ namespace ShoppingApp.Services
                     DeliveryDate = DateTime.Now.AddDays(2),
                     OrderDetails = new List<OrderDetails>()
                 };
-                Console.WriteLine("Inside for loop");
 
                 foreach (var item in cartItems)
                 {
