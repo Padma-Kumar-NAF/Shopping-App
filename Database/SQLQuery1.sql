@@ -9,6 +9,8 @@ select * from Orders
 
 select * from Refunds
 
+select * from Logs
+
 select * from Category
 
 select * from Users

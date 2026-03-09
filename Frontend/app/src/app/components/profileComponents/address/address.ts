@@ -1,10 +1,11 @@
 import { Component , signal } from '@angular/core';
 import { AddressModel } from '../../../models/address.model';
 import { FormsModule } from '@angular/forms';
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: 'app-address',
-  imports: [FormsModule],
+  imports: [FormsModule, MatIcon],
   templateUrl: './address.html',
   styleUrl: './address.css',
 })

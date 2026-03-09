@@ -15,35 +15,39 @@
 
         <button
           (click)="removeAllCart()"
-          class="cursor-pointer px-4 py-1.5 text-sm rounded-lg border bg-red-100 text-red-600 hover:bg-red-200"
+          class="cursor-pointer px-4 py-1.5 text-sm rounded-lg button-shadow text-red-600 hover:bg-gray-100"
         >
-          > Remove All
+          Remove All
         </button>
 
         <button
           (click)="placeAllOrders()"
-          class="cursor-pointer px-4 py-1.5 text-sm rounded-lg border bg-green-100 text-green-600 hover:bg-green-200"
+          class="cursor-pointer px-4 py-1.5 text-sm rounded-lg button-shadow text-green-600 hover:bg-gray-100"
         >
-          > Place Order
+          Place Order
         </button>
       </div>
     </div>
 
     <div class="flex flex-wrap gap-4">
       @for (item of paginatedItems; track item.id) {
-        <div class="bg-gray-50 border rounded-xl p-4 w-full md:w-[48%] lg:w-[32%] relative flex gap-4 items-center">
-          <button (click)="removeFromCart(item)" 
-                  class="cursor-pointer absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center transition-colors shadow-md z-10"
-                  mat-icon-button>
-            <mat-icon class="text-sm">close</mat-icon>
+        <div
+          class="bg-gray-50 border rounded-xl p-4 w-full md:w-[48%] lg:w-[32%] relative flex gap-4 items-center"
+        >
+          <button
+            (click)="removeFromCart(item)"
+            class="cursor-pointer text-red-500 absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center transition-colors z-10"
+            mat-icon-button
+          >
+            <mat-icon class="text-sm">delete</mat-icon>
           </button>
 
           <img [src]="item.image" alt="product" class="w-16 h-16 object-cover rounded-lg" />
-          
+
           <div class="flex-1 pt-2">
             <h2 class="font-medium text-sm">{{ item.name }}</h2>
             <p class="text-gray-500 text-sm">₹{{ item.price }}</p>
-            
+
             <div class="flex items-center gap-2 mt-2">
               <button
                 (click)="decreaseQty(item)"

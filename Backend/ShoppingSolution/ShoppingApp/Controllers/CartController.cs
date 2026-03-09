@@ -78,30 +78,40 @@ namespace ShoppingApp.Controllers
         [HttpPost("OrderAllFromCart")]
         public async Task<ActionResult<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCarts([FromBody] OrderAllFromCartRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            request.UserId = GetUserId();
-
-            if (request.UserId == Guid.Empty)
-                return BadRequest("Invalid user.");
-
-            if (request.CartId == Guid.Empty || request.AddressId == Guid.Empty)
-                return BadRequest("CartId and AddressId are required.");
-
-            var isOrdered = await _cartService.PlaceOrderAllFromCart(
-                request.CartId,
-                request.UserId,
-                request.AddressId,
-                request.PaymentType);
-
-            if (!isOrdered)
-                return BadRequest("Order failed. Please check cart, stock, or address.");
-
-            return Ok(new OrderAllFromCartResponseDTO
+            try
             {
-                IsSuccess = true
-            });
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                request.UserId = GetUserId();
+
+                if (request.UserId == Guid.Empty)
+                    return BadRequest("Invalid user.");
+
+                if (request.CartId == Guid.Empty || request.AddressId == Guid.Empty)
+                    return BadRequest("CartId and AddressId are required.");
+
+                if (request.PaymentType == "")
+                    return BadRequest("Payment type required");
+
+                var isOrdered = await _cartService.PlaceOrderAllFromCart(
+                    request.CartId,
+                    request.UserId,
+                    request.AddressId,
+                    request.PaymentType);
+
+                if (!isOrdered)
+                    return BadRequest("Order failed. Please check cart, stock, or address.");
+
+                return Ok(new OrderAllFromCartResponseDTO
+                {
+                    IsSuccess = true
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         //[Authorize(Roles = "User")]

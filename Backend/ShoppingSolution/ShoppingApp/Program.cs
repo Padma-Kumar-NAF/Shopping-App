@@ -1,13 +1,14 @@
+using AspNetCoreRateLimit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ShoppingApp.Contexts;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
+using ShoppingApp.Middleware;
 using ShoppingApp.Models;
 using ShoppingApp.Repositories;
 using ShoppingApp.Services;
 using System.Text;
-using AspNetCoreRateLimit;
 
 namespace ShoppingApp
 {
@@ -20,7 +21,7 @@ namespace ShoppingApp
             builder.Services.AddOpenApi();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
-            //builder.Services.AddAutoMapper(typeof(CustomerProfile)); // This is for mapper
+            //builder.Services.AddAutoMapper(typeof(CustomerProfile)); // for mapper
 
             builder.Services.AddCors(options =>
             {
@@ -74,7 +75,6 @@ namespace ShoppingApp
             builder.Services.AddScoped<IPasswordService, PasswordService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
-            //builder.Services.AddScoped<IStockService, StockService>();
             builder.Services.AddScoped<IUserDetailsService, UserDetailsService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IWishListService, WishListService > ();
@@ -95,7 +95,7 @@ namespace ShoppingApp
             app.UseAuthorization();
 
             app.UseIpRateLimiting();
-
+            app.UseMiddleware<ExceptionMiddleware>();
             app.MapControllers();
             app.Run();
         }

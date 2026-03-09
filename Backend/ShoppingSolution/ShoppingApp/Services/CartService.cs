@@ -45,7 +45,6 @@ namespace ShoppingApp.Services
                     if (item.ProductId == Guid.Empty)
                         continue;
 
-                    // 🔹 Check product exists
                     var productExists = await _context.Products
                         .AnyAsync(p => p.ProductId == item.ProductId);
 
@@ -120,7 +119,6 @@ namespace ShoppingApp.Services
                     .Where(s => productIds.Contains(s.ProductId))
                     .ToListAsync();
 
-
                 foreach (var item in cartItems)
                 {
                     var stock = stocks.FirstOrDefault(s => s.ProductId == item.ProductId);
@@ -134,7 +132,6 @@ namespace ShoppingApp.Services
                     if (item.Product == null)
                         throw new Exception($"Product Not Found");
                 }
-
 
                 var order = new Order
                 {
@@ -166,6 +163,7 @@ namespace ShoppingApp.Services
                 }
 
                 await _context.Orders.AddAsync(order);
+                await _context.SaveChangesAsync();
 
                 var payment = new Payment()
                 {
@@ -215,8 +213,6 @@ namespace ShoppingApp.Services
             return affectedRowsInCart > 0;
         }
 
-
-        // If user removes all items from Cart items then remove the cart from Cart table
         public async Task<bool> RemoveFromCart(Guid cartId, Guid productId)
         {
             var cartItem = await _context.CartItems
