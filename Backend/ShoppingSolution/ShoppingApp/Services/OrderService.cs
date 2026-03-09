@@ -11,7 +11,7 @@ namespace ShoppingApp.Services
     {
         private readonly IRepository<Guid, Stock> _stockRepository;
         private readonly IRepository<Guid, Order> _repository;
-        
+
         private readonly ShoppingContext _context;
 
         public OrderService(IRepository<Guid, Order> repository, ShoppingContext context, IRepository<Guid, Stock> stockRepository)
@@ -31,6 +31,7 @@ namespace ShoppingApp.Services
                 var order = await _context.Orders
                     .Include(o => o.OrderDetails!)
                     .Include(o => o.Address)
+                    .Include(o => o.Payment)
                     .FirstOrDefaultAsync(o => o.OrderId == request.OrderId);
 
                 if (order == null)
@@ -61,6 +62,18 @@ namespace ShoppingApp.Services
                 _context.Orders.Update(order);
 
                 await _context.SaveChangesAsync();
+
+                var refund = new Refund()
+                {
+                    UserId = request.UserId,
+                    OrderId = order.OrderId,
+                    PaymentId = order.Payment!.PaymentId,
+                    RefundAmount = order.TotalAmount
+                };
+
+                await _context.Refunds.AddAsync(refund);
+
+                await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
                 return new GetUserOrderDetailsResponseDTO
@@ -80,6 +93,12 @@ namespace ShoppingApp.Services
                         City = order.Address.City,
                         State = order.Address.State,
                         Pincode = order.Address.Pincode
+                    },
+
+                    Payment = new PaymentDTO
+                    {
+                        PaymentId = order.Payment.PaymentId,
+                        PaymentType = order.Payment.PaymentType,
                     },
 
                     Items = order.OrderDetails.Select(item => new OrderDetailsDTO
@@ -126,6 +145,12 @@ namespace ShoppingApp.Services
                         State = o.Address.State,
                         City = o.Address.City,
                         Pincode = o.Address.Pincode
+                    },
+
+                    Payment = new PaymentDTO()
+                    {
+                        PaymentId = o.Payment!.PaymentId,
+                        PaymentType = o.Payment.PaymentType
                     },
 
                     Items = o.OrderDetails!
@@ -175,7 +200,7 @@ namespace ShoppingApp.Services
                     TotalAmount = request.TotalAmount,
                     TotalProductsCount = request.TotalProductsCount,
                     AddressId = request.AddressId,
-                    DeliveryDate = DateTime.Now,
+                    DeliveryDate = DateTime.Now.AddDays(2),
                     OrderDetails = new List<OrderDetails>()
                 };
 
@@ -185,7 +210,7 @@ namespace ShoppingApp.Services
 
                     stock.Quantity -= item.Quantity;
 
-                    order.OrderDetails.Add(new OrderDetails
+                    order.OrderDetails!.Add(new OrderDetails
                     {
                         OrderDetailsId = Guid.NewGuid(),
                         ProductId = item.ProductId,
@@ -199,7 +224,18 @@ namespace ShoppingApp.Services
 
                 await _context.SaveChangesAsync();
 
+                var payment = new Payment()
+                {
+                    UserId = request.UserId,
+                    OrderId = order.OrderId,
+                    TotalAmount = request.TotalAmount,
+                    PaymentType = request.PaymentType
+                };
+
+                await _context.Payments.AddAsync(payment);
+                await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
+
 
                 var createdOrder = await _context.Orders
                     .AsNoTracking()

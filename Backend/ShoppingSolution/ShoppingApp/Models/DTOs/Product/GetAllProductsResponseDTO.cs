@@ -13,6 +13,11 @@ namespace ShoppingApp.Models.DTOs.Product
         public string CategoryName { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public int Quantity { get; set; }
-
+        public ICollection<ReviewDTO> Review { get; set; } = new List<ReviewDTO>();
+    }
+    public class ReviewDTO
+    {
+        public string Summary { get; set; } = string.Empty;
+        public int ReviewPoints { get; set; }
     }
 }

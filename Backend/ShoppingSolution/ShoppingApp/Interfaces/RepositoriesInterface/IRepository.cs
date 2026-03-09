@@ -6,7 +6,7 @@ namespace ShoppingApp.Interfaces.RepositoriesInterface
     {
         Task<IEnumerable<C>> GetAllAsync();
         Task<C?> GetAsync(K key);
-        Task<C> AddAsync(C item);
+        Task<C?> AddAsync(C item);
         Task<C?> DeleteAsync(K key);
         Task<C?> UpdateAsync(K key, C entity);
 

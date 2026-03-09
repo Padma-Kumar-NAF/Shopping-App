@@ -6,25 +6,18 @@ namespace ShoppingApp.Models
     {
         [Key]
         public Guid ProductId { get; set; }
-
         [Required]
         public Guid CategoryId { get; set; }
-
         [Required]
         public string Name { get; set; } = string.Empty;
-
         [Required]
         public string ImagePath { get; set; } = string.Empty;
-
         [Required]
         public string Description { get; set; } = string.Empty;
-
         //[Required]
         //public string CategoryName { get; set; } = string.Empty;
-
         [Required]
         public decimal Price { get; set; }
-
         [Required]
         public DateTime CreatedAt { get; set; }
 
@@ -35,7 +28,7 @@ namespace ShoppingApp.Models
         public ICollection<OrderDetails>? OrderDetails { get; set; } // one to many
         public ICollection<Review>? Reviews { get; set; } // one to many
         public ICollection<CartItem>? CartItems { get; set; } // one to many
-
+        public ICollection<WishListItems>? WishListItems { get; set; }
 
     }
 }

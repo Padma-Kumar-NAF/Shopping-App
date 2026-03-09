@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ShoppingApp.Contexts;
@@ -23,6 +22,17 @@ namespace ShoppingApp
 
             //builder.Services.AddAutoMapper(typeof(CustomerProfile)); // This is for mapper
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngular",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:4200")
+                              .AllowAnyHeader()
+                              .AllowAnyMethod();
+                    });
+            });
+
             builder.Services.AddMemoryCache();
             builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
             builder.Services.AddInMemoryRateLimiting();
@@ -39,9 +49,7 @@ namespace ShoppingApp
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
-                        //ValidateIssuer = false,
                         ValidateAudience = true,
-                        //ValidateAudience = false,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = "ShoppingApp",
@@ -66,9 +74,10 @@ namespace ShoppingApp
             builder.Services.AddScoped<IPasswordService, PasswordService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
-            builder.Services.AddScoped<IStockService, StockService>();
+            //builder.Services.AddScoped<IStockService, StockService>();
             builder.Services.AddScoped<IUserDetailsService, UserDetailsService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IWishListService, WishListService > ();
             #endregion
 
             var app = builder.Build();

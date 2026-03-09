@@ -4,16 +4,17 @@ namespace ShoppingApp.Models.DTOs.Review
 {
     public class AddReviewRequestDTO
     {
-        [Required]
-        public string Summary { get; set; } = string.Empty;
-
-        [Required]
         public Guid UserId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Product Id is required")]
         public Guid ProductId { get; set; }
 
-        [Range(1, 5)]
+        [Required(ErrorMessage = "Review summary is required")]
+        [MinLength(5, ErrorMessage = "Review summary must be at least 5 characters")]
+        [MaxLength(500, ErrorMessage = "Review summary cannot exceed 500 characters")]
+        public string Summary { get; set; } = string.Empty;
+
+        [Range(1, 5, ErrorMessage = "Review points must be between 1 and 5")]
         public int ReviewPoints { get; set; }
     }
 }

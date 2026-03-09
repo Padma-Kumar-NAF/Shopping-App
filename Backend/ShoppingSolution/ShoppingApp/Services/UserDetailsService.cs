@@ -87,8 +87,10 @@ namespace ShoppingApp.Services
             var address = await _context.Addresses
                 .FirstOrDefaultAsync(a => a.UserId == request.UserId);
 
-            if (address == null)
-                throw new Exception("Address not found");
+            if (user.Name != request.Details.Name)
+            {
+                user.Name = request.Details.Name;
+            }
 
             userDetails.Name = request.Details.Name;
             userDetails.PhoneNumber = request.Details.PhoneNumber;
@@ -98,12 +100,30 @@ namespace ShoppingApp.Services
             userDetails.City = request.Details.City;
             userDetails.Pincode = request.Details.Pincode;
 
-            address.AddressLine1 = request.Details.AddressLine1;
+            if (address != null)
+            {
+                address.AddressLine1 = request.Details.AddressLine1;
+                address.AddressLine2 = request.Details.AddressLine2;
+                address.State = request.Details.State;
+                address.City = request.Details.City;
+                address.Pincode = request.Details.Pincode;
+            }
+            else
+            {
+                address = new Address
+                {
+                    AddressId = Guid.NewGuid(),
+                    UserId = request.UserId,
+                    AddressLine1 = request.Details.AddressLine1,
+                    AddressLine2 = request.Details.AddressLine2,
+                    State = request.Details.State,
+                    City = request.Details.City,
+                    Pincode = request.Details.Pincode
+                };
 
-            address.AddressLine2 = request.Details.AddressLine2;
-            address.State = request.Details.State;
-            address.City = request.Details.City;
-            address.Pincode = request.Details.Pincode;
+                await _context.Addresses.AddAsync(address);
+            }
+
             await _context.SaveChangesAsync();
 
             return new UpdateProfileResponseDTO

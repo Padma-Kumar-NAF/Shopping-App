@@ -10,7 +10,7 @@ namespace ShoppingApp.Controllers
     //[Authorize]
     [Route("[controller]")]
     [ApiController]
-    public class CartController : ControllerBase , ICartController
+    public class CartController : BaseController , ICartController
     {
         private readonly ICartItemsService _cartItemService;
         private readonly ICartService _cartService;
@@ -21,30 +21,21 @@ namespace ShoppingApp.Controllers
             _cartService = cartService;
         }
 
-        private Guid GetUserId()
-        {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (string.IsNullOrWhiteSpace(userIdClaim))
-                return Guid.Empty;
-
-            return Guid.TryParse(userIdClaim, out var userId)
-                ? userId
-                : Guid.Empty;
-        }
-
         [HttpPost("AddToCart")]
         public async Task<ActionResult<GetCartResponseDTO>> AddToCart([FromBody] AddToCartRequestDTO request)
         {
-            if (request == null)
-                return BadRequest("Invalid request");
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            request.Cart.UserId = GetUserId();
+            if (request == null)
+                return BadRequest("Invalid request");
 
-            if (request.Cart.UserId == Guid.Empty)
+            request.UserId = GetUserId();
+
+            //if (request.Cart.UserId == Guid.Empty)
+            //    return Unauthorized("User not authenticated");
+            
+            if (request.UserId == Guid.Empty)
                 return Unauthorized("User not authenticated");
 
             try
@@ -84,29 +75,6 @@ namespace ShoppingApp.Controllers
             return Ok(result);
         }
 
-        //[HttpPost("OrderAllFromCart")]
-        //public async Task<ActionResult<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCarts(OrderAllFromCartRequestDTO request)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
-
-        //    request.UserId = GetUserId();
-
-        //    if (request.UserId == Guid.Empty)
-        //        return BadRequest("Invalid UserId");
-
-        //    bool isOrdered = false;
-        //    isOrdered = await _cartService.PlaceOrderAllFromCart(request.CartId, request.UserId,request.AddressId);
-
-        //    if (!isOrdered)
-        //        return BadRequest("Order failed. Try again.");
-
-        //    return Ok(new OrderAllFromCartResponseDTO
-        //    {
-        //        IsSuccess = true
-        //    });
-        //}
-
         [HttpPost("OrderAllFromCart")]
         public async Task<ActionResult<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCarts([FromBody] OrderAllFromCartRequestDTO request)
         {
@@ -124,7 +92,8 @@ namespace ShoppingApp.Controllers
             var isOrdered = await _cartService.PlaceOrderAllFromCart(
                 request.CartId,
                 request.UserId,
-                request.AddressId);
+                request.AddressId,
+                request.PaymentType);
 
             if (!isOrdered)
                 return BadRequest("Order failed. Please check cart, stock, or address.");
@@ -139,10 +108,11 @@ namespace ShoppingApp.Controllers
         [HttpPost("RemoveAllFromCart")]
         public async Task<ActionResult<RemoveAllFromCartResponseDTO>> ClearCart([FromBody] RemoveAllFromCartRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            //if (!ModelState.IsValid)
+            //    return BadRequest(ModelState);
 
-            var userId = GetUserId();
+            request.UserId = GetUserId();
+
             if (request.UserId == Guid.Empty)
                 return BadRequest("Invalid UserId");
 
@@ -176,7 +146,6 @@ namespace ShoppingApp.Controllers
             }
 
             // Check the user have a cart or not
-
             var result = await _cartService.RemoveFromCart(request.CartId, request.ProductId);
 
             if (!result)    

@@ -5,13 +5,14 @@ using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.Category;
+using System.Security.Claims;
 
 namespace ShoppingApp.Controllers
 {
     //[Authorize]
     [Route("[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase, ICategoryController
+    public class CategoryController : BaseController, ICategoryController
     {
         private readonly ICategoryService _categoryService;
         public CategoryController(ICategoryService categoryService)

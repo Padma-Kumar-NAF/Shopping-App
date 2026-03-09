@@ -4,13 +4,14 @@ using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.User;
+using System.Security.Claims;
 
 namespace ShoppingApp.Controllers 
 {
     //[Authorize]
     [Route("[controller]")]
     [ApiController]
-    public class UserController : ControllerBase , IUserController
+    public class UserController : BaseController, IUserController
     {
         private readonly IUserService _userService;
         private readonly IUserDetailsService _userDetailsService;
@@ -27,6 +28,13 @@ namespace ShoppingApp.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            request.UserId = GetUserId();
+            if (request.UserId == Guid.Empty)
+            {
+                return BadRequest("User not authenticated");
+            }
+
             try
             {
                 var Id = await _userDetailsService.AddUserDetails(request);
@@ -46,6 +54,12 @@ namespace ShoppingApp.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            request.UserId = GetUserId();
+            if (request.UserId == Guid.Empty)
+            {
+                return BadRequest("User not authenticated");
+            }
+
             try
             {
                 var result = await _userService.GetAllUsers(request);
@@ -62,6 +76,11 @@ namespace ShoppingApp.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            request.UserId = GetUserId();
+            if (request.UserId == Guid.Empty)
+            {
+                return BadRequest("User not authenticated");
+            }
             try
             {
                 var result = await _userDetailsService.UpdateUserDetails(request);

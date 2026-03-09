@@ -1,4 +1,5 @@
 ﻿using ShoppingApp.Models;
+using ShoppingApp.Models.DTOs.Category;
 
 namespace ShoppingApp.Interfaces.ServicesInterface
 {
@@ -6,6 +7,6 @@ namespace ShoppingApp.Interfaces.ServicesInterface
     {
         public Task<Category> AddCategory(string categoryName);
 
-        public Task<IEnumerable<Category>> GetAllCategories(int Limit,int PageNumber);
+        public Task<ICollection<GetAllCategoryResponseDTO>> GetAllCategories(int Limit,int PageNumber);
     }
 }

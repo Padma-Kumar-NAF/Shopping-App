@@ -5,7 +5,8 @@ namespace ShoppingApp.Models.DTOs.Address
     public class DeleteUserAddressRequestDTO
     {
         public Guid UserId { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Address Id is required")]
         public Guid AddressId { get; set; }
     }
 }

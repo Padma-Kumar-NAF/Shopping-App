@@ -4,7 +4,7 @@ namespace ShoppingApp.Models.DTOs.Address
 {
     public class GetUserAddressRequestDTO
     {
-        [Range(1, int.MaxValue, ErrorMessage = "PageNumber must be greater than 0")]
+        [Range(1, 100, ErrorMessage = "PageNumber must be greater than 0")]
         public int PageNumber { get; set; }
 
         [Range(1, 100, ErrorMessage = "Limit must be between 1 and 100")]

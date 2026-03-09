@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models.DTOs.Review;
+using System.Security.Claims;
 
 namespace ShoppingApp.Controllers
 {
     //[Authorize(Roles = "User")]
     [Route("[controller]")]
     [ApiController]
-    public class ReviewController : ControllerBase , IReviewController
+    public class ReviewController : BaseController, IReviewController
     {
         private readonly IReviewService _reviewService;
         public ReviewController(IReviewService reviewService)
@@ -20,6 +21,15 @@ namespace ShoppingApp.Controllers
         [HttpPost("AddReview")]
         public async Task<ActionResult<AddReviewResponseDTO>> AddReview(AddReviewRequestDTO request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            request.UserId = GetUserId();
+            if(request.UserId == Guid.Empty)
+            {
+                return BadRequest("User not found");
+            }
+
             try
             {
                 var review =await _reviewService.AddReview(request);
@@ -34,10 +44,19 @@ namespace ShoppingApp.Controllers
         [HttpPost("DeleteReview")]
         public async Task<ActionResult<DeleteReviewResponseDTO>> DeleteReview(DeleteReviewRequestDTO request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            request.UserId = GetUserId();
+            if (request.UserId == Guid.Empty)
+            {
+                return BadRequest("User not found");
+            }
+
             try
             {
-                var review = await _reviewService.DeleteReview(request.ReviewId);
-                return review;
+                var review = await _reviewService.DeleteReview(request.UserId,request.ReviewId);
+                return Ok(review);
             }
             catch (Exception ex)
             {
