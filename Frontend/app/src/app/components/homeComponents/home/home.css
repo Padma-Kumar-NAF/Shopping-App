@@ -1,0 +1,74 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.search {
+  width: 40%;
+}
+
+
+.container {
+  padding: 20px;
+  margin-top: 70px;
+}
+
+.categories {
+  margin: 20px 0;
+}
+
+.category-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.mobile-dropdown {
+  display: none;
+  width: 100%;
+}
+
+.section-title {
+  margin: 20px 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.product-card {
+  transition: 0.3s;
+}
+
+.product-card:hover {
+  transform: scale(1.03);
+}
+
+@media (max-width: 768px) {
+  .search {
+    width: 60%;
+  }
+
+  .category-scroll {
+    display: none;
+  }
+
+  .mobile-dropdown {
+    display: block;
+  }
+}

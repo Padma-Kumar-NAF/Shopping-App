@@ -1,0 +1,16 @@
+<div class="carousel">
+
+  <div
+    class="carousel-track"
+    [style.transform]="'translateX(-' + currentIndex * 100 + '%)'"
+  >
+
+    @for (img of images; track img) {
+      <div class="carousel-item">
+        <img [src]="img" alt="product">
+      </div>
+    }
+
+  </div>
+
+</div>

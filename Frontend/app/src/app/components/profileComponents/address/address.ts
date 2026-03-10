@@ -1,7 +1,8 @@
-import { Component , signal } from '@angular/core';
+import { Component, OnInit, signal, WritableSignal } from '@angular/core';
 import { AddressModel } from '../../../models/address.model';
 import { FormsModule } from '@angular/forms';
-import { MatIcon } from "@angular/material/icon";
+import { MatIcon } from '@angular/material/icon';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-address',
@@ -9,8 +10,12 @@ import { MatIcon } from "@angular/material/icon";
   templateUrl: './address.html',
   styleUrl: './address.css',
 })
-export class Address  {
-  addresses = signal<AddressModel[]>([
+export class Address implements OnInit{
+  // private apiService : 
+  ngOnInit(): void {
+    
+  }
+  addresses: WritableSignal<AddressModel[]> = signal<AddressModel[]>([
     {
       id: '1',
       addressLine1: '12 Anna Street',
@@ -44,10 +49,9 @@ export class Address  {
   }
 
   addNewAddress() {
-  // Create new empty address or navigate to add form
-  // Example: this.router.navigate(['/add-address']);
-}
-
+    // Create new empty address or navigate to add form
+    // Example: this.router.navigate(['/add-address']);
+  }
 
   saveAddress(updated: AddressModel) {
     this.addresses.update((list) => list.map((a) => (a.id === updated.id ? updated : a)));

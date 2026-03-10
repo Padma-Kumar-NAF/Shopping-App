@@ -91,7 +91,8 @@ export class Auth {
     this.apiService.LoginApi(this.loginData).subscribe({
       next: (response: LoginResponseDTO) => {
         this.loginDetails = response;
-        sessionStorage.setItem('JWT-Token', response.token);
+        // sessionStorage.setItem('JWT-Token', response.token);
+        localStorage.setItem('JWT-Token', response.token);
         // console.log("Stored Token:", sessionStorage.getItem('JWT-Token'));
 
         console.log(this.loginDetails);

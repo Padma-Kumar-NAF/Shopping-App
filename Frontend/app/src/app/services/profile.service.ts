@@ -8,6 +8,7 @@ import { UserProfile } from '../models/profile.model';
 })
 export class ProfileApiService{
     private baseUrl = 'https://localhost:7023/';
+    
     constructor(private Http : HttpClient){
 
     }
