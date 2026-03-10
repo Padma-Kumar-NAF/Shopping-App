@@ -1,4 +1,5 @@
 ﻿using ShoppingApp.Contexts;
+using ShoppingApp.Exceptions;
 using ShoppingApp.Models;
 using System.Security.Claims;
 
@@ -13,7 +14,7 @@ namespace ShoppingApp.Middleware
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context, ShoppingContext db)
+        public async Task Invoke(HttpContext context)
         {
             try
             {
@@ -21,7 +22,8 @@ namespace ShoppingApp.Middleware
             }
             catch (Exception ex)
             {
-                var endpoint = context.GetEndpoint();
+                using var scope = context.RequestServices.CreateScope();
+                var db = scope.ServiceProvider.GetRequiredService<ShoppingContext>();
 
                 var controller = context.Request.RouteValues["controller"]?.ToString();
                 var action = context.Request.RouteValues["action"]?.ToString();
@@ -35,7 +37,6 @@ namespace ShoppingApp.Middleware
                 if (user.Identity != null && user.Identity.IsAuthenticated)
                 {
                     username = user.Identity.Name ?? "Unknown";
-
                     role = user.FindFirst(ClaimTypes.Role)?.Value ?? "User";
 
                     var idClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -46,30 +47,27 @@ namespace ShoppingApp.Middleware
 
                 var log = new Log
                 {
-                    LogId = Guid.NewGuid(),
                     Message = ex.Message,
                     StackTrace = ex.StackTrace ?? "",
                     UserName = username,
                     Role = role,
                     UserId = userId,
-                    Path = context.Request.Path,
                     Controller = controller ?? "",
                     Action = action ?? "",
                     HttpMethod = context.Request.Method,
-                    RequestPath = context.Request.Path,
-                    CreatedAt = DateTime.UtcNow
+                    RequestPath = context.Request.Path
                 };
 
                 db.Logs.Add(log);
                 await db.SaveChangesAsync();
 
-                context.Response.StatusCode = 500;
+                context.Response.StatusCode = ex is AppException appEx ? appEx.StatusCode : 500;
                 context.Response.ContentType = "application/json";
 
                 await context.Response.WriteAsJsonAsync(new
                 {
                     error = "Internal Server Error",
-                    message = ex.Message
+                    message = ex is AppException ? ex.Message : "An unexpected error occurred"
                 });
             }
         }

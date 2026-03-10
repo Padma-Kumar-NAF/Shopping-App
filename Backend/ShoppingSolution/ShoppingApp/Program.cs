@@ -62,11 +62,8 @@ namespace ShoppingApp
 
             builder.Services.AddAuthorization();
 
-            #region Repositories
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
-            #endregion
 
-            #region Services
             builder.Services.AddScoped<IAddressService, AddressService>();
             builder.Services.AddScoped<ICartItemsService, CartItemsService>();
             builder.Services.AddScoped<ICartService, CartService>();
@@ -78,7 +75,6 @@ namespace ShoppingApp
             builder.Services.AddScoped<IUserDetailsService, UserDetailsService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IWishListService, WishListService > ();
-            #endregion
 
             var app = builder.Build();
 
@@ -92,10 +88,13 @@ namespace ShoppingApp
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseIpRateLimiting();
+
             app.UseMiddleware<ExceptionMiddleware>();
+
             app.MapControllers();
             app.Run();
         }

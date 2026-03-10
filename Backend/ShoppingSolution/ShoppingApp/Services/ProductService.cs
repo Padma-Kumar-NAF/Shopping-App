@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Contexts;
+using ShoppingApp.Exceptions;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
@@ -158,7 +159,7 @@ namespace ShoppingApp.Services
                 .FirstOrDefaultAsync();
 
             if (product == null)
-                throw new Exception("Product not found");
+                throw new AppException("Product not found");
 
             return product;
         }

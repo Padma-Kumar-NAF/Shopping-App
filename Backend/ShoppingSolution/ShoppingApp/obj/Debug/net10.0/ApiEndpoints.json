@@ -41,7 +41,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Boolean",
+        "Type": "ShoppingApp.Models.DTOs.Address.DeleteUserAddressResponseDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",

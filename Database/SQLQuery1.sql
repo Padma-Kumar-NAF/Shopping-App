@@ -27,6 +27,8 @@ select * from OrderDetails
 
 select * from Reviews
 
+--delete from logs
+
 -- User - Payment -> One to many ==
 -- User - Refund -> one to many ==
 -- User - WishList -> One to many ==

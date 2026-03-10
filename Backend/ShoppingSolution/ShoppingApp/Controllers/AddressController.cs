@@ -20,23 +20,63 @@ namespace ShoppingApp.Controllers
         [HttpPost("CreateAddress")]
         public async Task<ActionResult<CreateNewAddressResponseDTO>> AddAddress(CreateNewAddressRequestDTO request)
         {
-            if (request == null)
-                return BadRequest("Invalid request");
+            try
+            {
+                if (request == null)
+                    return BadRequest("Invalid request");
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            //try
-            //{
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
                 request.UserId = GetUserId();
-                if(request.UserId == Guid.Empty)
+
+                if (request.UserId == Guid.Empty)
                 {
                     return BadRequest("User not found");
                 }
+
                 var result = await _addressService.AddAddress(request);
+
                 if (result == null)
-                    return StatusCode(500, "Unable to create address at the moment");
-            //return Ok(result);
-            return CreatedAtAction(nameof(AddAddress), result);
+                    return BadRequest("Unable to create address at the moment");
+
+                return Ok(result);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpDelete("DeleteUserAddress")]
+        public async Task<ActionResult<DeleteUserAddressResponseDTO>> DeleteUserAddress(DeleteUserAddressRequestDTO request)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                if (request == null || request.AddressId == Guid.Empty)
+                    return BadRequest("Invalid request");
+
+                request.UserId = GetUserId();
+                if (request.UserId == Guid.Empty)
+                    return Unauthorized("User not authenticated");
+
+                var result = await _addressService.DeleteUserAddress(request);
+
+                //if (!result)
+                //    return NotFound("Address not found or does not belong to user");
+
+                return Ok(new DeleteUserAddressResponseDTO()
+                {
+                    Success = result,
+                });
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         [HttpPost("GetUserAddress")]
@@ -57,35 +97,14 @@ namespace ShoppingApp.Controllers
                 var addressList = await _addressService.GetUserAddress(request);
 
                 if (addressList == null)
-                    return NotFound("No addresses found for this user.");
+                    return Ok("No addresses found for this user.");
 
                 return Ok(addressList);
             }
-            catch (Exception ex)
+            catch
             {
-                return StatusCode(500, ex.Message);
+                throw;
             }
-        }
-
-        [HttpDelete("DeleteUserAddress")]
-        public async Task<ActionResult<bool>> DeleteUserAddress(DeleteUserAddressRequestDTO request)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            if (request == null || request.AddressId == Guid.Empty)
-                return BadRequest("Invalid request");
-
-            request.UserId = GetUserId();
-            if (request.UserId == Guid.Empty)
-                return Unauthorized("User not authenticated");
-
-            var result = await _addressService.DeleteUserAddress(request);
-
-            if (!result)
-                return NotFound("Address not found or does not belong to user");
-
-            return Ok(true);
         }
     }
 }
