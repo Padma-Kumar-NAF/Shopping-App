@@ -1,4 +1,4 @@
-<div class="  flex items-center justify-center px-4 py-10 ">
+<div class="flex items-center justify-center px-4 py-10">
   <div class="w-full max-w-5xl bg-white shadow-field rounded-3xl p-6 md:p-10">
     <div class="flex items-center justify-between mb-4">
       <h1 class="text-2xl font-semibold">Profile</h1>
@@ -7,7 +7,7 @@
         (click)="goHome()"
         class="cursor-pointer button-shadow px-4 py-1.5 text-sm rounded-lg hover:bg-gray-100"
       >
-      Back to Home
+        Back to Home
       </button>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-5 border-b mb-10 text-center text-sm md:text-base">
@@ -65,7 +65,7 @@
           </div>
 
           <div>
-            <h2 class="text-xl font-semibold">{{ user().username }}</h2>
+            <h2 class="text-xl font-semibold">{{ user().name }}</h2>
             <p class="text-gray-500">{{ user().email }}</p>
           </div>
         </div>
@@ -81,29 +81,29 @@
         <div class="bg-gray-50 p-5 rounded-xl space-y-3">
           <p class="flex items-center gap-2">
             <mat-icon class="text-indigo-500">call</mat-icon>
-            {{ user().phone }}
+            {{ user().userDetails.phoneNumber }}
           </p>
 
           <p class="flex items-center gap-2">
             <mat-icon class="text-pink-500">location_city</mat-icon>
-            {{ user().city }}
+            {{ user().userDetails.city }}
           </p>
 
           <p class="flex items-center gap-2">
             <mat-icon class="text-purple-500">map</mat-icon>
-            {{ user().state }}
+            {{ user().userDetails.state }}
           </p>
         </div>
 
         <div class="bg-gray-50 p-5 rounded-xl space-y-3">
           <p class="flex items-center gap-2">
             <mat-icon class="text-orange-500">home</mat-icon>
-            {{ user().addressLine1 }}, {{ user().addressLine2 }}
+            {{ user().userDetails.addressLine1 }}, {{ user().userDetails.addressLine2 }}
           </p>
 
           <p class="flex items-center gap-2">
             <mat-icon class="text-gray-600">pin_drop</mat-icon>
-            {{ user().pincode }}
+            {{ user().userDetails.pincode }}
           </p>
         </div>
       </div>
@@ -118,9 +118,11 @@
       </div>
     </div>
 
-    <div *ngIf="activeTab() === 'cart'" class="">
-      <app-cart></app-cart>
-    </div>
+    @if (activeTab() === 'cart') {
+      <div>
+        <app-cart></app-cart>
+      </div>
+    }
 
     <div *ngIf="activeTab() === 'wishlist'" class="">
       <app-wishlist></app-wishlist>

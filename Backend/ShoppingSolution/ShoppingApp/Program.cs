@@ -77,6 +77,7 @@ namespace ShoppingApp
             builder.Services.AddScoped<IWishListService, WishListService > ();
 
             var app = builder.Build();
+            app.UseCors("AllowAngular");
 
             if (app.Environment.IsDevelopment())
             {

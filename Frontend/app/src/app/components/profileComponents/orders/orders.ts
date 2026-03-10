@@ -66,7 +66,8 @@ export class OrdersComponent {
     },
     {
       id: '3',
-      status: 'pending',
+      status: 'cancelled',
+      deliveryDate: '2026-03-13',
       address: {
         name: 'Padma Kumar',
         line1: '789 T Nagar',

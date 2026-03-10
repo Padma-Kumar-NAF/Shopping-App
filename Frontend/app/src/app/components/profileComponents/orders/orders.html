@@ -6,14 +6,14 @@
     </div>
   </div>
 
-  <div class="-my-2 overflow-x-auto">
+  <div class="-my-2 overflow-x-auto border  rounded-3xl">
     @if (true) {
-      <div class="hidden md:block">
-        <div class="overflow-hidden rounded-3xl">
+      <div class="hidden md:block ">
+        <div class="overflow-hidden">
           <table class="min-w-full divide-y divide-gray-300 bg-white">
             <thead class="bg-gray-50">
               <tr>
-                <th class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">S.No</th>
+                <!-- <th class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">S.No</th> -->
                 <th class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">Order Date</th>
                 <th class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">Status</th>
                 <th class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">Delivery</th>
@@ -23,9 +23,9 @@
             <tbody class="divide-y divide-gray-200">
               @for (order of orders(); track order.id) {
                 <tr class="hover:bg-gray-50">
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <!-- <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {{ order.id }}
-                  </td>
+                  </td> -->
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     @if (order.deliveryDate) {
                       <span class="font-medium">

@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Cart
 {
-    public class AddToCartRequestDTO
+    public record AddToCartRequestDTO
     {
         //[Required]
         //public CartDTO Cart { get; set; }
@@ -18,7 +18,7 @@ namespace ShoppingApp.Models.DTOs.Cart
     //    public Guid UserId { get; set; }
     //}
 
-    public class CartItemsDTO
+    public record CartItemsDTO
     {
         [Required(ErrorMessage = "Product ID is required")]
         public Guid ProductId { get; set; }

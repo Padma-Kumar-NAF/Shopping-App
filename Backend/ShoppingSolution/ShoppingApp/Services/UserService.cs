@@ -1,6 +1,7 @@
 ﻿using FirstAPI.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Contexts;
+using ShoppingApp.Exceptions;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
@@ -53,7 +54,8 @@ namespace ShoppingApp.Services
             {
                 UserId = user.UserId,
                 Name = user.Name,
-                Email = user.Email
+                Email = user.Email,
+                UserDetails = new CreateUserDetailsDTO()
             };
         }
 
@@ -81,7 +83,7 @@ namespace ShoppingApp.Services
             //Console.WriteLine(user.UserId);
 
             if (!isValid)
-                throw new Exception("Invalid Credentials");
+                throw new AppException("Invalid Credentials");
 
             return new LoginResponseDTO
             {
@@ -123,6 +125,38 @@ namespace ShoppingApp.Services
                 throw new Exception("No Users Found");
 
             return users;
+        }
+
+        public async Task<CreateUserResponseDTO> GetUserById(Guid UserId)
+        {
+            var user = await _context.Users
+               .Include(u => u.UserDetails)
+               .FirstOrDefaultAsync(u => u.UserId == UserId);
+
+            if (user == null)
+            {
+                throw new AppException("No user found");
+            }
+
+            return new CreateUserResponseDTO()
+            {
+                UserId = user.UserId,
+                Name = user.Name,
+                Email = user.Email,
+                UserDetails = new CreateUserDetailsDTO()
+                {
+                    UserId = user.UserDetails.UserId,
+                    Name = user.Name,
+                    Email = user.Email,
+                    PhoneNumber = user.UserDetails.PhoneNumber,
+                    AddressLine1 = user.UserDetails.AddressLine1,
+                    AddressLine2 = user.UserDetails.AddressLine2,
+                    State = user.UserDetails.State,
+                    City = user.UserDetails.City,
+                    Pincode = user.UserDetails.Pincode
+
+                }
+            };
         }
     }
 }

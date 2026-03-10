@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Address
 {
-    public class CreateNewAddressRequestDTO
+    public record CreateNewAddressRequestDTO
     {
         public Guid UserId { get; set; }
 

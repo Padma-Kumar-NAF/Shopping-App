@@ -781,6 +781,26 @@
   },
   {
     "ContainingType": "ShoppingApp.Controllers.UserController",
+    "Method": "GetUserById",
+    "RelativePath": "User/GetUserById",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "ShoppingApp.Models.DTOs.User.CreateUserResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.UserController",
     "Method": "UpdateUserDetails",
     "RelativePath": "User/UpdateUserDetails",
     "HttpMethod": "POST",
