@@ -1,42 +1,57 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit, inject, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { Cart } from '../cart/cart';
-import { WishlistComponent } from "../wishlist/wishlist";
+import { WishlistComponent } from '../wishlist/wishlist';
 import { OrdersComponent } from '../orders/orders';
 import { Address } from '../address/address';
+import { ProfileApiService } from '../../../services/profile.service';
+import { UserProfile } from '../../../models/profile.model';
+import { toast } from 'ngx-sonner';
 
 type TabType = 'profile' | 'cart' | 'wishlist' | 'orders' | 'address';
 
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule, MatIconModule, Cart,WishlistComponent,OrdersComponent,Address],
+  imports: [CommonModule, MatIconModule, Cart, WishlistComponent, OrdersComponent, Address],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
-export class Profile {
-  activeTab = signal<TabType>('orders');
+export class Profile implements OnInit {
+  private apiService: ProfileApiService = inject(ProfileApiService);
+  ngOnInit(): void {
+    this.GetUserProfileDetails();
+  }
 
-  user = signal({
-    username: 'padma kumar',
-    email: 'padmakumar@gmail.com',
-    phone: '+91 9876543210',
-    addressLine1: '108 / 3 address line 1',
-    addressLine2: 'address line 2',
-    state: 'Tamil nadu',
-    city: 'Chennai',
-    pincode: '654321'
-  });
+  activeTab = signal<TabType>('profile');
+
+  user: WritableSignal<UserProfile> = signal(new UserProfile());
+
+  GetUserProfileDetails() {
+    this.apiService.GetUserProfile().subscribe({
+      next: (response: UserProfile) => {
+        this.user.set(response);
+        console.log('User details');
+        console.log(this.user());
+      },
+      error: (error: any) => {
+        console.error('Login Failed:', error);
+        if (error.error?.message) {
+          toast.error(error.error.message);
+        }
+      },
+    });
+  }
 
   setTab(tab: TabType) {
     this.activeTab.set(tab);
   }
 
-  goHome(){
-    console.log("back to home")
+  goHome() {
+    console.log('back to home');
   }
 
   logout() {
-    console.log('Logout clicked');
+    // localStorage.removeItem("JWT-Token")
   }
 }

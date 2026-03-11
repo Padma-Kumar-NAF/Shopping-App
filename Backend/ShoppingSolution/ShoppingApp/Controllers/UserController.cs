@@ -71,6 +71,25 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        [HttpGet("GetUserById")]
+        public async Task<ActionResult<CreateUserResponseDTO>> GetUserById()
+        { 
+            //request.UserId = GetUserId();
+            if (GetUserId() == Guid.Empty)
+            {
+                return BadRequest("User not authenticated");
+            }
+            try
+            {
+                var result = await _userService.GetUserById(GetUserId());
+                return Ok(result);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         [HttpPost("UpdateUserDetails")]
         public async Task<ActionResult<UpdateProfileResponseDTO>> UpdateUserDetails(UpdateProfileRequestDTO request)
         {

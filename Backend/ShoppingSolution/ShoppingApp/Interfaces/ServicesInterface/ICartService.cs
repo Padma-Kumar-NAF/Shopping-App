@@ -10,6 +10,6 @@ namespace ShoppingApp.Interfaces.ServicesInterface
         public Task<GetCartResponseDTO?> AddCart(AddToCartRequestDTO UserId);
         public Task<bool> RemoveAllFromCartByUserID(Guid UserId);
         public Task<bool> PlaceOrderAllFromCart(Guid CartId,Guid UserId,Guid AddressId,string PaymentType);
-        public Task<bool> RemoveFromCart(Guid CartId,Guid ProductId);
+        public Task<bool> RemoveFromCart(Guid UserId ,Guid CartId,Guid ProductId);
     }
 }

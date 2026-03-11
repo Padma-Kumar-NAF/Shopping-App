@@ -1,8 +1,20 @@
-.profile-card{
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+.profile-card {
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
-.nav-button{
+.nav-button {
   border-bottom: 3px solid #007765;
   color: #007765;
+}
+
+.shadow-field {
+  box-shadow:
+    rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
+    rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
+
+.button-shadow {
+  box-shadow:
+    rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
 }

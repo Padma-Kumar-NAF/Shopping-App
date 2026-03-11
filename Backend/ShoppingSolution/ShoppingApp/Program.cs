@@ -1,13 +1,14 @@
+using AspNetCoreRateLimit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ShoppingApp.Contexts;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
+using ShoppingApp.Middleware;
 using ShoppingApp.Models;
 using ShoppingApp.Repositories;
 using ShoppingApp.Services;
 using System.Text;
-using AspNetCoreRateLimit;
 
 namespace ShoppingApp
 {
@@ -20,14 +21,13 @@ namespace ShoppingApp
             builder.Services.AddOpenApi();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
-            //builder.Services.AddAutoMapper(typeof(CustomerProfile)); // This is for mapper
-
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAngular",
                     policy =>
                     {
-                        policy.WithOrigins("http://localhost:4200")
+                        policy.WithOrigins("http://localhost:4200",
+                              "http://localhost:5173")
                               .AllowAnyHeader()
                               .AllowAnyMethod();
                     });
@@ -61,11 +61,8 @@ namespace ShoppingApp
 
             builder.Services.AddAuthorization();
 
-            #region Repositories
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
-            #endregion
 
-            #region Services
             builder.Services.AddScoped<IAddressService, AddressService>();
             builder.Services.AddScoped<ICartItemsService, CartItemsService>();
             builder.Services.AddScoped<ICartService, CartService>();
@@ -74,13 +71,12 @@ namespace ShoppingApp
             builder.Services.AddScoped<IPasswordService, PasswordService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
-            //builder.Services.AddScoped<IStockService, StockService>();
             builder.Services.AddScoped<IUserDetailsService, UserDetailsService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IWishListService, WishListService > ();
-            #endregion
 
             var app = builder.Build();
+            app.UseCors("AllowAngular");
 
             if (app.Environment.IsDevelopment())
             {
@@ -92,9 +88,12 @@ namespace ShoppingApp
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseIpRateLimiting();
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.MapControllers();
             app.Run();

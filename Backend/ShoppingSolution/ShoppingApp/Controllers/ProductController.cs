@@ -1,12 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
-using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.Product;
-using System.ComponentModel;
-using System.Security.Claims;
 
 namespace ShoppingApp.Controllers
 {
@@ -38,9 +33,9 @@ namespace ShoppingApp.Controllers
                 }
                 return Ok(products);
             }
-            catch (Exception e)
+            catch
             {
-                return BadRequest(e.Message);
+                throw;
             }
         }
 
@@ -62,10 +57,9 @@ namespace ShoppingApp.Controllers
 
                 return Ok(products);
             }
-            catch (Exception)
+            catch
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "An unexpected error occurred.");
+                throw;
             }
         }
 
@@ -80,9 +74,9 @@ namespace ShoppingApp.Controllers
                 var newProduct = await _productService.AddProduct(request);
                 return Ok(newProduct);
             }
-            catch (Exception e)
+            catch
             {
-                return BadRequest(e.Message);
+                throw;
             }
         }
 
@@ -96,9 +90,10 @@ namespace ShoppingApp.Controllers
                 var newProduct = await _productService.UpdateProduct(request);
                 return Ok(newProduct);
             }
-            catch (Exception e)
+            catch
             {
-                return BadRequest(e.Message);
+                throw;
+                //return BadRequest(e.Message);
             }
         }
 
@@ -112,9 +107,10 @@ namespace ShoppingApp.Controllers
                 var product = await _productService.SearchProductById(request);
                 return Ok(product);
             }
-            catch (Exception e)
+            catch
             {
-                return BadRequest(e.Message);
+                //return BadRequest(e.Message);
+                throw;
             }
         }
     }

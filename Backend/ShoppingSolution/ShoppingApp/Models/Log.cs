@@ -6,25 +6,20 @@ namespace ShoppingApp.Models
     {
         [Key]
         public Guid LogId { get; set; }
-
-        [Required]
         public string Message { get; set; } = string.Empty;
-
-        [Required]
-        public string ErrorNumber { get; set; } = string.Empty;
-
-        [Required]
         public string Role { get; set; } = string.Empty;
-
-        [Required]
+        public string StackTrace { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
-
-        [Required] 
-        public Guid UserId { get; set; }
-
-        [Required]
+        public string Controller {  get; set; } = string.Empty; // From which controller
+        public string Action { get; set; } = string.Empty; // From which method
+        public string HttpMethod {  get; set; } = string.Empty;
+        public string RequestPath {  get; set; } = string.Empty; // End point
+        public Guid? UserId { get; set; }
         public DateTime CreatedAt {  get; set; } 
 
+        // navigation
         public User? User { get; set; }
+
+        //public string ErrorNumber { get; set; } = string.Empty;
     }
 }

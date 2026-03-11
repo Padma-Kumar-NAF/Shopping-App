@@ -10,5 +10,6 @@ namespace ShoppingApp.Interfaces.ServicesInterface
         //public Task<Guid> AddUserDetails(AddUserDetailsRequestDTO request);
 
         public Task<IEnumerable<GetUsersResponseDTO>> GetAllUsers(GetUsersRequestDTO request);
+        public Task<CreateUserResponseDTO> GetUserById(Guid UserId);
     }
 }

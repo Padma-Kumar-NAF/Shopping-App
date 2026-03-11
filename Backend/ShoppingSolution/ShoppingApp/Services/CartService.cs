@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Contexts;
+using ShoppingApp.Exceptions;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.Cart;
@@ -45,7 +46,6 @@ namespace ShoppingApp.Services
                     if (item.ProductId == Guid.Empty)
                         continue;
 
-                    // 🔹 Check product exists
                     var productExists = await _context.Products
                         .AnyAsync(p => p.ProductId == item.ProductId);
 
@@ -120,21 +120,19 @@ namespace ShoppingApp.Services
                     .Where(s => productIds.Contains(s.ProductId))
                     .ToListAsync();
 
-
                 foreach (var item in cartItems)
                 {
                     var stock = stocks.FirstOrDefault(s => s.ProductId == item.ProductId);
 
                     if (stock == null)
-                        throw new Exception($"Stock not found for product {item.Product!.Name}");
+                        throw new AppException($"Stock not found for product {item.Product!.Name}");
 
                     if (stock.Quantity < item.Quantity)
-                        throw new Exception($"Insufficient stock for product {item.Product!.Name}");
+                        throw new AppException($"Insufficient stock for product {item.Product!.Name}");
 
                     if (item.Product == null)
-                        throw new Exception($"Product Not Found");
+                        throw new AppException($"Product Not Found");
                 }
-
 
                 var order = new Order
                 {
@@ -166,6 +164,7 @@ namespace ShoppingApp.Services
                 }
 
                 await _context.Orders.AddAsync(order);
+                await _context.SaveChangesAsync();
 
                 var payment = new Payment()
                 {
@@ -215,10 +214,14 @@ namespace ShoppingApp.Services
             return affectedRowsInCart > 0;
         }
 
-
-        // If user removes all items from Cart items then remove the cart from Cart table
-        public async Task<bool> RemoveFromCart(Guid cartId, Guid productId)
+        public async Task<bool> RemoveFromCart(Guid userId, Guid cartId, Guid productId)
         {
+            var cart = await _context.Carts
+                .FirstOrDefaultAsync(c => c.CartId == cartId && c.UserId == userId);
+
+            if (cart == null)
+                return false;
+
             var cartItem = await _context.CartItems
                 .FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == productId);
 

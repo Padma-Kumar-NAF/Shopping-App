@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Address
 {
-    public class DeleteUserAddressRequestDTO
+    public record DeleteUserAddressRequestDTO
     {
         public Guid UserId { get; set; }
 

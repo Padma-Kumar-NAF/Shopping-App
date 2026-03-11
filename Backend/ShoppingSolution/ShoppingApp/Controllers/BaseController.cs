@@ -8,10 +8,7 @@ namespace ShoppingApp.Controllers
         protected Guid GetUserId()
         {
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            return Guid.TryParse(userIdClaim, out var userId)
-                ? userId
-                : Guid.Empty;
+            return Guid.TryParse(userIdClaim, out var userId) ? userId : Guid.Empty;
         }
     }
 }

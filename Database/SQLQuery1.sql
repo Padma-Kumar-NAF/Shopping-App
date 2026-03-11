@@ -9,6 +9,8 @@ select * from Orders
 
 select * from Refunds
 
+select * from Logs
+
 select * from Category
 
 select * from Users
@@ -24,6 +26,9 @@ select * from Orders
 select * from OrderDetails
 
 select * from Reviews
+
+
+--delete from logs
 
 -- User - Payment -> One to many ==
 -- User - Refund -> one to many ==

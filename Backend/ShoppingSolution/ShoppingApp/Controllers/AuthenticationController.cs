@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
@@ -23,23 +22,29 @@ namespace ShoppingApp.Controllers
             _configuration = configuration;
         }
 
-
         [HttpPost("register")]
         public async Task<ActionResult<CreateUserResponseDTO>> Register([FromBody] CreateUserRequestDTO requestDTO)
         {
 
-            if (requestDTO == null)
-                return BadRequest("Invalid request");
+            try
+            {
+                if (requestDTO == null)
+                    return BadRequest("Invalid request");
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            var result = await _userService.CreateUser(requestDTO);
+                var result = await _userService.CreateUser(requestDTO);
 
-            if (result == null)
-                return Conflict("Email already exists");
+                //if (result == null)
+                //    return Conflict("Email already exists");
 
-            return StatusCode(201, result);
+                return StatusCode(201, result);
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         [HttpPost("login")]
@@ -71,9 +76,9 @@ namespace ShoppingApp.Controllers
 
                 return Ok(result);
             }
-            catch(Exception ex)
+            catch
             {
-                return BadRequest(ex.Message);
+                throw;
             }
         }
 
@@ -82,7 +87,6 @@ namespace ShoppingApp.Controllers
             var keyValue = _configuration["Jwt:Key"];
             if (string.IsNullOrWhiteSpace(keyValue))
                 throw new InvalidOperationException("JWT Key is not configured.");
-
 
             var claims = new List<Claim>
             {
@@ -100,9 +104,6 @@ namespace ShoppingApp.Controllers
             var durationValue = _configuration["Jwt:DurationInMinutes"];
             if (!double.TryParse(durationValue, out var expiryMinutes))
                 expiryMinutes = 60;
-
-            //var expiryMinutes =
-            //    Convert.ToDouble(_configuration["Jwt:DurationInMinutes"]);
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],

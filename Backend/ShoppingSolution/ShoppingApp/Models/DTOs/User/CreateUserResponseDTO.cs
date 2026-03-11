@@ -4,12 +4,8 @@ namespace ShoppingApp.Models.DTOs.User
 {
     public class CreateUserResponseDTO
     {
-        [Required]
         public Guid UserId { get; set; } 
-        [Required]
         public string Name { get; set; } = string.Empty;
-
-        [Required]
         public string Email { get; set; } = string.Empty;
 
         public CreateUserDetailsDTO UserDetails { get; set; } = new CreateUserDetailsDTO();

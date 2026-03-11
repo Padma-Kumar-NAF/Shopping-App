@@ -1,0 +1,32 @@
+.shosOutput div{
+  display: flex;
+}
+
+span{
+  width:40px;
+  height:40px;
+  border:1px solid black;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+
+  
+}
+
+.row{
+  display:flex;
+  gap:8px;
+  margin:10px 0;
+}
+
+.box{
+  width:40px;
+  height:40px;
+  border:2px solid black;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  color:white;
+}

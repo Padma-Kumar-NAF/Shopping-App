@@ -41,7 +41,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Boolean",
+        "Type": "ShoppingApp.Models.DTOs.Address.DeleteUserAddressResponseDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -770,6 +770,26 @@
     "ReturnTypes": [
       {
         "Type": "ShoppingApp.Models.DTOs.User.GetUsersResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.UserController",
+    "Method": "GetUserById",
+    "RelativePath": "User/GetUserById",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "ShoppingApp.Models.DTOs.User.CreateUserResponseDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",

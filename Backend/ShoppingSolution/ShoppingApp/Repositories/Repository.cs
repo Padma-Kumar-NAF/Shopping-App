@@ -14,29 +14,15 @@ namespace ShoppingApp.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        //public async Task<C> AddAsync(C item)
-        //{
-        //    var user = _context.Add(item);
-        //    await _context.SaveChangesAsync();
-        //    if(user != null)
-        //    {
-        //        return item;
-        //    }
-        //    return null;
-        //}
-        public async Task<C?> AddAsync(C item)
+        public async Task<C?> AddAsync(C entity)
         {
-            if (item == null)
-                return null;
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
 
-            await _context.Set<C>().AddAsync(item);
+            await _context.Set<C>().AddAsync(entity);
+            await _context.SaveChangesAsync();
 
-            var result = await _context.SaveChangesAsync();
-
-            if (result > 0)
-                return item;
-
-            return null;
+            return entity;
         }
 
         public async Task<C?> DeleteAsync(K key)
