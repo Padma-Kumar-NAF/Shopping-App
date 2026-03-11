@@ -23,13 +23,12 @@ import { Footer } from '../footer/footer';
     MatCardModule,
     MatSelectModule,
     ProductCarousel,
-    Footer
+    Footer,
   ],
   templateUrl: './home.html',
-  styleUrls: ['./home.css']
+  styleUrls: ['./home.css'],
 })
 export class HomeComponent {
-
   categories = [
     'Electronics',
     'Fashion',
@@ -38,13 +37,22 @@ export class HomeComponent {
     'Laptops',
     'Beauty',
     'Home',
-    'Sports'
+    'Sports',
   ];
 
-  products : any[] = Array.from({ length: 12 }).map((_, i) => ({
+  viewProduct(product: any) {
+    console.log(product);
+  }
+  addToCart(product: any) {
+    console.log(product);
+  }
+  buyProduct(product: any) {
+    console.log(product);
+  }
+
+  products: any[] = Array.from({ length: 12 }).map((_, i) => ({
     name: `Product ${i + 1}`,
     price: Math.floor(Math.random() * 5000),
-    image: `https://picsum.photos/300/200?random=${i}`
+    image: `https://picsum.photos/300/200?random=${i}`,
   }));
-
-} 
+}

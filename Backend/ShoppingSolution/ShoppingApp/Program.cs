@@ -21,14 +21,13 @@ namespace ShoppingApp
             builder.Services.AddOpenApi();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
-            //builder.Services.AddAutoMapper(typeof(CustomerProfile)); // for mapper
-
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAngular",
                     policy =>
                     {
-                        policy.WithOrigins("http://localhost:4200")
+                        policy.WithOrigins("http://localhost:4200",
+                              "http://localhost:5173")
                               .AllowAnyHeader()
                               .AllowAnyMethod();
                     });

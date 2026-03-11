@@ -4,9 +4,9 @@ import {
   LoginModel,
   SignupModel,
   LoginResponseDTO,
-} from '../models/login.model';
+} from '../models/auth.model';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -24,10 +24,14 @@ export class AuthApiService {
     );
   }
 
-  SignUpApi(signUpModel: SignupModel): Observable<CreateUserResponseDTO> {
+  SignUpApi(user: SignupModel): Observable<CreateUserResponseDTO> {
     return this.http.post<CreateUserResponseDTO>(
       `${this.baseUrl}api/auth/register`,
-      signUpModel
-    );
+      user
+    ).pipe(
+      catchError((error) => {
+        return throwError(()=>error)
+      })
+    )
   }
 }

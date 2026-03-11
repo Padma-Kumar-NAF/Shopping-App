@@ -7,7 +7,23 @@ export class SignupModel {
   name: string = '';
   email: string = '';
   password: string = '';
+  phoneNumber: string = '';
+  addressLine1: string = '';
+  addressLine2: string = '';
+  state: string = '';
+  city: string = '';
+  pincode: string = '';
+  // userDetails: UserDetails = new UserDetails();
 }
+
+// export class UserDetails {
+//   phoneNumbe: string = '';
+//   addressLine1: string = '';
+//   addressLine2: string = '';
+//   state: string = '';
+//   city: string = '';
+//   pincode: string = '';
+// }
 
 export class CreateUserResponseDTO {
   userId: string = '';
@@ -28,10 +44,10 @@ export class CreateUserDetailsDTO {
   pincode: string = '';
 }
 
-export class LoginResponseDTO{
-  userId : string = '';
-  name : string = '';
-  email : string = '';
-  role : string = '';
-  token : string = '';
+export class LoginResponseDTO {
+  userId: string = '';
+  name: string = '';
+  email: string = '';
+  role: string = '';
+  token: string = '';
 }

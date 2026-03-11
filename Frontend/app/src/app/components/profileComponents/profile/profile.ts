@@ -52,6 +52,6 @@ export class Profile implements OnInit {
   }
 
   logout() {
-    sessionStorage.removeItem("JWT-Token")
+    // localStorage.removeItem("JWT-Token")
   }
 }

@@ -1,24 +1,24 @@
-﻿using FirstAPI.Exceptions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using ShoppingApp.Contexts;
 using ShoppingApp.Exceptions;
-using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.User;
-using ShoppingApp.Repositories;
 
 namespace ShoppingApp.Services
 {
     public class UserService : IUserService
     {
+        private readonly IUserDetailsService _userDetailsService;
         private readonly ShoppingContext _context;
         private readonly IPasswordService _passwordService;
 
-        public UserService(ShoppingContext context, IPasswordService passwordService)
+        public UserService(ShoppingContext context, IPasswordService passwordService, IUserDetailsService userDetailsService)
         {
             _context = context;
             _passwordService = passwordService;
+            _userDetailsService = userDetailsService;
         }
 
         public async Task<CreateUserResponseDTO?> CreateUser(CreateUserRequestDTO request)
@@ -30,36 +30,86 @@ namespace ShoppingApp.Services
                 .FirstOrDefaultAsync(u => u.Email == email);
 
             if (existingUser != null)
-                return null;
+                throw new AppException("Email already exists");
 
-            var (hash, salt) = await _passwordService.HashPasswordAsync(request.Password);
-
-            var user = new User
+            await using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                Name = request.Name.Trim(),
-                Email = email,
-                Password = Convert.ToBase64String(hash),
-                SaltValue = Convert.ToBase64String(salt),
-                Role = "User",
-                CreatedAt = DateTime.UtcNow
-            };
+                var (hash, salt) = await _passwordService.HashPasswordAsync(request.Password);
 
-            await _context.Users.AddAsync(user);
-            var result = await _context.SaveChangesAsync();
+                var user = new User
+                {
+                    Name = request.Name.Trim(),
+                    Email = email,
+                    Password = Convert.ToBase64String(hash),
+                    SaltValue = Convert.ToBase64String(salt),
+                    Role = "User"
+                };
 
-            if (result <= 0)
-                return null;
+                await _context.Users.AddAsync(user);
+                var result = await _context.SaveChangesAsync();
 
-            return new CreateUserResponseDTO
+                if (result <= 0)
+                    throw new AppException("Failed to create user.");
+
+                var userDetails = new UserDetails
+                {
+                    UserId = user.UserId,
+                    Name = request.Name.Trim(),
+                    Email = request.Email,
+                    PhoneNumber = request.PhoneNumber,
+                    AddressLine1 = request.AddressLine1,
+                    AddressLine2 = request.AddressLine2,
+                    State = request.State,
+                    City = request.City,
+                    Pincode = request.Pincode
+                };
+
+                await _context.UserDetails.AddAsync(userDetails);
+
+                var address = new Address
+                {
+                    UserId = user.UserId,
+                    AddressLine1 = request.AddressLine1,
+                    AddressLine2 = request.AddressLine2,
+                    State = request.State,
+                    City = request.City,
+                    Pincode = request.Pincode
+                };
+
+                await _context.Addresses.AddAsync(address);
+
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                return new CreateUserResponseDTO
+                {
+                    UserId = user.UserId,
+                    Name = user.Name,
+                    Email = user.Email,
+                    UserDetails = new CreateUserDetailsDTO
+                    {
+                        UserId = user.UserId,
+                        Name = request.Name.Trim(),
+                        Email = request.Email,
+                        PhoneNumber = request.PhoneNumber,
+                        AddressLine1 = request.AddressLine1,
+                        AddressLine2 = request.AddressLine2,
+                        State = request.State,
+                        City = request.City,
+                        Pincode = request.Pincode
+                    }
+                };
+            }
+            catch
             {
-                UserId = user.UserId,
-                Name = user.Name,
-                Email = user.Email,
-                UserDetails = new CreateUserDetailsDTO()
-            };
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
-        public async Task<LoginResponseDTO?> LoginUser(LoginRequestDTO request)
+    public async Task<LoginResponseDTO?> LoginUser(LoginRequestDTO request)
         {
             if (request == null)
                 return null;
@@ -70,7 +120,7 @@ namespace ShoppingApp.Services
                 .FirstOrDefaultAsync(u => u.Email == email);
 
             if (user == null)
-                throw new Exception("Email not found");
+                throw new AppException("Email not found");
 
             bool isValid = await _passwordService.VerifyPasswordAsync(
                 request.Password,
@@ -83,7 +133,7 @@ namespace ShoppingApp.Services
             //Console.WriteLine(user.UserId);
 
             if (!isValid)
-                throw new AppException("Invalid Credentials");
+                throw new AppException("Invalid Password");
 
             return new LoginResponseDTO
             {
@@ -115,6 +165,7 @@ namespace ShoppingApp.Services
                     PhoneNumber = u.UserDetails.PhoneNumber,
                     AddressLine1 = u.UserDetails.AddressLine1,
                     AddressLine2 = u.UserDetails.AddressLine2,
+
                     State = u.UserDetails.State,
                     City = u.UserDetails.City,
                     Pincode = u.UserDetails.Pincode

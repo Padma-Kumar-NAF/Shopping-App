@@ -27,6 +27,7 @@ select * from OrderDetails
 
 select * from Reviews
 
+
 --delete from logs
 
 -- User - Payment -> One to many ==

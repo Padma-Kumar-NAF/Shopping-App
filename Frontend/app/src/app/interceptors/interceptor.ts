@@ -6,6 +6,8 @@ export const authInterceptors: HttpInterceptorFn = (req, next) => {
     typeof window !== 'undefined' ? localStorage.getItem('JWT-Token') : null;
 
   if (token) {
+    // console.log("token")
+    // console.log(token)
     const authReq = req.clone({
       headers: req.headers.set('Authorization', `Bearer ${token}`)
     });

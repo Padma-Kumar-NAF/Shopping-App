@@ -1,8 +1,10 @@
-import { Component, OnInit, signal, WritableSignal } from '@angular/core';
-import { AddressModel } from '../../../models/address.model';
+import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
+import { AddressModel, AddressDTO } from '../../../models/address.model';
 import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { toast } from 'ngx-sonner';
+import { AddressApiService } from '../../../services/address.service';
+import { PaginationModel } from '../../../models/pagination.model';
 
 @Component({
   selector: 'app-address',
@@ -10,34 +12,42 @@ import { toast } from 'ngx-sonner';
   templateUrl: './address.html',
   styleUrl: './address.css',
 })
-export class Address implements OnInit{
-  // private apiService : 
+export class Address implements OnInit {
+  private apiService: AddressApiService = inject(AddressApiService);
+
   ngOnInit(): void {
-    
+    this.getUserAddress();
   }
-  addresses: WritableSignal<AddressModel[]> = signal<AddressModel[]>([
-    {
-      id: '1',
-      addressLine1: '12 Anna Street',
-      addressLine2: 'Near Bus Stand',
-      city: 'Chennai',
-      state: 'Tamil Nadu',
-      pincode: '600001',
-    },
-    {
-      id: '2',
-      addressLine1: '45 Gandhi Road',
-      addressLine2: 'Opp Mall',
-      city: 'Coimbatore',
-      state: 'Tamil Nadu',
-      pincode: '641001',
-    },
-  ]);
+
+  constructor() {
+    this.pagination = new PaginationModel();
+    this.pagination.Limit = 10;
+      this.pagination.PageNumber = 1;
+  }
+
+  addresses: WritableSignal<AddressModel> = signal<AddressModel>(new AddressModel());
 
   editingId = signal<string | null>(null);
 
-  editAddress(address: AddressModel) {
-    this.editingId.set(address.id);
+  pagination: PaginationModel;
+
+  getUserAddress() {
+    this.apiService.GetUserAddresses(this.pagination).subscribe({
+      next: (respose: AddressModel) => {
+        this.addresses.set(respose);
+        console.log('Address List', this.addresses());
+      },
+      error: () => {
+        console.error('Failed to fetch addresses');
+      },
+      complete() {
+        console.log('Address API Completed');
+      },
+    });
+  }
+
+  editAddress(address: AddressDTO) {
+    this.editingId.set(address.addressId);
   }
 
   cancelEdit() {
@@ -45,16 +55,39 @@ export class Address implements OnInit{
   }
 
   deleteAddress(id: string) {
-    this.addresses.update((list) => list.filter((a) => a.id !== id));
+    this.addresses.update((data) => ({
+      ...data,
+      addressList: data.addressList.filter((a) => a.addressId !== id),
+    }));
+
+    toast.success('Address deleted');
   }
 
   addNewAddress() {
-    // Create new empty address or navigate to add form
-    // Example: this.router.navigate(['/add-address']);
+    const newAddress: AddressDTO = {
+      addressId: crypto.randomUUID(),
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      state: '',
+      pincode: '',
+    };
+
+    this.addresses.update((data) => ({
+      ...data,
+      addressList: [...data.addressList, newAddress],
+    }));
+
+    this.editingId.set(newAddress.addressId);
   }
 
-  saveAddress(updated: AddressModel) {
-    this.addresses.update((list) => list.map((a) => (a.id === updated.id ? updated : a)));
+  saveAddress(updated: AddressDTO) {
+    this.addresses.update((data) => ({
+      ...data,
+      addressList: data.addressList.map((a) => (a.addressId === updated.addressId ? updated : a)),
+    }));
+
     this.editingId.set(null);
+    toast.success('Address saved');
   }
 }

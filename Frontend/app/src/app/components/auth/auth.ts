@@ -14,7 +14,7 @@ import {
   LoginModel,
   SignupModel,
   LoginResponseDTO,
-} from '../../models/login.model';
+} from '../../models/auth.model';
 import { AuthApiService } from '../../services/api.service';
 
 @Component({
@@ -24,24 +24,8 @@ import { AuthApiService } from '../../services/api.service';
   styleUrls: ['./auth.css'],
 })
 export class Auth {
+  disabledButton = signal<boolean>(true)
   private apiService: AuthApiService = inject(AuthApiService);
-  constructor() {
-    this.loginData = new LoginModel();
-    this.signupData = new SignupModel();
-    this.userDetails = new CreateUserResponseDTO();
-    this.loginDetails = new LoginResponseDTO();
-
-    this.loginForm = new FormGroup({
-      email: new FormControl('padmakumar41759@gmail.com', [Validators.required, Validators.email]),
-      password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
-    });
-
-    this.signUpForm = new FormGroup({
-      name: new FormControl('Test-username ', [Validators.required]),
-      email: new FormControl('test@gmail.com', [Validators.required, Validators.email]),
-      password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
-    });
-  }
 
   isLoginMode = signal(true);
 
@@ -53,6 +37,31 @@ export class Auth {
 
   loginForm: FormGroup;
   signUpForm: FormGroup;
+
+  constructor() {
+    this.loginData = new LoginModel();
+    this.signupData = new SignupModel();
+
+    this.userDetails = new CreateUserResponseDTO();
+    this.loginDetails = new LoginResponseDTO();
+
+    this.loginForm = new FormGroup({
+      email: new FormControl('padmakumarr41759@gmail.com', [Validators.required, Validators.email]),
+      password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
+    });
+
+    this.signUpForm = new FormGroup({
+      name: new FormControl('Test-username ', [Validators.required]),
+      email: new FormControl('test@gmail.com', [Validators.required, Validators.email]),
+      password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
+      phoneNumber: new FormControl('9876543210', [Validators.required, Validators.minLength(10)]),
+      addressLine1: new FormControl('2/102 A Ragal bavi', [Validators.required]),
+      addressLine2: new FormControl('S.K.Palayam(p.o)', [Validators.required]),
+      state: new FormControl('Tamil nadu', [Validators.required]),
+      city: new FormControl('Udumalpet', [Validators.required]),
+      pincode: new FormControl('654321', [Validators.required]),
+    });
+  }
 
   public get getSignUpEmail(): AbstractControl | null {
     return this.signUpForm.get('email');
@@ -88,16 +97,16 @@ export class Auth {
       return;
     }
     this.loginData = this.loginForm.value;
+    const toastId = toast.loading("Signing in...");
     this.apiService.LoginApi(this.loginData).subscribe({
       next: (response: LoginResponseDTO) => {
         this.loginDetails = response;
-        // sessionStorage.setItem('JWT-Token', response.token);
         localStorage.setItem('JWT-Token', response.token);
-        // console.log("Stored Token:", sessionStorage.getItem('JWT-Token'));
-
+        this.loginForm.reset();
         console.log(this.loginDetails);
       },
       error: (error: any) => {
+        toast.dismiss(toastId);
         console.error('Login Failed:', error);
 
         if (error.error?.message) {
@@ -107,53 +116,61 @@ export class Auth {
         }
       },
       complete: () => {
+        toast.dismiss(toastId);
         toast.success('Login Successfull');
       },
     });
     console.log('Login Data:', this.loginForm.value);
-    this.loginForm.reset();
   }
 
   onSignup() {
-    if (this.getSignUpEmail?.errors?.['required']) {
-      toast.error('Email is required');
-      return;
-    }
-
-    if (this.getSignUpEmail?.errors?.['email']) {
-      toast.error('Invalid email format');
-      return;
-    }
-
-    if (this.getSignUpPassword?.errors?.['required']) {
-      toast.error('Password is required');
-      return;
-    }
-
-    if (this.getSignUpPassword?.errors?.['minlength']) {
-      toast.error('Min length 6');
+    if (this.signUpForm.invalid) {
+      Object.keys(this.signUpForm.controls).forEach((key) => {
+        const control = this.signUpForm.get(key);
+        if (control?.errors) {
+          if (control.errors['required']) {
+            toast.error(`${key} is required`);
+          } else if (control.errors['email']) {
+            toast.error(`Invalid email format`);
+          } else if (control.errors['minlength']) {
+            toast.error(
+              `${key} must be at least ${control.errors['minlength'].requiredLength} characters`,
+            );
+          }
+        }
+      });
       return;
     }
 
     this.signupData = this.signUpForm.value;
+    
+    const toastId = toast.loading("Signing up...");
 
     this.apiService.SignUpApi(this.signupData).subscribe({
       next: (response: CreateUserResponseDTO) => {
-        if (response) {
-          this.userDetails = response;
-          console.dir(this.userDetails);
+        this.userDetails = response;
+        toast.dismiss(toastId);
+        toast.success('Signup Successfully');
+        this.signUpForm.reset();
+      },
+      error: (error: any) => {
+        if (error.status === 400 && error.error?.errors) {
+          const serverErrors = error.error.errors;
+          Object.keys(serverErrors).forEach((field) => {
+            const messages = serverErrors[field];
+            if (messages && messages.length > 0) {
+              toast.error(messages[0]);
+            }
+          });
+        } else if (error.error?.message) {
+          toast.error(error.error.message);
+        } else if (typeof error.error === 'string') {
+          toast.error(error.error);
+        } else {
+          toast.error('Server error occurred');
         }
       },
-      error: (error: Error) => {
-        console.error('SignUp failed: ' + error.message);
-        toast.error('Signup Un successful');
-      },
-      complete: () => {
-        toast.success('Signup Successfully');
-      },
     });
-    console.log('Signup Data:', this.signUpForm.value);
-    this.signUpForm.reset();
   }
 
   toggleMode() {

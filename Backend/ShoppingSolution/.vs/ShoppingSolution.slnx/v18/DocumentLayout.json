@@ -28,9 +28,9 @@
               "RelativeDocumentMoniker": "ShoppingApp\\Services\\UserService.cs",
               "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Services\\UserService.cs",
               "RelativeToolTip": "ShoppingApp\\Services\\UserService.cs",
-              "ViewState": "AgIAAGoAAAAAAAAAAAAkwJYAAAA/AAAAAAAAAA==",
+              "ViewState": "AgIAAHUAAAAAAAAAAAAIwIcAAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-10T14:26:04.577Z",
+              "WhenOpened": "2026-03-11T13:43:16.573Z",
               "EditorCaption": ""
             },
             {
@@ -41,9 +41,10 @@
               "RelativeDocumentMoniker": "ShoppingApp\\Controllers\\AuthenticationController.cs",
               "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Controllers\\AuthenticationController.cs",
               "RelativeToolTip": "ShoppingApp\\Controllers\\AuthenticationController.cs",
-              "ViewState": "AgIAACQAAAAAAAAAAAAYwBkAAAA8AAAAAAAAAA==",
+              "ViewState": "AgIAABMAAAAAAAAAAAAQwCcAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-10T13:36:41.21Z"
+              "WhenOpened": "2026-03-11T13:43:01.213Z",
+              "EditorCaption": ""
             }
           ]
         }

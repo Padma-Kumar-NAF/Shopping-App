@@ -57,7 +57,7 @@
       </button>
     </div>
 
-    <div *ngIf="activeTab() === 'profile'">
+    @if (activeTab() === 'profile') {
       <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div class="flex items-center gap-5">
           <div class="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
@@ -76,7 +76,6 @@
           Edit Profile
         </button>
       </div>
-
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="bg-gray-50 p-5 rounded-xl space-y-3">
           <p class="flex items-center gap-2">
@@ -107,7 +106,6 @@
           </p>
         </div>
       </div>
-
       <div class="flex justify-end mt-10">
         <button
           (click)="logout()"
@@ -116,7 +114,7 @@
           Logout
         </button>
       </div>
-    </div>
+    }
 
     @if (activeTab() === 'cart') {
       <div>
@@ -124,16 +122,22 @@
       </div>
     }
 
-    <div *ngIf="activeTab() === 'wishlist'" class="">
-      <app-wishlist></app-wishlist>
-    </div>
+    @if (activeTab() === 'wishlist') {
+      <div>
+        <app-wishlist></app-wishlist>
+      </div>
+    }
 
-    <div *ngIf="activeTab() === 'orders'" class="">
-      <app-orders></app-orders>
-    </div>
-
-    <div *ngIf="activeTab() === 'address'" class="">
-      <app-address></app-address>
-    </div>
+    @if (activeTab() === 'orders') {
+      <div>
+        <app-orders></app-orders>
+      </div>
+    }
+    
+    @if (activeTab() === 'address') {
+      <div>
+        <app-address></app-address>
+      </div>
+    }
   </div>
 </div>

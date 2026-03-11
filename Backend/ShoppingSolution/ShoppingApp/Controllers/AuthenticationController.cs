@@ -36,8 +36,8 @@ namespace ShoppingApp.Controllers
 
                 var result = await _userService.CreateUser(requestDTO);
 
-                if (result == null)
-                    return Conflict("Email already exists");
+                //if (result == null)
+                //    return Conflict("Email already exists");
 
                 return StatusCode(201, result);
             }
