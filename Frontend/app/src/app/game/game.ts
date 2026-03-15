@@ -45,7 +45,7 @@ export class Game {
       } else if (temp.includes(word[i])) {
         row.push({
           letter: word[i],
-          color: 'yellow',
+          color: 'orange',
         });
       } else {
         row.push({

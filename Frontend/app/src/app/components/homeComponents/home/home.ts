@@ -18,6 +18,7 @@ interface Product {
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
+
 export class HomeComponent {
   categories: string[] = [
     'Electronics',
@@ -42,11 +43,12 @@ export class HomeComponent {
   selectedProduct: Product | null = null;
   searchQuery = signal<string>('');
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    
+  }
 
-  onProductClick(product: Product): void {
+  onProductClick(product: Product): void {  
     console.log('Product clicked:', product);
-    // Navigate to product detail page
     this.router.navigate(['/product', product.id]);
   }
 
@@ -56,17 +58,16 @@ export class HomeComponent {
 
   navigateToCart(): void {
     console.log('Navigating to Cart');
-    // this.router.navigate(['/cart']);
+    this.router.navigate(['/cart']);
   }
 
   navigateToProfile(): void {
     console.log('Navigating to Profile');
-    // this.router.navigate(['/profile']);
+    this.router.navigate(['/profile']);
   }
 
   onCategoryClick(category: string): void {
     console.log('Category clicked:', category);
-    // Navigate to product listing with category filter
     this.router.navigate(['/products'], { queryParams: { q: category } });
   }
 

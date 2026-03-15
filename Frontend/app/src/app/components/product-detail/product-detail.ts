@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProductService } from '../../services/product';
+import { ProductService } from '../../services/product.service';
 import { ProductItem } from '../../models/product.model';
 import { toast } from 'ngx-sonner';
 
@@ -98,7 +98,6 @@ export class ProductDetail implements OnInit {
         quantity: this.quantity(),
       });
       toast.success('Proceeding to checkout...');
-      // Navigate to checkout
     }
   }
 

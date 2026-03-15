@@ -1,6 +1,7 @@
 import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { toast } from 'ngx-sonner';
 
 interface ProductDetails {
   id: number;
@@ -77,6 +78,8 @@ export class WishlistComponent {
   }
 
   removeWishlist(id: number) {
+    var wishlistName = this.wishLists().find(w => w.id == id)?.name
+    toast.success(`${wishlistName} removed`)
     this.wishLists.update((lists) => lists.filter((w) => w.id !== id));
 
     if (id === this.selectedWishlistId()) {
@@ -86,6 +89,8 @@ export class WishlistComponent {
   }
 
   removeProduct(wishlistId: number, productId: number) {
+    var productName = this.wishLists().find(w => w.id == wishlistId)?.products.find(p => p.id == productId)?.name
+    toast.success(`${productName} removed`)
     this.wishLists.update((lists) =>
       lists.map((w) =>
         w.id === wishlistId ? { ...w, products: w.products.filter((p) => p.id !== productId) } : w,

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnChanges, SimpleChanges } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
@@ -7,7 +7,11 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './cart.html',
   styleUrl: './cart.css',
 })
-export class Cart {
+export class Cart implements OnChanges {
+
+  ngOnChanges(changes: SimpleChanges): void {
+   
+  }
 
   itemsPerPage = 6;
   currentPage = 1;
@@ -28,7 +32,6 @@ export class Cart {
       image: 'https://cdn.dummyjson.com/product-images/fragrances/chanel-coco-noir-eau-de/1.webp',
     },
   ];
-
   removeAllCart() {
     this.cartItems = [];
     this.currentPage = 1;

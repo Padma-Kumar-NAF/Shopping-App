@@ -7,7 +7,6 @@ import { ProductItem, SearchResult } from '../models/product.model';
   providedIn: 'root',
 })
 export class ProductService {
-  // Mock product database
   private products: ProductItem[] = [
     {
       id: '1',
@@ -145,10 +144,6 @@ export class ProductService {
 
   constructor() {}
 
-  /**
-   * Search products by query
-   * Returns exact match at top, followed by related products
-   */
   searchProducts(query: string): Observable<SearchResult> {
     const normalizedQuery = query.toLowerCase().trim();
 
@@ -161,10 +156,8 @@ export class ProductService {
       }).pipe(delay(300));
     }
 
-    // Find exact match (product name matches exactly)
     const exactMatch = this.products.find((p) => p.name.toLowerCase() === normalizedQuery);
 
-    // Find related products (contains query in name, category, or tags)
     const relatedProducts = this.products.filter((p) => {
       if (exactMatch && p.id === exactMatch.id) return false;
 
@@ -176,7 +169,6 @@ export class ProductService {
       return matchesName || matchesCategory || matchesTags || matchesDescription;
     });
 
-    // Sort related products by relevance
     relatedProducts.sort((a, b) => {
       const aScore = this.calculateRelevanceScore(a, normalizedQuery);
       const bScore = this.calculateRelevanceScore(b, normalizedQuery);
@@ -190,63 +182,44 @@ export class ProductService {
       totalResults: (exactMatch ? 1 : 0) + relatedProducts.length,
     };
 
-    // Simulate API delay
     return of(result).pipe(delay(300));
   }
 
-  /**
-   * Calculate relevance score for sorting
-   */
   private calculateRelevanceScore(product: ProductItem, query: string): number {
     let score = 0;
 
-    // Name match (highest priority)
     if (product.name.toLowerCase().includes(query)) {
       score += 10;
-      // Bonus for starting with query
       if (product.name.toLowerCase().startsWith(query)) {
         score += 5;
       }
     }
 
-    // Category match
     if (product.category.toLowerCase().includes(query)) {
       score += 5;
     }
 
-    // Tags match
     const tagMatches = product.tags?.filter((tag) => tag.toLowerCase().includes(query)).length || 0;
     score += tagMatches * 3;
 
-    // Description match
     if (product.description?.toLowerCase().includes(query)) {
       score += 2;
     }
 
-    // Rating bonus
     score += (product.rating || 0) * 0.5;
 
     return score;
   }
 
-  /**
-   * Get all products
-   */
   getAllProducts(): Observable<ProductItem[]> {
     return of(this.products).pipe(delay(300));
   }
 
-  /**
-   * Get product by ID
-   */
   getProductById(id: string): Observable<ProductItem | undefined> {
     const product = this.products.find((p) => p.id === id);
     return of(product).pipe(delay(300));
   }
 
-  /**
-   * Get products by category
-   */
   getProductsByCategory(category: string): Observable<ProductItem[]> {
     const filtered = this.products.filter(
       (p) => p.category.toLowerCase() === category.toLowerCase()

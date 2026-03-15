@@ -755,6 +755,32 @@
   },
   {
     "ContainingType": "ShoppingApp.Controllers.UserController",
+    "Method": "EditUserMail",
+    "RelativePath": "User/EditUserMail",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.User.EditUserEmailRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ShoppingApp.Models.DTOs.User.EditUserEmailResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.UserController",
     "Method": "GetAllUsers",
     "RelativePath": "User/GetAllUsers",
     "HttpMethod": "POST",

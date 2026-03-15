@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Storage;
 using ShoppingApp.Contexts;
 using ShoppingApp.Exceptions;
+using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.User;
@@ -10,15 +11,16 @@ namespace ShoppingApp.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserDetailsService _userDetailsService;
         private readonly ShoppingContext _context;
         private readonly IPasswordService _passwordService;
+        private readonly IRepository<Guid,User> _userRepository;
 
-        public UserService(ShoppingContext context, IPasswordService passwordService, IUserDetailsService userDetailsService)
+        public UserService(ShoppingContext context, IPasswordService passwordService, IUserDetailsService userDetailsService,
+            IRepository<Guid,User> userRepository)
         {
             _context = context;
             _passwordService = passwordService;
-            _userDetailsService = userDetailsService;
+            _userRepository = userRepository;
         }
 
         public async Task<CreateUserResponseDTO?> CreateUser(CreateUserRequestDTO request)
@@ -127,11 +129,6 @@ namespace ShoppingApp.Services
                 user.Password,
                 user.SaltValue);
 
-            //Console.WriteLine("Verify");
-            //Console.WriteLine(isValid);
-            //Console.WriteLine("-----------------");
-            //Console.WriteLine(user.UserId);
-
             if (!isValid)
                 throw new AppException("Invalid Password");
 
@@ -196,7 +193,7 @@ namespace ShoppingApp.Services
                 Email = user.Email,
                 UserDetails = new CreateUserDetailsDTO()
                 {
-                    UserId = user.UserDetails.UserId,
+                    UserId = user.UserDetails!.UserDetailsId,
                     Name = user.Name,
                     Email = user.Email,
                     PhoneNumber = user.UserDetails.PhoneNumber,
@@ -207,6 +204,32 @@ namespace ShoppingApp.Services
                     Pincode = user.UserDetails.Pincode
 
                 }
+            };
+        }
+
+        public async Task<EditUserEmailResponseDTO> EditUserEmail(EditUserEmailRequestDTO request)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.UserId == request.UserId && u.Email == request.OldEmail);
+
+            if (user == null)
+                throw new AppException("User not found");
+
+            bool isValid = await _passwordService.VerifyPasswordAsync(
+                request.Password,
+                user.Password,
+                user.SaltValue);
+
+            if (!isValid)
+                throw new AppException("Invalid Password");
+
+            user.Email = request.NewEmail;
+
+            await _context.SaveChangesAsync();
+
+            return new EditUserEmailResponseDTO()
+            {
+                isSuccess = true
             };
         }
     }

@@ -14,7 +14,7 @@ select * from Logs
 select * from Category
 
 select * from Users
-select * from UserDetails
+select * from UserDetails	
 
 select * from WishList
 select * from WishListItems

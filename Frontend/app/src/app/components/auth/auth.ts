@@ -16,6 +16,7 @@ import {
   LoginResponseDTO,
 } from '../../models/auth.model';
 import { AuthApiService } from '../../services/api.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-auth',
@@ -23,6 +24,7 @@ import { AuthApiService } from '../../services/api.service';
   templateUrl: './auth.html',
   styleUrls: ['./auth.css'],
 })
+
 export class Auth {
   disabledButton = signal<boolean>(true)
   private apiService: AuthApiService = inject(AuthApiService);
@@ -38,7 +40,7 @@ export class Auth {
   loginForm: FormGroup;
   signUpForm: FormGroup;
 
-  constructor() {
+  constructor(private router : Router) {
     this.loginData = new LoginModel();
     this.signupData = new SignupModel();
 
@@ -46,7 +48,7 @@ export class Auth {
     this.loginDetails = new LoginResponseDTO();
 
     this.loginForm = new FormGroup({
-      email: new FormControl('padmakumarr41759@gmail.com', [Validators.required, Validators.email]),
+      email: new FormControl('padmakumar41759@gmail.com', [Validators.required, Validators.email]),
       password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
     });
 
@@ -103,12 +105,12 @@ export class Auth {
         this.loginDetails = response;
         localStorage.setItem('JWT-Token', response.token);
         this.loginForm.reset();
+        this.router.navigate([''])
         console.log(this.loginDetails);
       },
       error: (error: any) => {
         toast.dismiss(toastId);
         console.error('Login Failed:', error);
-
         if (error.error?.message) {
           toast.error(error.error.message);
         } else {
