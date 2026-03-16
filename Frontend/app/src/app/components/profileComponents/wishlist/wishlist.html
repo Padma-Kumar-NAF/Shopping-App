@@ -37,11 +37,10 @@
           @if (list.products.length === 0) {
             <div class="text-gray-500">No products in this wishlist</div>
           }
-
           @else {
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               @for (product of list.products; track product.id) {
-                <div class="bg-white border rounded-xl relative flex flex-col items-center hover:shadow-md transition-shadow">
+                <div class="bg-white button-shadow rounded-xl relative flex flex-col items-center hover:shadow-md transition-shadow">
                   <button (click)="removeProduct(list.id, product.id)" 
                           class="cursor-pointer text-red-500 absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center transition-colors z-10"
                           mat-icon-button>

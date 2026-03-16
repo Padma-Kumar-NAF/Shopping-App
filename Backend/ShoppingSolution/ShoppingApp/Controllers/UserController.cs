@@ -48,6 +48,30 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        [HttpPost("EditUserMail")]
+        public async Task<ActionResult<EditUserEmailResponseDTO>> EditUserMail(EditUserEmailRequestDTO request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            request.UserId = GetUserId();
+
+            if (request.UserId == Guid.Empty)
+            {
+                return BadRequest("User not authenticated");
+            }
+
+            try
+            {
+                var result = await _userService.EditUserEmail(request);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         //[Authorize(Roles = "Admin")]
         [HttpPost("GetAllUsers")]
         public async Task<ActionResult<GetUsersResponseDTO>> GetAllUsers(GetUsersRequestDTO request)
@@ -65,9 +89,9 @@ namespace ShoppingApp.Controllers
                 var result = await _userService.GetAllUsers(request);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message);
+                throw;
             }
         }
 

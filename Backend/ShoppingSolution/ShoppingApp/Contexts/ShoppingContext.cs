@@ -24,7 +24,6 @@ namespace ShoppingApp.Contexts
 
         // Store procedure
         public DbSet<Category> categoriesSP { get; set; }
-
         public ShoppingContext(DbContextOptions<ShoppingContext> options) : base(options)
         {
 
@@ -44,7 +43,7 @@ namespace ShoppingApp.Contexts
                 entity.Property(o => o.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
 
-                entity.HasOne(a => a.User)
+                entity.HasOne(ad => ad.User)
                 .WithMany(u => u.Addresses)
                 .HasForeignKey(a => a.UserId)
                 .HasConstraintName("FK_Address_User")
@@ -56,7 +55,6 @@ namespace ShoppingApp.Contexts
                 .HasConstraintName("FK_Order_Address")
                 .OnDelete(DeleteBehavior.Restrict);
             });
-
 
             modelBuilder.Entity<Cart>(entity =>
             {

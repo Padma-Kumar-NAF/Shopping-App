@@ -1,0 +1,201 @@
+<div class="bg-white rounded-xl shadow-md p-6">
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold text-gray-900">Add New Product</h2>
+    <p class="text-gray-600 mt-1">Fill in the details to add a new product</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Form Section -->
+    <div class="lg:col-span-2">
+      <form (ngSubmit)="addProduct()" class="space-y-6">
+        <!-- Product Name -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Product Name <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            [value]="product().name"
+            (input)="updateProductField('name', $any($event.target).value)"
+            placeholder="Enter product name"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+
+        <!-- Category -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Category <span class="text-red-500">*</span>
+          </label>
+          <select
+            [value]="product().category"
+            (change)="updateProductField('category', $any($event.target).value)"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          >
+            <option value="">Select a category</option>
+            @for (category of categories(); track category) {
+            <option [value]="category">{{ category }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Quantity and Price -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Quantity <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              [value]="product().quantity"
+              (input)="updateProductField('quantity', +$any($event.target).value)"
+              placeholder="0"
+              min="0"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Price (₹) <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              [value]="product().price"
+              (input)="updateProductField('price', +$any($event.target).value)"
+              placeholder="0"
+              min="0"
+              step="0.01"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Image URL -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Product Image URL <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="url"
+            [value]="product().imageUrl"
+            (input)="updateImageUrl($event)"
+            placeholder="https://example.com/image.jpg"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+          <p class="text-xs text-gray-500 mt-1">Enter a valid image URL</p>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Description (Optional)
+          </label>
+          <textarea
+            [value]="product().description"
+            (input)="updateProductField('description', $any($event.target).value)"
+            placeholder="Enter product description..."
+            rows="4"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+          ></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button
+            type="submit"
+            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+          >
+            Add Product
+          </button>
+          <button
+            type="button"
+            (click)="resetForm()"
+            class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-lg transition-colors duration-200"
+          >
+            Reset Form
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Preview Section -->
+    <div class="lg:col-span-1">
+      <div class="sticky top-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Product Preview</h3>
+        <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
+          <!-- Image Preview -->
+          <div class="mb-4">
+            @if (imagePreview()) {
+            <img
+              [src]="imagePreview()"
+              [alt]="product().name"
+              class="w-full h-48 object-cover rounded-lg"
+              (error)="imagePreview.set('')"
+            />
+            } @else {
+            <div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
+              <svg
+                class="w-16 h-16 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+            </div>
+            }
+          </div>
+
+          <!-- Product Details -->
+          <div class="space-y-3">
+            <div>
+              <h4 class="font-semibold text-gray-900 text-lg">
+                {{ product().name || 'Product Name' }}
+              </h4>
+              @if (product().category) {
+              <p class="text-sm text-gray-600 mt-1">
+                <span
+                  class="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium"
+                >
+                  {{ product().category }}
+                </span>
+              </p>
+              }
+            </div>
+
+            <div class="flex items-center justify-between pt-3 border-t border-gray-200">
+              <div>
+                <p class="text-xs text-gray-500">Price</p>
+                <p class="text-2xl font-bold text-blue-600">₹{{ product().price || 0 }}</p>
+              </div>
+              <div class="text-right">
+                <p class="text-xs text-gray-500">Stock</p>
+                <p class="text-lg font-semibold text-gray-900">
+                  {{ product().quantity || 0 }}
+                </p>
+              </div>
+            </div>
+
+            @if (product().description) {
+            <div class="pt-3 border-t border-gray-200">
+              <p class="text-xs text-gray-500 mb-1">Description</p>
+              <p class="text-sm text-gray-700">{{ product().description }}</p>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

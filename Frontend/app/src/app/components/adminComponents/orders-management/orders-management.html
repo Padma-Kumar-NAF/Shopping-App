@@ -1,0 +1,162 @@
+<div class="bg-white rounded-xl shadow-md p-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+      <h2 class="text-2xl font-bold text-gray-900">Orders Management</h2>
+      <p class="text-gray-600 mt-1">Track and manage all orders</p>
+    </div>
+    <div class="text-sm text-gray-600">
+      Total Orders: <span class="font-bold text-gray-900">{{ orders().length }}</span>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+    <!-- Search -->
+    <div class="relative">
+      <input
+        type="text"
+        placeholder="Search by order ID, customer..."
+        (input)="updateSearch($event)"
+        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <svg
+        class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
+      </svg>
+    </div>
+
+    <!-- Status Filter -->
+    <select
+      (change)="updateStatusFilter($event)"
+      class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+      <option value="all">All Status</option>
+      <option value="pending">Pending</option>
+      <option value="processing">Processing</option>
+      <option value="shipped">Shipped</option>
+      <option value="delivered">Delivered</option>
+      <option value="cancelled">Cancelled</option>
+    </select>
+  </div>
+
+  <!-- Orders List -->
+  <div class="space-y-4">
+    @for (order of filteredOrders; track order.id) {
+    <div
+      class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+    >
+      <!-- Order Header -->
+      <div class="bg-gray-50 p-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+              <h3 class="text-lg font-bold text-gray-900">{{ order.orderId }}</h3>
+              <span
+                [class]="getStatusColor(order.status)"
+                class="px-3 py-1 text-xs font-semibold rounded-full"
+              >
+                {{ order.status }}
+              </span>
+            </div>
+            <div class="text-sm text-gray-600">
+              <p>
+                Customer: <span class="font-medium text-gray-900">{{ order.customerName }}</span>
+              </p>
+              <p>{{ order.customerEmail }}</p>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:items-end gap-2">
+            <p class="text-2xl font-bold text-blue-600">₹{{ order.totalPrice.toLocaleString() }}</p>
+            <p class="text-sm text-gray-500">{{ order.orderDate | date : 'MMM d, y' }}</p>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap items-center gap-3 mt-4">
+          <select
+            [value]="order.status"
+            (change)="changeOrderStatus(order.id, $any($event.target).value)"
+            class="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="pending">Pending</option>
+            <option value="processing">Processing</option>
+            <option value="shipped">Shipped</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+
+          <button
+            (click)="toggleOrderDetails(order.id)"
+            class="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
+          >
+            {{ expandedOrderId() === order.id ? 'Hide' : 'View' }} Products
+          </button>
+        </div>
+      </div>
+
+      <!-- Order Products (Expandable) -->
+      @if (expandedOrderId() === order.id) {
+      <div class="p-4 bg-white border-t border-gray-200">
+        <h4 class="font-semibold text-gray-900 mb-3">Order Items ({{ order.products.length }})</h4>
+        <div class="space-y-3">
+          @for (product of order.products; track product.id) {
+          <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+            <img
+              [src]="product.image"
+              [alt]="product.name"
+              class="w-16 h-16 object-cover rounded-lg"
+            />
+            <div class="flex-1">
+              <h5 class="font-medium text-gray-900">{{ product.name }}</h5>
+              <p class="text-sm text-gray-600">Quantity: {{ product.quantity }}</p>
+            </div>
+            <div class="text-right">
+              <p class="font-bold text-gray-900">₹{{ product.price.toLocaleString() }}</p>
+              <p class="text-sm text-gray-500">each</p>
+            </div>
+          </div>
+          }
+        </div>
+
+        <!-- Order Summary -->
+        <div class="mt-4 pt-4 border-t border-gray-200">
+          <div class="flex justify-between items-center">
+            <span class="text-lg font-semibold text-gray-900">Total Amount:</span>
+            <span class="text-2xl font-bold text-blue-600"
+              >₹{{ order.totalPrice.toLocaleString() }}</span
+            >
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    } @empty {
+    <div class="text-center py-12 text-gray-500">
+      <svg
+        class="w-16 h-16 mx-auto mb-4 text-gray-300"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+        />
+      </svg>
+      <p class="text-lg">No orders found</p>
+    </div>
+    }
+  </div>
+</div>

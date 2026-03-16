@@ -1,0 +1,6 @@
+.auth-image {
+  /* background-image: url('./assests/auth-bg.jpeg'); */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

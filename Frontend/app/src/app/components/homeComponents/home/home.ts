@@ -1,58 +1,79 @@
-import { Component } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatCardModule } from '@angular/material/card';
-import { MatSelectModule } from '@angular/material/select';
-
-import { ProductCarousel } from '../product-carousel/product-carousel';
+import { Component, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { Footer } from '../footer/footer';
+import { FormsModule } from '@angular/forms';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+}
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatCardModule,
-    MatSelectModule,
-    ProductCarousel,
-    Footer,
-  ],
+  imports: [ Footer, FormsModule],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
+
 export class HomeComponent {
-  categories = [
+  categories: string[] = [
     'Electronics',
     'Fashion',
     'Shoes',
     'Mobiles',
     'Laptops',
     'Beauty',
-    'Home',
+    'Home & Kitchen',
     'Sports',
+    'Books',
+    'Toys',
   ];
 
-  viewProduct(product: any) {
-    console.log(product);
-  }
-  addToCart(product: any) {
-    console.log(product);
-  }
-  buyProduct(product: any) {
-    console.log(product);
-  }
-
-  products: any[] = Array.from({ length: 12 }).map((_, i) => ({
+  products: Product[] = Array.from({ length: 12 }).map((_, i) => ({
+    id: i + 1,
     name: `Product ${i + 1}`,
-    price: Math.floor(Math.random() * 5000),
+    price: Math.floor(Math.random() * 5000) + 500,
     image: `https://picsum.photos/300/200?random=${i}`,
   }));
+
+  selectedProduct: Product | null = null;
+  searchQuery = signal<string>('');
+
+  constructor(private router: Router) {
+    
+  }
+
+  onProductClick(product: Product): void {  
+    console.log('Product clicked:', product);
+    this.router.navigate(['/product', product.id]);
+  }
+
+  clearSelection(): void {
+    this.selectedProduct = null;
+  }
+
+  navigateToCart(): void {
+    console.log('Navigating to Cart');
+    this.router.navigate(['/cart']);
+  }
+
+  navigateToProfile(): void {
+    console.log('Navigating to Profile');
+    this.router.navigate(['/profile']);
+  }
+
+  onCategoryClick(category: string): void {
+    console.log('Category clicked:', category);
+    this.router.navigate(['/products'], { queryParams: { q: category } });
+  }
+
+  onSearch(): void {
+    const query = this.searchQuery();
+    if (query.trim()) {
+      this.router.navigate(['/products'], { queryParams: { q: query } });
+    }
+  }
 }

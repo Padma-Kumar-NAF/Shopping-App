@@ -82,7 +82,6 @@ namespace ShoppingApp.Services
                 CartId = CartId,
                 UserId = UserId,
                 Items = items,
-                //TotalItems = totalItems
             };
         }
 

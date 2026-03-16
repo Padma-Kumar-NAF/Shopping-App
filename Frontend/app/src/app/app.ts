@@ -1,27 +1,37 @@
-import { Component, Signal, signal  } from '@angular/core';
+import { Component, Signal, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {Auth} from './components/auth/auth'
+import { Auth } from './components/auth/auth';
 import { Profile } from './components/profileComponents/profile/profile';
-import { NgxSonnerToaster  } from 'ngx-sonner';
+import { NgxSonnerToaster } from 'ngx-sonner';
 import { Spinner } from './components/spinner/spinner';
 import { HomeComponent } from './components/homeComponents/home/home';
 import { Game } from './game/game';
+import { AdminDashboard } from './components/adminComponents/admin-dashboard/admin-dashboard';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Auth,Profile,NgxSonnerToaster,Spinner,HomeComponent,Game],
+  imports: [
+    RouterOutlet,
+    Auth,
+    Profile,
+    NgxSonnerToaster,
+    Spinner,
+    HomeComponent,
+    Game,
+    AdminDashboard,
+    AdminDashboard,
+  ],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
-
 export class App {
   protected readonly title = signal('app');
   count = signal(0);
 
-  increaseCount(){
-    this.count.update(c => c + 1)
+  increaseCount() {
+    this.count.update((c) => c + 1);
   }
-  resetCount(){
-    this.count.set(0)
+  resetCount() {
+    this.count.set(0);
   }
 }
