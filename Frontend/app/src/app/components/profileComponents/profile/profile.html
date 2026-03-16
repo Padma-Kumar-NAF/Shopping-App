@@ -341,8 +341,8 @@
   </div>
 </div>
 
-@if (showDetailsModal()) {
-  <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+<!-- @if (showDetailsModal()) { -->
+  <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50" [hidden]="!showDetailsModal()">
     <div class="bg-white rounded-xl shadow-xl w-[450px] p-6">
       <h2 class="text-xl font-bold mb-4">Edit Profile Details</h2>
 
@@ -413,10 +413,9 @@
           </button>
         </div>
       </form>
-      <!-- </div> -->
     </div>
   </div>
-}
+<!-- } -->
 
 @if (showEmailModal()) {
   <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">

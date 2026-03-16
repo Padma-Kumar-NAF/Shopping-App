@@ -1,6 +1,5 @@
 import { Component, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProductCarousel } from '../product-carousel/product-carousel';
 import { Footer } from '../footer/footer';
 import { FormsModule } from '@angular/forms';
 
@@ -14,7 +13,7 @@ interface Product {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [ProductCarousel, Footer, FormsModule],
+  imports: [ Footer, FormsModule],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })

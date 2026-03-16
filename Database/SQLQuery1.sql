@@ -2,6 +2,9 @@ select * from Stock
 select * from Users
 select * from Addresses
 
+delete from Addresses
+where AddressLine2 = 'Test line 1'
+
 select * from Products
 
 select * from Payments
@@ -10,6 +13,7 @@ select * from Orders
 select * from Refunds
 
 select * from Logs
+order by CreatedAt desc
 
 select * from Category
 
@@ -28,7 +32,7 @@ select * from OrderDetails
 select * from Reviews
 
 
---delete from logs
+-- delete from logs
 
 -- User - Payment -> One to many ==
 -- User - Refund -> one to many ==

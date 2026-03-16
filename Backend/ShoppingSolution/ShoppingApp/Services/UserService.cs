@@ -212,6 +212,11 @@ namespace ShoppingApp.Services
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.UserId == request.UserId && u.Email == request.OldEmail);
 
+            Console.WriteLine($"New email: {request.NewEmail}");
+            Console.WriteLine($"UserId: {request.UserId}");
+            Console.WriteLine($"Password: {request.Password}");
+            Console.WriteLine($"Old email: {request.OldEmail}");
+
             if (user == null)
                 throw new AppException("User not found");
 
@@ -224,6 +229,10 @@ namespace ShoppingApp.Services
                 throw new AppException("Invalid Password");
 
             user.Email = request.NewEmail;
+
+            var userDetails = await _context.UserDetails.FirstOrDefaultAsync(ud => ud.UserId == request.UserId);
+            userDetails!.Email = request.NewEmail;
+
 
             await _context.SaveChangesAsync();
 

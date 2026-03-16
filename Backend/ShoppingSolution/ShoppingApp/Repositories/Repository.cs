@@ -48,18 +48,6 @@ namespace ShoppingApp.Repositories
             return item != null ? item : null;
         }
 
-        //public async Task<C?> UpdateAsync(K key, C item)
-        //{
-        //    var existingItem = await GetAsync(key);
-        //    if (existingItem != null)
-        //    {
-        //        _context.Entry(existingItem).CurrentValues.SetValues(item);
-        //        await _context.SaveChangesAsync();
-        //        return existingItem;
-        //    }
-        //    return null;
-        //}
-
         public async Task<C?> UpdateAsync(K key, C item)
         {
             if (item == null)

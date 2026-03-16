@@ -6,7 +6,6 @@ using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.Address;
 using ShoppingApp.Models.DTOs.Order;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ShoppingApp.Services
 {
@@ -22,6 +21,14 @@ namespace ShoppingApp.Services
         {
             try
             {
+                var isExited = await _repository.GetQueryable()
+                    .FirstOrDefaultAsync(a => a.AddressLine1 == request.AddressLine1);
+
+                if (isExited != null)
+                {
+                    throw new AppException("Address already exists");
+                }
+
                 var newAddress = new Address
                 {
                     UserId = request.UserId,
@@ -34,12 +41,12 @@ namespace ShoppingApp.Services
 
                 var address = await _repository.AddAsync(newAddress);
 
-                if (address != null)
+                if (address == null)
                 {
-                    throw new AppException("Unable to add a address for this moment");
+                    throw new AppException("Unable to add address at this moment");
                 }
 
-                return new CreateNewAddressResponseDTO()
+                return new CreateNewAddressResponseDTO
                 {
                     AddressId = address.AddressId,
                     UserId = address.UserId,
@@ -50,9 +57,13 @@ namespace ShoppingApp.Services
                     PinCode = address.Pincode
                 };
             }
-            catch(Exception ex)
+            catch (AppException)
             {
-                throw new AppException("Unable to create address",ex);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Unable to create address", ex);
             }
         }
 
@@ -63,7 +74,7 @@ namespace ShoppingApp.Services
                 a.UserId == request.UserId);
 
             if (address == null)
-                throw new AppException($"Address not found or does not belong to user");
+                throw new AppException("Address not found or does not belong to user");
 
             var deleted = await _repository.DeleteAsync(request.AddressId);
 

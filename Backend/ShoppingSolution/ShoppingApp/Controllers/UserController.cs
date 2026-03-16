@@ -55,6 +55,7 @@ namespace ShoppingApp.Controllers
                 return BadRequest(ModelState);
 
             request.UserId = GetUserId();
+
             if (request.UserId == Guid.Empty)
             {
                 return BadRequest("User not authenticated");

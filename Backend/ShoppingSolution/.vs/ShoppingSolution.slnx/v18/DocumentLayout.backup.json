@@ -3,24 +3,12 @@
   "WorkspaceRootPath": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\interfaces\\servicesinterface\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\interfaces\\servicesinterface\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\services\\wishlistservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\services\\wishlistservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\controllers\\authenticationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\controllers\\authenticationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|c:\\pk\\project\\shopping-app\\backend\\shoppingsolution\\shoppingapp\\services\\cartitemsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{224A09B7-411D-5F0A-97F6-8D3073C55668}|ShoppingApp\\ShoppingApp.csproj|solutionrelative:shoppingapp\\services\\cartitemsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,71 +18,32 @@
       "DocumentGroups": [
         {
           "DockedHeight": 280,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "UserController.cs",
-              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Controllers\\UserController.cs",
-              "RelativeDocumentMoniker": "ShoppingApp\\Controllers\\UserController.cs",
-              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Controllers\\UserController.cs",
-              "RelativeToolTip": "ShoppingApp\\Controllers\\UserController.cs",
-              "ViewState": "AgIAAD8AAAAAAAAAAAAcwEcAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-15T14:18:22.847Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "IUserService.cs",
-              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Interfaces\\ServicesInterface\\IUserService.cs",
-              "RelativeDocumentMoniker": "ShoppingApp\\Interfaces\\ServicesInterface\\IUserService.cs",
-              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Interfaces\\ServicesInterface\\IUserService.cs",
-              "RelativeToolTip": "ShoppingApp\\Interfaces\\ServicesInterface\\IUserService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-15T14:09:15.369Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "UserService.cs",
-              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Services\\UserService.cs",
-              "RelativeDocumentMoniker": "ShoppingApp\\Services\\UserService.cs",
-              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Services\\UserService.cs",
-              "RelativeToolTip": "ShoppingApp\\Services\\UserService.cs",
-              "ViewState": "AgIAANMAAAAAAAAAAAAcwOAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-15T14:05:43.016Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "WishListService.cs",
               "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Services\\WishListService.cs",
               "RelativeDocumentMoniker": "ShoppingApp\\Services\\WishListService.cs",
               "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Services\\WishListService.cs",
               "RelativeToolTip": "ShoppingApp\\Services\\WishListService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABMAAAAAAAAAAAAuwB0AAABhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-15T14:05:41.828Z",
+              "WhenOpened": "2026-03-16T15:46:52.312Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AuthenticationController.cs",
-              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Controllers\\AuthenticationController.cs",
-              "RelativeDocumentMoniker": "ShoppingApp\\Controllers\\AuthenticationController.cs",
-              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Controllers\\AuthenticationController.cs",
-              "RelativeToolTip": "ShoppingApp\\Controllers\\AuthenticationController.cs",
-              "ViewState": "AgIAABsAAAAAAAAAAAAYwCoAAAAWAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "CartItemsService.cs",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Services\\CartItemsService.cs",
+              "RelativeDocumentMoniker": "ShoppingApp\\Services\\CartItemsService.cs",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Services\\CartItemsService.cs",
+              "RelativeToolTip": "ShoppingApp\\Services\\CartItemsService.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAQwA8AAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-15T13:44:42.241Z",
+              "WhenOpened": "2026-03-16T15:46:47.13Z",
               "EditorCaption": ""
             }
           ]

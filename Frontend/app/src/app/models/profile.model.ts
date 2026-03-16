@@ -30,14 +30,18 @@ class udpateUserDetailsDTO {
   addressLine2: string = '';
 }
 
-export class EditMailModel {
-  oldMail: string = '';
-  newEmail: string = '';
-  password: string = '';
+// export class EditMailModel {
+//   oldMail: string = '';
+//   newEmail: string = '';
+//   password: string = '';
+// }
+
+export class EditMailRequestDTOModel{
+  isSuccess : boolean = false;
 }
 
 export class newEmailRequestDTO{
-  oldMail: string = '';
+  oldEmail: string = '';
   newEmail: string = '';
   password: string = '';
 }
