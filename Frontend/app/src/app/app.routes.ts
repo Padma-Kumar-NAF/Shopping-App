@@ -20,7 +20,8 @@ export const routes: Routes = [
     data: { prerender: false },
   },
   {path:"game",component:Game},
-  { path: 'profile', component: Profile,canActivate: [authGuard] ,
+  { path: 'profile', component: Profile,
+    // canActivate: [authGuard] ,
     children: [
 
       {
@@ -35,11 +36,11 @@ export const routes: Routes = [
         path: 'wishlist',
         component: WishlistComponent
       },
-      {
-        path: '',
-        redirectTo: 'orders',
-        pathMatch: 'full'
-      }
+      // {
+      //   path: '',
+      //   redirectTo: 'profile',
+      //   pathMatch: 'full'
+      // }
     ]
   },
   { path: 'admin', component: AdminDashboard },

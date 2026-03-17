@@ -15,7 +15,8 @@ export class AddressApiService{
     }
 
     GetUserAddresses(pagination : PaginationModel) : Observable<AddressModel>{
-        return this.Http.post<AddressModel>(`${this.baseUrl}/GetUserAddress`,pagination);
+        const body = { Pagination: pagination };
+        return this.Http.post<AddressModel>(`${this.baseUrl}/GetUserAddress`,body);
     }
 
     AddNewAddress(newAddress : AddressDTO) : Observable<AddressDTO> {

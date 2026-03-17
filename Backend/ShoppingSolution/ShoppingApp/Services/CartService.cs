@@ -30,16 +30,16 @@ namespace ShoppingApp.Services
             IRepository<Guid, Payment> paymentRepository,
             IRepository<Guid, Address> addressRepository,
             IUnitOfWork unitOfWork)
-        {
-            _repository = repository;
-            _cartItemRepository = cartItemRepository;
-            _productRepository = productRepository;
-            _stockRepository = stockRepository;
-            _orderRepository = orderRepository;
-            _paymentRepository = paymentRepository;
-            _addressRepository = addressRepository;
-            _unitOfWork = unitOfWork;
-        }
+            {
+                _repository = repository;
+                _cartItemRepository = cartItemRepository;
+                _productRepository = productRepository;
+                _stockRepository = stockRepository;
+                _orderRepository = orderRepository;
+                _paymentRepository = paymentRepository;
+                _addressRepository = addressRepository;
+                _unitOfWork = unitOfWork;
+            }
 
         public async Task<GetCartResponseDTO?> AddCart(AddToCartRequestDTO request)
         {

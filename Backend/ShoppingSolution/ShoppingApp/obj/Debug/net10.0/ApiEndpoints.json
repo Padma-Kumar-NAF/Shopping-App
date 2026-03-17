@@ -3,7 +3,7 @@
     "ContainingType": "ShoppingApp.Controllers.AddressController",
     "Method": "AddAddress",
     "RelativePath": "Address/CreateAddress",
-    "HttpMethod": "POST",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -42,6 +42,32 @@
     "ReturnTypes": [
       {
         "Type": "ShoppingApp.Models.DTOs.Address.DeleteUserAddressResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.AddressController",
+    "Method": "EditUserAddress",
+    "RelativePath": "Address/EditUserAddress",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Address.EditUserAddressRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ShoppingApp.Models.DTOs.Address.EditUserAddressResponseDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",

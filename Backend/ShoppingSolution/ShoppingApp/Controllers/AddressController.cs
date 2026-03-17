@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ShoppingApp.Filters;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models.DTOs.Address;
@@ -7,7 +8,7 @@ using System.Security.Claims;
 namespace ShoppingApp.Controllers
 {
     //[Authorize(Roles = "User")]
-    [Route("[controller]")]    
+    [Route("[controller]")]
     [ApiController]
     public class AddressController : BaseController , IAddressController
     {
@@ -17,25 +18,20 @@ namespace ShoppingApp.Controllers
             _addressService = addressService;
         }
 
-        [HttpPost("CreateAddress")]
+        [HttpPut("CreateAddress")]
+        [ValidateRequest]
         public async Task<ActionResult<CreateNewAddressResponseDTO>> AddAddress(CreateNewAddressRequestDTO request)
         {
             try
             {
-                if (request == null)
-                    return BadRequest("Invalid request");
+                Guid UserId = GetUserId();
 
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
-
-                request.UserId = GetUserId();
-
-                if (request.UserId == Guid.Empty)
+                if (UserId == Guid.Empty)
                 {
                     return BadRequest("User not found");
                 }
 
-                var result = await _addressService.AddAddress(request);
+                var result = await _addressService.AddAddress(UserId,request);
 
                 if (result == null)
                     return BadRequest("Unable to create address at the moment");
@@ -49,24 +45,17 @@ namespace ShoppingApp.Controllers
         }
 
         [HttpDelete("DeleteUserAddress")]
+        [ValidateRequest]
         public async Task<ActionResult<DeleteUserAddressResponseDTO>> DeleteUserAddress(DeleteUserAddressRequestDTO request)
         {
             try
             {
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
+                Guid UserId = GetUserId();
 
-                if (request == null || request.AddressId == Guid.Empty)
-                    return BadRequest("Invalid request");
-
-                request.UserId = GetUserId();
-                if (request.UserId == Guid.Empty)
+                if (UserId == Guid.Empty)
                     return Unauthorized("User not authenticated");
 
-                var result = await _addressService.DeleteUserAddress(request);
-
-                //if (!result)
-                //    return NotFound("Address not found or does not belong to user");
+                var result = await _addressService.DeleteUserAddress(UserId,request);
 
                 return Ok(new DeleteUserAddressResponseDTO()
                 {
@@ -79,25 +68,39 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        [HttpPost("GetUserAddress")]
-        public async Task<ActionResult<GetUserAddressResposneDTO>> GetUserAddress(GetUserAddressRequestDTO request)
+        [HttpPost("EditUserAddress")]
+        [ValidateRequest]
+        public async Task<ActionResult<EditUserAddressResponseDTO>> EditUserAddress(EditUserAddressRequestDTO request)
         {
-            if (request == null)
-                return BadRequest("Invalid request");
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
             try
             {
-                request.UserId = GetUserId();
-                if (request.UserId == Guid.Empty)
+                Guid UserId = GetUserId();
+                if (UserId == Guid.Empty)
                 {
                     return BadRequest("User not authenticated");
                 }
-                var addressList = await _addressService.GetUserAddress(request);
+                var addressList = await _addressService.EditUserAddress(UserId,request);
 
-                if (addressList == null)
-                    return Ok("No addresses found for this user.");
+                return Ok(addressList);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("GetUserAddress")]
+        [ValidateRequest]
+        public async Task<ActionResult<GetUserAddressResposneDTO>> GetUserAddress(GetUserAddressRequestDTO request)
+        {
+            try
+            {
+                Guid UserId = GetUserId();
+                if (UserId == Guid.Empty)
+                {
+                    return BadRequest("User not authenticated");
+                }
+                var addressList = await _addressService.GetUserAddress(UserId,request);
 
                 return Ok(addressList);
             }

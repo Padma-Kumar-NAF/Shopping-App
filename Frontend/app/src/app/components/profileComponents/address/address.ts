@@ -27,7 +27,7 @@ export class Address implements OnInit {
     this.formAddress = new AddressDTO();
     this.newAddress = new AddressDTO();
     this.pagination = new PaginationModel();
-    this.pagination.Limit = 10;
+    this.pagination.PageSize = 10;
     this.pagination.PageNumber = 1;
     this.addressForm = new FormGroup({
       addressLine1: new FormControl('Test line 1', [Validators.required]),

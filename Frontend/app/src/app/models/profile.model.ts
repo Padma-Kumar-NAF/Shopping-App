@@ -28,6 +28,7 @@ class udpateUserDetailsDTO {
   state: string = '';
   addressLine1: string = '';
   addressLine2: string = '';
+  pincode : string = ''
 }
 
 // export class EditMailModel {

@@ -2,10 +2,10 @@ using AspNetCoreRateLimit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ShoppingApp.Contexts;
+using ShoppingApp.Filters;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Middleware;
-using ShoppingApp.Models;
 using ShoppingApp.Repositories;
 using ShoppingApp.Services;
 using System.Text;
@@ -17,20 +17,25 @@ namespace ShoppingApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var _configuration = builder.Configuration;
+
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAngular",
                     policy =>
                     {
-                        policy.WithOrigins("http://localhost:4200",
-                              "http://localhost:5173")
+                        policy.WithOrigins("http://localhost:4200", "http://localhost:5173")
                               .AllowAnyHeader()
-                              .AllowAnyMethod();
+                              .AllowAnyMethod()
+                              .AllowCredentials();
                     });
+            });
+
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<ValidateRequestAttribute>();
             });
 
             builder.Services.AddMemoryCache();
@@ -46,16 +51,22 @@ namespace ShoppingApp
             builder.Services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
+                    var jwtKey = _configuration["Jwt:Key"];
+                    if (string.IsNullOrEmpty(jwtKey))
+                    {
+                        throw new Exception("JWT Key is missing in configuration!");
+                    }
+
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = "ShoppingApp",
-                        ValidAudience = "ShoppingAppUsers",
-                        IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes("ThisIsMySuperSecureKey123456789PadmaKumar"))
+                        ValidIssuer = _configuration["Jwt:Issuer"],
+                        ValidAudience = _configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+                        ClockSkew = TimeSpan.Zero 
                     };
                 });
 
@@ -71,12 +82,14 @@ namespace ShoppingApp
             builder.Services.AddScoped<IPasswordService, PasswordService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
+            builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IUserDetailsService, UserDetailsService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IWishListService, WishListService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var app = builder.Build();
+
             app.UseCors("AllowAngular");
 
             if (app.Environment.IsDevelopment())
@@ -89,7 +102,6 @@ namespace ShoppingApp
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             app.UseIpRateLimiting();
@@ -97,6 +109,7 @@ namespace ShoppingApp
             app.UseMiddleware<ExceptionMiddleware>();
 
             app.MapControllers();
+
             app.Run();
         }
     }

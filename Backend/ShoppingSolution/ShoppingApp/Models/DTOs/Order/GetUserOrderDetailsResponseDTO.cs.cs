@@ -40,6 +40,5 @@ namespace ShoppingApp.Models.DTOs.Order
     {
         public Guid PaymentId { get; set; }
         public string PaymentType { get; set; } = string.Empty;
-        //public decimal TotalAmount { get; set; }
     }
 }
