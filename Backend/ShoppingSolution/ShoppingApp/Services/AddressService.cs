@@ -12,17 +12,28 @@ namespace ShoppingApp.Services
     public class AddressService : IAddressService
     {
         IRepository<Guid,Address> _repository;
-        public AddressService(IRepository<Guid, Address> repository)
+        IRepository<Guid,User> _userRepository;
+        IRepository<Guid, Order> _orderRepository;
+        public AddressService(IRepository<Guid, Address> repository, IRepository<Guid, User> userRepository, IRepository<Guid, Order> orderRepository)
         {
             _repository = repository;
+            _userRepository = userRepository;
+            _orderRepository = orderRepository;
         }
-
-        public async Task<CreateNewAddressResponseDTO> AddAddress(CreateNewAddressRequestDTO request)
+        public async Task<CreateNewAddressResponseDTO> AddAddress(Guid UserId, CreateNewAddressRequestDTO request)
         {
             try
             {
-                var isExited = await _repository.GetQueryable()
-                    .FirstOrDefaultAsync(a => a.AddressLine1 == request.AddressLine1);
+                var user = await _userRepository.GetQueryable()
+                    .FirstOrDefaultAsync(u => u.UserId == UserId);
+
+                if (user == null)
+                {
+                    throw new AppException("User does not exist");
+                }
+
+                var normalizedRequest = request.AddressLine1.Trim().ToLower();
+                var isExited = await _repository.GetQueryable().FirstOrDefaultAsync(a => a.UserId == UserId && a.AddressLine1.Trim().ToLower() == normalizedRequest);
 
                 if (isExited != null)
                 {
@@ -31,7 +42,7 @@ namespace ShoppingApp.Services
 
                 var newAddress = new Address
                 {
-                    UserId = request.UserId,
+                    UserId = UserId,
                     AddressLine1 = request.AddressLine1.Trim(),
                     AddressLine2 = request.AddressLine2.Trim(),
                     State = request.State.Trim(),
@@ -49,56 +60,109 @@ namespace ShoppingApp.Services
                 return new CreateNewAddressResponseDTO
                 {
                     AddressId = address.AddressId,
-                    UserId = address.UserId,
-                    AddressLine1 = address.AddressLine1,
-                    AddressLine2 = address.AddressLine2,
-                    State = address.State,
-                    City = address.City,
-                    PinCode = address.Pincode
                 };
             }
             catch (AppException)
             {
                 throw;
             }
-            catch (Exception ex)
+        }
+
+        public async Task<bool> DeleteUserAddress(Guid UserId, DeleteUserAddressRequestDTO request)
+        {
+            try
             {
-                throw new AppException("Unable to create address", ex);
+                var address = await _repository.FirstOrDefaultAsync(a => a.AddressId == request.AddressId && a.UserId == UserId);
+
+                if (address == null)
+                    throw new AppException("Address not found or does not belong to user");
+
+                var isUsedInOrder = await _orderRepository.GetQueryable().AnyAsync(o => o.AddressId == request.AddressId);
+
+                if (isUsedInOrder)
+                    throw new AppException("Cannot delete address because it is associated with existing orders");
+
+                var deleted = await _repository.DeleteAsync(request.AddressId);
+
+                return deleted != null;
+            }
+            catch (AppException)
+            {
+                throw;
             }
         }
 
-        public async Task<bool> DeleteUserAddress(DeleteUserAddressRequestDTO request)
-        {   
-            var address = await _repository.FirstOrDefaultAsync(a =>
-                a.AddressId == request.AddressId &&
-                a.UserId == request.UserId);
+        public async Task<EditUserAddressResponseDTO> EditUserAddress(Guid UserId, EditUserAddressRequestDTO request)
+        {
+            try
+            {
+                var address = await _repository.GetQueryable()
+                    .FirstOrDefaultAsync(a => a.AddressId == request.AddressId && a.UserId == UserId);
 
-            if (address == null)
-                throw new AppException("Address not found or does not belong to user");
+                if (address == null)
+                    throw new AppException("Address not found or does not belong to user");
 
-            var deleted = await _repository.DeleteAsync(request.AddressId);
+                var isUsedInOrder = await _orderRepository.GetQueryable()
+                    .AnyAsync(o => o.AddressId == request.AddressId);
 
-            return deleted != null;
+                if (isUsedInOrder)
+                    throw new AppException("Cannot edit address because it is associated with existing orders");
+
+                string normalize(string s) => (s ?? string.Empty).Trim().ToLower();
+
+                bool isChanged =
+                    normalize(address.AddressLine1) != normalize(request.AddressLine1) ||
+                    normalize(address.AddressLine2) != normalize(request.AddressLine2) ||
+                    normalize(address.City) != normalize(request.City) ||
+                    normalize(address.State) != normalize(request.State) ||
+                    normalize(address.Pincode) != normalize(request.Pincode);
+
+                if (!isChanged)
+                {
+                    return new EditUserAddressResponseDTO { isSuccess = true };
+                }
+
+                var duplicate = await _repository.GetQueryable().AnyAsync(a => a.UserId == UserId && a.AddressId != request.AddressId
+                                   && (a.AddressLine1).Trim().ToLower() == (request.AddressLine1).Trim().ToLower());
+
+                if (duplicate)
+                    throw new AppException("Another address with the same AddressLine1 already exists");
+
+                address.AddressLine1 = request.AddressLine1.Trim();
+                address.AddressLine2 = request.AddressLine2.Trim();
+                address.City = request.City.Trim();
+                address.State = request.State.Trim();
+                address.Pincode = request.Pincode.Trim();
+
+                var updated = await _repository.UpdateAsync(request.AddressId,address);
+
+                if (updated == null)
+                    throw new AppException("Unable to update address at this moment");
+
+                return new EditUserAddressResponseDTO { isSuccess = true };
+            }
+            catch (AppException)
+            {
+                throw;
+            }
         }
 
-        public async Task<GetUserAddressResposneDTO> GetUserAddress(GetUserAddressRequestDTO request)
-        { 
-            var query = _repository.GetQueryable()
-                .Where(a => a.UserId == request.UserId);
+        public async Task<GetUserAddressResposneDTO> GetUserAddress(Guid UserId,GetUserAddressRequestDTO request)
+        {
+            var query = _repository.GetQueryable().Where(a => a.UserId == UserId);
 
             if(query == null)
             {
                 return new GetUserAddressResposneDTO()
                 {
-                    UserId = request.UserId,
                     AddressList = new List<AddressDTO>()
                 };
             }
 
             var addressList = await query
                 .OrderBy(a => a.CreatedAt)
-                .Skip((request.PageNumber - 1) * request.Limit)
-                .Take(request.Limit)
+                .Skip((request.Pagination.PageNumber - 1) * request.Pagination.PageSize)
+                .Take(request.Pagination.PageSize)
                 .Select(a => new AddressDTO
                 {
                     AddressId = a.AddressId,
@@ -112,7 +176,6 @@ namespace ShoppingApp.Services
 
             return new GetUserAddressResposneDTO
             {
-                UserId = request.UserId,
                 AddressList = addressList
             };
         }

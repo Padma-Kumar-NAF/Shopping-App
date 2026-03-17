@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.User
 {
-    public class UpdateProfileResponseDTO
+    public record UpdateProfileResponseDTO
     {
         public Guid UserDetailsId { get; set; }
         public string Name { get; set; } = string.Empty;

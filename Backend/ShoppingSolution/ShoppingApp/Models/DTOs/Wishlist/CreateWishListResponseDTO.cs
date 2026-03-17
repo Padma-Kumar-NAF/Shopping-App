@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Wishlist
 {
-    public class CreateWishListResponseDTO
+    public record CreateWishListResponseDTO
     {
         public bool isCreated {  get; set; }
     }

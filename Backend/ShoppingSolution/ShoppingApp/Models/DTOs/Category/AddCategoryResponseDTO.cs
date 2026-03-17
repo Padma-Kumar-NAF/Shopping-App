@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Category
 {
-    public class AddCategoryResponseDTO
+    public record AddCategoryResponseDTO
     {
         public Guid CategoryId { get; set; }
         public string CategoryName {  get; set; } = string.Empty;

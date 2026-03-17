@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Order
 {
-    public class CancelOrderRequestDTO
+    public record CancelOrderRequestDTO
     {
         public Guid UserId { get; set; }
 

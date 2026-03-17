@@ -4,8 +4,6 @@ namespace ShoppingApp.Models.DTOs.Address
 {
     public record CreateNewAddressRequestDTO
     {
-        public Guid UserId { get; set; }
-
         [Required(ErrorMessage = "AddressLine1 is required")]
         public string AddressLine1 { get; set; } = string.Empty;
 

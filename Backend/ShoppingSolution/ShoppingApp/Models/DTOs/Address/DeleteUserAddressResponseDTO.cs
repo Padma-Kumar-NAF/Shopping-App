@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Address
 {
-    public class DeleteUserAddressResponseDTO
+    public record DeleteUserAddressResponseDTO
     {
         public bool Success { get; set; }
     }

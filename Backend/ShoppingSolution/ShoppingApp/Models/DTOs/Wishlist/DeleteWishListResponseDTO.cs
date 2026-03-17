@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Wishlist
 {
-    public class DeleteWishListResponseDTO
+    public record DeleteWishListResponseDTO
     {
         public bool IsDeleted { get; set; }
     }

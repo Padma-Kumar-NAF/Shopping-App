@@ -8,6 +8,7 @@ namespace ShoppingApp.Services
     public class ReviewService : IReviewService
     {
         private readonly IRepository<Guid, Review> _repository;
+
         public ReviewService(IRepository<Guid, Review> repository)
         {
             _repository = repository;
@@ -24,19 +25,18 @@ namespace ShoppingApp.Services
             };
 
             var added = await _repository.AddAsync(review);
-            if(added == null)
+
+            if (added == null)
+                throw new Exception("Can't able to add a review");
+
+            return new AddReviewResponseDTO
             {
-                throw new Exception("Can't Able to add a review");
-            }
-
-            AddReviewResponseDTO response = new AddReviewResponseDTO();
-            response.ReviewId = added.ReviewId;
-            response.ProductId = request.ProductId;
-            response.ReviewPoints = request.ReviewPoints;
-            response.UserId = request.UserId;
-            response.Summary = request.Summary;
-
-            return response;
+                ReviewId = added.ReviewId,
+                ProductId = request.ProductId,
+                ReviewPoints = request.ReviewPoints,
+                UserId = request.UserId,
+                Summary = request.Summary
+            };
         }
 
         public async Task<DeleteReviewResponseDTO> DeleteReview(Guid userId, Guid reviewId)

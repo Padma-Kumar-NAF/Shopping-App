@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Cart
 {
-    public class GetCartResponseDTO
+    public record GetCartResponseDTO
     {
         [Required]
         public Guid CartId { get; set; }
@@ -10,7 +10,7 @@ namespace ShoppingApp.Models.DTOs.Cart
         public ICollection<CartItemDTO> Items { get; set; } = new List<CartItemDTO>();
     }
 
-    public class CartItemDTO
+    public record CartItemDTO
     {
         [Required]
         public Guid ProductId { get; set; }

@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Wishlist
 {
-    public class GetUserWishListRequestDTOClass
+    public record GetUserWishListRequestDTOClass
     {
         [Required(ErrorMessage = "Limit is required")]
         public int Limit { get; set; }

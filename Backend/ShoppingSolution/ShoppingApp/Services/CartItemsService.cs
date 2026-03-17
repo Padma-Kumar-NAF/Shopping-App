@@ -10,53 +10,16 @@ namespace ShoppingApp.Services
 {
     public class CartItemsService : ICartItemsService
     {
-        private readonly ShoppingContext _context;
-        public CartItemsService(ShoppingContext context)
+        private readonly IRepository<Guid, CartItem> _repository;
+
+        public CartItemsService(IRepository<Guid, CartItem> repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
-        //public async Task<IEnumerable<GetCartResponseDTO>> GetCartItems(GetCartRequestDTO request)
-        //{
-        //    return await _context.Carts
-        //        .Where(c => c.UserId == request.UserId)
-        //        .Skip((request.PageNumber - 1) * request.Limit)
-        //        .Take(request.Limit)
-        //        .Select(c => new GetCartResponseDTO
-        //        {
-        //            CartId = c.CartId,
-        //            UserId = c.UserId,
-        //            Items = c.CartItems!.Select(ci => new CartItemDTO
-        //            {
-        //                ProductId = ci.ProductId,
-        //                CategoryId = ci.Product!.CategoryId,
-        //                ProductName = ci.Product.Name,
-        //                ImagePath = ci.Product.ImagePath,
-        //                Description = ci.Product.Description,
-        //                Price = ci.Product.Price,
-        //                Quantity = ci.Quantity
-        //            }).ToList()
-        //        })
-        //        .ToListAsync();
-        //}
-
-        public async Task<GetCartResponseDTO> GetCartItems(Guid CartId,Guid UserId,int Limit,int PageNumber)
+        public async Task<GetCartResponseDTO> GetCartItems(Guid CartId, Guid UserId, int Limit, int PageNumber)
         {
-            //var cart = await _context.Carts
-            //    .AsNoTracking()
-            //    .FirstOrDefaultAsync(c => c.UserId == request.UserId);
-
-            //if (cart == null)
-            //{
-            //    return new GetCartResponseDTO
-            //    {
-            //        CartId = Guid.Empty,
-            //        UserId = request.UserId,
-            //        Items = new List<CartItemDTO>()
-            //    };
-            //}
-
-            var query = _context.CartItems
+            var query = _repository.GetQueryable()
                 .Where(ci => ci.CartId == CartId)
                 .Include(ci => ci.Product);
 
@@ -81,17 +44,25 @@ namespace ShoppingApp.Services
             {
                 CartId = CartId,
                 UserId = UserId,
-                Items = items,
+                Items = items
             };
         }
 
         public async Task<bool> RemoveAllByCartId(Guid cartId)
         {
-            var affectedRows = await _context.CartItems
+            var items = await _repository.GetQueryable()
                 .Where(ci => ci.CartId == cartId)
-                .ExecuteDeleteAsync();
+                .ToListAsync();
 
-            return affectedRows > 0;
+            if (!items.Any())
+                return false;
+
+            foreach (var item in items)
+            {
+                await _repository.DeleteAsync(item.CartItemId);
+            }
+
+            return true;
         }
     }
 }

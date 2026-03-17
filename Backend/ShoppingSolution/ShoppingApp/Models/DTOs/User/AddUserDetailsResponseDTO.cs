@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.User
 {
-    public class AddUserDetailsResponseDTO
+    public record AddUserDetailsResponseDTO
     {
         public Guid UserDetailsId {  get; set; }
     }

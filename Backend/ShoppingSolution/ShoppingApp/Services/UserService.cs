@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using ShoppingApp.Contexts;
 using ShoppingApp.Exceptions;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
@@ -11,30 +9,43 @@ namespace ShoppingApp.Services
 {
     public class UserService : IUserService
     {
-        private readonly ShoppingContext _context;
         private readonly IPasswordService _passwordService;
-        private readonly IRepository<Guid,User> _userRepository;
+        private readonly IRepository<Guid, User> _userRepository;
+        private readonly IRepository<Guid, UserDetails> _userDetailsRepository;
+        private readonly IRepository<Guid, Address> _addressRepository;
 
-        public UserService(ShoppingContext context, IPasswordService passwordService, IUserDetailsService userDetailsService,
-            IRepository<Guid,User> userRepository)
-        {
-            _context = context;
-            _passwordService = passwordService;
-            _userRepository = userRepository;
-        }
+        private readonly IUnitOfWork _unitOfWork;
 
-        public async Task<CreateUserResponseDTO?> CreateUser(CreateUserRequestDTO request)
+        private readonly ITokenService _tokenService;
+
+        public UserService(
+            IPasswordService passwordService,
+            IRepository<Guid, User> userRepository,
+            IRepository<Guid, UserDetails> userDetailsRepository,
+            IRepository<Guid, Address> addressRepository,
+            IUnitOfWork unitOfWork,
+            ITokenService tokenService)
+            {
+                _passwordService = passwordService;
+                _userRepository = userRepository;
+                _userDetailsRepository = userDetailsRepository;
+                _addressRepository = addressRepository;
+                _unitOfWork = unitOfWork;
+                _tokenService = tokenService;
+            }
+        public async Task<CreateUserResponseDTO> CreateUser(CreateUserRequestDTO request)
         {
             var email = request.Email.Trim().ToLower();
 
-            var existingUser = await _context.Users
+            var existingUser = await _userRepository.GetQueryable()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Email == email);
 
             if (existingUser != null)
                 throw new AppException("Email already exists");
 
-            await using IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync();
+
             try
             {
                 var (hash, salt) = await _passwordService.HashPasswordAsync(request.Password);
@@ -48,11 +59,7 @@ namespace ShoppingApp.Services
                     Role = "User"
                 };
 
-                await _context.Users.AddAsync(user);
-                var result = await _context.SaveChangesAsync();
-
-                if (result <= 0)
-                    throw new AppException("Failed to create user.");
+                await _userRepository.AddAsync(user);
 
                 var userDetails = new UserDetails
                 {
@@ -67,7 +74,7 @@ namespace ShoppingApp.Services
                     Pincode = request.Pincode
                 };
 
-                await _context.UserDetails.AddAsync(userDetails);
+                await _userDetailsRepository.AddAsync(userDetails);
 
                 var address = new Address
                 {
@@ -79,66 +86,59 @@ namespace ShoppingApp.Services
                     Pincode = request.Pincode
                 };
 
-                await _context.Addresses.AddAsync(address);
+                await _addressRepository.AddAsync(address);
 
-                await _context.SaveChangesAsync();
+                var result = await _unitOfWork.CommitAsync();
 
-                await transaction.CommitAsync();
+                if (result <= 0)
+                    throw new AppException("Failed to create user. Please try again.");
 
                 return new CreateUserResponseDTO
                 {
-                    UserId = user.UserId,
-                    Name = user.Name,
-                    Email = user.Email,
-                    UserDetails = new CreateUserDetailsDTO
-                    {
-                        UserId = user.UserId,
-                        Name = request.Name.Trim(),
-                        Email = request.Email,
-                        PhoneNumber = request.PhoneNumber,
-                        AddressLine1 = request.AddressLine1,
-                        AddressLine2 = request.AddressLine2,
-                        State = request.State,
-                        City = request.City,
-                        Pincode = request.Pincode
-                    }
+                    isSuccess = true,
                 };
             }
-            catch
+            catch (Exception)
             {
-                await transaction.RollbackAsync();
-                throw;
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Server error occurred while creating user");
             }
         }
 
-    public async Task<LoginResponseDTO?> LoginUser(LoginRequestDTO request)
+        public async Task<LoginResponseDTO> LoginUser(LoginRequestDTO request)
         {
-            if (request == null)
-                return null;
-
-            var email = request.Email.Trim().ToLower();
-
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == email);
-
-            if (user == null)
-                throw new AppException("Email not found");
-
-            bool isValid = await _passwordService.VerifyPasswordAsync(
-                request.Password,
-                user.Password,
-                user.SaltValue);
-
-            if (!isValid)
-                throw new AppException("Invalid Password");
-
-            return new LoginResponseDTO
+            try
             {
-                UserId = user.UserId,
-                Name = user.Name,
-                Email = user.Email,
-                Role = user.Role
-            };
+                var email = request.Email.Trim().ToLower();
+                var user = await _userRepository.GetQueryable()
+                    .FirstOrDefaultAsync(u => u.Email == email);
+
+                if (user == null)
+                    throw new AppException("Email not found");
+
+                bool isValid = await _passwordService.VerifyPasswordAsync(
+                    request.Password,
+                    user.Password,
+                    user.SaltValue);
+
+                if (!isValid)
+                    throw new AppException("Invalid Password");
+
+                LoginResponseDTO response = new LoginResponseDTO()
+                {
+                    Token = _tokenService.GenerateToken(
+                    user.UserId,
+                    user.Name,
+                    user.Email,
+                    user.Role)
+                };
+
+                return response;
+            }
+            catch (AppException)
+            {
+                throw;
+            }
         }
 
         public async Task<IEnumerable<GetUsersResponseDTO>> GetAllUsers(GetUsersRequestDTO request)
@@ -146,7 +146,7 @@ namespace ShoppingApp.Services
             if (request.PageNumber <= 0) request.PageNumber = 1;
             if (request.Limit <= 0) request.Limit = 10;
 
-            var users = await _context.Users
+            var users = await _userRepository.GetQueryable()
                 .AsNoTracking()
                 .Include(u => u.UserDetails)
                 .OrderBy(u => u.Name)
@@ -162,7 +162,6 @@ namespace ShoppingApp.Services
                     PhoneNumber = u.UserDetails.PhoneNumber,
                     AddressLine1 = u.UserDetails.AddressLine1,
                     AddressLine2 = u.UserDetails.AddressLine2,
-
                     State = u.UserDetails.State,
                     City = u.UserDetails.City,
                     Pincode = u.UserDetails.Pincode
@@ -175,23 +174,21 @@ namespace ShoppingApp.Services
             return users;
         }
 
-        public async Task<CreateUserResponseDTO> GetUserById(Guid UserId)
+        public async Task<GetUserByIdResponseDTO> GetUserById(Guid UserId)
         {
-            var user = await _context.Users
-               .Include(u => u.UserDetails)
-               .FirstOrDefaultAsync(u => u.UserId == UserId);
+            var user = await _userRepository.GetQueryable()
+                .Include(u => u.UserDetails)
+                .FirstOrDefaultAsync(u => u.UserId == UserId);
 
             if (user == null)
-            {
                 throw new AppException("No user found");
-            }
 
-            return new CreateUserResponseDTO()
+            return new GetUserByIdResponseDTO
             {
                 UserId = user.UserId,
                 Name = user.Name,
                 Email = user.Email,
-                UserDetails = new CreateUserDetailsDTO()
+                UserDetails = new CreateUserDetailsDTO
                 {
                     UserId = user.UserDetails!.UserDetailsId,
                     Name = user.Name,
@@ -202,20 +199,14 @@ namespace ShoppingApp.Services
                     State = user.UserDetails.State,
                     City = user.UserDetails.City,
                     Pincode = user.UserDetails.Pincode
-
                 }
             };
         }
 
         public async Task<EditUserEmailResponseDTO> EditUserEmail(EditUserEmailRequestDTO request)
         {
-            var user = await _context.Users
+            var user = await _userRepository.GetQueryable()
                 .FirstOrDefaultAsync(u => u.UserId == request.UserId && u.Email == request.OldEmail);
-
-            Console.WriteLine($"New email: {request.NewEmail}");
-            Console.WriteLine($"UserId: {request.UserId}");
-            Console.WriteLine($"Password: {request.Password}");
-            Console.WriteLine($"Old email: {request.OldEmail}");
 
             if (user == null)
                 throw new AppException("User not found");
@@ -229,14 +220,15 @@ namespace ShoppingApp.Services
                 throw new AppException("Invalid Password");
 
             user.Email = request.NewEmail;
+            await _userRepository.UpdateAsync(user.UserId, user);
 
-            var userDetails = await _context.UserDetails.FirstOrDefaultAsync(ud => ud.UserId == request.UserId);
+            var userDetails = await _userDetailsRepository.GetQueryable()
+                .FirstOrDefaultAsync(ud => ud.UserId == request.UserId);
+
             userDetails!.Email = request.NewEmail;
+            await _userDetailsRepository.UpdateAsync(userDetails.UserDetailsId, userDetails);
 
-
-            await _context.SaveChangesAsync();
-
-            return new EditUserEmailResponseDTO()
+            return new EditUserEmailResponseDTO
             {
                 isSuccess = true
             };

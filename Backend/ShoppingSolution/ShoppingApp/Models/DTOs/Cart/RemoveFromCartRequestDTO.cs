@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Cart
 {
-    public class RemoveFromCartRequestDTO
+    public record RemoveFromCartRequestDTO
     {
         public Guid UserId { get; set; }
 

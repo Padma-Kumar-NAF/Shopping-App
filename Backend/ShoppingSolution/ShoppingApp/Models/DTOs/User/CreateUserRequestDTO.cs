@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.User
 {
-    public class CreateUserRequestDTO
+    public record CreateUserRequestDTO
     {
         [Required(ErrorMessage = "Name is required")]
         [StringLength(100, MinimumLength = 3, ErrorMessage = "Name must be between 3 and 100 characters")]

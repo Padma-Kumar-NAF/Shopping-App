@@ -2,6 +2,8 @@ select * from Stock
 select * from Users
 select * from Addresses
 
+delete from Logs
+
 delete from Addresses
 where AddressLine2 = 'Test line 1'
 

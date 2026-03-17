@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.User
 {
-    public class EditUserEmailRequestDTO
+    public record EditUserEmailRequestDTO
     {
         public Guid UserId { get; set; }
 

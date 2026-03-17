@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Cart
 {
-    public class OrderAllFromCartResponseDTO
+    public record OrderAllFromCartResponseDTO
     {
         public bool IsSuccess { get; set; }
     }

@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Review
 {
-    public class AddReviewResponseDTO
+    public record AddReviewResponseDTO
     {
         [Required]
         public Guid ReviewId { get; set; }

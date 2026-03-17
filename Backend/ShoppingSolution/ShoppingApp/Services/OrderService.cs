@@ -11,24 +11,32 @@ namespace ShoppingApp.Services
     {
         private readonly IRepository<Guid, Stock> _stockRepository;
         private readonly IRepository<Guid, Order> _repository;
+        private readonly IRepository<Guid, Payment> _paymentRepository;
+        private readonly IRepository<Guid, Refund> _refundRepository;
 
-        private readonly ShoppingContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public OrderService(IRepository<Guid, Order> repository, ShoppingContext context, IRepository<Guid, Stock> stockRepository)
+        public OrderService(
+            IRepository<Guid, Order> repository,
+            IRepository<Guid, Stock> stockRepository,
+            IRepository<Guid, Payment> paymentRepository,
+            IRepository<Guid, Refund> refundRepository,
+            IUnitOfWork unitOfWork)
         {
             _repository = repository;
             _stockRepository = stockRepository;
-
-            _context = context;
+            _paymentRepository = paymentRepository;
+            _refundRepository = refundRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<GetUserOrderDetailsResponseDTO> CancelOrder(CancelOrderRequestDTO request)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync();
 
             try
             {
-                var order = await _context.Orders
+                var order = await _repository.GetQueryable()
                     .Include(o => o.OrderDetails!)
                     .Include(o => o.Address)
                     .Include(o => o.Payment)
@@ -40,14 +48,12 @@ namespace ShoppingApp.Services
                 if (order.Status == "Cancelled")
                     throw new Exception("Order already cancelled.");
 
-                if (order.Status == "Shipped" || order.Status == "Delivered")
-                    throw new Exception("Cannot cancel shipped/delivered order.");
+                if (order.Status == "Delivered")
+                    throw new Exception("Cannot cancel delivered order.");
 
-                // Restore stock
                 foreach (var item in order.OrderDetails!)
                 {
-                    var stock = await _stockRepository
-                        .GetQueryable()
+                    var stock = await _stockRepository.GetQueryable()
                         .FirstOrDefaultAsync(s => s.ProductId == item.ProductId);
 
                     if (stock == null)
@@ -59,11 +65,9 @@ namespace ShoppingApp.Services
                 }
 
                 order.Status = "Cancelled";
-                _context.Orders.Update(order);
+                await _repository.UpdateAsync(order.OrderId, order);
 
-                await _context.SaveChangesAsync();
-
-                var refund = new Refund()
+                var refund = new Refund
                 {
                     UserId = request.UserId,
                     OrderId = order.OrderId,
@@ -71,10 +75,9 @@ namespace ShoppingApp.Services
                     RefundAmount = order.TotalAmount
                 };
 
-                await _context.Refunds.AddAsync(refund);
+                await _refundRepository.AddAsync(refund);
 
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
+                await _unitOfWork.CommitAsync();
 
                 return new GetUserOrderDetailsResponseDTO
                 {
@@ -83,7 +86,7 @@ namespace ShoppingApp.Services
                     Status = order.Status,
                     TotalProductsCount = order.TotalProductsCount,
                     TotalAmount = order.TotalAmount,
-                    DeliveryDate = (DateTime)order.DeliveryDate,
+                    DeliveryDate = (DateTime)order.DeliveryDate!,
 
                     Address = new AddressDTO
                     {
@@ -106,7 +109,6 @@ namespace ShoppingApp.Services
                         OrderDetailsId = item.OrderDetailsId,
                         ProductId = item.ProductId,
                         ProductName = item.ProductName,
-                        //ImagePath = item.ImagePath,
                         Quantity = item.Quantity,
                         ProductPrice = item.ProductPrice
                     }).ToList()
@@ -114,7 +116,7 @@ namespace ShoppingApp.Services
             }
             catch
             {
-                await transaction.RollbackAsync();
+                await _unitOfWork.RollbackAsync();
                 throw;
             }
         }
@@ -125,7 +127,7 @@ namespace ShoppingApp.Services
                 .Where(order => order.UserId == request.UserId)
                 .OrderByDescending(o => o.CreatedAt);
 
-            var pagedOrders = await query
+            return await query
                 .Skip((request.PageNumber - 1) * request.Limit)
                 .Take(request.Limit)
                 .Select(o => new GetUserOrderDetailsResponseDTO
@@ -162,23 +164,22 @@ namespace ShoppingApp.Services
                             Quantity = od.Quantity,
                             ProductPrice = od.ProductPrice,
                             ImagePath = od.Product!.ImagePath
-                        }).OrderBy(od => od.ProductName)
+                        })
+                        .OrderBy(od => od.ProductName)
                         .ToList()
                 })
                 .ToListAsync();
-
-            return pagedOrders;
         }
 
         public async Task<GetUserOrderDetailsResponseDTO> PlaceOrder(PlaceOrderRequestDTO request)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync();
 
             try
             {
                 var productIds = request.Items.Select(i => i.ProductId).ToList();
 
-                var stocks = await _context.Stock
+                var stocks = await _stockRepository.GetQueryable()
                     .Where(s => productIds.Contains(s.ProductId))
                     .ToListAsync();
 
@@ -209,6 +210,7 @@ namespace ShoppingApp.Services
                     var stock = stocks.First(s => s.ProductId == item.ProductId);
 
                     stock.Quantity -= item.Quantity;
+                    await _stockRepository.UpdateAsync(stock.StockId, stock);
 
                     order.OrderDetails!.Add(new OrderDetails
                     {
@@ -220,11 +222,9 @@ namespace ShoppingApp.Services
                     });
                 }
 
-                await _context.Orders.AddAsync(order);
+                await _repository.AddAsync(order);
 
-                await _context.SaveChangesAsync();
-
-                var payment = new Payment()
+                var payment = new Payment
                 {
                     UserId = request.UserId,
                     OrderId = order.OrderId,
@@ -232,62 +232,29 @@ namespace ShoppingApp.Services
                     PaymentType = request.PaymentType
                 };
 
-                await _context.Payments.AddAsync(payment);
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
+                await _paymentRepository.AddAsync(payment);
 
+                await _unitOfWork.CommitAsync();
 
-                var createdOrder = await _context.Orders
-                    .AsNoTracking()
-                    .Where(o => o.OrderId == order.OrderId)
-                    .Select(o => new GetUserOrderDetailsResponseDTO
-                    {
-                        OrderId = o.OrderId,
-                        UserId = o.UserId,
-                        Status = o.Status,
-                        TotalProductsCount = o.TotalProductsCount,
-                        TotalAmount = o.TotalAmount,
-
-                        Address = new AddressDTO
-                        {
-                            AddressId = o.Address!.AddressId,
-                            AddressLine1 = o.Address.AddressLine1,
-                            AddressLine2 = o.Address.AddressLine2,
-                            State = o.Address.State,
-                            City = o.Address.City,
-                            Pincode = o.Address.Pincode
-                        },
-
-                        Items = o.OrderDetails!
-                            .Select(od => new OrderDetailsDTO
-                            {
-                                OrderDetailsId = od.OrderDetailsId,
-                                ProductId = od.ProductId,
-                                ProductName = od.ProductName,
-                                Quantity = od.Quantity,
-                                ProductPrice = od.ProductPrice,
-                                ImagePath = od.Product!.ImagePath
-                            })
-                            .OrderBy(od => od.ProductName)
-                            .ToList()
-                    })
-                    .FirstOrDefaultAsync();
-
-                if (createdOrder == null)
-                    throw new Exception("Order created but unable to fetch details.");
-
-                return createdOrder;
+                return new GetUserOrderDetailsResponseDTO
+                {
+                    OrderId = order.OrderId,
+                    UserId = order.UserId,
+                    Status = order.Status,
+                    TotalProductsCount = order.TotalProductsCount,
+                    TotalAmount = order.TotalAmount
+                };
             }
             catch
             {
-                await transaction.RollbackAsync();
+                await _unitOfWork.RollbackAsync();
                 throw;
             }
         }
 
         public async Task<bool> UpdateOrder(Guid OrderId, string Status)
         {
-            var order = await _context.Orders
+            var order = await _repository.GetQueryable()
                 .FirstOrDefaultAsync(o => o.OrderId == OrderId);
 
             if (order == null)
@@ -295,7 +262,7 @@ namespace ShoppingApp.Services
 
             order.Status = Status;
 
-            await _context.SaveChangesAsync();
+            await _repository.UpdateAsync(order.OrderId, order);
 
             return true;
         }

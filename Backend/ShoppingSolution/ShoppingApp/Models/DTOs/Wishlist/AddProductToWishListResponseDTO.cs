@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Wishlist
 {
-    public class AddProductToWishListResponseDTO
+    public record AddProductToWishListResponseDTO
     {
         public bool IsSuccess { get; set; }
     }

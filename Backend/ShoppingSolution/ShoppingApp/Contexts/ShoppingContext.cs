@@ -133,21 +133,12 @@ namespace ShoppingApp.Contexts
 
             modelBuilder.Entity<Log>(entity =>
             {
-                entity.HasKey(l => l.LogId)
+                entity.HasKey(l => l.Id)
                 .HasName("PK_Log");
 
-                entity.Property(o => o.LogId).HasDefaultValueSql("NEWID()");
+                entity.Property(o => o.Id).HasDefaultValueSql("NEWID()");
 
                 entity.Property(o => o.CreatedAt).HasDefaultValueSql("GETUTCDATE()");
-
-                entity.HasOne(l => l.User)
-                .WithMany(u => u.Logs)
-                .HasForeignKey(l => l.UserId)
-                .HasConstraintName("FK_Log_User")
-                .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasIndex(l => l.UserId)
-                .HasDatabaseName("IX_Log_UserId");
 
                 entity.HasIndex(l => l.CreatedAt)
                 .HasDatabaseName("IX_Log_CreatedAt");
@@ -362,11 +353,11 @@ namespace ShoppingApp.Contexts
                 .HasConstraintName("FK_Order_User")
                 .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasMany(u => u.Logs)
-                .WithOne(l => l.User)
-                .HasForeignKey(l => l.UserId)
-                .HasConstraintName("FK_Log_User")
-                .OnDelete(DeleteBehavior.Restrict);
+                //entity.HasMany(u => u.Logs)
+                //.WithOne(l => l.User)
+                //.HasForeignKey(l => l.UserId)
+                //.HasConstraintName("FK_Log_User")
+                //.OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasMany(u => u.Reviews)
                 .WithOne(r => r.User)

@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.User
 {
-    public class LoginRequestDTO
+    public record LoginRequestDTO
     {
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress]

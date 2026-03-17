@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Product
 {
-    public class UpdateProductResponseDTO
+    public record UpdateProductResponseDTO
     {
         public Guid ProductId { get; set; }
         public Guid CategoryId { get; set; }

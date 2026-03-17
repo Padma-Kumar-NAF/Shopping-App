@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.User
 {
-    public class GetUsersResponseDTO
+    public record GetUsersResponseDTO
     {
         public Guid UserId { get; set; }
         public Guid UserDetailsId { get; set; }
@@ -15,8 +15,6 @@ namespace ShoppingApp.Models.DTOs.User
         public string State { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
         public string Pincode { get; set; } = string.Empty;
-        //public string Password { get; set; } = string.Empty;
-        //public string SaltValue { get; set; } = string.Empty;
 
     }
 }

@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace ShoppingApp.Models.DTOs.Order
 {
-    public class GetUserOrderDetailsResponseDTO
+    public record GetUserOrderDetailsResponseDTO
     {
         public Guid OrderId { get; set; }
         public Guid UserId { get; set; }
@@ -40,6 +40,5 @@ namespace ShoppingApp.Models.DTOs.Order
     {
         public Guid PaymentId { get; set; }
         public string PaymentType { get; set; } = string.Empty;
-        //public decimal TotalAmount { get; set; }
     }
 }
