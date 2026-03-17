@@ -1,30 +1,35 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ShoppingApp.Contexts;
 using ShoppingApp.Exceptions;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.Product;
-using ShoppingApp.Repositories;
-using System;
 
 namespace ShoppingApp.Services
 {
     public class ProductService : IProductService
     {
-        private readonly ShoppingContext _context;
-        IRepository<Guid, Stock> _stockRepository;
-        IRepository<Guid, Product> _productRepository;
-        public ProductService(ShoppingContext context, IRepository<Guid, Stock> stockRepository, IRepository<Guid, Product> productRepository)
+        private readonly IRepository<Guid, Stock> _stockRepository;
+        private readonly IRepository<Guid, Product> _productRepository;
+        private readonly IRepository<Guid, Category> _categoryRepository;
+
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ProductService(
+            IRepository<Guid, Stock> stockRepository,
+            IRepository<Guid, Product> productRepository,
+            IRepository<Guid, Category> categoryRepository,
+            IUnitOfWork unitOfWork)
         {
-            _context = context;
             _stockRepository = stockRepository;
             _productRepository = productRepository;
+            _categoryRepository = categoryRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<GetAllProductsResponseDTO> AddProduct(AddNewProductRequestDTO request)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync();
 
             try
             {
@@ -37,19 +42,17 @@ namespace ShoppingApp.Services
                     Price = request.Price,
                 };
 
-                await _context.Products.AddAsync(product);
-                await _context.SaveChangesAsync();
+                await _productRepository.AddAsync(product);
 
                 var stock = new Stock
                 {
-                    ProductId = product.ProductId, 
+                    ProductId = product.ProductId,
                     Quantity = request.Quantity
                 };
 
-                await _context.Stock.AddAsync(stock);
-                await _context.SaveChangesAsync(); 
+                await _stockRepository.AddAsync(stock);
 
-                await transaction.CommitAsync();
+                await _unitOfWork.CommitAsync();
 
                 return new GetAllProductsResponseDTO
                 {
@@ -65,7 +68,7 @@ namespace ShoppingApp.Services
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
+                await _unitOfWork.RollbackAsync();
                 throw new Exception(ex.Message);
             }
         }
@@ -94,7 +97,6 @@ namespace ShoppingApp.Services
                     return new List<GetAllProductsResponseDTO>();
 
                 var random = new Random();
-
                 int maxSkip = Math.Max(0, totalCount - request.Limit);
                 int randomSkip = random.Next(0, maxSkip + 1);
 
@@ -103,7 +105,7 @@ namespace ShoppingApp.Services
                     .Skip(randomSkip);
             }
 
-            var products = await query
+            return await query
                 .Skip((request.PageNumber - 1) * request.Limit)
                 .Take(request.Limit)
                 .Select(p => new GetAllProductsResponseDTO
@@ -117,8 +119,7 @@ namespace ShoppingApp.Services
                     Price = p.Price,
                     StockId = p.Stock!.StockId,
                     Quantity = p.Stock.Quantity,
-
-                    Review = p.Reviews
+                    Review = (p.Reviews ?? new List<Review>())
                     .Select(r => new ReviewDTO
                     {
                         Summary = r.Summary,
@@ -127,8 +128,6 @@ namespace ShoppingApp.Services
                     .ToList()
                 })
                 .ToListAsync();
-
-            return products;
         }
 
         public async Task<GetAllProductsResponseDTO> SearchProductById(SearchProductByIdRequestDTO request)
@@ -145,10 +144,9 @@ namespace ShoppingApp.Services
                     ImagePath = p.ImagePath,
                     Description = p.Description,
                     Price = p.Price,
-
                     CategoryName = p.Category!.CategoryName,
                     Quantity = p.Stock!.Quantity,
-                    Review = p.Reviews
+                    Review = (p.Reviews ?? new List<Review>())
                     .Select(r => new ReviewDTO
                     {
                         Summary = r.Summary,
@@ -168,12 +166,10 @@ namespace ShoppingApp.Services
         {
             var searchText = request.ProductName.Trim();
 
-            var query = _productRepository
+            return await _productRepository
                 .GetQueryable()
                 .AsNoTracking()
-                .Where(p => EF.Functions.Like(p.Name, $"%{searchText}%"));
-
-            var result = await query
+                .Where(p => EF.Functions.Like(p.Name, $"%{searchText}%"))
                 .OrderBy(p => p.Name)
                 .Skip((request.PageNumber - 1) * request.Limit)
                 .Take(request.Limit)
@@ -188,7 +184,7 @@ namespace ShoppingApp.Services
                     Price = p.Price,
                     StockId = p.Stock!.StockId,
                     Quantity = p.Stock.Quantity,
-                    Review = p.Reviews
+                    Review = (p.Reviews ?? new List<Review>())
                     .Select(r => new ReviewDTO
                     {
                         Summary = r.Summary,
@@ -197,26 +193,26 @@ namespace ShoppingApp.Services
                     .ToList()
                 })
                 .ToListAsync();
-
-            return result;
         }
 
         public async Task<UpdateProductResponseDTO> UpdateProduct(UpdateProductRequestDTO request)
         {
-            var product = await _context.Products
-                .Include(p => p.Category)
+            var product = await _productRepository
+                .GetQueryable()
                 .FirstOrDefaultAsync(p => p.ProductId == request.ProductId);
 
             if (product == null)
                 throw new Exception("Product not found");
 
-            var stock = await _context.Stock
+            var stock = await _stockRepository
+                .GetQueryable()
                 .FirstOrDefaultAsync(s => s.ProductId == request.ProductId);
 
             if (stock == null)
                 throw new Exception("Stock not found");
 
-            var category = await _context.Categories
+            var category = await _categoryRepository
+                .GetQueryable()
                 .FirstOrDefaultAsync(c => c.CategoryId == request.CategoryId);
 
             if (category == null)
@@ -230,7 +226,8 @@ namespace ShoppingApp.Services
 
             stock.Quantity = request.Quantity;
 
-            await _context.SaveChangesAsync();
+            await _productRepository.UpdateAsync(product.ProductId, product);
+            await _stockRepository.UpdateAsync(stock.StockId, stock);
 
             return new UpdateProductResponseDTO
             {

@@ -7,9 +7,7 @@ namespace ShoppingApp.Interfaces.ServicesInterface
     {
         public Task<CreateUserResponseDTO?> CreateUser(CreateUserRequestDTO request);
         public Task<LoginResponseDTO?> LoginUser(LoginRequestDTO request);
-        //public Task<Guid> AddUserDetails(AddUserDetailsRequestDTO request);
         public Task<EditUserEmailResponseDTO> EditUserEmail(EditUserEmailRequestDTO request);
-
         public Task<IEnumerable<GetUsersResponseDTO>> GetAllUsers(GetUsersRequestDTO request);
         public Task<CreateUserResponseDTO> GetUserById(Guid UserId);
     }

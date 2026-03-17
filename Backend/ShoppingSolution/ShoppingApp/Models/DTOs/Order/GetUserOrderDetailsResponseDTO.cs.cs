@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace ShoppingApp.Models.DTOs.Order
 {
-    public class GetUserOrderDetailsResponseDTO
+    public record GetUserOrderDetailsResponseDTO
     {
         public Guid OrderId { get; set; }
         public Guid UserId { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.User
 {
-    public class EditUserEmailResponseDTO
+    public record EditUserEmailResponseDTO
     {
         public bool isSuccess { get; set; }
     }

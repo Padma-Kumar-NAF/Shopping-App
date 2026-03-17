@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.User
 {
-    public class GetUsersResponseDTO
+    public record GetUsersResponseDTO
     {
         public Guid UserId { get; set; }
         public Guid UserDetailsId { get; set; }

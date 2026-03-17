@@ -16,7 +16,6 @@ namespace ShoppingApp.Services
         {
             _repository = repository;
         }
-
         public async Task<CreateNewAddressResponseDTO> AddAddress(CreateNewAddressRequestDTO request)
         {
             try
@@ -97,8 +96,8 @@ namespace ShoppingApp.Services
 
             var addressList = await query
                 .OrderBy(a => a.CreatedAt)
-                .Skip((request.PageNumber - 1) * request.Limit)
-                .Take(request.Limit)
+                .Skip((request.Pagination.PageNumber - 1) * request.Pagination.PageSize)
+                .Take(request.Pagination.PageSize)
                 .Select(a => new AddressDTO
                 {
                     AddressId = a.AddressId,

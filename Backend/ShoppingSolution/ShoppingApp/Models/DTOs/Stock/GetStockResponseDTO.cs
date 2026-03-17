@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Stock
 {
-    public class GetStockResponseDTO
+    public record GetStockResponseDTO
     {
         public Guid StockId { get; set; }
         public Guid ProductId { get; set; }

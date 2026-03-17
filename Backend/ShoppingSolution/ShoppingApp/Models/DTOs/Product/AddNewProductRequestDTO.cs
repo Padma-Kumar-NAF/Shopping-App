@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Product
 {
-    public class AddNewProductRequestDTO
+    public record AddNewProductRequestDTO
     {
         [Required(ErrorMessage = "Category Id is required")]
         public Guid CategoryId { get; set; }

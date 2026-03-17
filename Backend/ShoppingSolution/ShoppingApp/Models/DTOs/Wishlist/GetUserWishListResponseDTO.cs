@@ -1,17 +1,17 @@
 ﻿namespace ShoppingApp.Models.DTOs.Wishlist
 {
-    public class GetUserWishListResponseDTO
+    public record GetUserWishListResponseDTO
     {
         public ICollection<WishListDTO>? WishList { get; set; }
     }
-    public class WishListDTO
+    public record WishListDTO
     {
         public Guid WishListId { get; set; }
         public string WishListName { get; set; } = string.Empty;
         public ICollection<WishListItemsDTO>? WishListItems { get; set; }
     }
 
-    public class WishListItemsDTO
+    public record WishListItemsDTO
     {
         public Guid WishListItemsId { get; set; }
         public Guid ProductId { get; set; }

@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.User
 {
-    public class CreateUserResponseDTO
+    public record CreateUserResponseDTO
     {
         public Guid UserId { get; set; } 
         public string Name { get; set; } = string.Empty;
@@ -11,7 +11,7 @@ namespace ShoppingApp.Models.DTOs.User
         public CreateUserDetailsDTO UserDetails { get; set; } = new CreateUserDetailsDTO();
 
     }
-    public class CreateUserDetailsDTO
+    public record CreateUserDetailsDTO
     {
         public Guid UserId { get; set; }
         public string Name { get; set; } = string.Empty;

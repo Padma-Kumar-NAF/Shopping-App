@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Wishlist
 {
-    public class RemoveProductFromWishListRequestDTO
+    public record RemoveProductFromWishListRequestDTO
     {
         public Guid UserId { get; set; }
         [Required(ErrorMessage = "Product Id is required")]

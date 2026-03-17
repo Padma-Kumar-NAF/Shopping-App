@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Address
 {
-    public class CreateNewAddressResponseDTO
+    public record CreateNewAddressResponseDTO
     {
         public Guid AddressId { get; set; }
         public Guid UserId { get; set; }

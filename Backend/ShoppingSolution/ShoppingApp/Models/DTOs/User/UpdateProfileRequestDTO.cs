@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.User
 {
-    public class UpdateProfileRequestDTO
+    public record UpdateProfileRequestDTO
     {
         public Guid UserId { get; set; }
 
@@ -10,7 +10,7 @@ namespace ShoppingApp.Models.DTOs.User
         public UpdateUserDetailsDTO Details { get; set; } = new UpdateUserDetailsDTO();
     }
 
-    public class UpdateUserDetailsDTO
+    public record UpdateUserDetailsDTO
     {
         [Required(ErrorMessage = "Name is required.")]
         [MinLength(2, ErrorMessage = "Name must be at least 2 characters.")]

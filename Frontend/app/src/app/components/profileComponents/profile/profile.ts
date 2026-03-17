@@ -12,7 +12,7 @@ import {
   UserProfile,
 } from '../../../models/profile.model';
 import { toast } from 'ngx-sonner';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import {
   FormControl,
   FormGroup,
@@ -41,6 +41,7 @@ interface TabConfig {
     Address,
     FormsModule,
     ReactiveFormsModule,
+    RouterOutlet
   ],
   templateUrl: './profile.html',
   styleUrl: './profile.css',

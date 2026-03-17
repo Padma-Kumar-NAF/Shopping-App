@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.User
 {
-    public class LoginResponseDTO
+    public record LoginResponseDTO
     {
         public Guid UserId { get; set; }
         public string Name { get; set; } = string.Empty;

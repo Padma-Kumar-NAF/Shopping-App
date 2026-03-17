@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Category
 {
-    public class GetAllCategoryRequestDTO
+    public record GetAllCategoryRequestDTO
     {
         [Required]
         [Range(1, 100, ErrorMessage = "PageNumber must be greater than 0")]

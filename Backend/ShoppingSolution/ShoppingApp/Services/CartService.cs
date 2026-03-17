@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Contexts;
 using ShoppingApp.Exceptions;
+using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.Cart;
@@ -10,12 +11,34 @@ namespace ShoppingApp.Services
 {
     public class CartService : ICartService
     {
-        private readonly ShoppingContext _context;
-        //private readonly ICartItemsService _cartItemsService;
-        public CartService(ShoppingContext context, ICartItemsService cartItemsService)
+        private readonly IRepository<Guid, Cart> _repository;
+        private readonly IRepository<Guid, CartItem> _cartItemRepository;
+        private readonly IRepository<Guid, Product> _productRepository;
+        private readonly IRepository<Guid, Stock> _stockRepository;
+        private readonly IRepository<Guid, Order> _orderRepository;
+        private readonly IRepository<Guid, Payment> _paymentRepository;
+        private readonly IRepository<Guid, Address> _addressRepository;
+
+        private readonly IUnitOfWork _unitOfWork;
+
+        public CartService(
+            IRepository<Guid, Cart> repository,
+            IRepository<Guid, CartItem> cartItemRepository,
+            IRepository<Guid, Product> productRepository,
+            IRepository<Guid, Stock> stockRepository,
+            IRepository<Guid, Order> orderRepository,
+            IRepository<Guid, Payment> paymentRepository,
+            IRepository<Guid, Address> addressRepository,
+            IUnitOfWork unitOfWork)
         {
-            _context = context;
-            //_cartItemsService = cartItemsService;
+            _repository = repository;
+            _cartItemRepository = cartItemRepository;
+            _productRepository = productRepository;
+            _stockRepository = stockRepository;
+            _orderRepository = orderRepository;
+            _paymentRepository = paymentRepository;
+            _addressRepository = addressRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<GetCartResponseDTO?> AddCart(AddToCartRequestDTO request)
@@ -23,21 +46,21 @@ namespace ShoppingApp.Services
             if (request == null || request.Items == null || !request.Items.Any())
                 throw new ArgumentException("Cart items cannot be empty");
 
-            await using var transaction = await _context.Database.BeginTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync();
 
             try
             {
-                var cart = await _context.Carts
+                var cart = await _repository.GetQueryable()
                     .FirstOrDefaultAsync(c => c.UserId == request.UserId);
 
                 if (cart == null)
                 {
                     cart = new Cart { UserId = request.UserId };
-                    await _context.Carts.AddAsync(cart);
-                    await _context.SaveChangesAsync();
+                    await _repository.AddAsync(cart);
+                    await _unitOfWork.SaveChangesAsync();
                 }
 
-                var existingItems = await _context.CartItems
+                var existingItems = await _cartItemRepository.GetQueryable()
                     .Where(ci => ci.CartId == cart.CartId)
                     .ToListAsync();
 
@@ -46,11 +69,11 @@ namespace ShoppingApp.Services
                     if (item.ProductId == Guid.Empty)
                         continue;
 
-                    var productExists = await _context.Products
+                    var productExists = await _productRepository.GetQueryable()
                         .AnyAsync(p => p.ProductId == item.ProductId);
 
                     if (!productExists)
-                        throw new Exception($"Product not found for ProductId: {item.ProductId}");
+                        throw new Exception($"Product not found: {item.ProductId}");
 
                     var existingItem = existingItems
                         .FirstOrDefault(ci => ci.ProductId == item.ProductId);
@@ -58,13 +81,16 @@ namespace ShoppingApp.Services
                     if (existingItem != null)
                     {
                         if (item.Quantity <= 0)
-                            _context.CartItems.Remove(existingItem);
+                            await _cartItemRepository.DeleteAsync(existingItem.CartItemId);
                         else
+                        {
                             existingItem.Quantity = item.Quantity;
+                            await _cartItemRepository.UpdateAsync(existingItem.CartItemId, existingItem);
+                        }
                     }
                     else if (item.Quantity > 0)
                     {
-                        await _context.CartItems.AddAsync(new CartItem
+                        await _cartItemRepository.AddAsync(new CartItem
                         {
                             CartId = cart.CartId,
                             ProductId = item.ProductId,
@@ -73,34 +99,35 @@ namespace ShoppingApp.Services
                     }
                 }
 
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitAsync();
 
                 return await BuildCartResponse(cart.CartId);
             }
             catch
             {
-                await transaction.RollbackAsync();
+                await _unitOfWork.RollbackAsync();
                 throw;
             }
         }
 
         public async Task<Cart?> GetCarts(Guid userId)
         {
-            return await _context.Carts.AsNoTracking()
+            return await _repository.GetQueryable()
+                .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.UserId == userId);
         }
 
-        public async Task<bool> PlaceOrderAllFromCart(Guid cartId, Guid userId,Guid addressId,string PaymentType)
+        public async Task<bool> PlaceOrderAllFromCart(Guid cartId, Guid userId, Guid addressId, string PaymentType)
         {
             if (cartId == Guid.Empty || userId == Guid.Empty || addressId == Guid.Empty)
                 return false;
 
-            using var transaction = await _context.Database.BeginTransactionAsync();
+            await _unitOfWork.BeginTransactionAsync();
 
             try
             {
-                var cart = await _context.Carts
+                var cart = await _repository.GetQueryable()
                     .Include(c => c.CartItems!)
                         .ThenInclude(ci => ci.Product)
                     .FirstOrDefaultAsync(c => c.CartId == cartId && c.UserId == userId);
@@ -108,15 +135,16 @@ namespace ShoppingApp.Services
                 if (cart == null || cart.CartItems == null || !cart.CartItems.Any())
                     return false;
 
-                var addressExists = await _context.Addresses.AnyAsync(a => a.AddressId == addressId && a.UserId == userId);
+                var addressExists = await _addressRepository.GetQueryable()
+                    .AnyAsync(a => a.AddressId == addressId && a.UserId == userId);
 
                 if (!addressExists)
                     return false;
 
-                var cartItems = cart.CartItems!.ToList();
+                var cartItems = cart.CartItems.ToList();
                 var productIds = cartItems.Select(ci => ci.ProductId).ToList();
 
-                var stocks = await _context.Stock
+                var stocks = await _stockRepository.GetQueryable()
                     .Where(s => productIds.Contains(s.ProductId))
                     .ToListAsync();
 
@@ -125,13 +153,10 @@ namespace ShoppingApp.Services
                     var stock = stocks.FirstOrDefault(s => s.ProductId == item.ProductId);
 
                     if (stock == null)
-                        throw new AppException($"Stock not found for product {item.Product!.Name}");
+                        throw new AppException($"Stock not found for {item.Product!.Name}");
 
                     if (stock.Quantity < item.Quantity)
-                        throw new AppException($"Insufficient stock for product {item.Product!.Name}");
-
-                    if (item.Product == null)
-                        throw new AppException($"Product Not Found");
+                        throw new AppException($"Insufficient stock for {item.Product!.Name}");
                 }
 
                 var order = new Order
@@ -148,11 +173,10 @@ namespace ShoppingApp.Services
                 foreach (var item in cartItems)
                 {
                     var stock = stocks.First(s => s.ProductId == item.ProductId);
-                    
-                    if (stock == null || item.Product == null)
-                        return false;
 
                     stock.Quantity -= item.Quantity;
+
+                    await _stockRepository.UpdateAsync(stock.StockId, stock);
 
                     order.OrderDetails!.Add(new OrderDetails
                     {
@@ -163,81 +187,86 @@ namespace ShoppingApp.Services
                     });
                 }
 
-                await _context.Orders.AddAsync(order);
-                await _context.SaveChangesAsync();
+                await _orderRepository.AddAsync(order);
+                await _unitOfWork.SaveChangesAsync();
 
-                var payment = new Payment()
+                var payment = new Payment
                 {
                     UserId = userId,
                     OrderId = order.OrderId,
-                    TotalAmount = cartItems.Sum(x => x.Quantity * x.Product!.Price),
+                    TotalAmount = order.TotalAmount,
                     PaymentType = PaymentType
                 };
 
-                await _context.Payments.AddAsync(payment);
+                await _paymentRepository.AddAsync(payment);
 
-                _context.CartItems.RemoveRange(cartItems);
+                foreach (var item in cartItems)
+                {
+                    await _cartItemRepository.DeleteAsync(item.CartItemId);
+                }
 
-                _context.Carts.Remove(cart);
+                await _repository.DeleteAsync(cart.CartId);
 
-                await _context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitAsync();
 
                 return true;
             }
             catch
             {
-                await transaction.RollbackAsync();
+                await _unitOfWork.RollbackAsync();
                 return false;
             }
         }
 
         public async Task<bool> RemoveAllFromCartByUserID(Guid userId)
         {
-            var cartId = await _context.Carts
-                .Where(c => c.UserId == userId)
-                .Select(c => c.CartId)
-                .FirstOrDefaultAsync();
+            var cart = await _repository.GetQueryable()
+                .FirstOrDefaultAsync(c => c.UserId == userId);
 
-            if (cartId == Guid.Empty)
+            if (cart == null)
                 return false;
 
-            await _context.CartItems
-                .Where(ci => ci.CartId == cartId)
-                .ExecuteDeleteAsync();
+            var cartItems = await _cartItemRepository.GetQueryable()
+                .Where(ci => ci.CartId == cart.CartId)
+                .ToListAsync();
 
-            var affectedRowsInCart = await _context.Carts
-                .Where(c => c.UserId == userId)
-                .ExecuteDeleteAsync();
+            foreach (var item in cartItems)
+            {
+                await _cartItemRepository.DeleteAsync(item.CartItemId);
+            }
 
-            return affectedRowsInCart > 0;
+            await _repository.DeleteAsync(cart.CartId);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<bool> RemoveFromCart(Guid userId, Guid cartId, Guid productId)
         {
-            var cart = await _context.Carts
+            var cart = await _repository.GetQueryable()
                 .FirstOrDefaultAsync(c => c.CartId == cartId && c.UserId == userId);
 
             if (cart == null)
                 return false;
 
-            var cartItem = await _context.CartItems
+            var cartItem = await _cartItemRepository.GetQueryable()
                 .FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == productId);
 
             if (cartItem == null)
                 return false;
 
-            _context.CartItems.Remove(cartItem);
+            await _cartItemRepository.DeleteAsync(cartItem.CartItemId);
 
-            await _context.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return true;
         }
 
         private async Task<GetCartResponseDTO> BuildCartResponse(Guid cartId)
         {
-            return await _context.Carts
+            return await _repository.GetQueryable()
                 .Where(c => c.CartId == cartId)
                 .Select(c => new GetCartResponseDTO
                 {

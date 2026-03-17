@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Review
 {
-    public class DeleteReviewRequestDTO
+    public record DeleteReviewRequestDTO
     {
         public Guid UserId { get; set; }
 

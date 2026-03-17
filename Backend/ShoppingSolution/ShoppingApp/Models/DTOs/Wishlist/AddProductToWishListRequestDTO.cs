@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Wishlist
 {
-    public class AddProductToWishListRequestDTO
+    public record AddProductToWishListRequestDTO
     {
         public Guid UserId { get; set; }
         [Required(ErrorMessage ="Product Id is required")]

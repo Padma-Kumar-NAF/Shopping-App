@@ -5,8 +5,9 @@ import {
   SignupModel,
   LoginResponseDTO,
 } from '../models/auth.model';
-import { Injectable } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 export class AuthApiService {
 
   private baseUrl = 'https://localhost:7023/';
+  private platformId = inject(PLATFORM_ID);
 
   constructor(private http: HttpClient) {}
 
@@ -30,8 +32,17 @@ export class AuthApiService {
       user
     ).pipe(
       catchError((error) => {
-        return throwError(()=>error)
+        return throwError(() => error);
       })
-    )
+    );
+  }
+
+  isAuthenticated(): boolean {
+
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem("JWT-Token") != null;
+    }
+
+    return false;
   }
 }

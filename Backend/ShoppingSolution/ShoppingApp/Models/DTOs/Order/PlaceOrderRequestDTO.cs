@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Order
 {
-    public class PlaceOrderRequestDTO
+    public record PlaceOrderRequestDTO
     {
         public Guid UserId { get; set; }
 

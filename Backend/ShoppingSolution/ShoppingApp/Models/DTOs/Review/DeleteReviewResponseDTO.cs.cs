@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Review
 {
-    public class DeleteReviewResponseDTO
+    public record DeleteReviewResponseDTO
     {
         [Required]
         public string Summary { get; set; } = string.Empty;
