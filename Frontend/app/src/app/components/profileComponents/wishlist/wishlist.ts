@@ -78,7 +78,7 @@ export class WishlistComponent {
   }
 
   removeWishlist(id: number) {
-    var wishlistName = this.wishLists().find(w => w.id == id)?.name
+    const wishlistName = this.wishLists().find(w => w.id == id)?.name
     toast.success(`${wishlistName} removed`)
     this.wishLists.update((lists) => lists.filter((w) => w.id !== id));
 
@@ -89,7 +89,7 @@ export class WishlistComponent {
   }
 
   removeProduct(wishlistId: number, productId: number) {
-    var productName = this.wishLists().find(w => w.id == wishlistId)?.products.find(p => p.id == productId)?.name
+    const productName = this.wishLists().find(w => w.id == wishlistId)?.products.find(p => p.id == productId)?.name
     toast.success(`${productName} removed`)
     this.wishLists.update((lists) =>
       lists.map((w) =>

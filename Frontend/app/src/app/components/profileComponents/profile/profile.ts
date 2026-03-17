@@ -5,6 +5,7 @@ import { WishlistComponent } from '../wishlist/wishlist';
 import { OrdersComponent } from '../orders/orders';
 import { Address } from '../address/address';
 import { ProfileApiService } from '../../../services/profile.service';
+import { AuthStateService } from '../../../services/auth-state.service';
 import {
   newEmailRequestDTO,
   EditMailRequestDTOModel,
@@ -21,10 +22,9 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 
-import { Subject } from 'rxjs';
-import { Observable } from 'rxjs';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { setUser, clearUser } from '../../../store/user/user.actions';
+import { selectUser } from '../../../store/user/user.selectors';
 
 type TabType = 'profile' | 'cart' | 'wishlist' | 'orders' | 'address';
 
@@ -52,7 +52,6 @@ interface TabConfig {
   styleUrl: './profile.css',
 })
 export class Profile implements OnInit {
-  // ==================== Signals ====================
   showDetailsModal = signal(false);
   showEmailModal = signal(false);
   showMobileMenu = signal(false);
@@ -60,16 +59,14 @@ export class Profile implements OnInit {
   user: WritableSignal<UserProfile> = signal(new UserProfile());
   isLoading = signal<boolean>(false);
 
-  // ==================== Form Properties ====================
   passwordVerified = false;
   userDetailsForm: FormGroup;
   editMail: newEmailRequestDTO;
   editUser: EditUserDetailsModel;
 
-  // ==================== Dependency Injection ====================
   private apiService: ProfileApiService = inject(ProfileApiService);
+  private authState: AuthStateService = inject(AuthStateService);
 
-  // ==================== Tab Configuration ====================
   tabs: TabConfig[] = [
     { id: 'profile', label: 'Profile', icon: '👤', color: 'blue' },
     { id: 'cart', label: 'Cart', icon: '🛒', color: 'green' },
@@ -92,37 +89,23 @@ export class Profile implements OnInit {
     });
   }
 
-  // ==================== Lifecycle ====================
   ngOnInit(): void {
     this.GetUserProfileDetails();
   }
-
-  // ==================== Mobile Menu ====================
-  /**
-   * Toggle mobile menu visibility
-   */
   toggleMobileMenu(): void {
     this.showMobileMenu.update(value => !value);
   }
 
-  /**
-   * Close mobile menu
-   */
   closeMobileMenu(): void {
     this.showMobileMenu.set(false);
   }
 
-  // ==================== User Profile ====================
-  /**
-   * Fetch user profile details from API
-   */
   GetUserProfileDetails(): void {
     this.isLoading.set(true);
     this.apiService.GetUserProfile().subscribe({
       next: (response: UserProfile) => {
         this.user.set(response);
         this.isLoading.set(false);
-        console.log('User details:', this.user());
       },
       error: (error: any) => {
         this.isLoading.set(false);
@@ -134,10 +117,6 @@ export class Profile implements OnInit {
     });
   }
 
-  // ==================== Details Modal ====================
-  /**
-   * Open details modal with current user data
-   */
   openDetailsModal(): void {
     const user = this.user();
 
@@ -154,9 +133,7 @@ export class Profile implements OnInit {
     this.showDetailsModal.set(true);
   }
 
-  /**
-   * Close details modal
-   */
+
   closeDetailsModal(): void {
     this.showDetailsModal.set(false);
     this.showMobileMenu.set(false);
@@ -178,7 +155,6 @@ export class Profile implements OnInit {
     this.apiService.updateUserDetails(this.editUser).subscribe({
       next: (response: any) => {
         toast.dismiss(toastId);
-        console.log('Details updated:', response);
 
         this.user.update((user) => ({
           ...user,
@@ -251,7 +227,6 @@ export class Profile implements OnInit {
     this.apiService.updateUserEmail(this.editMail).subscribe({
       next: (response: EditMailRequestDTOModel) => {
         toast.dismiss(toastId);
-        console.log('Email updated:', response);
 
         this.user.update((user) => ({
           ...user,
@@ -271,30 +246,16 @@ export class Profile implements OnInit {
     });
   }
 
-  // ==================== Tab Management ====================
-  /**
-   * Set active tab
-   */
   setTab(tab: TabType): void {
     this.activeTab.set(tab);
   }
-
-  // ==================== Navigation ====================
-  /**
-   * Navigate back to home
-   */
   goHome(): void {
-    console.log('Navigating back to home');
     this.closeMobileMenu();
-    this.router.navigate(['/home']);
+    this.router.navigate(['/']);
   }
 
-  /**
-   * Logout user
-   */
   logout(): void {
-    console.log('Logging out');
-    // localStorage.removeItem("JWT-Token")
+    this.authState.clearUser();
     toast.success('Logged out successfully');
     this.router.navigate(['/auth']);
   }

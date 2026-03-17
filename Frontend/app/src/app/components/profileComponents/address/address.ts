@@ -30,11 +30,11 @@ export class Address implements OnInit {
     this.pagination.PageSize = 10;
     this.pagination.PageNumber = 1;
     this.addressForm = new FormGroup({
-      addressLine1: new FormControl('Test line 1', [Validators.required]),
-      addressLine2: new FormControl('Test line 1', [Validators.required]),
-      state: new FormControl('state', [Validators.required]),
-      city: new FormControl('city', [Validators.required]),
-      pincode: new FormControl('654332', [Validators.required]),
+      addressLine1: new FormControl('', [Validators.required]),
+      addressLine2: new FormControl('', [Validators.required]),
+      state: new FormControl('', [Validators.required]),
+      city: new FormControl('', [Validators.required]),
+      pincode: new FormControl('', [Validators.required]),
     });
   }
 
@@ -58,13 +58,9 @@ export class Address implements OnInit {
     this.apiService.GetUserAddresses(this.pagination).subscribe({
       next: (respose: AddressModel) => {
         this.addresses.set(respose);
-        console.log('Address List', this.addresses());
       },
       error: () => {
         console.error('Failed to fetch addresses');
-      },
-      complete() {
-        console.log('Address API Completed');
       },
     });
   }

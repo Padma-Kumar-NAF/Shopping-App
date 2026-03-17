@@ -170,6 +170,22 @@
                 Buy Now
               </button>
             </div>
+
+            <!-- Add to Wishlist button — visible only on this detail page -->
+            <button
+              (click)="openWishlistPopup()"
+              class="mt-3 w-full flex items-center justify-center gap-2 border-2 border-pink-400 text-pink-500 hover:bg-pink-50 font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
+              </svg>
+              Add to Wishlist
+            </button>
           </div>
         </div>
       </div>
@@ -205,3 +221,81 @@
   </div>
   }
 </div>
+
+<!-- ── Wishlist Popup ───────────────────────────────────────────── -->
+@if (showWishlistPopup()) {
+<div
+  class="fixed inset-0 z-[999] flex items-center justify-center p-4"
+  (click)="closeWishlistPopup()"
+>
+  <!-- Backdrop -->
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+  <!-- Modal card -->
+  <div
+    class="wishlist-popup relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 z-10"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-5">
+      <div class="flex items-center gap-2">
+        <svg class="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+        <h2 class="text-xl font-bold text-gray-900">Add to Wishlist</h2>
+      </div>
+      <button
+        (click)="closeWishlistPopup()"
+        class="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- State A: wishlists exist -->
+    @if (wishlists().length > 0) {
+    <p class="text-sm text-gray-500 mb-4">Choose a wishlist to add <strong>{{ product()!.name }}</strong> to:</p>
+    <ul class="space-y-3 max-h-72 overflow-y-auto pr-1">
+      @for (list of wishlists(); track list.id) {
+      <li>
+        <button
+          (click)="addToWishlist(list.id)"
+          class="w-full flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:border-pink-300 hover:bg-pink-50 transition-all duration-200 text-left group"
+        >
+          <div>
+            <p class="font-semibold text-gray-800 group-hover:text-pink-600">{{ list.name }}</p>
+            <p class="text-xs text-gray-400 mt-0.5">{{ list.products.length }} item{{ list.products.length !== 1 ? 's' : '' }}</p>
+          </div>
+          <svg class="w-5 h-5 text-pink-400 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+      </li>
+      }
+    </ul>
+    }
+
+    <!-- State B: no wishlists -->
+    @else {
+    <div class="flex flex-col items-center py-8 text-center">
+      <svg class="w-16 h-16 text-pink-200 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+      </svg>
+      <p class="text-gray-600 font-medium mb-1">No wishlists yet!</p>
+      <p class="text-sm text-gray-400 mb-6">Head over to your profile to create a wishlist first.</p>
+      <button
+        (click)="closeWishlistPopup()"
+        routerLink="/profile/wishlist"
+        class="px-6 py-2.5 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-lg transition-colors duration-200"
+      >
+        Go to Wishlists
+      </button>
+    </div>
+    }
+  </div>
+</div>
+}

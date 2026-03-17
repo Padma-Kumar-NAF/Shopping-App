@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { CSP_NONCE, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
   EditMailRequestDTOModel,
@@ -25,8 +25,7 @@ export class ProfileApiService {
   }
 
   updateUserEmail(newEmailRequestDTO: newEmailRequestDTO): Observable<EditMailRequestDTOModel> {
-    console.log("newEmailRequestDTO")
-    console.log(newEmailRequestDTO)
+
     return this.Http.post<EditMailRequestDTOModel>(
       `${this.baseUrl}/EditUserMail`,
       newEmailRequestDTO,
