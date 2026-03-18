@@ -75,7 +75,7 @@ namespace ShoppingApp
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 
             builder.Services.AddScoped<IAddressService, AddressService>();
-            builder.Services.AddScoped<ICartItemsService, CartItemsService>();
+            //builder.Services.AddScoped<ICartItemsService, CartItemsService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IOrderService, OrderService>();

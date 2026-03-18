@@ -27,14 +27,8 @@ namespace ShoppingApp.Services
 
             try
             {
-                var result = await _context.SaveChangesAsync();
-
-                if (result <= 0)
-                    throw new AppException("No changes were saved to the database.");
-
                 await _transaction.CommitAsync();
-
-                return result;
+                return 1;
             }
             catch
             {

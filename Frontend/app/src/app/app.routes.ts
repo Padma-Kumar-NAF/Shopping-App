@@ -12,7 +12,7 @@ import { Address } from './components/profileComponents/address/address';
 import { WishlistComponent } from './components/profileComponents/wishlist/wishlist';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: Profile },
   { path: 'products', component: ProductListing },
   {
     path: 'product/:id',

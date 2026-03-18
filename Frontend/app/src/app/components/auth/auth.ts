@@ -50,8 +50,8 @@ export class Auth {
     this.loginDetails = new LoginResponseDTO();
 
     this.loginForm = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+      email: new FormControl('padmakumar23.dev@gmail.com', [Validators.required, Validators.email]),
+      password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
     });
 
     this.signUpForm = new FormGroup({
@@ -108,6 +108,8 @@ export class Auth {
         this.authState.setUser(response.name, response.token);
         this.loginForm.reset();
         this.router.navigate(['']);
+        toast.dismiss(toastId);
+        toast.success('Login Successfull');
       },
       error: (error: any) => {
         toast.dismiss(toastId);
@@ -119,8 +121,7 @@ export class Auth {
         }
       },
       complete: () => {
-        toast.dismiss(toastId);
-        toast.success('Login Successfull');
+        console.log("Login completed")
       },
     });
   }

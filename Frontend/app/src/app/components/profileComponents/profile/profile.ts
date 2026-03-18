@@ -22,10 +22,6 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 
-import { Store } from '@ngrx/store';
-import { setUser, clearUser } from '../../../store/user/user.actions';
-import { selectUser } from '../../../store/user/user.selectors';
-
 type TabType = 'profile' | 'cart' | 'wishlist' | 'orders' | 'address';
 
 interface TabConfig {
@@ -55,7 +51,7 @@ export class Profile implements OnInit {
   showDetailsModal = signal(false);
   showEmailModal = signal(false);
   showMobileMenu = signal(false);
-  activeTab = signal<TabType>('profile');
+  activeTab = signal<TabType>('cart');
   user: WritableSignal<UserProfile> = signal(new UserProfile());
   isLoading = signal<boolean>(false);
 
