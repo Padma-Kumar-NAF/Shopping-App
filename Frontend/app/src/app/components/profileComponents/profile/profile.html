@@ -338,32 +338,7 @@
       }
 
       <!-- Cart Tab -->
-      @if (activeTab() === 'cart') {
-        <div class="animate-fade-in">
-          <app-cart></app-cart>
-        </div>
-      }
-
-      <!-- Wishlist Tab -->
-      @if (activeTab() === 'wishlist') {
-        <div class="animate-fade-in">
-          <app-wishlist></app-wishlist>
-        </div>
-      }
-
-      <!-- Orders Tab -->
-      @if (activeTab() === 'orders') {
-        <div class="animate-fade-in">
-          <app-orders></app-orders>
-        </div>
-      }
-
-      <!-- Address Tab -->
-      @if (activeTab() === 'address') {
-        <div class="animate-fade-in">
-          <app-address></app-address>
-        </div>
-      }
+      
     </div>
   </div>
 </div>
@@ -575,3 +550,5 @@
     </div>
   </div>
 </div>
+
+<router-outlet></router-outlet>

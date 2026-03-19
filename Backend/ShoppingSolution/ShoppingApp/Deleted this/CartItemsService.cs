@@ -43,8 +43,7 @@ namespace ShoppingApp.Services
             return new GetCartResponseDTO
             {
                 CartId = CartId,
-                UserId = UserId,
-                Items = items
+                CartItems = items
             };
         }
 

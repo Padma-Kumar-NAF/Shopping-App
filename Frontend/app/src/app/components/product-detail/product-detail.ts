@@ -1,13 +1,19 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { ProductItem } from '../../models/product.model';
 import { toast } from 'ngx-sonner';
 
+interface WishlistItem {
+  id: number;
+  name: string;
+  products: { id: string; name: string; price: number; image: string }[];
+}
+
 @Component({
   selector: 'app-product-detail',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.css',
 })
@@ -21,6 +27,35 @@ export class ProductDetail implements OnInit {
   quantity = signal<number>(1);
   selectedImage = signal<string>('');
   relatedProducts = signal<ProductItem[]>([]);
+
+  // Wishlist popup state
+  showWishlistPopup = signal<boolean>(false);
+  wishlists = signal<WishlistItem[]>([
+    {
+      id: 1,
+      name: 'Dream Wardrobe',
+      products: [
+        {
+          id: '101', name: 'Premium Leather Jacket', price: 4999,
+          image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop'
+        },
+        {
+          id: '102', name: 'Designer High-Top Sneakers', price: 2999,
+          image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop'
+        },
+      ],
+    },
+    {
+      id: 2,
+      name: 'Tech Gadgets',
+      products: [
+        {
+          id: '201', name: 'Wireless Headphones', price: 12999,
+          image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop'
+        },
+      ],
+    },
+  ]);
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -101,12 +136,42 @@ export class ProductDetail implements OnInit {
     }
   }
 
-  addToWishlist(): void {
+  addToWishlist(wishlistId: number): void {
     const product = this.product();
-    if (product) {
-      console.log('Adding to wishlist:', product);
-      toast.success(`${product.name} added to wishlist!`);
+    if (!product) return;
+
+    const alreadyAdded = this.wishlists().some(
+      (w) => w.id === wishlistId && w.products.some((p) => p.id === product.id)
+    );
+
+    if (alreadyAdded) {
+      toast.warning(`${product.name} is already in this wishlist!`);
+      return;
     }
+
+    this.wishlists.update((lists) =>
+      lists.map((w) =>
+        w.id === wishlistId
+          ? {
+            ...w,
+            products: [
+              ...w.products,
+              { id: product.id, name: product.name, price: product.price, image: product.image },
+            ],
+          }
+          : w,
+      ),
+    );
+    toast.success(`${product.name} added to wishlist!`);
+    this.showWishlistPopup.set(false);
+  }
+
+  openWishlistPopup(): void {
+    this.showWishlistPopup.set(true);
+  }
+
+  closeWishlistPopup(): void {
+    this.showWishlistPopup.set(false);
   }
 
   goBack(): void {

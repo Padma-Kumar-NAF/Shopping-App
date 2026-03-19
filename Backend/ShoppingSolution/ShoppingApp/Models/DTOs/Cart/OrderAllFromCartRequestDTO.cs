@@ -4,7 +4,6 @@ namespace ShoppingApp.Models.DTOs.Cart
 {
     public record OrderAllFromCartRequestDTO
     {
-        public Guid UserId { get; set; }
 
         [Required (ErrorMessage ="Cart Id is required")]
         public Guid CartId { get; set; }

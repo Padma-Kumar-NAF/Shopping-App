@@ -4,10 +4,8 @@ namespace ShoppingApp.Models.DTOs.Cart
 {
     public record GetCartResponseDTO
     {
-        [Required]
         public Guid CartId { get; set; }
-        public Guid UserId { get; set; }
-        public ICollection<CartItemDTO> Items { get; set; } = new List<CartItemDTO>();
+        public ICollection<CartItemDTO> CartItems { get; set; } = new List<CartItemDTO>();
     }
 
     public record CartItemDTO

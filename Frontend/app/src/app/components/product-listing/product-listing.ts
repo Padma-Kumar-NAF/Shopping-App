@@ -91,13 +91,10 @@ export class ProductListing implements OnInit {
   }
 
   onProductClick(product: ProductItem): void {
-    console.log('Product clicked:', product);
     this.viewProductDetail(product);
   }
 
   viewProductDetail(product: ProductItem): void {
-    console.log('Navigating to product detail:', product);
-    // Navigate to product detail page with product ID
     this.router.navigate(['/product', product.id]);
   }
 

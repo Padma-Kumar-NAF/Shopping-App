@@ -1,5 +1,7 @@
-import { Component, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { CartService } from '../../../services/cart.service';
+import { PaginationModel } from '../../../models/pagination.model';
 
 @Component({
   selector: 'app-cart',
@@ -7,11 +9,38 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './cart.html',
   styleUrl: './cart.css',
 })
-export class Cart implements OnChanges {
-
-  ngOnChanges(changes: SimpleChanges): void {
-   
+export class Cart implements OnChanges,OnInit {
+  constructor() {
+    this.pagination = new PaginationModel();
+    this.pagination.PageSize = 10;
+    this.pagination.PageNumber = 1;
   }
+
+  private readonly apiService : CartService = inject(CartService);
+  ngOnChanges(changes: SimpleChanges): void {}
+
+  ngOnInit(): void {
+    this.getUserCarts()
+  }
+
+  getUserCarts(){
+    this.apiService.GetUserCart(this.pagination).subscribe({
+      next:(response) => {
+        console.log("response")
+        console.log(response)
+      },
+      error:(err) => {
+        console.error(err)
+      },
+      complete() {
+        console.log("getUserCarts completed")
+      },
+    })
+  }
+
+  
+
+  pagination: PaginationModel;
 
   itemsPerPage = 6;
   currentPage = 1;
@@ -60,10 +89,7 @@ export class Cart implements OnChanges {
   }
 
   get totalPrice() {
-    return this.cartItems.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
+    return this.cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }
 
   get totalPages() {

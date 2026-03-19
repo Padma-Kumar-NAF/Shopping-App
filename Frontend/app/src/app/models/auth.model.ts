@@ -45,9 +45,5 @@ export class CreateUserDetailsDTO {
 }
 
 export class LoginResponseDTO {
-  userId: string = '';
-  name: string = '';
-  email: string = '';
-  role: string = '';
-  token: string = '';
+  token : string = ''
 }

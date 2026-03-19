@@ -15,7 +15,8 @@ import {
   SignupModel,
   LoginResponseDTO,
 } from '../../models/auth.model';
-import { AuthApiService } from '../../services/api.service';
+import { AuthApiService } from '../../services/auth.service';
+import { AuthStateService } from '../../services/auth-state.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -24,10 +25,10 @@ import { Router } from '@angular/router';
   templateUrl: './auth.html',
   styleUrls: ['./auth.css'],
 })
-
 export class Auth {
-  disabledButton = signal<boolean>(true)
+  disabledButton = signal<boolean>(true);
   private apiService: AuthApiService = inject(AuthApiService);
+  private authState: AuthStateService = inject(AuthStateService);
 
   isLoginMode = signal(true);
 
@@ -40,7 +41,7 @@ export class Auth {
   loginForm: FormGroup;
   signUpForm: FormGroup;
 
-  constructor(private router : Router) {
+  constructor(private router: Router) {
     this.loginData = new LoginModel();
     this.signupData = new SignupModel();
 
@@ -48,20 +49,22 @@ export class Auth {
     this.loginDetails = new LoginResponseDTO();
 
     this.loginForm = new FormGroup({
-      email: new FormControl('padmakumar41759@gmail.com', [Validators.required, Validators.email]),
+      // email: new FormControl('admin@gmail.com', [Validators.required, Validators.email]),
+      // password: new FormControl('admin123', [Validators.required, Validators.minLength(6)]),
+      email: new FormControl('padmakumar23.dev@gmail.com', [Validators.required, Validators.email]),
       password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
     });
 
     this.signUpForm = new FormGroup({
-      name: new FormControl('Test-username ', [Validators.required]),
-      email: new FormControl('test@gmail.com', [Validators.required, Validators.email]),
-      password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
-      phoneNumber: new FormControl('9876543210', [Validators.required, Validators.minLength(10)]),
-      addressLine1: new FormControl('2/102 A Ragal bavi', [Validators.required]),
-      addressLine2: new FormControl('S.K.Palayam(p.o)', [Validators.required]),
-      state: new FormControl('Tamil nadu', [Validators.required]),
-      city: new FormControl('Udumalpet', [Validators.required]),
-      pincode: new FormControl('654321', [Validators.required]),
+      name: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+      phoneNumber: new FormControl('', [Validators.required, Validators.minLength(10)]),
+      addressLine1: new FormControl('', [Validators.required]),
+      addressLine2: new FormControl('', [Validators.required]),
+      state: new FormControl('', [Validators.required]),
+      city: new FormControl('', [Validators.required]),
+      pincode: new FormControl('', [Validators.required]),
     });
   }
 
@@ -99,14 +102,23 @@ export class Auth {
       return;
     }
     this.loginData = this.loginForm.value;
-    const toastId = toast.loading("Signing in...");
+    const toastId = toast.loading('Signing in...');
     this.apiService.LoginApi(this.loginData).subscribe({
       next: (response: LoginResponseDTO) => {
-        this.loginDetails = response;
-        localStorage.setItem('JWT-Token', response.token);
+        const user = this.apiService.decodeToken(response.token);
+        console.log('response');
+        console.log(response);
+        if (response.token) {
+          this.authState.setUser(user, response.token);
+        }
+        if (user?.userRole === 'admin') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/']);
+        }
         this.loginForm.reset();
-        this.router.navigate([''])
-        console.log(this.loginDetails);
+        toast.dismiss(toastId);
+        toast.success('Login Successfull');
       },
       error: (error: any) => {
         toast.dismiss(toastId);
@@ -118,11 +130,9 @@ export class Auth {
         }
       },
       complete: () => {
-        toast.dismiss(toastId);
-        toast.success('Login Successfull');
+        console.log('Login completed');
       },
     });
-    console.log('Login Data:', this.loginForm.value);
   }
 
   onSignup() {
@@ -145,8 +155,8 @@ export class Auth {
     }
 
     this.signupData = this.signUpForm.value;
-    
-    const toastId = toast.loading("Signing up...");
+
+    const toastId = toast.loading('Signing up...');
 
     this.apiService.SignUpApi(this.signupData).subscribe({
       next: (response: CreateUserResponseDTO) => {

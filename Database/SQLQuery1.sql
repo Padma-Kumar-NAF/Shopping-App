@@ -4,8 +4,19 @@ select * from Addresses
 
 delete from Logs
 
+update Users
+set Role ='user'
+where UserId = '6A3AC425-EDF3-41D5-AB40-D26C1955C7FC'
+
+delete from Addresses
+delete from Payments
+delete from Refunds
 delete from Addresses
 where AddressLine2 = 'Test line 1'
+
+delete from Users
+where UserId = '15C095AD-D196-49BF-B2A2-8995DC6B3E81'
+select * from Users
 
 select * from Products
 
@@ -18,7 +29,6 @@ select * from Logs
 order by CreatedAt desc
 
 select * from Category
-
 select * from Users
 select * from UserDetails	
 

@@ -18,7 +18,7 @@ namespace ShoppingApp.Controllers
             _addressService = addressService;
         }
 
-        [HttpPut("CreateAddress")]
+        [HttpPut("create-address")]
         [ValidateRequest]
         public async Task<ActionResult<CreateNewAddressResponseDTO>> AddAddress(CreateNewAddressRequestDTO request)
         {
@@ -44,7 +44,7 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        [HttpDelete("DeleteUserAddress")]
+        [HttpDelete("delete-address")]
         [ValidateRequest]
         public async Task<ActionResult<DeleteUserAddressResponseDTO>> DeleteUserAddress(DeleteUserAddressRequestDTO request)
         {
@@ -68,7 +68,7 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        [HttpPost("EditUserAddress")]
+        [HttpPost("edit-address")]
         [ValidateRequest]
         public async Task<ActionResult<EditUserAddressResponseDTO>> EditUserAddress(EditUserAddressRequestDTO request)
         {
@@ -89,7 +89,7 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        [HttpPost("GetUserAddress")]
+        [HttpPost("get-address")]
         [ValidateRequest]
         public async Task<ActionResult<GetUserAddressResposneDTO>> GetUserAddress(GetUserAddressRequestDTO request)
         {

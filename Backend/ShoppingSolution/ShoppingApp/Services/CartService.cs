@@ -1,4 +1,5 @@
-﻿using Azure.Core;
+﻿using Azure;
+using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Contexts;
 using ShoppingApp.Exceptions;
@@ -41,68 +42,132 @@ namespace ShoppingApp.Services
                 _unitOfWork = unitOfWork;
             }
 
-        public async Task<GetCartResponseDTO?> AddCart(AddToCartRequestDTO request)
+        public async Task<ApiResponse<GetCartResponseDTO>> GetUserCarts(Guid userId, int pageNumber, int pageSize)
         {
-            if (request == null || request.Items == null || !request.Items.Any())
-                throw new ArgumentException("Cart items cannot be empty");
+            var userCart = await _repository
+                .FirstOrDefaultAsync(c => c.UserId == userId);
 
+            if (userCart == null)
+            {
+                return new ApiResponse<GetCartResponseDTO>
+                {
+                    StatusCode = 200,
+                    Message = "Cart not found",
+                    Action = "",
+                    Data = new GetCartResponseDTO()
+                };
+            }
+
+            var pagedItems = _cartItemRepository
+                .GetQueryable()
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Where(ci => ci.CartId == userCart.CartId)
+                .Select(ci => new CartItemDTO
+                {
+                    ProductId = ci.ProductId,
+                    CategoryId = ci.Product!.CategoryId,
+                    ProductName = ci.Product.Name,
+                    ImagePath = ci.Product.ImagePath,
+                    Description = ci.Product.Description,
+                    Price = ci.Product.Price,
+                    Quantity = ci.Quantity
+                }).ToList();
+
+            var response = new GetCartResponseDTO
+            {
+                CartId = userCart.CartId,
+                CartItems = pagedItems,
+            };
+
+            return new ApiResponse<GetCartResponseDTO>
+            {
+                StatusCode = 200,
+                Message = pagedItems == null
+                    ? "Cart is empty"
+                    : "Cart fetched successfully",
+                Action = "",
+                Data = response
+            };
+        }
+        public async Task<ApiResponse<AddToCartResponseDTO>> AddCart(Guid UserId,AddToCartRequestDTO request)
+        {
+            if(request.Quantity <= 0)
+            {
+                return new ApiResponse<AddToCartResponseDTO>()
+                {
+                    StatusCode = 400,
+                    Message = "Quantity must be greater than zero",
+                    Action = "",
+                    Data = null
+                };
+            }
+
+            var product = await _productRepository.GetAsync(request.ProductId);
+            if(product == null)
+            {
+                return new ApiResponse<AddToCartResponseDTO>()
+                {
+                    StatusCode = 400,
+                    Message = "Product not found",
+                    Action = "",
+                    Data = null
+                };
+            }
             await _unitOfWork.BeginTransactionAsync();
 
             try
             {
-                var cart = await _repository.GetQueryable()
-                    .FirstOrDefaultAsync(c => c.UserId == request.UserId);
+                var cart = await _repository.GetQueryable().FirstOrDefaultAsync(c => c.UserId == UserId);
 
                 if (cart == null)
                 {
-                    cart = new Cart { UserId = request.UserId };
+                    cart = new Cart { UserId = UserId };
                     await _repository.AddAsync(cart);
-                    await _unitOfWork.SaveChangesAsync();
                 }
 
-                var existingItems = await _cartItemRepository.GetQueryable()
-                    .Where(ci => ci.CartId == cart.CartId)
-                    .ToListAsync();
+                CartItem cartItem;
 
-                foreach (var item in request.Items)
+                var existingItem = await _cartItemRepository.FirstOrDefaultAsync(ci => ci.CartId == cart.CartId && ci.ProductId == request.ProductId);
+
+                if(existingItem != null)
                 {
-                    if (item.ProductId == Guid.Empty)
-                        continue;
-
-                    var productExists = await _productRepository.GetQueryable()
-                        .AnyAsync(p => p.ProductId == item.ProductId);
-
-                    if (!productExists)
-                        throw new Exception($"Product not found: {item.ProductId}");
-
-                    var existingItem = existingItems
-                        .FirstOrDefault(ci => ci.ProductId == item.ProductId);
-
-                    if (existingItem != null)
+                    if(request.Quantity > existingItem.Quantity)
                     {
-                        if (item.Quantity <= 0)
-                            await _cartItemRepository.DeleteAsync(existingItem.CartItemId);
-                        else
-                        {
-                            existingItem.Quantity = item.Quantity;
-                            await _cartItemRepository.UpdateAsync(existingItem.CartItemId, existingItem);
-                        }
+                        existingItem.Quantity = request.Quantity;
                     }
-                    else if (item.Quantity > 0)
+                    cartItem = existingItem;
+                }
+                else
+                {
+                    CartItem newCartItem = new CartItem()
                     {
-                        await _cartItemRepository.AddAsync(new CartItem
-                        {
-                            CartId = cart.CartId,
-                            ProductId = item.ProductId,
-                            Quantity = item.Quantity
-                        });
-                    }
+                        CartId = cart.CartId,
+                        ProductId = request.ProductId,
+                        Quantity = request.Quantity,
+                    };
+
+                    cartItem = newCartItem;
+
+                    await _cartItemRepository.AddAsync(newCartItem);
                 }
 
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitAsync();
 
-                return await BuildCartResponse(cart.CartId);
+                var response = new AddToCartResponseDTO()
+                {
+                    CartId = cart.CartId,
+                    CartItemId = cartItem.CartItemId
+                };
+
+                return new ApiResponse<AddToCartResponseDTO>()
+                {
+                    StatusCode = 200,
+                    Message = "Product added Successfully",
+                    Data = response,
+                    Action = ""
+                };
             }
             catch
             {
@@ -111,35 +176,48 @@ namespace ShoppingApp.Services
             }
         }
 
-        public async Task<Cart?> GetCarts(Guid userId)
+        public async Task<ApiResponse<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCart(Guid userId, Guid addressId, string PaymentType)
         {
-            return await _repository.GetQueryable()
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.UserId == userId);
-        }
 
-        public async Task<bool> PlaceOrderAllFromCart(Guid cartId, Guid userId, Guid addressId, string PaymentType)
-        {
-            if (cartId == Guid.Empty || userId == Guid.Empty || addressId == Guid.Empty)
-                return false;
+            var userCart = await _repository.GetQueryable().FirstOrDefaultAsync(c => c.UserId == userId);
+            if(userCart == null)
+            {
+                return new ApiResponse<OrderAllFromCartResponseDTO>()
+                {
+                    StatusCode = 404,
+                    Message = "No cart found for this user",
+                    Data = null,
+                    Action = ""
+                };
+            }
 
+            var addressExists = await _addressRepository.GetQueryable().FirstOrDefaultAsync(a => a.AddressId == addressId && a.UserId == userId);
+
+            if (addressExists == null)
+            {
+                return new ApiResponse<OrderAllFromCartResponseDTO>()
+                {
+                    StatusCode = 404,
+                    Message = "Address not found",
+                    Data = null,
+                    Action = ""
+                };
+            }
             await _unitOfWork.BeginTransactionAsync();
 
             try
             {
-                var cart = await _repository.GetQueryable()
-                    .Include(c => c.CartItems!)
-                        .ThenInclude(ci => ci.Product)
-                    .FirstOrDefaultAsync(c => c.CartId == cartId && c.UserId == userId);
+                var cart = await _repository.GetQueryable().Include(c => c.CartItems!).ThenInclude(ci => ci.Product)
+                    .FirstOrDefaultAsync(c => c.CartId == userCart.CartId && c.UserId == userId);
 
                 if (cart == null || cart.CartItems == null || !cart.CartItems.Any())
-                    return false;
-
-                var addressExists = await _addressRepository.GetQueryable()
-                    .AnyAsync(a => a.AddressId == addressId && a.UserId == userId);
-
-                if (!addressExists)
-                    return false;
+                    return new ApiResponse<OrderAllFromCartResponseDTO>()
+                    {
+                        StatusCode = 404,
+                        Message = "No cart items found",
+                        Data = null,
+                        Action = ""
+                    }; ;
 
                 var cartItems = cart.CartItems.ToList();
                 var productIds = cartItems.Select(ci => ci.ProductId).ToList();
@@ -210,26 +288,64 @@ namespace ShoppingApp.Services
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitAsync();
 
-                return true;
+                OrderAllFromCartResponseDTO response = new OrderAllFromCartResponseDTO()
+                {
+                    IsSuccess = true
+                };
+
+                return new ApiResponse<OrderAllFromCartResponseDTO>()
+                {
+                    StatusCode = 404,
+                    Message = "Order placed",
+                    Data = response,
+                    Action = ""
+                }; ;
             }
             catch
             {
                 await _unitOfWork.RollbackAsync();
-                return false;
+                return new ApiResponse<OrderAllFromCartResponseDTO>()
+                {
+                    StatusCode = 404,
+                    Message = "Try again",
+                    Data = null,
+                    Action = ""
+                }; ; ;
             }
         }
 
-        public async Task<bool> RemoveAllFromCartByUserID(Guid userId)
+        public async Task<ApiResponse<RemoveAllFromCartResponseDTO>> RemoveAllFromCartByUserID(Guid userId)
         {
-            var cart = await _repository.GetQueryable()
-                .FirstOrDefaultAsync(c => c.UserId == userId);
+            var cart = await _repository.GetQueryable().FirstOrDefaultAsync(c => c.UserId == userId);
+
+            RemoveAllFromCartResponseDTO response = new RemoveAllFromCartResponseDTO()
+            {
+                IsRemoved = false,
+            };
 
             if (cart == null)
-                return false;
+            {
+                return new ApiResponse<RemoveAllFromCartResponseDTO>()
+                {
+                    StatusCode = 404,
+                    Message = "Cart not found for this user",
+                    Data = response,
+                    Action = ""
+                };
+            }
+                
+            var cartItems = await _cartItemRepository.GetQueryable().Where(ci => ci.CartId == cart.CartId).ToListAsync();
 
-            var cartItems = await _cartItemRepository.GetQueryable()
-                .Where(ci => ci.CartId == cart.CartId)
-                .ToListAsync();
+            if(!cartItems.Any())
+            {
+                return new ApiResponse<RemoveAllFromCartResponseDTO>()
+                {
+                    StatusCode = 404,
+                    Message = "No cart items found",
+                    Data = response,
+                    Action = ""
+                };
+            }
 
             foreach (var item in cartItems)
             {
@@ -239,51 +355,59 @@ namespace ShoppingApp.Services
             await _repository.DeleteAsync(cart.CartId);
 
             await _unitOfWork.SaveChangesAsync();
+            response.IsRemoved = true;
 
-            return true;
+            return new ApiResponse<RemoveAllFromCartResponseDTO>()
+            {
+                StatusCode = 200,
+                Message = "Cart cleared",
+                Data = response,
+                Action = ""
+            };
         }
 
-        public async Task<bool> RemoveFromCart(Guid userId, Guid cartId, Guid productId)
+        public async Task<ApiResponse<RemoveFromCartResponseDTO>> RemoveFromCart(Guid userId, Guid cartId,Guid cartItemId, Guid productId)
         {
-            var cart = await _repository.GetQueryable()
-                .FirstOrDefaultAsync(c => c.CartId == cartId && c.UserId == userId);
+            var cart = await _repository.GetQueryable().FirstOrDefaultAsync(c => c.CartId == cartId && c.UserId == userId);
+            RemoveFromCartResponseDTO response = new RemoveFromCartResponseDTO()
+            {
+                IsRemoved = false,
+            };
 
             if (cart == null)
-                return false;
+            {
+                return new ApiResponse<RemoveFromCartResponseDTO>()
+                {
+                    StatusCode = 404,
+                    Message = "Cart not found",
+                    Data = response,
+                    Action = ""
+                };
+            }
 
-            var cartItem = await _cartItemRepository.GetQueryable()
-                .FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == productId);
+            var cartItem = await _cartItemRepository.GetQueryable().FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == productId && ci.CartItemId == cartItemId);
 
             if (cartItem == null)
-                return false;
+            {
+                return new ApiResponse<RemoveFromCartResponseDTO>()
+                {
+                    StatusCode = 404,
+                    Message = "Product not found in this cart",
+                    Data = response,
+                    Action = ""
+                };
+            }
 
             await _cartItemRepository.DeleteAsync(cartItem.CartItemId);
-
-            await _unitOfWork.SaveChangesAsync();
-
-            return true;
-        }
-
-        private async Task<GetCartResponseDTO> BuildCartResponse(Guid cartId)
-        {
-            return await _repository.GetQueryable()
-                .Where(c => c.CartId == cartId)
-                .Select(c => new GetCartResponseDTO
-                {
-                    CartId = c.CartId,
-                    UserId = c.UserId,
-                    Items = c.CartItems!.Select(ci => new CartItemDTO
-                    {
-                        ProductId = ci.ProductId,
-                        CategoryId = ci.Product!.CategoryId,
-                        ProductName = ci.Product.Name,
-                        ImagePath = ci.Product.ImagePath,
-                        Description = ci.Product.Description,
-                        Price = ci.Product.Price,
-                        Quantity = ci.Quantity
-                    }).ToList()
-                })
-                .FirstAsync();
+            await _repository.DeleteAsync(cartId);
+            response.IsRemoved = true;
+            return new ApiResponse<RemoveFromCartResponseDTO>()
+            {
+                StatusCode = 200,
+                Message = "Products removed",
+                Data = response,
+                Action = ""
+            };
         }
     }
 }

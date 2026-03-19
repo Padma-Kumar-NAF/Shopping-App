@@ -7,11 +7,12 @@ namespace ShoppingApp.Interfaces.ControllerInterface
 {
     public interface ICartController
     {
-        public Task<ActionResult<GetCartResponseDTO>> GetCart([FromBody] GetCartRequestDTO request);
-        public Task<ActionResult<GetCartResponseDTO>> AddToCart([FromBody] AddToCartRequestDTO request);
-        public Task<ActionResult<RemoveAllFromCartResponseDTO>> ClearCart([FromBody] RemoveAllFromCartRequestDTO request);
-        public Task<ActionResult<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCarts(OrderAllFromCartRequestDTO request);
-        public Task<ActionResult<RemoveFromCartResponseDTO>> RemoveFromCart(RemoveFromCartRequestDTO request);
-
+        public Task<ApiResponse<GetCartResponseDTO>> GetCart(GetCartRequestDTO request);
+        public Task<ApiResponse<AddToCartResponseDTO>> AddToCart(AddToCartRequestDTO request);
+        public Task<ApiResponse<RemoveAllFromCartResponseDTO>> ClearCart();
+        public Task<ApiResponse<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCarts(OrderAllFromCartRequestDTO request);
+        public Task<ApiResponse<RemoveFromCartResponseDTO>> RemoveFromCart(RemoveFromCartRequestDTO request);
+        public Task<ApiResponse<UpdateUserCartResponseDTO>> UpdateUserCart(UpdateUserCartRequestDTO request);
+        
     }
 }

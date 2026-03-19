@@ -56,7 +56,7 @@ namespace ShoppingApp.Services
                     Email = email,
                     Password = Convert.ToBase64String(hash),
                     SaltValue = Convert.ToBase64String(salt),
-                    Role = "User"
+                    Role = "user"
                 };
 
                 await _userRepository.AddAsync(user);
