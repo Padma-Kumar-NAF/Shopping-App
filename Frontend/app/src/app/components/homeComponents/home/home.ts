@@ -76,7 +76,7 @@ export class HomeComponent {
   searchQuery = signal<string>('');
 
   constructor(private router: Router) {
-    
+    console.log("Home constructorrr")
   }
 
   onProductClick(product: Product): void {  

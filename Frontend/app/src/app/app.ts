@@ -4,6 +4,7 @@ import { NgxSonnerToaster } from 'ngx-sonner';
 import { NavbarComponent } from './components/shared/navbar/navbar';
 import { LoaderService } from './services/loading.service';
 import { Spinner } from "./components/spinner/spinner";
+import { AdminDashboard } from './components/adminComponents/admin-dashboard/admin-dashboard';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,8 @@ import { Spinner } from "./components/spinner/spinner";
     RouterOutlet,
     NgxSonnerToaster,
     NavbarComponent,
-    Spinner
+    Spinner,
+    AdminDashboard
 ],  
   templateUrl: './app.html',
   styleUrl: './app.css',

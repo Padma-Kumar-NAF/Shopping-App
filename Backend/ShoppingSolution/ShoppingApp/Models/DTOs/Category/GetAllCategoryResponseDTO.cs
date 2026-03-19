@@ -4,9 +4,12 @@ namespace ShoppingApp.Models.DTOs.Category
 {
     public record GetAllCategoryResponseDTO
     {
+        public ICollection<CategoryDTO> CategoryList { get; set; } = new List<CategoryDTO>();
+    }
+
+    public class CategoryDTO
+    {
         public Guid CategoryId { get; set; }
         public string CategoryName { get; set; } = string.Empty;
-        public ICollection<GetAllProductsResponseDTO> Products { get; set; } = new List<GetAllProductsResponseDTO>();
-
     }
 }

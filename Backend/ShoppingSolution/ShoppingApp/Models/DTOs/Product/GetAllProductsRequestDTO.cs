@@ -11,7 +11,5 @@ namespace ShoppingApp.Models.DTOs.Product
         [Required]
         [Range(1, 100, ErrorMessage = "Limit must be between 1 and 100")]
         public int Limit { get; set; }
-
-        public Guid? CategoryId {  get; set; }
     }
 }

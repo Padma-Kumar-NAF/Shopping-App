@@ -83,14 +83,14 @@ namespace ShoppingApp.Services
             if (request.Limit <= 0)
                 request.Limit = 10;
 
-            if (request.CategoryId.HasValue && request.CategoryId.Value != Guid.Empty)
-            {
-                query = query
-                    .Where(p => p.CategoryId == request.CategoryId.Value)
-                    .OrderBy(p => p.Name);
-            }
-            else
-            {
+            //if (request.CategoryId.HasValue && request.CategoryId.Value != Guid.Empty)
+            //{
+            //    query = query
+            //        .Where(p => p.CategoryId == request.CategoryId.Value)
+            //        .OrderBy(p => p.Name);
+            //}
+            //else
+            //{
                 var totalCount = await query.CountAsync();
 
                 if (totalCount == 0)
@@ -103,7 +103,7 @@ namespace ShoppingApp.Services
                 query = query
                     .OrderBy(p => p.Name)
                     .Skip(randomSkip);
-            }
+            //}
 
             return await query
                 .Skip((request.PageNumber - 1) * request.Limit)

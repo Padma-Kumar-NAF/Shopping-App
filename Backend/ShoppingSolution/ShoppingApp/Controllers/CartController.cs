@@ -23,7 +23,7 @@ namespace ShoppingApp.Controllers
 
         //[Authorize(Roles = "User")]
         
-        [HttpPost("AddToCart")]
+        [HttpPost("add-to-cart")]
         [ValidateRequest]
         public async Task<IActionResult> AddToCart([FromBody] AddToCartRequestDTO request)
         {
@@ -44,7 +44,7 @@ namespace ShoppingApp.Controllers
         }
 
         //[Authorize(Roles = "User")]
-        [HttpPost("GetUserCart")]
+        [HttpPost("get-user-cart")]
         [ValidateRequest]
         public async Task<IActionResult> GetCart([FromBody] GetCartRequestDTO request)
         {
@@ -69,7 +69,7 @@ namespace ShoppingApp.Controllers
         }
 
         //[Authorize(Roles = "User")]
-        [HttpPost("UpdateUserCart")]
+        [HttpPost("update-user-cart")]
         [ValidateRequest]
         public async Task<IActionResult> UpdateUserCart(UpdateUserCartRequestDTO request)
         {
@@ -93,8 +93,7 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        
-        [HttpPost("OrderAllFromCart")]
+        [HttpPost("order-all-from-cart")]
         [ValidateRequest]
         public async Task<IActionResult> PlaceOrderAllFromCarts([FromBody] OrderAllFromCartRequestDTO request)
         {
@@ -122,7 +121,7 @@ namespace ShoppingApp.Controllers
         }
 
         //[Authorize(Roles = "User")]
-        [HttpPost("RemoveAllFromCart")]
+        [HttpPost("remove-all-from-cart")]
         [ValidateRequest]
         public async Task<IActionResult> ClearCart()
         {
@@ -144,7 +143,7 @@ namespace ShoppingApp.Controllers
         }
 
         //[Authorize(Roles = "User")]
-        [HttpDelete("RemoveFromCart")]
+        [HttpDelete("remove-from-cart")]
         [ValidateRequest]
         public async Task<IActionResult> RemoveFromCart( [FromBody] RemoveFromCartRequestDTO request)
         {

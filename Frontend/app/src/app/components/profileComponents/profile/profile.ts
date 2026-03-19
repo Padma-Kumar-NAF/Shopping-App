@@ -177,17 +177,11 @@ export class Profile implements OnInit {
     });
   }
 
-  // ==================== Email Modal ====================
-  /**
-   * Open email modal
-   */
+
   openEmailModal(): void {
     this.showEmailModal.set(true);
   }
 
-  /**
-   * Close email modal
-   */
   closeEmailModal(): void {
     this.showEmailModal.set(false);
     this.passwordVerified = false;
@@ -195,9 +189,6 @@ export class Profile implements OnInit {
     this.showMobileMenu.set(false);
   }
 
-  /**
-   * Update user email
-   */
   updateEmail(): void {
     if (!this.editMail.password?.trim()) {
       toast.error('Password is required');
@@ -208,8 +199,6 @@ export class Profile implements OnInit {
       toast.error('New Email is required');
       return;
     }
-
-    // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.editMail.newEmail)) {
       toast.error('Please enter a valid email address');
@@ -244,6 +233,7 @@ export class Profile implements OnInit {
 
   setTab(tab: TabType): void {
     this.activeTab.set(tab);
+    this.router.navigate([tab])
   }
   goHome(): void {
     this.closeMobileMenu();

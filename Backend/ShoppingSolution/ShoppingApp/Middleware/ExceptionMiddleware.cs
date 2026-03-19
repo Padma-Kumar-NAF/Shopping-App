@@ -76,12 +76,19 @@ namespace ShoppingApp.Middleware
                 context.Response.StatusCode = statusCode;
                 context.Response.ContentType = "application/json";
 
+                var isDevelopment = context.RequestServices
+                    .GetRequiredService<IWebHostEnvironment>()
+                    .IsDevelopment();
+
                 var response = new ErrorResponse
                 {
                     Error = GetErrorTitle(statusCode),
                     Message = errorMessage,
                     Timestamp = DateTime.UtcNow,
-                    TraceId = context.TraceIdentifier
+                    TraceId = context.TraceIdentifier,
+
+                    //StackTrace = isDevelopment ? ex.StackTrace : null,
+                    //Exception = isDevelopment ? ex.ToString() : null
                 };
 
                 await context.Response.WriteAsJsonAsync(response);
@@ -173,5 +180,9 @@ namespace ShoppingApp.Middleware
         public string Message { get; set; } = string.Empty;
         public DateTime Timestamp { get; set; }
         public string TraceId { get; set; } = string.Empty;
+
+        // 👇 optional fields
+        //public string? StackTrace { get; set; }
+        //public string? Exception { get; set; }
     }
 }

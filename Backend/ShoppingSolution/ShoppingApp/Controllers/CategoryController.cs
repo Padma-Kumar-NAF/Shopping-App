@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ShoppingApp.Filters;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
@@ -21,39 +22,112 @@ namespace ShoppingApp.Controllers
         }
 
         //[Authorize(Roles = "Admin")]
-        [HttpPost("AddCategory")]
-        public async Task<ActionResult<AddCategoryResponseDTO>> AddCategory(AddCategoryRequestDTO request)
+        [HttpPost("add-category")]
+        [ValidateRequest]
+        public async Task<IActionResult> AddCategory(AddCategoryRequestDTO request)
         {
             try
             {
-                var addedCategory = await _categoryService.AddCategory(request.CategoryName);
-                AddCategoryResponseDTO responseDTO = new AddCategoryResponseDTO();
-                responseDTO.CategoryName = addedCategory.CategoryName;
-                responseDTO.CategoryId = addedCategory.CategoryId;
-                return Ok(responseDTO);
+                Guid UserId = GetUserId();
+
+                if (UserId == Guid.Empty)
+                {
+                    return BadRequest("User not found");
+                }
+
+                var result = await _categoryService.AddCategory(request.CategoryName);
+                return Ok(result);
             }
-            catch (Exception e)
+            catch
             {
-                return BadRequest(e.Message);
+                throw;
+            }
+        }
+
+        //[Authorize(Roles = "Admin")]
+        [HttpDelete("delete-category")]
+        [ValidateRequest]
+        public async Task<IActionResult> DeleteCategory(DeleteCategoryRequestDTO request)
+        {
+            try
+            {
+                Guid UserId = GetUserId();
+
+                if (UserId == Guid.Empty)
+                {
+                    return BadRequest("User not found");
+                }
+                var result  = await _categoryService.DeleteCategory(request);
+                return Ok(result);
+            }
+            catch
+            {
+                throw;
             }
         }
 
         //[Authorize(Roles = "Admin,User")]
-        [HttpPost("GetAllCategories")]
-        public async Task<ActionResult<IEnumerable<Category>>> GetAllCategories([FromBody] GetAllCategoryRequestDTO request)
+        [HttpPost("get-all-categories")]
+        [ValidateRequest]
+        public async Task<IActionResult> GetAllCategories([FromBody] GetAllCategoryRequestDTO request)
         {
             try
             {
-                var CategoriesList = await _categoryService.GetAllCategories(request.Limit,request.PageNumber);
-                if(CategoriesList == null)
+                Guid UserId = GetUserId();
+
+                if (UserId == Guid.Empty)
                 {
-                    return BadRequest("No Categories Found");
+                    return BadRequest("User not found");
                 }
+                var CategoriesList = await _categoryService.GetAllCategories(request.Pagination.PageSize,request.Pagination.PageNumber);
                 return Ok(CategoriesList);
             }
-            catch(Exception e)
+            catch
             {
-                return BadRequest(e.Message);
+                throw;
+            }
+        }
+
+        //[Authorize(Roles = "Admin")]
+        [HttpPost("edit-category")]
+        [ValidateRequest]
+        public async Task<IActionResult> EditCategory([FromBody] EditCategoryRequestDTO request)
+        {
+            try
+            {
+                Guid UserId = GetUserId();
+
+                if (UserId == Guid.Empty)
+                {
+                    return BadRequest("User not found");
+                }
+                var result = await _categoryService.EditCategory(request);
+                return Ok(result);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("products-by-category")]
+        public async Task<IActionResult> GetProductsByCategory([FromBody] GetProductsByCategoryRequestDTO request)
+        {
+            try
+            {
+                Guid UserId = GetUserId();
+
+                if (UserId == Guid.Empty )
+                {
+                    return BadRequest("User not found");
+                }
+
+                var result = await _categoryService.GetProductsByCategory(request);
+                return StatusCode(result.StatusCode, result);
+            }
+            catch
+            {
+                throw;
             }
         }
     }

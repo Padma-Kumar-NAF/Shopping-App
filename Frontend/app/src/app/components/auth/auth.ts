@@ -15,7 +15,7 @@ import {
   SignupModel,
   LoginResponseDTO,
 } from '../../models/auth.model';
-import { AuthApiService } from '../../services/api.service';
+import { AuthApiService } from '../../services/auth.service';
 import { AuthStateService } from '../../services/auth-state.service';
 import { Router } from '@angular/router';
 
@@ -25,9 +25,8 @@ import { Router } from '@angular/router';
   templateUrl: './auth.html',
   styleUrls: ['./auth.css'],
 })
-
 export class Auth {
-  disabledButton = signal<boolean>(true)
+  disabledButton = signal<boolean>(true);
   private apiService: AuthApiService = inject(AuthApiService);
   private authState: AuthStateService = inject(AuthStateService);
 
@@ -50,6 +49,8 @@ export class Auth {
     this.loginDetails = new LoginResponseDTO();
 
     this.loginForm = new FormGroup({
+      // email: new FormControl('admin@gmail.com', [Validators.required, Validators.email]),
+      // password: new FormControl('admin123', [Validators.required, Validators.minLength(6)]),
       email: new FormControl('padmakumar23.dev@gmail.com', [Validators.required, Validators.email]),
       password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
     });
@@ -101,13 +102,21 @@ export class Auth {
       return;
     }
     this.loginData = this.loginForm.value;
-    const toastId = toast.loading("Signing in...");
+    const toastId = toast.loading('Signing in...');
     this.apiService.LoginApi(this.loginData).subscribe({
       next: (response: LoginResponseDTO) => {
-        this.loginDetails = response;
-        this.authState.setUser(response.name, response.token);
+        const user = this.apiService.decodeToken(response.token);
+        console.log('response');
+        console.log(response);
+        if (response.token) {
+          this.authState.setUser(user, response.token);
+        }
+        if (user?.userRole === 'admin') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/']);
+        }
         this.loginForm.reset();
-        this.router.navigate(['']);
         toast.dismiss(toastId);
         toast.success('Login Successfull');
       },
@@ -121,7 +130,7 @@ export class Auth {
         }
       },
       complete: () => {
-        console.log("Login completed")
+        console.log('Login completed');
       },
     });
   }
@@ -147,7 +156,7 @@ export class Auth {
 
     this.signupData = this.signUpForm.value;
 
-    const toastId = toast.loading("Signing up...");
+    const toastId = toast.loading('Signing up...');
 
     this.apiService.SignUpApi(this.signupData).subscribe({
       next: (response: CreateUserResponseDTO) => {

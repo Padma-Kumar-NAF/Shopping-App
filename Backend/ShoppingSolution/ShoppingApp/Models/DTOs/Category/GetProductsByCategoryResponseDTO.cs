@@ -1,0 +1,28 @@
+﻿namespace ShoppingApp.Models.DTOs.Category
+{
+    public class GetProductsByCategoryResponseDTO
+    {
+        public Guid CategoryId { get; set; }
+        public string CategoryName { get; set; } = string.Empty;
+
+        public ICollection<ProductsDTO> Products { get; set; } = new List<ProductsDTO>();
+    }
+    public class ProductsDTO
+    {
+        public Guid ProductId { get; set; }
+        public Guid CategoryId { get; set; }
+        public Guid StockId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string ImagePath { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string CategoryName { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+        public ICollection<CategoryProductReviewDTO> Review { get; set; } = new List<CategoryProductReviewDTO>();
+    }
+    public class CategoryProductReviewDTO
+    {
+        public string Summary { get; set; } = string.Empty;
+        public int ReviewPoints { get; set; }
+    }
+}

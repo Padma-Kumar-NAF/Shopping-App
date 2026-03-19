@@ -9,10 +9,12 @@
 
 <!-- <app-admin-dashboard></app-admin-dashboard> -->
 
-@if (loader.isLoading()) {
+<!-- @if (loader.isLoading()) {
   <app-spinner></app-spinner>
 } @else {
+  <ngx-sonner-toaster ngSkipHydration position="top-center" richColors></ngx-sonner-toaster>
   <app-navbar></app-navbar>
   <router-outlet></router-outlet>
-}
-<ngx-sonner-toaster ngSkipHydration position="top-center" richColors></ngx-sonner-toaster>
+} -->
+
+<app-admin-dashboard></app-admin-dashboard>
