@@ -22,10 +22,10 @@ export const appConfig: ApplicationConfig = {
 
     // provideAppInitializer ensures user is restored from localStorage
     // BEFORE the router evaluates any guards.
-    // provideAppInitializer(() => {
-    //   const authState = inject(AuthStateService);
-    //   authState.loadUserFromStorage(); // synchronous — signal is set before guards run
-    // }),
+    provideAppInitializer(() => {
+      const authState = inject(AuthStateService);
+      authState.loadUserFromStorage(); // synchronous — signal is set before guards run
+    }),
   ],
 };
 

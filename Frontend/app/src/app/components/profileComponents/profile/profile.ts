@@ -1,9 +1,5 @@
 import { Component, signal, OnInit, inject, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Cart } from '../cart/cart';
-import { WishlistComponent } from '../wishlist/wishlist';
-import { OrdersComponent } from '../orders/orders';
-import { Address } from '../address/address';
 import { ProfileApiService } from '../../../services/profile.service';
 import { AuthStateService } from '../../../services/auth-state.service';
 import {
@@ -34,16 +30,7 @@ interface TabConfig {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [
-    CommonModule,
-    Cart,
-    WishlistComponent,
-    OrdersComponent,
-    Address,
-    FormsModule,
-    ReactiveFormsModule,
-    RouterOutlet
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterOutlet],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
@@ -89,7 +76,7 @@ export class Profile implements OnInit {
     this.GetUserProfileDetails();
   }
   toggleMobileMenu(): void {
-    this.showMobileMenu.update(value => !value);
+    this.showMobileMenu.update((value) => !value);
   }
 
   closeMobileMenu(): void {
@@ -128,7 +115,6 @@ export class Profile implements OnInit {
 
     this.showDetailsModal.set(true);
   }
-
 
   closeDetailsModal(): void {
     this.showDetailsModal.set(false);
@@ -176,7 +162,6 @@ export class Profile implements OnInit {
       },
     });
   }
-
 
   openEmailModal(): void {
     this.showEmailModal.set(true);
@@ -233,7 +218,7 @@ export class Profile implements OnInit {
 
   setTab(tab: TabType): void {
     this.activeTab.set(tab);
-    this.router.navigate([tab])
+    this.router.navigate([tab]);
   }
   goHome(): void {
     this.closeMobileMenu();

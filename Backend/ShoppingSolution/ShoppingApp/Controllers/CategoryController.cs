@@ -10,10 +10,10 @@ using System.Security.Claims;
 
 namespace ShoppingApp.Controllers
 {
-    //[Authorize]
+    //[Authorize(Roles = "admin")]
     [Route("[controller]")]
     [ApiController]
-    public class CategoryController : BaseController, ICategoryController
+    public class CategoryController : BaseController
     {
         private readonly ICategoryService _categoryService;
         public CategoryController(ICategoryService categoryService)
@@ -21,20 +21,14 @@ namespace ShoppingApp.Controllers
             _categoryService = categoryService;
         }
 
-        //[Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "admin")]
         [HttpPost("add-category")]
         [ValidateRequest]
-        public async Task<IActionResult> AddCategory(AddCategoryRequestDTO request)
+        public async Task<IActionResult> AddCategory([FromBody] AddCategoryRequestDTO request)
         {
             try
             {
-                Guid UserId = GetUserId();
-
-                if (UserId == Guid.Empty)
-                {
-                    return BadRequest("User not found");
-                }
-
+                var UserId = GetUserIdOrThrow();
                 var result = await _categoryService.AddCategory(request.CategoryName);
                 return Ok(result);
             }
@@ -44,19 +38,14 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        //[Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "admin")]
         [HttpDelete("delete-category")]
         [ValidateRequest]
-        public async Task<IActionResult> DeleteCategory(DeleteCategoryRequestDTO request)
+        public async Task<IActionResult> DeleteCategory([FromBody] DeleteCategoryRequestDTO request)
         {
             try
             {
-                Guid UserId = GetUserId();
-
-                if (UserId == Guid.Empty)
-                {
-                    return BadRequest("User not found");
-                }
+                var UserId = GetUserIdOrThrow();
                 var result  = await _categoryService.DeleteCategory(request);
                 return Ok(result);
             }
@@ -66,19 +55,14 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        //[Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "admin,user")]
         [HttpPost("get-all-categories")]
         [ValidateRequest]
         public async Task<IActionResult> GetAllCategories([FromBody] GetAllCategoryRequestDTO request)
         {
             try
             {
-                Guid UserId = GetUserId();
-
-                if (UserId == Guid.Empty)
-                {
-                    return BadRequest("User not found");
-                }
+                var UserId = GetUserIdOrThrow();
                 var CategoriesList = await _categoryService.GetAllCategories(request.Pagination.PageSize,request.Pagination.PageNumber);
                 return Ok(CategoriesList);
             }
@@ -88,19 +72,14 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        //[Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "admin")]
         [HttpPost("edit-category")]
         [ValidateRequest]
         public async Task<IActionResult> EditCategory([FromBody] EditCategoryRequestDTO request)
         {
             try
             {
-                Guid UserId = GetUserId();
-
-                if (UserId == Guid.Empty)
-                {
-                    return BadRequest("User not found");
-                }
+                var UserId = GetUserIdOrThrow();
                 var result = await _categoryService.EditCategory(request);
                 return Ok(result);
             }
@@ -110,18 +89,14 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        //[Authorize(Roles = "user")]
         [HttpPost("products-by-category")]
+        [ValidateRequest]
         public async Task<IActionResult> GetProductsByCategory([FromBody] GetProductsByCategoryRequestDTO request)
         {
             try
             {
-                Guid UserId = GetUserId();
-
-                if (UserId == Guid.Empty )
-                {
-                    return BadRequest("User not found");
-                }
-
+                var UserId = GetUserIdOrThrow();
                 var result = await _categoryService.GetProductsByCategory(request);
                 return StatusCode(result.StatusCode, result);
             }

@@ -40,24 +40,7 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateNewAddressResponseDTO"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateNewAddressResponseDTO"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateNewAddressResponseDTO"
-                }
-              }
-            }
+            "description": "OK"
           }
         }
       }
@@ -89,24 +72,7 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeleteUserAddressResponseDTO"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeleteUserAddressResponseDTO"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeleteUserAddressResponseDTO"
-                }
-              }
-            }
+            "description": "OK"
           }
         }
       }
@@ -138,24 +104,7 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/EditUserAddressResponseDTO"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EditUserAddressResponseDTO"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EditUserAddressResponseDTO"
-                }
-              }
-            }
+            "description": "OK"
           }
         }
       }
@@ -187,24 +136,7 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetUserAddressResposneDTO"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetUserAddressResposneDTO"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetUserAddressResposneDTO"
-                }
-              }
-            }
+            "description": "OK"
           }
         }
       }
@@ -1974,15 +1906,6 @@
           }
         }
       },
-      "CreateNewAddressResponseDTO": {
-        "type": "object",
-        "properties": {
-          "addressId": {
-            "type": "string",
-            "format": "uuid"
-          }
-        }
-      },
       "CreateUserRequestDTO": {
         "required": [
           "name",
@@ -2133,14 +2056,6 @@
           }
         }
       },
-      "DeleteUserAddressResponseDTO": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          }
-        }
-      },
       "DeleteWishListRequestDTO": {
         "required": [
           "wishListId"
@@ -2202,14 +2117,6 @@
           },
           "pincode": {
             "type": "string"
-          }
-        }
-      },
-      "EditUserAddressResponseDTO": {
-        "type": "object",
-        "properties": {
-          "isSuccess": {
-            "type": "boolean"
           }
         }
       },
@@ -2360,17 +2267,6 @@
         "properties": {
           "pagination": {
             "$ref": "#/components/schemas/Pagination"
-          }
-        }
-      },
-      "GetUserAddressResposneDTO": {
-        "type": "object",
-        "properties": {
-          "addressList": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AddressDTO"
-            }
           }
         }
       },

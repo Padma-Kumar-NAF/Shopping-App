@@ -11,5 +11,6 @@ namespace ShoppingApp.Interfaces.ServicesInterface
         public Task<ApiResponse<RemoveAllFromCartResponseDTO>> RemoveAllFromCartByUserID(Guid UserId);
         public Task<ApiResponse<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCart(Guid UserId,Guid AddressId,string PaymentType);
         public Task<ApiResponse<RemoveFromCartResponseDTO>> RemoveFromCart(Guid UserId ,Guid CartId,Guid CatrItemId,Guid ProductId);
+        public Task<ApiResponse<UpdateUserCartResponseDTO>> UpdateCart(Guid userId, Guid cartId, Guid cartItemId, Guid productId, int quantity);
     }
 }

@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Contexts;
+using ShoppingApp.Exceptions;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
+using ShoppingApp.Models.DTOs;
 using ShoppingApp.Models.DTOs.Order;
 
 namespace ShoppingApp.Services
@@ -13,6 +15,10 @@ namespace ShoppingApp.Services
         private readonly IRepository<Guid, Order> _repository;
         private readonly IRepository<Guid, Payment> _paymentRepository;
         private readonly IRepository<Guid, Refund> _refundRepository;
+        private readonly IRepository<Guid, User> _userRepository;
+        private readonly IRepository<Guid, Address> _addressRepository;
+        private readonly IRepository<Guid,Product> _productRepository;
+        private readonly IRepository<Guid, OrderDetails> _orderDetailsRepository;
 
         private readonly IUnitOfWork _unitOfWork;
 
@@ -21,43 +27,63 @@ namespace ShoppingApp.Services
             IRepository<Guid, Stock> stockRepository,
             IRepository<Guid, Payment> paymentRepository,
             IRepository<Guid, Refund> refundRepository,
+            IRepository<Guid, User> userRepository,
+            IRepository<Guid, Address> addressRepository,
+            IRepository<Guid, Product> productRepository,
+            IRepository<Guid, OrderDetails> orderDetailsRepository,
             IUnitOfWork unitOfWork)
         {
             _repository = repository;
             _stockRepository = stockRepository;
             _paymentRepository = paymentRepository;
             _refundRepository = refundRepository;
+            _userRepository = userRepository;
             _unitOfWork = unitOfWork;
+            _addressRepository = addressRepository;
+            _productRepository = productRepository;
+            _orderDetailsRepository = orderDetailsRepository;
         }
 
-        public async Task<GetUserOrderDetailsResponseDTO> CancelOrder(CancelOrderRequestDTO request)
+        public async Task<ApiResponse<CancelOrderResponseDTO>> CancelOrder(Guid userId, Guid orderId)
         {
+            
+            if(await IsUserNotFound(userId))
+            {
+                throw new AppException("User not found",404);
+            }
+
             await _unitOfWork.BeginTransactionAsync();
+
+            var order = await _repository.GetQueryable().Include(o => o.OrderDetails!).Include(o => o.Address).Include(o => o.Payment)
+                    .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+            if (order == null)
+            {
+                throw new AppException("Order not found.",404);
+            }
+
+            if (order.Status == "Cancelled")
+            {
+                throw new AppException("Order already cancelled.",400);
+            }
+
+            if (order.Status == "Delivered")
+            {
+                throw new AppException("Cannot cancel delivered order.",400);
+            }
 
             try
             {
-                var order = await _repository.GetQueryable()
-                    .Include(o => o.OrderDetails!)
-                    .Include(o => o.Address)
-                    .Include(o => o.Payment)
-                    .FirstOrDefaultAsync(o => o.OrderId == request.OrderId);
-
-                if (order == null)
-                    throw new Exception("Order not found.");
-
-                if (order.Status == "Cancelled")
-                    throw new Exception("Order already cancelled.");
-
-                if (order.Status == "Delivered")
-                    throw new Exception("Cannot cancel delivered order.");
-
                 foreach (var item in order.OrderDetails!)
                 {
-                    var stock = await _stockRepository.GetQueryable()
-                        .FirstOrDefaultAsync(s => s.ProductId == item.ProductId);
+                    var stock = await _stockRepository.GetQueryable().FirstOrDefaultAsync(s => s.ProductId == item.ProductId);
 
                     if (stock == null)
-                        throw new Exception($"Stock not found for product {item.ProductId}");
+                    {
+                        // Dont throw error , its a admin side problem , so user can cancel the order
+                        //throw new AppException($"Stock not found for product {item.ProductId}");
+                        continue;
+                    }
 
                     stock.Quantity += item.Quantity;
 
@@ -69,7 +95,7 @@ namespace ShoppingApp.Services
 
                 var refund = new Refund
                 {
-                    UserId = request.UserId,
+                    UserId = userId,
                     OrderId = order.OrderId,
                     PaymentId = order.Payment!.PaymentId,
                     RefundAmount = order.TotalAmount
@@ -79,61 +105,52 @@ namespace ShoppingApp.Services
 
                 await _unitOfWork.CommitAsync();
 
-                return new GetUserOrderDetailsResponseDTO
+                return new ApiResponse<CancelOrderResponseDTO>()
                 {
-                    OrderId = order.OrderId,
-                    UserId = order.UserId,
-                    Status = order.Status,
-                    TotalProductsCount = order.TotalProductsCount,
-                    TotalAmount = order.TotalAmount,
-                    DeliveryDate = (DateTime)order.DeliveryDate!,
-
-                    Address = new AddressDTO
+                    StatusCode = 200,
+                    Data = new CancelOrderResponseDTO()
                     {
-                        AddressId = order.Address!.AddressId,
-                        AddressLine1 = order.Address.AddressLine1,
-                        AddressLine2 = order.Address.AddressLine2,
-                        City = order.Address.City,
-                        State = order.Address.State,
-                        Pincode = order.Address.Pincode
+                        IsSuccess = true,
+                        RefuncdAmount = order.TotalAmount
                     },
-
-                    Payment = new PaymentDTO
-                    {
-                        PaymentId = order.Payment.PaymentId,
-                        PaymentType = order.Payment.PaymentType,
-                    },
-
-                    Items = order.OrderDetails.Select(item => new OrderDetailsDTO
-                    {
-                        OrderDetailsId = item.OrderDetailsId,
-                        ProductId = item.ProductId,
-                        ProductName = item.ProductName,
-                        Quantity = item.Quantity,
-                        ProductPrice = item.ProductPrice
-                    }).ToList()
+                    Message = "Order cancel successfully",
+                    Action = "DeleteOrder"
                 };
             }
-            catch
+            catch (AppException)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
             }
+            catch (DbUpdateException ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Error while canceling order", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Something went wrong while canceling order", ex, 500);
+            }
         }
 
-        public async Task<IEnumerable<GetUserOrderDetailsResponseDTO>> GetUserOrderById(GetUserOrderDetailsRequestDTO request)
+        public async Task<ApiResponse<GetUserOrderDetailsResponseDTO>> GetUserOrderById(Guid userId,GetUserOrderDetailsRequestDTO request)
         {
-            var query = _repository.GetQueryable()
-                .Where(order => order.UserId == request.UserId)
-                .OrderByDescending(o => o.CreatedAt);
+            try
+            {
 
-            return await query
-                .Skip((request.PageNumber - 1) * request.Limit)
-                .Take(request.Limit)
-                .Select(o => new GetUserOrderDetailsResponseDTO
+                if (await IsUserNotFound(userId))
+                {
+                    throw new AppException("User not found", 404);
+                }
+                var query = _repository.GetQueryable().Where(order => order.UserId == userId).OrderByDescending(o => o.CreatedAt);
+
+                var orders = await query
+                .Skip((request.pagination.PageNumber - 1) * request.pagination.PageSize)
+                .Take(request.pagination.PageSize)
+                .Select(o => new OrderDetailsResponseDTO
                 {
                     OrderId = o.OrderId,
-                    UserId = o.UserId,
                     Status = o.Status,
                     TotalProductsCount = o.TotalProductsCount,
                     TotalAmount = o.TotalAmount,
@@ -149,122 +166,208 @@ namespace ShoppingApp.Services
                         Pincode = o.Address.Pincode
                     },
 
-                    Payment = new PaymentDTO()
+                    Payment = new PaymentDTO
                     {
                         PaymentId = o.Payment!.PaymentId,
                         PaymentType = o.Payment.PaymentType
                     },
 
                     Items = o.OrderDetails!
-                        .Select(od => new OrderDetailsDTO
-                        {
-                            OrderDetailsId = od.OrderDetailsId,
-                            ProductId = od.ProductId,
-                            ProductName = od.ProductName,
-                            Quantity = od.Quantity,
-                            ProductPrice = od.ProductPrice,
-                            ImagePath = od.Product!.ImagePath
-                        })
-                        .OrderBy(od => od.ProductName)
-                        .ToList()
+                    .Select(od => new OrderDetailsDTO
+                    {
+                        OrderDetailsId = od.OrderDetailsId,
+                        ProductId = od.ProductId,
+                        ProductName = od.ProductName,
+                        Quantity = od.Quantity,
+                        ProductPrice = od.ProductPrice,
+                        ImagePath = od.Product!.ImagePath
+                    })
+                    .OrderBy(od => od.ProductName)
+                    .ToList()
                 })
                 .ToListAsync();
+
+                return new ApiResponse<GetUserOrderDetailsResponseDTO>
+                {
+                    StatusCode = 200,
+                    Message = orders.Any() ? "Orders fetched successfully" : "No orders found",
+                    Data = new GetUserOrderDetailsResponseDTO
+                    {
+                        Items = orders
+                    },
+                    Action = "GetUserOrders"
+                };
+            }
+            catch (AppException)
+            {
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while Fetching users orders", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while Fetching users orders", ex, 500);
+            }
         }
 
-        public async Task<GetUserOrderDetailsResponseDTO> PlaceOrder(PlaceOrderRequestDTO request)
+        public async Task<ApiResponse<PlaceOrderResponseDTO>> PlaceOrder(Guid userId,PlaceOrderRequestDTO request)
         {
             await _unitOfWork.BeginTransactionAsync();
-
             try
             {
-                var productIds = request.Items.Select(i => i.ProductId).ToList();
-
-                var stocks = await _stockRepository.GetQueryable()
-                    .Where(s => productIds.Contains(s.ProductId))
-                    .ToListAsync();
-
-                foreach (var item in request.Items)
+                if (await IsUserNotFound(userId))
                 {
-                    var stock = stocks.FirstOrDefault(s => s.ProductId == item.ProductId);
-
-                    if (stock == null)
-                        throw new Exception($"Stock not found for product {item.ProductId}");
-
-                    if (stock.Quantity < item.Quantity)
-                        throw new Exception($"Insufficient stock for product {item.ProductName}");
+                    throw new AppException("User not found", 404);
                 }
+
+                var Address = await _addressRepository.GetAsync(request.AddressId);
+
+                if (Address == null)
+                {
+                    throw new AppException($"{nameof(Address)} not found", 404);    
+                }
+
+                var Product = await _productRepository.GetAsync(request.OrderProductdDetails.ProductId);
+
+                if (Product == null)
+                {
+                    throw new AppException("Product not found", 404);
+                }
+                var stock = await _stockRepository.FirstOrDefaultAsync(s => s.ProductId == request.OrderProductdDetails.ProductId);
+
+                if (stock == null)
+                    throw new AppException($"Stock not found for product {request.OrderProductdDetails.ProductId}",404);
+
+                if (stock.Quantity < request.OrderProductdDetails.Quantity)
+                    throw new AppException($"Insufficient stock for product {request.OrderProductdDetails.ProductName}",404);
 
                 var order = new Order
                 {
-                    UserId = request.UserId,
+                    UserId = userId,
                     Status = "Not Delivered",
                     TotalAmount = request.TotalAmount,
                     TotalProductsCount = request.TotalProductsCount,
                     AddressId = request.AddressId,
                     DeliveryDate = DateTime.Now.AddDays(2),
-                    OrderDetails = new List<OrderDetails>()
                 };
 
-                foreach (var item in request.Items)
+                stock.Quantity -= request.OrderProductdDetails.Quantity;
+
+                var orderDetails = new OrderDetails()
                 {
-                    var stock = stocks.First(s => s.ProductId == item.ProductId);
-
-                    stock.Quantity -= item.Quantity;
-                    await _stockRepository.UpdateAsync(stock.StockId, stock);
-
-                    order.OrderDetails!.Add(new OrderDetails
-                    {
-                        OrderDetailsId = Guid.NewGuid(),
-                        ProductId = item.ProductId,
-                        ProductName = item.ProductName,
-                        ProductPrice = item.ProductPrice,
-                        Quantity = item.Quantity
-                    });
-                }
-
-                await _repository.AddAsync(order);
+                    OrderId = order.OrderId,
+                    ProductId = request.OrderProductdDetails.ProductId,
+                    ProductName = request.OrderProductdDetails.ProductName,
+                    ProductPrice = request.OrderProductdDetails.ProductPrice,
+                    Quantity = request.OrderProductdDetails.Quantity
+                };
 
                 var payment = new Payment
                 {
-                    UserId = request.UserId,
+                    UserId = userId,
                     OrderId = order.OrderId,
                     TotalAmount = request.TotalAmount,
                     PaymentType = request.PaymentType
                 };
 
+                await _repository.AddAsync(order);
+
+                await _orderDetailsRepository.AddAsync(orderDetails);
+
+                await _stockRepository.UpdateAsync(stock.StockId, stock);
+
                 await _paymentRepository.AddAsync(payment);
 
                 await _unitOfWork.CommitAsync();
 
-                return new GetUserOrderDetailsResponseDTO
+                PlaceOrderResponseDTO response = new PlaceOrderResponseDTO()
                 {
+                    IsSuccess = true,
                     OrderId = order.OrderId,
-                    UserId = order.UserId,
-                    Status = order.Status,
-                    TotalProductsCount = order.TotalProductsCount,
-                    TotalAmount = order.TotalAmount
+                    PaymentId = payment.PaymentId,
+                    DeliveryDate = (DateTime)order.DeliveryDate,
+                    OrderDetailsId = orderDetails.OrderDetailsId,
+                };
+
+                return new ApiResponse<PlaceOrderResponseDTO>()
+                {
+                    StatusCode = 200,
+                    Data = response,
+                    Action = "OrderedConfirmed",
+                    Message = "Ordered Successfully"
                 };
             }
-            catch
+            catch (AppException)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
             }
+            catch (DbUpdateException ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Error while Placing the order", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Something went wrong while placing the user order", ex, 500);
+            }
         }
 
-        public async Task<bool> UpdateOrder(Guid OrderId, string Status)
+        public async Task<ApiResponse<UpdateOrderResponseDTO>> UpdateOrder(Guid userId,Guid OrderId, string Status)
         {
-            var order = await _repository.GetQueryable()
-                .FirstOrDefaultAsync(o => o.OrderId == OrderId);
+            if(await IsUserNotFound(userId))
+            {
+                throw new AppException("User not found",401);
+            }
 
-            if (order == null)
-                return false;
+            if(Status != "Cancel" || Status != "Delivered" || Status != "Shipped" || Status != "Not Delivered")
+            {
+                throw new AppException("Invalid Status",400);
+            }
+            try
+            {
+                var Order = await _repository.GetAsync(OrderId);
+                if (Order == null)
+                {
+                    throw new AppException($"{nameof(Order)} is null.");
+                }
 
-            order.Status = Status;
+                Order.Status = Status;
 
-            await _repository.UpdateAsync(order.OrderId, order);
+                await _repository.UpdateAsync(Order.OrderId, Order);
 
-            return true;
+                return new ApiResponse<UpdateOrderResponseDTO>()
+                {
+                    StatusCode = 200,
+                    Data = new UpdateOrderResponseDTO()
+                    {
+                        IsUpdated = true,
+                    },
+                    Message = "Order updated successfully",
+                    Action = "Update order status"
+                };
+            }
+            catch (AppException)
+            {
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while updating order", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while updating the order", ex, 500);
+            }
+        }
+
+        private async Task<bool > IsUserNotFound(Guid userId)
+        {
+            var user = await _userRepository.GetAsync(userId);
+            return user == null;
         }
     }
 }

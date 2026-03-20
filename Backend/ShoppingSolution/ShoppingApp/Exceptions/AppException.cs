@@ -9,7 +9,7 @@
         {
             StatusCode = statusCode;
         }
-        public AppException(string message, Exception innerException, int statusCode = 500)
+        public AppException(string message, Exception innerException , int statusCode = 500)
             : base(message, innerException)
         {
             StatusCode = statusCode;

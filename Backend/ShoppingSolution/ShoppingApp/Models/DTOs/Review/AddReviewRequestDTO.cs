@@ -4,7 +4,6 @@ namespace ShoppingApp.Models.DTOs.Review
 {
     public record AddReviewRequestDTO
     {
-        public Guid UserId { get; set; }
 
         [Required(ErrorMessage = "Product Id is required")]
         public Guid ProductId { get; set; }

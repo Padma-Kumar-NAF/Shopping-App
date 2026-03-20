@@ -20,11 +20,18 @@ export class ProductListing implements OnInit {
   searchResult = signal<SearchResult | null>(null);
   isLoading = signal<boolean>(false);
   hasSearched = signal<boolean>(false);
+  selectedCategory = signal<string>('all');
+  categories = signal<string[]>([]);
+  filteredProducts = signal<ProductItem[]>([]);
 
   ngOnInit(): void {
     // Check for query parameter
     this.route.queryParams.subscribe((params) => {
       const query = params['q'] || '';
+      const category = params['category'] || 'all';
+
+      this.selectedCategory.set(category);
+
       if (query) {
         this.searchQuery.set(query);
         this.performSearch(query);
@@ -47,6 +54,8 @@ export class ProductListing implements OnInit {
     this.productService.searchProducts(query).subscribe({
       next: (result) => {
         this.searchResult.set(result);
+        this.extractCategories(result.relatedProducts);
+        this.applyFilters();
         this.isLoading.set(false);
       },
       error: (error) => {
@@ -66,6 +75,8 @@ export class ProductListing implements OnInit {
           relatedProducts: products,
           totalResults: products.length,
         });
+        this.extractCategories(products);
+        this.applyFilters();
         this.isLoading.set(false);
       },
       error: (error) => {
@@ -115,5 +126,34 @@ export class ProductListing implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/']);
+  }
+
+  extractCategories(products: ProductItem[]): void {
+    const uniqueCategories = [...new Set(products.map((p) => p.category))];
+    this.categories.set(uniqueCategories);
+  }
+
+  selectCategory(category: string): void {
+    this.selectedCategory.set(category);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { category: category === 'all' ? null : category },
+      queryParamsHandling: 'merge',
+    });
+    this.applyFilters();
+  }
+
+  applyFilters(): void {
+    const result = this.searchResult();
+    if (!result) return;
+
+    let products = [...result.relatedProducts];
+
+    // Apply category filter
+    if (this.selectedCategory() !== 'all') {
+      products = products.filter((p) => p.category === this.selectedCategory());
+    }
+
+    this.filteredProducts.set(products);
   }
 }

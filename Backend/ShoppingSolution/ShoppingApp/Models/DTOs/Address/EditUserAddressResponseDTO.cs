@@ -2,6 +2,6 @@
 {
     public class EditUserAddressResponseDTO
     {
-        public bool isSuccess { get; set; }
+        public bool IsSuccess { get; set; }
     }
 }

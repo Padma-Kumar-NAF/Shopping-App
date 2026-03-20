@@ -4,7 +4,6 @@ namespace ShoppingApp.Models.DTOs.Wishlist
 {
     public record AddProductToWishListRequestDTO
     {
-        public Guid UserId { get; set; }
         [Required(ErrorMessage ="Product Id is required")]
         public Guid ProductId { get; set; }
         [Required(ErrorMessage = "WishList Id is required")]

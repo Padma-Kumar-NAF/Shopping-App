@@ -4,7 +4,6 @@ namespace ShoppingApp.Models.DTOs.User
 {
     public record GetUsersRequestDTO
     {
-        public Guid UserId { get; set; }
 
         [Range(1, 100, ErrorMessage = "Limit must be between 1 and 100.")]
         public int Limit { get; set; }

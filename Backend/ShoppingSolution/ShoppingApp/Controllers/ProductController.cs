@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ShoppingApp.Filters;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models.DTOs.Product;
 
 namespace ShoppingApp.Controllers
 {
-    //[Authorize]
+    //[Authorize(Roles = "admin,user")]
     [Route("[controller]")]
     [ApiController]
     public class ProductsController : BaseController, IProductController
@@ -17,20 +18,15 @@ namespace ShoppingApp.Controllers
             _productService = productService;
         }
 
-        //[Authorize(Roles = "Admin,User")]
-        [HttpPost("getProducts")]
-        public async Task<ActionResult<IEnumerable<GetAllProductsResponseDTO>>> GetProducts([FromBody] GetAllProductsRequestDTO request)
+        //[Authorize(Roles = "admin,user")]
+        [HttpPost("get-products")]
+        [ValidateRequest]
+        public async Task<IActionResult> GetProducts([FromBody] GetAllProductsRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
+                var UserId = GetUserIdOrThrow();
                 var products = await _productService.GetProducts(request);
-                if (products == null || !products.Any())
-                {
-                    return NotFound("No products found.");
-                }
                 return Ok(products);
             }
             catch
@@ -39,23 +35,16 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        //[Authorize(Roles = "Admin,User")]
-        [HttpPost("search")]
-        public async Task<ActionResult<IEnumerable<GetAllProductsResponseDTO>>> GetProductByName([FromBody] SearchProductRequestDTO request)
+        //[Authorize(Roles = "admin,user")]
+        [HttpPost("search-product")]
+        [ValidateRequest]
+        public async Task<IActionResult> GetProductByName([FromBody] SearchProductRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
             try
             {
-                if (request == null)
-                    return BadRequest("Invalid request.");
-
-                var products = await _productService.SearchProductByName(request);
-
-                if (products == null || !products.Any())
-                    return NotFound("No products found.");
-
-                return Ok(products);
+                var UserId = GetUserIdOrThrow();
+                var result = await _productService.SearchProductByName(request);
+                return Ok(result);
             }
             catch
             {
@@ -63,14 +52,14 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        //[Authorize(Roles = "Admin")]
-        [HttpPost("AddProduct")]
-        public async Task<ActionResult<GetAllProductsResponseDTO>> AddProduct(AddNewProductRequestDTO request)
+        //[Authorize(Roles = "admin")]
+        [HttpPost("add-product")]
+        [ValidateRequest]
+        public async Task<IActionResult> AddProduct([FromBody] AddNewProductRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
             try
             {
+                var UserId = GetUserIdOrThrow();
                 var newProduct = await _productService.AddProduct(request);
                 return Ok(newProduct);
             }
@@ -80,36 +69,36 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        [HttpPost("UpdateProduct")]
-        public async Task<ActionResult<UpdateProductResponseDTO>> UpdateProduct(UpdateProductRequestDTO request)
+        //[Authorize(Roles = "admin,user")]
+        [HttpPost("update-product")]
+        [ValidateRequest]
+        public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
             try
             {
+                var UserId = GetUserIdOrThrow();
                 var newProduct = await _productService.UpdateProduct(request);
                 return Ok(newProduct);
             }
             catch
             {
                 throw;
-                //return BadRequest(e.Message);
             }
         }
 
-        [HttpPost("GetProductById")]
-        public async Task<ActionResult<GetAllProductsResponseDTO>> GetProductById(SearchProductByIdRequestDTO request)
+        //[Authorize(Roles = "admin,user")]
+        [HttpPost("get-product-by-id")]
+        [ValidateRequest]
+        public async Task<IActionResult> GetProductById([FromBody] SearchProductByIdRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
             try
             {
+                var UserId = GetUserIdOrThrow();
                 var product = await _productService.SearchProductById(request);
                 return Ok(product);
             }
             catch
             {
-                //return BadRequest(e.Message);
                 throw;
             }
         }

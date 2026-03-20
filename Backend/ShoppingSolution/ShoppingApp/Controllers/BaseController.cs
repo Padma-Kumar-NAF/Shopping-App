@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ShoppingApp.Exceptions;
 using System.Security.Claims;
 
 namespace ShoppingApp.Controllers
@@ -9,6 +10,16 @@ namespace ShoppingApp.Controllers
         {
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return Guid.TryParse(userIdClaim, out var userId) ? userId : Guid.Empty;
+        }
+
+        protected Guid GetUserIdOrThrow()
+        {
+            var userId = GetUserId();
+
+            if (userId == Guid.Empty)
+                throw new AppException("User not authenticated",401);
+
+            return userId;
         }
     }
 }

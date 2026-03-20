@@ -12,6 +12,8 @@ import { Cart } from './components/profileComponents/cart/cart';
 import { WishlistComponent } from './components/profileComponents/wishlist/wishlist';
 import { Auth } from './components/auth/auth';
 import { Game } from './game/game';
+import { CheckoutComponent } from './components/checkout/checkout';
+import { UnauthorizedComponent } from './components/unauthorized/unauthorized';
 
 export const routes: Routes = [
   {
@@ -39,14 +41,20 @@ export const routes: Routes = [
     component: ProductDetail,
   },
   {
+    path: 'checkout',
+    canActivate: [roleGuard],
+    data: { role: 'user' },
+    component: CheckoutComponent,
+  },
+  {
     path: 'profile',
     canActivate: [roleGuard],
     data: { role: 'user' },
     component: Profile,
     children: [
-      { path: 'orders',   component: OrdersComponent },
-      { path: 'address',  component: Address },
-      { path: 'cart',     component: Cart },
+      { path: 'orders', component: OrdersComponent },
+      { path: 'address', component: Address },
+      { path: 'cart', component: Cart },
       { path: 'wishlist', component: WishlistComponent },
       {
         path: '',
@@ -56,10 +64,10 @@ export const routes: Routes = [
     ],
   },
   { path: 'auth', component: Auth },
+  { path: 'unauthorized', component: UnauthorizedComponent },
   { path: 'game', component: Game },
   { path: '**', redirectTo: '' },
 ];
-
 
 // import { Routes } from '@angular/router';
 // import { Profile } from './components/profileComponents/profile/profile';

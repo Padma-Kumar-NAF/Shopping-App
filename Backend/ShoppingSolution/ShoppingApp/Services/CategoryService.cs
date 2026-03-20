@@ -1,11 +1,9 @@
-﻿using Azure.Core;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Exceptions;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.Category;
-using ShoppingApp.Models.DTOs.Product;
 
 namespace ShoppingApp.Services
 {
@@ -27,39 +25,46 @@ namespace ShoppingApp.Services
                 throw new AppException("Category name is required", 400);
             }
 
-            string CategoryName = categoryName.Trim();
-            var existCategory = await _repository.FirstOrDefaultAsync(c => c.CategoryName == CategoryName);
-
-            if (existCategory != null)
-            {
-                throw new AppException("Category already exists", 409);
-            }
-
-            var category = new Category
-            {
-                CategoryName = CategoryName
-            };
-
             try
             {
-                await _repository.AddAsync(category);
-            }
-            catch (DbUpdateException)
-            {
-                throw new AppException("Error while updating category", 500);
-            }
-            
+                string CategoryName = categoryName.Trim();
+                var existCategory = await _repository.FirstOrDefaultAsync(c => c.CategoryName == CategoryName);
 
-            return new ApiResponse<AddCategoryResponseDTO>
-            {
-                StatusCode = 200,
-                Message = "Category name added",
-                Data = new AddCategoryResponseDTO()
+                if (existCategory != null)
                 {
-                    CategoryId = category.CategoryId,
-                },
-                Action = "AddCategory"
-            };
+                    throw new AppException("Category already exists", 409);
+                }
+
+                var category = new Category
+                {
+                    CategoryName = CategoryName
+                };
+
+                await _repository.AddAsync(category);
+
+                return new ApiResponse<AddCategoryResponseDTO>
+                {
+                    StatusCode = 200,
+                    Message = "Category name added",
+                    Data = new AddCategoryResponseDTO()
+                    {
+                        CategoryId = category.CategoryId,
+                    },
+                    Action = "AddCategory"
+                };
+            }
+            catch (AppException)
+            {
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while updating category", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while adding to category", ex, 500);
+            }
         }
 
         public async Task<ApiResponse<DeleteCategoryResponseDTO>> DeleteCategory(DeleteCategoryRequestDTO request)
@@ -67,37 +72,45 @@ namespace ShoppingApp.Services
             if (request.CategoryId == Guid.Empty)
                 throw new AppException("Invalid Category Id", 400);
 
-            var category = await _repository.GetAsync(request.CategoryId);
-
-            if (category == null)
-                throw new AppException("Category not found", 404);
-
-            var isUsed = await _productRepository
-                .GetQueryable()
-                .AnyAsync(p => p.CategoryId == request.CategoryId);
-
-            if (isUsed)
-                throw new AppException("Cannot delete category. It is associated with products.", 400);
-
             try
             {
-                await _repository.DeleteAsync(request.CategoryId);
-            }
-            catch (DbUpdateException)
-            {
-                throw new AppException("Error while deleting category", 500);
-            }
+                var category = await _repository.GetAsync(request.CategoryId);
 
-            return new ApiResponse<DeleteCategoryResponseDTO>()
-            {
-                Data = new DeleteCategoryResponseDTO
+                if (category == null)
+                    throw new AppException("Category not found", 404);
+
+                var isUsed = await _productRepository.GetQueryable().AnyAsync(p => p.CategoryId == request.CategoryId);
+
+                if (isUsed)
                 {
-                    IsSuccess = true,
-                },
-                StatusCode = 200,
-                Message = "Category deleted successfully",
-                Action = "DeleteCategory"
-            };
+                    throw new AppException("Cannot delete category. It is associated with products.", 400);
+                }
+
+                await _repository.DeleteAsync(request.CategoryId);
+
+                return new ApiResponse<DeleteCategoryResponseDTO>()
+                {
+                    Data = new DeleteCategoryResponseDTO
+                    {
+                        IsSuccess = true,
+                    },
+                    StatusCode = 200,
+                    Message = "Category deleted successfully",
+                    Action = "DeleteCategory"
+                };
+            }
+            catch (AppException)
+            {
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while deleting category", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while deleting category", ex, 500);
+            }
         }
 
         public async Task<ApiResponse<EditCategoryResponseDTO>> EditCategory(EditCategoryRequestDTO request)
@@ -110,38 +123,49 @@ namespace ShoppingApp.Services
 
             string categoryName = request.CategoryName.Trim();
 
-            var category = await _repository.GetAsync(request.CategoryId);
-
-            if (category == null)
-                throw new AppException("Category not found", 404);
-
-            var existingCategory = await _repository
-                .FirstOrDefaultAsync(c => c.CategoryName == categoryName && c.CategoryId != request.CategoryId);
-
-            if (existingCategory != null)
-                throw new AppException("Category name already exists", 409);
-
-            category.CategoryName = categoryName;
-
             try
             {
-                await _repository.UpdateAsync(request.CategoryId, category);
-            }
-            catch (DbUpdateException)
-            {
-                throw new AppException("Error while updating category", 500);
-            }
+                var category = await _repository.GetAsync(request.CategoryId);
 
-            return new ApiResponse<EditCategoryResponseDTO>()
-            {
-                StatusCode = 200,
-                Data = new EditCategoryResponseDTO
+                if (category == null)
                 {
-                    IsSuccess = true
-                },
-                Action = "EditCategory",
-                Message = "Category updated successfully",
-            };
+                    throw new AppException("Category not found", 404);
+                }
+
+                var existingCategory = await _repository.FirstOrDefaultAsync(c => c.CategoryName == categoryName && c.CategoryId != request.CategoryId);
+
+                if (existingCategory != null)
+                {
+                    throw new AppException("Category name already exists", 409);
+                }
+
+                category.CategoryName = categoryName;
+
+                await _repository.UpdateAsync(request.CategoryId, category);
+
+                return new ApiResponse<EditCategoryResponseDTO>()
+                {
+                    StatusCode = 200,
+                    Data = new EditCategoryResponseDTO
+                    {
+                        IsSuccess = true
+                    },
+                    Action = "EditCategory",
+                    Message = "Category updated successfully",
+                };
+            }
+            catch (AppException)
+            {
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while updating category",ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while adding to category", ex, 500);
+            }
         }
 
         public async Task<ApiResponse<GetAllCategoryResponseDTO>> GetAllCategories(int limit, int pageNumber)
@@ -152,85 +176,117 @@ namespace ShoppingApp.Services
             if (pageNumber <= 0)
                 throw new AppException("Page number must be greater than 0", 400);
 
-            var categories = await _repository
-                .GetQueryable()
-                .AsNoTracking()
-                .OrderBy(c => c.CategoryName)
-                .Skip((pageNumber - 1) * limit)
-                .Take(limit)
-                .Select(c => new CategoryDTO
-                {
-                    CategoryId = c.CategoryId,
-                    CategoryName = c.CategoryName
-                })
-                .ToListAsync();
-
-            if (!categories.Any())
-                throw new AppException("No categories found", 404);
-
-            return new ApiResponse<GetAllCategoryResponseDTO>()
+            try
             {
-                StatusCode = 200,
-                Message = "Categories fetched successfully",
-                Data = new GetAllCategoryResponseDTO
+                var categories = await _repository
+                    .GetQueryable()
+                    .AsNoTracking()
+                    .OrderBy(c => c.CategoryName)
+                    .Skip((pageNumber - 1) * limit)
+                    .Take(limit)
+                    .Select(c => new CategoryDTO
+                    {
+                        CategoryId = c.CategoryId,
+                        CategoryName = c.CategoryName
+                    })
+                    .ToListAsync();
+
+                if (!categories.Any())
                 {
-                    CategoryList = categories
-                },
-                Action = "GetAllCategories"
-            };
+                    throw new AppException("No categories found", 404);
+                }
+
+                return new ApiResponse<GetAllCategoryResponseDTO>()
+                {
+                    StatusCode = 200,
+                    Message = "Categories fetched successfully",
+                    Data = new GetAllCategoryResponseDTO
+                    {
+                        CategoryList = categories
+                    },
+                    Action = "GetAllCategories"
+                };
+            }
+            catch (AppException)
+            {
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while fetching all categories", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while fetching all categories", ex, 500);
+            }
         }
 
         public async Task<ApiResponse<GetProductsByCategoryResponseDTO>> GetProductsByCategory(GetProductsByCategoryRequestDTO request)
         {
-            if (request.CategoryId == Guid.Empty)
-                throw new AppException("Invalid Category Id", 400);
+            try
+            {
+                if (request.CategoryId == Guid.Empty)
+                    throw new AppException("Invalid Category Id", 400);
 
-            var category = await _repository.GetAsync(request.CategoryId);
+                var category = await _repository.GetAsync(request.CategoryId);
 
-            if (category == null)
-                throw new AppException("Category not found", 404);
+                if (category == null)
+                    throw new AppException("Category not found", 404);
 
-            var products = await _productRepository
-                .GetQueryable()
-                .Where(p => p.CategoryId == request.CategoryId)
-                .Select(p => new ProductsDTO
+                var products = await _productRepository
+                    .GetQueryable()
+                    .Where(p => p.CategoryId == request.CategoryId)
+                    .Select(p => new ProductsDTO
+                    {
+                        ProductId = p.ProductId,
+                        CategoryId = p.CategoryId,
+                        StockId = p.Stock!.StockId,
+                        Name = p.Name,
+                        ImagePath = p.ImagePath,
+                        Description = p.Description,
+                        CategoryName = p.Category!.CategoryName,
+                        Price = p.Price,
+                        Quantity = p.Stock.Quantity,
+
+                        Review = p.Reviews != null
+                            ? p.Reviews.Select(r => new CategoryProductReviewDTO
+                            {
+                                Summary = r.Summary,
+                                ReviewPoints = r.ReviewPoints
+                            }).ToList()
+                            : new List<CategoryProductReviewDTO>()
+                    })
+                    .ToListAsync();
+
+                var response = new GetProductsByCategoryResponseDTO
                 {
-                    ProductId = p.ProductId,
-                    CategoryId = p.CategoryId,
-                    StockId = p.Stock!.StockId,
-                    Name = p.Name,
-                    ImagePath = p.ImagePath,
-                    Description = p.Description,
-                    CategoryName = p.Category!.CategoryName,
-                    Price = p.Price,
-                    Quantity = p.Stock.Quantity,
+                    CategoryId = category.CategoryId,
+                    CategoryName = category.CategoryName,
+                    Products = products ?? new List<ProductsDTO>()
+                };
 
-                    Review = p.Reviews != null
-                        ? p.Reviews.Select(r => new CategoryProductReviewDTO
-                        {
-                            Summary = r.Summary,
-                            ReviewPoints = r.ReviewPoints
-                        }).ToList()
-                        : new List<CategoryProductReviewDTO>()
-                })
-                .ToListAsync();
-
-            var response = new GetProductsByCategoryResponseDTO
+                return new ApiResponse<GetProductsByCategoryResponseDTO>()
+                {
+                    Data = response,
+                    StatusCode = 200,
+                    Message = products.Any()
+                        ? "Products fetched successfully"
+                        : "No products found for this category",
+                    Action = "GetProductsByCategory"
+                };
+            }
+            catch (AppException)
             {
-                CategoryId = category.CategoryId,
-                CategoryName = category.CategoryName,
-                Products = products ?? new List<ProductsDTO>()
-            };
-
-            return new ApiResponse<GetProductsByCategoryResponseDTO>()
+                throw;
+            }
+            catch (DbUpdateException ex)
             {
-                Data = response,
-                StatusCode = 200,
-                Message = products.Any()
-                    ? "Products fetched successfully"
-                    : "No products found for this category",
-                Action = "GetProductsByCategory"
-            };
+                throw new AppException("Error while fetching producst by categories", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while fetching producst by categories", ex, 500);
+            }
         }
     }
 }

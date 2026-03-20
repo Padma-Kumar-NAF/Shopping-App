@@ -4,10 +4,6 @@ namespace ShoppingApp.Models.DTOs.Wishlist
 {
     public record GetUserWishListRequestDTOClass
     {
-        [Required(ErrorMessage = "Limit is required")]
-        public int Limit { get; set; }
-        [Required(ErrorMessage = "Page number is required")]
-        public int PageNumber { get; set; }
-        public Guid UserId { get; set; }
+        public Pagination pagination { get; set; } = new Pagination();
     }
 }

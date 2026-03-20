@@ -4,7 +4,7 @@ namespace ShoppingApp.Models.DTOs.Product
 {
     public record SearchProductByIdRequestDTO
     {
-        [Required(ErrorMessage = "Product name is required")]
+        [Required(ErrorMessage = "Product Id is required")]
         public Guid ProductId { get; set; }
     }
 }

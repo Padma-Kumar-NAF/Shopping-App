@@ -53,7 +53,7 @@ export class Auth {
       // password: new FormControl('admin123', [Validators.required, Validators.minLength(6)]),
       email: new FormControl('padmakumar23.dev@gmail.com', [Validators.required, Validators.email]),
       password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
-    });
+    }); 
 
     this.signUpForm = new FormGroup({
       name: new FormControl('', [Validators.required]),

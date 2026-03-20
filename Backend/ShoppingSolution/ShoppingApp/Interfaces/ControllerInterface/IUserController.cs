@@ -6,11 +6,10 @@ namespace ShoppingApp.Interfaces.ControllerInterface
 {
     public interface IUserController
     {
-        public Task<ActionResult<GetUsersResponseDTO>> GetAllUsers(GetUsersRequestDTO request);
-        public Task<ActionResult<AddUserDetailsResponseDTO>> AddUserDetails(AddUserDetailsRequestDTO request);
-        public Task<ActionResult<UpdateProfileResponseDTO>> UpdateUserDetails(UpdateProfileRequestDTO request);
-        public Task<ActionResult<CreateUserResponseDTO>> GetUserById();
-        public Task<ActionResult<EditUserEmailResponseDTO>> EditUserMail(EditUserEmailRequestDTO request);
-            //public Task<ActionResult<GetUsersResponseDTO>> GetUserById(GetUserByIdRequestDTO request);
+        public Task<IActionResult> GetAllUsers(GetUsersRequestDTO request);
+        public Task<IActionResult> AddUserDetails(AddUserDetailsRequestDTO request);
+        public Task<IActionResult> UpdateUserDetails(UpdateProfileRequestDTO request);
+        public Task<IActionResult> GetUserById();
+        public Task<IActionResult> EditUserMail(EditUserEmailRequestDTO request);
     }
 }

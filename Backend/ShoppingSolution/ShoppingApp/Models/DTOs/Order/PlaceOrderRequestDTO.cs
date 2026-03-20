@@ -4,8 +4,6 @@ namespace ShoppingApp.Models.DTOs.Order
 {
     public record PlaceOrderRequestDTO
     {
-        public Guid UserId { get; set; }
-
         [Required(ErrorMessage = "Address Id is required")]
         public Guid AddressId { get; set; }
 
@@ -15,9 +13,10 @@ namespace ShoppingApp.Models.DTOs.Order
         [Range(0.01, double.MaxValue, ErrorMessage = "Total amount must be greater than 0")]
         public decimal TotalAmount { get; set; }
 
-        [Required(ErrorMessage = "Order items are required")]
-        [MinLength(1, ErrorMessage = "At least one item is required")]
-        public List<PlaceOrderItemDTO> Items { get; set; } = new();
+        [Required(ErrorMessage = "Order Product is required")]
+        //[MinLength(1, ErrorMessage = "At least one item is required")]
+        //public ICollection<PlaceOrderItemDTO> Items { get; set; } = new List<PlaceOrderItemDTO>();
+        public PlaceOrderItemDTO OrderProductdDetails { get; set; } = new PlaceOrderItemDTO();
 
         [Required(ErrorMessage = "Payment type is required")]
         public string PaymentType { get; set; } = string.Empty;

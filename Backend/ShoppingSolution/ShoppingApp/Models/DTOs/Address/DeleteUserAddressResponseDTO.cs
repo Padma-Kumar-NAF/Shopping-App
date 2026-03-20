@@ -2,6 +2,6 @@
 {
     public record DeleteUserAddressResponseDTO
     {
-        public bool Success { get; set; }
+        public bool IsSuccess { get; set; }
     }
 }

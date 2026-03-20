@@ -4,8 +4,6 @@ namespace ShoppingApp.Models.DTOs.User
 {
     public record UpdateProfileRequestDTO
     {
-        public Guid UserId { get; set; }
-
         [Required(ErrorMessage = "User details are required.")]
         public UpdateUserDetailsDTO Details { get; set; } = new UpdateUserDetailsDTO();
     }

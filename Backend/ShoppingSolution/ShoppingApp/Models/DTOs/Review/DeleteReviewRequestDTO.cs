@@ -4,7 +4,6 @@ namespace ShoppingApp.Models.DTOs.Review
 {
     public record DeleteReviewRequestDTO
     {
-        public Guid UserId { get; set; }
 
         [Required(ErrorMessage = "Review Id is required")]
         public Guid ReviewId { get; set; }

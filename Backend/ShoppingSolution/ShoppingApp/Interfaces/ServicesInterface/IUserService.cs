@@ -10,5 +10,7 @@ namespace ShoppingApp.Interfaces.ServicesInterface
         public Task<EditUserEmailResponseDTO> EditUserEmail(EditUserEmailRequestDTO request);
         public Task<IEnumerable<GetUsersResponseDTO>> GetAllUsers(GetUsersRequestDTO request);
         public Task<GetUserByIdResponseDTO> GetUserById(Guid UserId);
+        public Task<Guid> AddUserDetails(AddUserDetailsRequestDTO request);
+        public Task<UpdateProfileResponseDTO> UpdateUserDetails(UpdateProfileRequestDTO request);
     }
 }
