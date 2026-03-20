@@ -5,12 +5,12 @@
         public Guid UserId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public CreateUserDetailsDTO? UserDetails { get; set; }
+        public GetUserDetailsDTO UserDetails { get; set; } = new GetUserDetailsDTO();
     }
 
-    public class CreateUserDetailsDTO
+    public class GetUserDetailsDTO
     {
-        public Guid UserId { get; set; } // ID of UserDetails
+        public Guid UserDetailsId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;

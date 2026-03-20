@@ -29,9 +29,9 @@ namespace ShoppingApp.Controllers
             {
                 var UserId = GetUserIdOrThrow();
 
-                var result = await _wishlistService.AddToWishListAsync(UserId,request.ProductId,request.WishListId);
+                var Result = await _wishlistService.AddToWishListAsync(UserId,request.ProductId,request.WishListId);
 
-                return Ok(result);
+                return Ok(Result);
             }
             catch 
             {
@@ -48,9 +48,9 @@ namespace ShoppingApp.Controllers
             {
                 var UserId = GetUserIdOrThrow();
 
-                var result = await _wishlistService.CreateWishListAsync(request.WishListName,UserId);
+                var Result = await _wishlistService.CreateWishListAsync(request.WishListName,UserId);
 
-                return Ok(result);
+                return Ok(Result);
             }
             catch
             {
@@ -67,9 +67,9 @@ namespace ShoppingApp.Controllers
             {
                 var UserId = GetUserIdOrThrow();
 
-                var result = await _wishlistService.DeleteWishListAsync(UserId,request.WishListId);
+                var Result = await _wishlistService.DeleteWishListAsync(UserId,request.WishListId);
 
-                return Ok(result);
+                return Ok(Result);
             }
             catch
             {
@@ -86,9 +86,9 @@ namespace ShoppingApp.Controllers
             {
                 var UserId = GetUserIdOrThrow();
 
-                var result = await _wishlistService.GetUserWishListAsync(request.pagination.PageSize, request.pagination.PageNumber,UserId);
+                var Result = await _wishlistService.GetUserWishListAsync(request.pagination.PageSize, request.pagination.PageNumber,UserId);
 
-                return Ok(result);
+                return Ok(Result);
             }
             catch
             {
@@ -105,9 +105,9 @@ namespace ShoppingApp.Controllers
             {
                 var UserId = GetUserIdOrThrow();
 
-                var result = await _wishlistService.RemoveFromWishListAsync(UserId,request.WishListId,request.ProductId);
+                var Result = await _wishlistService.RemoveFromWishListAsync(UserId,request.WishListId,request.ProductId);
 
-                return Ok(result);
+                return Ok(Result);
             }
             catch
             {

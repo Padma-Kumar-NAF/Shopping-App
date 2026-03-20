@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Filters;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
@@ -26,8 +27,8 @@ namespace ShoppingApp.Controllers
             try
             {
                 var UserId = GetUserIdOrThrow();
-                var products = await _productService.GetProducts(request);
-                return Ok(products);
+                var Result = await _productService.GetProducts(request);
+                return Ok(Result);
             }
             catch
             {
@@ -38,13 +39,13 @@ namespace ShoppingApp.Controllers
         //[Authorize(Roles = "admin,user")]
         [HttpPost("search-product")]
         [ValidateRequest]
-        public async Task<IActionResult> GetProductByName([FromBody] SearchProductRequestDTO request)
+        public async Task<IActionResult> GetProductByName([FromBody] SearchProductByNameRequestDTO request)
         {
             try
             {
                 var UserId = GetUserIdOrThrow();
-                var result = await _productService.SearchProductByName(request);
-                return Ok(result);
+                var Result = await _productService.SearchProductByName(request);
+                return Ok(Result);
             }
             catch
             {
@@ -60,8 +61,8 @@ namespace ShoppingApp.Controllers
             try
             {
                 var UserId = GetUserIdOrThrow();
-                var newProduct = await _productService.AddProduct(request);
-                return Ok(newProduct);
+                var Result = await _productService.AddProduct(UserId,request);
+                return Ok(Result);
             }
             catch
             {
@@ -77,8 +78,8 @@ namespace ShoppingApp.Controllers
             try
             {
                 var UserId = GetUserIdOrThrow();
-                var newProduct = await _productService.UpdateProduct(request);
-                return Ok(newProduct);
+                var Result = await _productService.UpdateProduct(UserId,request);
+                return Ok(Result);
             }
             catch
             {
@@ -94,8 +95,8 @@ namespace ShoppingApp.Controllers
             try
             {
                 var UserId = GetUserIdOrThrow();
-                var product = await _productService.SearchProductById(request);
-                return Ok(product);
+                var Result = await _productService.SearchProductById(request);
+                return Ok(Result);
             }
             catch
             {

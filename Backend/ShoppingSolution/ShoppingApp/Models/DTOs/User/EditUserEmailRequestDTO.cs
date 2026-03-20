@@ -8,11 +8,11 @@ namespace ShoppingApp.Models.DTOs.User
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Email is required")]
+        [Required(ErrorMessage = "Old Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email address")]
         public string OldEmail { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Email is required")]
+        [Required(ErrorMessage = "New Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email address")]
         public string NewEmail { get; set; } = string.Empty;
     }

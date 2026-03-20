@@ -4,6 +4,7 @@ namespace ShoppingApp.Models.DTOs.User
 {
     public record CreateUserResponseDTO
     {
-        public bool isSuccess { get; set; }
+        public bool IsSuccess { get; set; }
+        public Guid UserDetailsId { get; set; } 
     }
 }

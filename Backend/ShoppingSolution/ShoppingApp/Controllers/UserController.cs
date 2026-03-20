@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Filters;
 using ShoppingApp.Interfaces.ControllerInterface;
@@ -16,26 +17,9 @@ namespace ShoppingApp.Controllers
     {
         private readonly IUserService _userService;
 
-        public UserController(IUserService userService, IUserDetailsService userDetailsService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
-        }
-
-        //[Authorize(Roles = "User")]
-        [HttpPost("add-user-details")]
-        [ValidateRequest]
-        public async Task<IActionResult> AddUserDetails([FromBody] AddUserDetailsRequestDTO request)
-        {
-            try
-            {
-                var UserId = GetUserIdOrThrow();
-                var result = await _userService.AddUserDetails(request);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
         }
 
         [HttpPost("edit-user-email")]
@@ -45,12 +29,12 @@ namespace ShoppingApp.Controllers
             try
             {
                 var UserId = GetUserIdOrThrow();
-                var result = await _userService.EditUserEmail(request);
-                return Ok(result);
+                var Result = await _userService.EditUserEmail(UserId,request);
+                return Ok(Result);
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message);
+                throw;
             }
         }
 
@@ -62,8 +46,8 @@ namespace ShoppingApp.Controllers
             try
             {
                 var UserId = GetUserIdOrThrow();
-                var result = await _userService.GetAllUsers(request);
-                return Ok(result);
+                var Result = await _userService.GetAllUsers(request);
+                return Ok(Result);
             }
             catch
             {
@@ -78,8 +62,8 @@ namespace ShoppingApp.Controllers
             try
             {
                 var UserId = GetUserIdOrThrow();
-                var result = await _userService.GetUserById(GetUserId());
-                return Ok(result);
+                var Result = await _userService.GetUserById(GetUserId());
+                return Ok(Result);
             }
             catch
             {
@@ -94,12 +78,12 @@ namespace ShoppingApp.Controllers
             try
             {
                 var UserId = GetUserIdOrThrow();
-                var result = await _userService.UpdateUserDetails(request);
-                return Ok(result);
+                var Result = await _userService.UpdateUserDetails(UserId,request);
+                return Ok(Result);
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message);
+                throw;
             }
         }
     }

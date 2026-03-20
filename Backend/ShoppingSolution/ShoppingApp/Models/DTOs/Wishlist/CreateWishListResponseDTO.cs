@@ -2,6 +2,6 @@
 {
     public record CreateWishListResponseDTO
     {
-        public bool isCreated {  get; set; }
+        public bool IsCreated {  get; set; }
     }
 }

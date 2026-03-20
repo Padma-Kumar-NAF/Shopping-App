@@ -33,25 +33,25 @@ namespace ShoppingApp.Services
                 _unitOfWork = unitOfWork;
                 _tokenService = tokenService;
             }
-        public async Task<CreateUserResponseDTO> CreateUser(CreateUserRequestDTO request)
+        public async Task<ApiResponse<CreateUserResponseDTO>> CreateUser(CreateUserRequestDTO request)
         {
             var email = request.Email.Trim().ToLower();
 
             var existingUser = await _userRepository.GetQueryable()
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Email == email);
+                .AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
 
-            var existingPhoneNumber = await _userDetailsRepository.GetQueryable()
-                .AsNoTracking()
+            if (existingUser != null)
+            {
+                throw new AppException("Email already exists",409);
+            }
+
+            var existingPhoneNumber = await _userDetailsRepository.GetQueryable().AsNoTracking()
                 .FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
 
             if(existingPhoneNumber != null)
             {
-                throw new AppException("Phone number already exists");
+                throw new AppException("Phone number already exists",409);
             }
-
-            if (existingUser != null)
-                throw new AppException("Email already exists");
 
             await _unitOfWork.BeginTransactionAsync();
 
@@ -99,272 +99,369 @@ namespace ShoppingApp.Services
 
                 var result = await _unitOfWork.CommitAsync();
 
-                if (result <= 0)
-                    throw new AppException("Failed to create user. Please try again.");
-
-                return new CreateUserResponseDTO
+                return new ApiResponse<CreateUserResponseDTO>()
                 {
-                    isSuccess = true,
+                    Data = new CreateUserResponseDTO
+                    {
+                        IsSuccess = true,
+                    },
+                    StatusCode = 201,
+                    Action = "AddUserDetails",
+                    Message = "User created successfully"
                 };
             }
-            catch (Exception)
+            catch (AppException)
             {
                 await _unitOfWork.RollbackAsync();
-                throw new AppException("Server error occurred while creating user");
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Server error occurred while creating user", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Server error occurred while creating user", ex, 500);
             }
         }
 
-        public async Task<LoginResponseDTO> LoginUser(LoginRequestDTO request)
+        public async Task<ApiResponse<LoginResponseDTO>> LoginUser(LoginRequestDTO request)
         {
             try
             {
                 var email = request.Email.Trim().ToLower();
+
+                if (email == null)
+                {
+                    throw new AppException("Email not found",404);
+                }
+
                 var user = await _userRepository.GetQueryable()
                     .FirstOrDefaultAsync(u => u.Email == email);
-
                 if (user == null)
-                    throw new AppException("Email not found");
+                {
+                    throw new AppException("Invalid email", 400);
+                }
 
-                bool isValid = await _passwordService.VerifyPasswordAsync(
-                    request.Password,
-                    user.Password,
-                    user.SaltValue);
+                bool isValid = await _passwordService.VerifyPasswordAsync(request.Password,user.Password,user.SaltValue);
 
                 if (!isValid)
-                    throw new AppException("Invalid Password");
+                {
+                    throw new AppException("Invalid Password",400);
+                }
 
                 LoginResponseDTO response = new LoginResponseDTO()
                 {
-                    Token = _tokenService.GenerateToken(
-                    user.UserId,
-                    user.Name,
-                    user.Email,
-                    user.Role)
+                    Token = _tokenService.GenerateToken(user.UserId,user.Name,user.Email,user.Role)
                 };
 
-                return response;
+                return new ApiResponse<LoginResponseDTO>()
+                {
+                    Data = response,
+                    Message = "Logged in successfully",
+                    Action = "MoveToHome",
+                    StatusCode = 200
+                };
             }
             catch (AppException)
             {
                 throw;
             }
-        }
-
-        public async Task<IEnumerable<GetUsersResponseDTO>> GetAllUsers(GetUsersRequestDTO request)
-        {
-            if (request.PageNumber <= 0) request.PageNumber = 1;
-            if (request.Limit <= 0) request.Limit = 10;
-
-            var users = await _userRepository.GetQueryable()
-                .AsNoTracking()
-                .Include(u => u.UserDetails)
-                .OrderBy(u => u.Name)
-                .Skip((request.PageNumber - 1) * request.Limit)
-                .Take(request.Limit)
-                .Select(u => new GetUsersResponseDTO
-                {
-                    UserId = u.UserId,
-                    UserDetailsId = u.UserDetails!.UserDetailsId,
-                    Name = u.Name,
-                    Email = u.Email,
-                    Role = u.Role,
-                    PhoneNumber = u.UserDetails.PhoneNumber,
-                    AddressLine1 = u.UserDetails.AddressLine1,
-                    AddressLine2 = u.UserDetails.AddressLine2,
-                    State = u.UserDetails.State,
-                    City = u.UserDetails.City,
-                    Pincode = u.UserDetails.Pincode
-                })
-                .ToListAsync();
-
-            if (!users.Any())
-                throw new Exception("No Users Found");
-
-            return users;
-        }
-
-        public async Task<GetUserByIdResponseDTO> GetUserById(Guid UserId)
-        {
-            var user = await _userRepository.GetQueryable()
-                .Include(u => u.UserDetails)
-                .FirstOrDefaultAsync(u => u.UserId == UserId);
-
-            if (user == null)
-                throw new AppException("No user found");
-
-            return new GetUserByIdResponseDTO
+            catch (DbUpdateException ex)
             {
-                UserId = user.UserId,
-                Name = user.Name,
-                Email = user.Email,
-                UserDetails = new CreateUserDetailsDTO
+                throw new AppException("Error while login", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while login", ex, 500);
+            }
+        }
+
+        public async Task<ApiResponse<GetUsersResponseDTO>> GetAllUsers(GetUsersRequestDTO request)
+        {
+            try
+            {
+                var pageNumber = request.Pagination.PageNumber <= 0 ? 1 : request.Pagination.PageNumber;
+                var pageSize = request.Pagination.PageSize <= 0 ? 10 : request.Pagination.PageSize;
+
+                var query = _userRepository.GetQueryable().AsNoTracking().Include(u => u.UserDetails);
+
+                var totalCount = await query.CountAsync();
+
+                if (totalCount == 0)
                 {
-                    UserId = user.UserDetails!.UserDetailsId,
-                    Name = user.Name,
-                    Email = user.Email,
-                    PhoneNumber = user.UserDetails.PhoneNumber,
-                    AddressLine1 = user.UserDetails.AddressLine1,
-                    AddressLine2 = user.UserDetails.AddressLine2,
-                    State = user.UserDetails.State,
-                    City = user.UserDetails.City,
-                    Pincode = user.UserDetails.Pincode
+                    return new ApiResponse<GetUsersResponseDTO>()
+                    {
+                        Data = new GetUsersResponseDTO(),
+                        StatusCode = 200,
+                        Message = "No users found",
+                        Action = "ShowEmptyPage"
+                    };
                 }
-            };
-        }
 
-        public async Task<EditUserEmailResponseDTO> EditUserEmail(EditUserEmailRequestDTO request)
-        {
-            var user = await _userRepository.GetQueryable()
-                .FirstOrDefaultAsync(u => u.UserId == request.UserId && u.Email == request.OldEmail);
+                var users = await query
+                    .OrderBy(u => u.Name)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(u => new UserDetailsDTO
+                    {
+                        UserId = u.UserId,
+                        UserDetailsId = u.UserDetails!.UserDetailsId,
+                        Name = u.Name,
+                        Email = u.Email,
+                        Role = u.Role,
+                        PhoneNumber = u.UserDetails.PhoneNumber,
+                        AddressLine1 = u.UserDetails.AddressLine1,
+                        AddressLine2 = u.UserDetails.AddressLine2,
+                        State = u.UserDetails.State,
+                        City = u.UserDetails.City,
+                        Pincode = u.UserDetails.Pincode
+                    })
+                    .ToListAsync();
 
-            if (user == null)
-            {
-                throw new AppException("User not found");
-            }
-
-            var existingEmail = _userRepository.FirstOrDefaultAsync(u => u.Email == request.NewEmail);
-
-            if(existingEmail != null)
-            {
-                throw new AppException("Email already exist");
-            }
-
-            bool isValid = await _passwordService.VerifyPasswordAsync(
-                request.Password,
-                user.Password,
-                user.SaltValue);
-
-            if (!isValid)
-                throw new AppException("Invalid Password");
-
-            user.Email = request.NewEmail;
-            await _userRepository.UpdateAsync(user.UserId, user);
-
-            var userDetails = await _userDetailsRepository.GetQueryable()
-                .FirstOrDefaultAsync(ud => ud.UserId == request.UserId);
-
-            userDetails!.Email = request.NewEmail;
-            await _userDetailsRepository.UpdateAsync(userDetails.UserDetailsId, userDetails);
-
-            return new EditUserEmailResponseDTO
-            {
-                isSuccess = true
-            };
-        }
-
-        public async Task<Guid> AddUserDetails(AddUserDetailsRequestDTO request)
-        {
-            var user = await _userRepository.GetAsync(request.UserId);
-
-            if (user == null)
-                throw new Exception("User not found");
-
-            var details = new UserDetails
-            {
-                UserId = request.UserId,
-                Name = user.Name,
-                Email = user.Email,
-                PhoneNumber = request.PhoneNumber,
-                AddressLine1 = request.AddressLine1,
-                AddressLine2 = request.AddressLine2,
-                State = request.State,
-                City = request.City,
-                Pincode = request.Pincode
-            };
-
-            var result = await _userDetailsRepository.AddAsync(details);
-
-            if (result == null)
-                throw new Exception("Unable to add user details");
-
-            var address = new Address
-            {
-                UserId = request.UserId,
-                AddressLine1 = request.AddressLine1,
-                AddressLine2 = request.AddressLine2,
-                State = request.State,
-                City = request.City,
-                Pincode = request.Pincode,
-            };
-
-            var addedAddress = await _addressRepository.AddAsync(address);
-
-            if (addedAddress == null)
-                throw new Exception("Unable to add address");
-
-            return details.UserDetailsId;
-        }
-
-        public async Task<UpdateProfileResponseDTO> UpdateUserDetails(UpdateProfileRequestDTO request)
-        {
-            var user = await _userRepository.GetQueryable()
-                .FirstOrDefaultAsync(u => u.UserId == request.UserId);
-
-            if (user == null)
-                throw new Exception("User not found");
-
-            var userDetails = await _userDetailsRepository.GetQueryable()
-                .FirstOrDefaultAsync(ud => ud.UserId == request.UserId);
-
-            if (userDetails == null)
-                throw new Exception("User details not found");
-
-            var address = await _addressRepository.GetQueryable()
-                .FirstOrDefaultAsync(a => a.UserId == request.UserId);
-
-            if (user.Name != request.Details.Name)
-            {
-                user.Name = request.Details.Name;
-                await _userRepository.UpdateAsync(user.UserId, user);
-            }
-            userDetails.Name = request.Details.Name;
-            userDetails.PhoneNumber = request.Details.PhoneNumber;
-            userDetails.AddressLine1 = request.Details.AddressLine1;
-            userDetails.AddressLine2 = request.Details.AddressLine2;
-            userDetails.State = request.Details.State;
-            userDetails.City = request.Details.City;
-            userDetails.Pincode = request.Details.Pincode;
-
-            await _userDetailsRepository.UpdateAsync(userDetails.UserDetailsId, userDetails);
-
-            if (address != null)
-            {
-                address.AddressLine1 = request.Details.AddressLine1;
-                address.AddressLine2 = request.Details.AddressLine2;
-                address.State = request.Details.State;
-                address.City = request.Details.City;
-                address.Pincode = request.Details.Pincode;
-
-                await _addressRepository.UpdateAsync(address.AddressId, address);
-            }
-            else
-            {
-                address = new Address
+                var response = new GetUsersResponseDTO
                 {
-                    AddressId = Guid.NewGuid(),
-                    UserId = request.UserId,
-                    AddressLine1 = request.Details.AddressLine1,
-                    AddressLine2 = request.Details.AddressLine2,
-                    State = request.Details.State,
-                    City = request.Details.City,
-                    Pincode = request.Details.Pincode
+                    UsersList = users
                 };
 
-                await _addressRepository.AddAsync(address);
+                return new ApiResponse<GetUsersResponseDTO>()
+                {
+                    Data = response,
+                    StatusCode = 200,
+                    Message = "Users fetched successfully"
+                };
             }
-
-            return new UpdateProfileResponseDTO
+            catch (AppException)
             {
-                UserDetailsId = userDetails.UserDetailsId,
-                Name = userDetails.Name,
-                Email = user.Email,
-                PhoneNumber = userDetails.PhoneNumber,
-                AddressLine1 = userDetails.AddressLine1,
-                AddressLine2 = userDetails.AddressLine2,
-                State = userDetails.State,
-                City = userDetails.City,
-                Pincode = userDetails.Pincode
-            };
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while fetching users", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while fetching users", ex, 500);
+            }
+        }
+
+        public async Task<ApiResponse<GetUserByIdResponseDTO>> GetUserById(Guid userId)
+        {
+            try
+            {
+                var user = await _userRepository.GetQueryable().AsNoTracking().Include(u => u.UserDetails)
+                    .FirstOrDefaultAsync(u => u.UserId == userId);
+
+                if (user == null)
+                {
+                    throw new AppException("User not found", 404);
+                }
+
+                var response = new GetUserByIdResponseDTO
+                {
+                    UserId = user.UserId,
+                    Name = user.Name,
+                    Email = user.Email,
+                    UserDetails = new GetUserDetailsDTO
+                    {
+                        UserDetailsId = user.UserDetails!.UserDetailsId,
+                        PhoneNumber = user.UserDetails.PhoneNumber,
+                        AddressLine1 = user.UserDetails.AddressLine1,
+                        AddressLine2 = user.UserDetails.AddressLine2,
+                        State = user.UserDetails.State,
+                        City = user.UserDetails.City,
+                        Pincode = user.UserDetails.Pincode
+                    }
+                };
+
+                return new ApiResponse<GetUserByIdResponseDTO>()
+                {
+                    Data = response,
+                    StatusCode = 200,
+                    Message = "User fetched successfully",
+                    Action = "ShowUser"
+                };
+            }
+            catch (AppException)
+            {
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while fetching user", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while fetching user", ex, 500);
+            }
+        }
+
+        public async Task<ApiResponse<EditUserEmailResponseDTO>> EditUserEmail(Guid userId, EditUserEmailRequestDTO request)
+        {
+            try
+            {
+                var user = await _userRepository.GetQueryable()
+                    .FirstOrDefaultAsync(u => u.UserId == userId && u.Email == request.OldEmail);
+
+                if (user == null)
+                {
+                    throw new AppException("User not found", 404);
+                }
+
+                var existingEmail = await _userRepository.GetQueryable()
+                    .FirstOrDefaultAsync(u => u.Email == request.NewEmail);
+
+                if (existingEmail != null)
+                {
+                    throw new AppException("Email already exists", 400);
+                }
+
+                bool isValid = await _passwordService.VerifyPasswordAsync(request.Password,user.Password,user.SaltValue);
+
+                if (!isValid)
+                {
+                    throw new AppException("Invalid password", 401);
+                }
+
+                await _unitOfWork.BeginTransactionAsync();
+
+                user.Email = request.NewEmail;
+
+                await _userRepository.UpdateAsync(user.UserId, user);
+
+                var userDetails = await _userDetailsRepository.GetQueryable().FirstOrDefaultAsync(ud => ud.UserId == userId);
+
+                if (userDetails == null)
+                {
+                    throw new AppException("User details not found", 404);
+                }
+
+                userDetails.Email = request.NewEmail;
+                await _userDetailsRepository.UpdateAsync(userDetails.UserDetailsId, userDetails);
+
+                await _unitOfWork.CommitAsync();
+
+                return new ApiResponse<EditUserEmailResponseDTO>()
+                {
+                    Data = new EditUserEmailResponseDTO
+                    {
+                        IsSuccess = true
+                    },
+                    StatusCode = 200,
+                    Message = "Email updated successfully"
+                };
+            }
+            catch (AppException)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Error while updating email", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Something went wrong while updating email", ex, 500);
+            }
+        }
+
+        public async Task<ApiResponse<UpdateProfileResponseDTO>> UpdateUserDetails(Guid userId, UpdateProfileRequestDTO request)
+        {
+            try
+            {
+                var user = await _userRepository.GetQueryable()
+                    .FirstOrDefaultAsync(u => u.UserId == userId);
+
+                if (user == null)
+                {
+                    throw new AppException("User not found", 404);
+                }
+
+                var userDetails = await _userDetailsRepository.GetQueryable()
+                    .FirstOrDefaultAsync(ud => ud.UserId == userId);
+
+                if (userDetails == null)
+                {
+                    throw new AppException("User details not found", 404);
+                }
+
+                await _unitOfWork.BeginTransactionAsync();
+
+                if (user.Name != request.Details.Name)
+                {
+                    user.Name = request.Details.Name;
+                    await _userRepository.UpdateAsync(user.UserId, user);
+                }
+
+                userDetails.Name = request.Details.Name;
+                userDetails.PhoneNumber = request.Details.PhoneNumber;
+                userDetails.AddressLine1 = request.Details.AddressLine1;
+                userDetails.AddressLine2 = request.Details.AddressLine2;
+                userDetails.State = request.Details.State;
+                userDetails.City = request.Details.City;
+                userDetails.Pincode = request.Details.Pincode;
+
+                await _userDetailsRepository.UpdateAsync(userDetails.UserDetailsId, userDetails);
+
+                var address = await _addressRepository.GetQueryable().FirstOrDefaultAsync(a => a.UserId == userId);
+
+                if (address != null)
+                {
+                    address.AddressLine1 = request.Details.AddressLine1;
+                    address.AddressLine2 = request.Details.AddressLine2;
+                    address.State = request.Details.State;
+                    address.City = request.Details.City;
+                    address.Pincode = request.Details.Pincode;
+
+                    await _addressRepository.UpdateAsync(address.AddressId, address);
+                }
+                else
+                {
+                    address = new Address
+                    {
+                        UserId = userId,
+                        AddressLine1 = request.Details.AddressLine1,
+                        AddressLine2 = request.Details.AddressLine2,
+                        State = request.Details.State,
+                        City = request.Details.City,
+                        Pincode = request.Details.Pincode
+                    };
+
+                    await _addressRepository.AddAsync(address);
+                }
+
+                await _unitOfWork.CommitAsync();
+                
+                return new ApiResponse<UpdateProfileResponseDTO>()
+                {
+                    Data = new UpdateProfileResponseDTO
+                    {
+                        IsSuccess = true
+                    },
+                    StatusCode = 200,
+                    Message = "Profile updated successfully"
+                };
+            }
+            catch (AppException)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Error while updating profile", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Something went wrong while updating profile", ex, 500);
+            }
         }
     }
 }

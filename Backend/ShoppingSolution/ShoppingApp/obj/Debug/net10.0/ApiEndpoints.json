@@ -129,17 +129,7 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.Wishlist.AddProductToWishListResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.WishListController",
@@ -155,17 +145,7 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.Wishlist.CreateWishListResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.WishListController",
@@ -181,17 +161,7 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.Wishlist.DeleteWishListResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.WishListController",
@@ -207,17 +177,7 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.Wishlist.RemoveProductFromWishListResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.WishListController",
@@ -233,17 +193,7 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.Wishlist.GetUserWishListResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.CartController",
@@ -418,7 +368,7 @@
   {
     "ContainingType": "ShoppingApp.Controllers.OrderController",
     "Method": "CancelOrder",
-    "RelativePath": "orders/CancelOrder",
+    "RelativePath": "orders/cancel-order",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -429,22 +379,12 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.Order.GetUserOrderDetailsResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.OrderController",
     "Method": "GetOrderByUserId",
-    "RelativePath": "orders/GetUserOrders",
+    "RelativePath": "orders/get-user-orders",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -455,22 +395,12 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.Order.GetUserOrderDetailsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.OrderController",
     "Method": "PlaceOrder",
-    "RelativePath": "orders/PlaceOrder",
+    "RelativePath": "orders/place-order",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -481,22 +411,12 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.Order.GetUserOrderDetailsResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.OrderController",
     "Method": "UpdateOrder",
-    "RelativePath": "orders/UpdateOrderStatus",
+    "RelativePath": "orders/update-order-status",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -507,22 +427,12 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.Order.UpdateOrderResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.ProductsController",
     "Method": "AddProduct",
-    "RelativePath": "Products/AddProduct",
+    "RelativePath": "Products/add-product",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -533,22 +443,12 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.ProductsController",
     "Method": "GetProductById",
-    "RelativePath": "Products/GetProductById",
+    "RelativePath": "Products/get-product-by-id",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -559,22 +459,12 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.ProductsController",
     "Method": "GetProducts",
-    "RelativePath": "Products/getProducts",
+    "RelativePath": "Products/get-products",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -585,48 +475,28 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.ProductsController",
     "Method": "GetProductByName",
-    "RelativePath": "Products/search",
+    "RelativePath": "Products/search-product",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "request",
-        "Type": "ShoppingApp.Models.DTOs.Product.SearchProductRequestDTO",
+        "Type": "ShoppingApp.Models.DTOs.Product.SearchProductByNameRequestDTO",
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.ProductsController",
     "Method": "UpdateProduct",
-    "RelativePath": "Products/UpdateProduct",
+    "RelativePath": "Products/update-product",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -637,22 +507,12 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.Product.UpdateProductResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.ReviewController",
     "Method": "AddReview",
-    "RelativePath": "Review/AddReview",
+    "RelativePath": "Review/add-review",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -663,22 +523,12 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.Review.AddReviewResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.ReviewController",
     "Method": "DeleteReview",
-    "RelativePath": "Review/DeleteReview",
+    "RelativePath": "Review/delete-review",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -689,48 +539,12 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.Review.DeleteReviewResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "ShoppingApp.Controllers.UserController",
-    "Method": "AddUserDetails",
-    "RelativePath": "User/AddUserDetails",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "request",
-        "Type": "ShoppingApp.Models.DTOs.User.AddUserDetailsRequestDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.User.AddUserDetailsResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.UserController",
     "Method": "EditUserMail",
-    "RelativePath": "User/EditUserMail",
+    "RelativePath": "User/edit-user-email",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -741,22 +555,12 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.User.EditUserEmailResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.UserController",
     "Method": "GetAllUsers",
-    "RelativePath": "User/GetAllUsers",
+    "RelativePath": "User/get-all-users",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -767,42 +571,22 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.User.GetUsersResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.UserController",
     "Method": "GetUserById",
-    "RelativePath": "User/GetUserById",
+    "RelativePath": "User/get-user-by-id",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.User.CreateUserResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.UserController",
     "Method": "UpdateUserDetails",
-    "RelativePath": "User/UpdateUserDetails",
+    "RelativePath": "User/update-user-details",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -813,16 +597,6 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.User.UpdateProfileResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   }
 ]

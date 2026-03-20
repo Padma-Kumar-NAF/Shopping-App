@@ -1,12 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ShoppingApp.Models.DTOs.Product
+﻿namespace ShoppingApp.Models.DTOs.Product
 {
-    public record GetAllProductsResponseDTO
-    {
-        public ICollection<ProductDetails> ProductList { get; set; } = new List<ProductDetails>();
-    }
-    public record ProductDetails
+    public class SearchProductByIdResponseDTO
     {
         public Guid ProductId { get; set; }
         public Guid CategoryId { get; set; }
@@ -18,10 +12,5 @@ namespace ShoppingApp.Models.DTOs.Product
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public ICollection<ReviewDTO> Review { get; set; } = new List<ReviewDTO>();
-    }
-    public class ReviewDTO
-    {
-        public string Summary { get; set; } = string.Empty;
-        public int ReviewPoints { get; set; }
     }
 }

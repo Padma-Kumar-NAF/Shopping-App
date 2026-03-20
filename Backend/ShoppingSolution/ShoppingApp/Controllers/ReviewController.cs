@@ -25,8 +25,8 @@ namespace ShoppingApp.Controllers
             try
             {
                 var UserId = GetUserIdOrThrow();
-                var review =await _reviewService.AddReview(request);
-                return Ok(review);
+                var Result =await _reviewService.AddReview(UserId,request);
+                return Ok(Result);
             }
             catch
             {
@@ -41,8 +41,8 @@ namespace ShoppingApp.Controllers
             try
             {
                 var UserId = GetUserIdOrThrow();
-                var result = await _reviewService.DeleteReview(UserId,request.ReviewId);
-                return Ok(result);
+                var Result = await _reviewService.DeleteReview(UserId,request.ReviewId);
+                return Ok(Result);
             }
             catch
             {
