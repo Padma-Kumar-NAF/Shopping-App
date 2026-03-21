@@ -1,13 +1,16 @@
-﻿using ShoppingApp.Models.DTOs.Order;
+﻿using Microsoft.EntityFrameworkCore;
+using ShoppingApp.Exceptions;
+using ShoppingApp.Models;
+using ShoppingApp.Models.DTOs.Order;
 
 namespace ShoppingApp.Interfaces.ServicesInterface
 {
     public interface IOrderService
     {
-        public Task<IEnumerable<GetUserOrderDetailsResponseDTO>> GetUserOrderById(GetUserOrderDetailsRequestDTO request);
-        public Task<GetUserOrderDetailsResponseDTO> PlaceOrder(PlaceOrderRequestDTO request);
-        public Task<GetUserOrderDetailsResponseDTO> CancelOrder(CancelOrderRequestDTO request);
-        // This is for admin
-        public Task<bool> UpdateOrder(Guid OrderId,string Status);
+        public Task<ApiResponse<CancelOrderResponseDTO>> CancelOrder(Guid userId, Guid orderId);
+        public Task<ApiResponse<GetUserOrderDetailsResponseDTO>> GetUserOrderById(Guid userId,GetUserOrderDetailsRequestDTO request);
+        public Task<ApiResponse<PlaceOrderResponseDTO>> PlaceOrder(Guid userId,PlaceOrderRequestDTO request);
+        public Task<ApiResponse<UpdateOrderResponseDTO>> UpdateOrder(Guid userId,Guid orderId,string status);
+        public Task<ApiResponse<GetAllOrderResponseDTO>> GetAllOrders(GetAllOrderRequestDTO request);
     }
 }

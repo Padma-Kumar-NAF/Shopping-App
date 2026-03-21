@@ -37,10 +37,10 @@ namespace ShoppingApp.Repositories
             return null;
         }
 
-        public async Task<IEnumerable<C>> GetAllAsync()
-        {
-            return await _context.Set<C>().ToListAsync();
-        }
+        //public async Task<IEnumerable<C>> GetAllAsync()
+        //{
+        //    return await _context.Set<C>().ToListAsync();
+        //}
 
         public async Task<C?> GetAsync(K key)
         {

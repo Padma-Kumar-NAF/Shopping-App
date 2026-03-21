@@ -19,9 +19,11 @@ namespace ShoppingApp.Models.DTOs.Product
         [MinLength(5, ErrorMessage = "Description must be at least 5 characters")]
         public string Description { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Price is required")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0")]
         public decimal Price { get; set; }
 
+        [Required(ErrorMessage = "Quantity is required")]
         [Range(0, int.MaxValue, ErrorMessage = "Quantity cannot be negative")]
         public int Quantity { get; set; }
     }

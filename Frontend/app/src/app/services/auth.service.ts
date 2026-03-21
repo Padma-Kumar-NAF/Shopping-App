@@ -10,6 +10,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { jwtDecode } from 'jwt-decode';
 import { UserDetails } from '../models/user.model';
+import { ApiResponse } from '../models/apiResponse.model';
 
 @Injectable({
   providedIn: 'root',
@@ -20,8 +21,8 @@ export class AuthApiService {
 
   constructor(private http: HttpClient) {}
 
-  LoginApi(loginModel: LoginModel): Observable<LoginResponseDTO> {
-    return this.http.post<LoginResponseDTO>(`${this.baseUrl}api/auth/login`, loginModel);
+  LoginApi(loginModel: LoginModel): Observable<ApiResponse<LoginResponseDTO>> {
+    return this.http.post<ApiResponse<LoginResponseDTO>>(`${this.baseUrl}api/auth/login`, loginModel);
   }
 
   SignUpApi(user: SignupModel): Observable<CreateUserResponseDTO> {

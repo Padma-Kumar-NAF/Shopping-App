@@ -1,4 +1,6 @@
-﻿using ShoppingApp.Interfaces.RepositoriesInterface;
+﻿using Microsoft.EntityFrameworkCore;
+using ShoppingApp.Exceptions;
+using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.Review;
@@ -8,56 +10,96 @@ namespace ShoppingApp.Services
     public class ReviewService : IReviewService
     {
         private readonly IRepository<Guid, Review> _repository;
+        private readonly IRepository<Guid, User> _userRepository;
 
-        public ReviewService(IRepository<Guid, Review> repository)
+        public ReviewService(IRepository<Guid, Review> repository, IRepository<Guid, User> userRepository)
         {
             _repository = repository;
+            _userRepository = userRepository;
         }
 
-        public async Task<AddReviewResponseDTO> AddReview(AddReviewRequestDTO request)
+        public async Task<ApiResponse<AddReviewResponseDTO>> AddReview(Guid userId,AddReviewRequestDTO request)
         {
-            var review = new Review
+            try
             {
-                Summary = request.Summary,
-                UserId = request.UserId,
-                ProductId = request.ProductId,
-                ReviewPoints = request.ReviewPoints
-            };
+                var user = await _userRepository.GetAsync(userId);
+                if (user == null)
+                {
+                    throw new AppException("User not found",404);
+                }
 
-            var added = await _repository.AddAsync(review);
+                var review = new Review
+                {
+                    Summary = request.Summary,
+                    UserId = userId,
+                    ProductId = request.ProductId,
+                    ReviewPoints = request.ReviewPoints
+                };
 
-            if (added == null)
-                throw new Exception("Can't able to add a review");
+                var added = await _repository.AddAsync(review);
 
-            return new AddReviewResponseDTO
+                return new ApiResponse<AddReviewResponseDTO>()
+                {
+                    Data = new AddReviewResponseDTO
+                    {
+                        ReviewId = added!.ReviewId
+                    },
+                    StatusCode = 200,
+                    Action = "AddReview",
+                    Message = "Review added successfully"
+                };
+            }
+            catch (AppException)
             {
-                ReviewId = added.ReviewId,
-                ProductId = request.ProductId,
-                ReviewPoints = request.ReviewPoints,
-                UserId = request.UserId,
-                Summary = request.Summary
-            };
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while Searching product", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while Searching product", ex, 500);
+            }
         }
 
-        public async Task<DeleteReviewResponseDTO> DeleteReview(Guid userId, Guid reviewId)
+        public async Task<ApiResponse<DeleteReviewResponseDTO>> DeleteReview(Guid userId, Guid reviewId)
         {
-            var review = await _repository.GetAsync(reviewId);
-
-            if (review == null)
-                throw new Exception($"Review with Id {reviewId} not found");
-
-            if (review.UserId != userId)
-                throw new UnauthorizedAccessException("You are not allowed to delete this review");
-
-            await _repository.DeleteAsync(reviewId);
-
-            return new DeleteReviewResponseDTO
+            try
             {
-                Summary = review.Summary,
-                UserId = review.UserId,
-                ProductId = review.ProductId,
-                ReviewPoints = review.ReviewPoints
-            };
+                var review = await _repository.GetAsync(reviewId);
+
+                if (review == null)
+                    throw new Exception($"Review not found");
+
+                if (review.UserId != userId)
+                    throw new UnauthorizedAccessException("You are not allowed to delete this review");
+
+                await _repository.DeleteAsync(reviewId);
+
+                return new ApiResponse<DeleteReviewResponseDTO>()
+                {
+                    Data = new DeleteReviewResponseDTO
+                    {
+                        IsDeleted = true,
+                    },
+                    StatusCode = 200,
+                    Message = "Review deleted successfully",
+                    Action = "DeleteReview"
+                };
+            }
+            catch (AppException)
+            {
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while deleting review", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while deleting review", ex, 500);
+            }
         }
     }
 }

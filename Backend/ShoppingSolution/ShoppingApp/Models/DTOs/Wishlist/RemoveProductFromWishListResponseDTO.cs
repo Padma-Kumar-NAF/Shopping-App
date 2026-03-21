@@ -2,6 +2,6 @@
 {
     public record RemoveProductFromWishListResponseDTO
     {
-        public bool Success { get; set; }
+        public bool IsRemoved { get; set; }
     }
 }

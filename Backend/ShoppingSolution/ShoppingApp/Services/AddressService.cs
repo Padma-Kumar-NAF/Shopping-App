@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Exceptions;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
@@ -20,7 +19,7 @@ namespace ShoppingApp.Services
             _userRepository = userRepository;
             _orderRepository = orderRepository;
         }
-        public async Task<CreateNewAddressResponseDTO> AddAddress(Guid UserId, CreateNewAddressRequestDTO request)
+        public async Task<ApiResponse<CreateNewAddressResponseDTO>> AddAddress(Guid UserId, CreateNewAddressRequestDTO request)
         {
             try
             {
@@ -29,15 +28,17 @@ namespace ShoppingApp.Services
 
                 if (user == null)
                 {
-                    throw new AppException("User does not exist");
+                    throw new AppException("User does not exist", 404);
                 }
 
                 var normalizedRequest = request.AddressLine1.Trim().ToLower();
-                var isExited = await _repository.GetQueryable().FirstOrDefaultAsync(a => a.UserId == UserId && a.AddressLine1.Trim().ToLower() == normalizedRequest);
+
+                var isExited = await _repository.GetQueryable().FirstOrDefaultAsync(a => a.UserId == UserId &&
+                                              a.AddressLine1.Trim().ToLower() == normalizedRequest);
 
                 if (isExited != null)
                 {
-                    throw new AppException("Address already exists");
+                    throw new AppException("Address already exists", 409);
                 }
 
                 var newAddress = new Address
@@ -54,59 +55,88 @@ namespace ShoppingApp.Services
 
                 if (address == null)
                 {
-                    throw new AppException("Unable to add address at this moment");
+                    throw new AppException("Unable to add address at this moment", 500);
                 }
 
-                return new CreateNewAddressResponseDTO
+                return new ApiResponse<CreateNewAddressResponseDTO>()
                 {
-                    AddressId = address.AddressId,
+                    StatusCode = 200,
+                    Message = "Address added successfully",
+                    Data = new CreateNewAddressResponseDTO
+                    {
+                        AddressId = address.AddressId,
+                    },
+                    Action = "Add Address"
                 };
             }
             catch (AppException)
             {
                 throw;
             }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Database error while adding address", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while adding address", ex, 500);
+            }
         }
 
-        public async Task<bool> DeleteUserAddress(Guid UserId, DeleteUserAddressRequestDTO request)
+        public async Task<ApiResponse<DeleteUserAddressResponseDTO>> DeleteUserAddress(Guid UserId, DeleteUserAddressRequestDTO request)
         {
             try
             {
                 var address = await _repository.FirstOrDefaultAsync(a => a.AddressId == request.AddressId && a.UserId == UserId);
 
                 if (address == null)
-                    throw new AppException("Address not found or does not belong to user");
+                    throw new AppException("Address not found or does not belong to user", 404);
 
                 var isUsedInOrder = await _orderRepository.GetQueryable().AnyAsync(o => o.AddressId == request.AddressId);
 
                 if (isUsedInOrder)
-                    throw new AppException("Cannot delete address because it is associated with existing orders");
+                    throw new AppException("Cannot delete address because it is associated with existing orders", 409);
 
-                var deleted = await _repository.DeleteAsync(request.AddressId);
-
-                return deleted != null;
+                await _repository.DeleteAsync(request.AddressId);
+                return new ApiResponse<DeleteUserAddressResponseDTO>()
+                {
+                    StatusCode = 200,
+                    Data = new DeleteUserAddressResponseDTO()
+                    {
+                        IsSuccess = true,
+                    },
+                    Action = "DeleteAddress",
+                    Message = "Address deleted successfully"
+                };
             }
             catch (AppException)
             {
                 throw;
             }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while deleting address", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while deleting address", ex, 500);
+            }
         }
 
-        public async Task<EditUserAddressResponseDTO> EditUserAddress(Guid UserId, EditUserAddressRequestDTO request)
+        public async Task<ApiResponse<EditUserAddressResponseDTO>> EditUserAddress(Guid UserId, EditUserAddressRequestDTO request)
         {
             try
             {
                 var address = await _repository.GetQueryable()
-                    .FirstOrDefaultAsync(a => a.AddressId == request.AddressId && a.UserId == UserId);
+                .FirstOrDefaultAsync(a => a.AddressId == request.AddressId && a.UserId == UserId);
 
                 if (address == null)
-                    throw new AppException("Address not found or does not belong to user");
+                    throw new AppException("Address not found or does not belong to user", 404);
 
-                var isUsedInOrder = await _orderRepository.GetQueryable()
-                    .AnyAsync(o => o.AddressId == request.AddressId);
+                var isUsedInOrder = await _orderRepository.GetQueryable().AnyAsync(o => o.AddressId == request.AddressId);
 
                 if (isUsedInOrder)
-                    throw new AppException("Cannot edit address because it is associated with existing orders");
+                    throw new AppException("Cannot edit address because it is associated with existing orders", 409);
 
                 string normalize(string s) => (s ?? string.Empty).Trim().ToLower();
 
@@ -119,14 +149,20 @@ namespace ShoppingApp.Services
 
                 if (!isChanged)
                 {
-                    return new EditUserAddressResponseDTO { isSuccess = true };
+                    return new ApiResponse<EditUserAddressResponseDTO>()
+                    {
+                        Data = new EditUserAddressResponseDTO { IsSuccess = true },
+                        Action = "NoChangesRequired",
+                        Message = "Address updated",
+                        StatusCode = 200
+                    };
                 }
 
                 var duplicate = await _repository.GetQueryable().AnyAsync(a => a.UserId == UserId && a.AddressId != request.AddressId
-                                   && (a.AddressLine1).Trim().ToLower() == (request.AddressLine1).Trim().ToLower());
+                                    && (a.AddressLine1).Trim().ToLower() == (request.AddressLine1).Trim().ToLower());
 
                 if (duplicate)
-                    throw new AppException("Another address with the same AddressLine1 already exists");
+                    throw new AppException("Another address with the same AddressLine1 already exists", 409);
 
                 address.AddressLine1 = request.AddressLine1.Trim();
                 address.AddressLine2 = request.AddressLine2.Trim();
@@ -134,50 +170,88 @@ namespace ShoppingApp.Services
                 address.State = request.State.Trim();
                 address.Pincode = request.Pincode.Trim();
 
-                var updated = await _repository.UpdateAsync(request.AddressId,address);
 
-                if (updated == null)
-                    throw new AppException("Unable to update address at this moment");
-
-                return new EditUserAddressResponseDTO { isSuccess = true };
+                await _repository.UpdateAsync(request.AddressId, address);
+                return new ApiResponse<EditUserAddressResponseDTO>()
+                {
+                    Data = new EditUserAddressResponseDTO { IsSuccess = true },
+                    Action = "NoChangesRequired",
+                    Message = "Address updated",
+                    StatusCode = 200
+                };
             }
             catch (AppException)
             {
                 throw;
             }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while Editing address", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while editing address", ex, 500);
+            }
         }
 
-        public async Task<GetUserAddressResposneDTO> GetUserAddress(Guid UserId,GetUserAddressRequestDTO request)
+        public async Task<ApiResponse<GetUserAddressResposneDTO>> GetUserAddress(Guid UserId,GetUserAddressRequestDTO request)
         {
-            var query = _repository.GetQueryable().Where(a => a.UserId == UserId);
-
-            if(query == null)
+            try
             {
-                return new GetUserAddressResposneDTO()
+                var query = _repository.GetQueryable().Where(a => a.UserId == UserId);
+
+                if (query == null)
                 {
-                    AddressList = new List<AddressDTO>()
+                    return new ApiResponse<GetUserAddressResposneDTO>()
+                    {
+                        Data = new GetUserAddressResposneDTO()
+                        {
+                            AddressList = new List<AddressDTO>()
+                        },
+                        Message = "No address found",
+                        Action = "Show address button",
+                        StatusCode = 200
+                    };
+                }
+
+                var addressList = await query
+                    .OrderBy(a => a.CreatedAt)
+                    .Skip((request.Pagination.PageNumber - 1) * request.Pagination.PageSize)
+                    .Take(request.Pagination.PageSize)
+                    .Select(a => new AddressDTO
+                    {
+                        AddressId = a.AddressId,
+                        AddressLine1 = a.AddressLine1,
+                        AddressLine2 = a.AddressLine2,
+                        State = a.State,
+                        City = a.City,
+                        Pincode = a.Pincode
+                    })
+                    .ToListAsync();
+
+                return new ApiResponse<GetUserAddressResposneDTO>()
+                {
+                    Data = new GetUserAddressResposneDTO
+                    {
+                        AddressList = addressList
+                    },
+                    StatusCode = 200,
+                    Action = "Show address list",
+                    Message = "Address fetched successfully"
                 };
             }
-
-            var addressList = await query
-                .OrderBy(a => a.CreatedAt)
-                .Skip((request.Pagination.PageNumber - 1) * request.Pagination.PageSize)
-                .Take(request.Pagination.PageSize)
-                .Select(a => new AddressDTO
-                {
-                    AddressId = a.AddressId,
-                    AddressLine1 = a.AddressLine1,
-                    AddressLine2 = a.AddressLine2,
-                    State = a.State,
-                    City = a.City,
-                    Pincode = a.Pincode
-                })
-                .ToListAsync();
-
-            return new GetUserAddressResposneDTO
+            catch (AppException)
             {
-                AddressList = addressList
-            };
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Database error while fetching the user address", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while getting the user address", ex, 500);
+            }
         }
     }
 }

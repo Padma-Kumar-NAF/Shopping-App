@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using ShoppingApp.Filters;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models.DTOs.Wishlist;
@@ -6,6 +9,7 @@ using System.Security.Claims;
 
 namespace ShoppingApp.Controllers
 {
+    [Authorize(Roles = "user")]
     [Route("api/wishlist")]
     [ApiController]
     public class WishListController : BaseController, IWishListController
@@ -16,145 +20,98 @@ namespace ShoppingApp.Controllers
             _wishlistService = wishlistService;
         }
 
+        [Authorize(Roles = "user")]
         [HttpPost("add-product")]
-        public async Task<ActionResult<AddProductToWishListResponseDTO>> AddToWishListAsync(AddProductToWishListRequestDTO request)
+        [ValidateRequest]
+        public async Task<IActionResult> AddToWishListAsync([FromBody] AddProductToWishListRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var userId = GetUserId();
-            if (userId == Guid.Empty)
-                return BadRequest("Invalid or missing user token");
-
             try
             {
-                var result = await _wishlistService.AddToWishListAsync(
-                    userId,
-                    request.ProductId,
-                    request.WishListId
-                );
+                var UserId = GetUserIdOrThrow();
 
-                var response = new AddProductToWishListResponseDTO
-                {
-                    IsSuccess = result
-                };
+                var Result = await _wishlistService.AddToWishListAsync(UserId,request.ProductId,request.WishListId);
 
-                return Ok(response);
+                return Ok(Result);
             }
-            catch (Exception ex)
+            catch 
             {
-                return BadRequest(ex.Message);
+                throw;
             }
         }
 
+        [Authorize(Roles = "user")]
         [HttpPost("create")]
-        public async Task<ActionResult<CreateWishListResponseDTO>> CreateWishList(CreateWishListRequestDTO request)
+        [ValidateRequest]
+        public async Task<IActionResult> CreateWishList([FromBody] CreateWishListRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var userId = GetUserId();
-            if (userId == Guid.Empty)
-                return BadRequest("Invalid or missing user token");
-
             try
             {
-                var result = await _wishlistService.CreateWishListAsync(
-                    request.WishListName,
-                    userId
-                );
+                var UserId = GetUserIdOrThrow();
 
-                return Ok(new CreateWishListResponseDTO
-                {
-                    isCreated = result
-                });
+                var Result = await _wishlistService.CreateWishListAsync(request.WishListName,UserId);
+
+                return Ok(Result);
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message);
+                throw;
             }
         }
 
+        [Authorize(Roles = "user")]
         [HttpDelete("delete")]
-        public async Task<ActionResult<DeleteWishListResponseDTO>> DeleteWishList(DeleteWishListRequestDTO request)
+        [ValidateRequest]
+        public async Task<IActionResult> DeleteWishList([FromBody] DeleteWishListRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var userId = GetUserId();
-            if (userId == Guid.Empty)
-                return BadRequest("Invalid or missing user token");
-
             try
             {
-                var result = await _wishlistService.DeleteWishListAsync(
-                    userId,
-                    request.WishListId
-                );
+                var UserId = GetUserIdOrThrow();
 
-                return Ok(new DeleteWishListResponseDTO
-                {
-                    IsDeleted = result
-                });
+                var Result = await _wishlistService.DeleteWishListAsync(UserId,request.WishListId);
+
+                return Ok(Result);
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message);
+                throw;
             }
         }
 
+        [Authorize(Roles = "user")]
         [HttpPost("user-wishlist")]
-        public async Task<ActionResult<GetUserWishListResponseDTO>> GetUserWishList(GetUserWishListRequestDTOClass request)
+        [ValidateRequest]
+        public async Task<IActionResult> GetUserWishList([FromBody] GetUserWishListRequestDTOClass request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var userId = GetUserId();
-            if (userId == Guid.Empty)
-                return BadRequest("Invalid or missing user token");
-
             try
             {
-                var result = await _wishlistService.GetUserWishListAsync(
-                    request.Limit,
-                    request.PageNumber,
-                    userId
-                );
+                var UserId = GetUserIdOrThrow();
 
-                return Ok(result);
+                var Result = await _wishlistService.GetUserWishListAsync(request.pagination.PageSize, request.pagination.PageNumber,UserId);
+
+                return Ok(Result);
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message);
+                throw;
             }
         }
 
+        [Authorize(Roles = "user")]
         [HttpDelete("remove-product")]
-        public async Task<ActionResult<RemoveProductFromWishListResponseDTO>> RemoveFromWishList(RemoveProductFromWishListRequestDTO request)
+        [ValidateRequest]
+        public async Task<IActionResult> RemoveFromWishList([FromBody] RemoveProductFromWishListRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var userId = GetUserId();
-            if (userId == Guid.Empty)
-                return BadRequest("Invalid or missing user token");
-
             try
             {
-                var result = await _wishlistService.RemoveFromWishListAsync(
-                    userId,
-                    request.WishListId,
-                    request.ProductId
-                );
+                var UserId = GetUserIdOrThrow();
 
-                return Ok(new RemoveProductFromWishListResponseDTO
-                {
-                    Success = result
-                });
+                var Result = await _wishlistService.RemoveFromWishListAsync(UserId,request.WishListId,request.ProductId);
+
+                return Ok(Result);
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message);
+                throw;
             }
         }
     }

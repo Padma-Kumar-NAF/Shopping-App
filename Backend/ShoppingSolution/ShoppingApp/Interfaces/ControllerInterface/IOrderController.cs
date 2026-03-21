@@ -5,9 +5,10 @@ namespace ShoppingApp.Interfaces.ControllerInterface
 {
     public interface IOrderController
     {
-        public Task<ActionResult<IEnumerable<GetUserOrderDetailsResponseDTO>>> GetOrderByUserId(GetUserOrderDetailsRequestDTO request);
-        public Task<ActionResult<GetUserOrderDetailsResponseDTO>> PlaceOrder(PlaceOrderRequestDTO request);
-        public Task<ActionResult<GetUserOrderDetailsResponseDTO>> CancelOrder(CancelOrderRequestDTO request);
-        public Task<ActionResult<UpdateOrderResponseDTO>> UpdateOrder(UpdateOrderRequestDTO request);
+        public Task<IActionResult> GetOrderByUserId(GetUserOrderDetailsRequestDTO request);
+        public Task<IActionResult> PlaceOrder(PlaceOrderRequestDTO request);
+        public Task<IActionResult> CancelOrder(CancelOrderRequestDTO request);
+        public Task<IActionResult> UpdateOrder(UpdateOrderRequestDTO request);
+        public Task<IActionResult> GetAllOrders(GetAllOrderRequestDTO request);
     }
 }

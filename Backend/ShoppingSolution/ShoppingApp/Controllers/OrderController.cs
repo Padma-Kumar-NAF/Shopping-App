@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ShoppingApp.Filters;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models.DTOs.Order;
@@ -7,7 +8,7 @@ using System.Security.Claims;
 
 namespace ShoppingApp.Controllers
 {
-    //[Authorize(Roles = "Admin,User")]
+    //[Authorize(Roles = "admin,user")]
     [Route("orders")]
     [ApiController]
     public class OrderController : BaseController, IOrderController
@@ -18,97 +19,88 @@ namespace ShoppingApp.Controllers
             _orderService = orderService;
         }
 
-        [HttpPut("CancelOrder")]
-        public async Task<ActionResult<GetUserOrderDetailsResponseDTO>> CancelOrder([FromBody] CancelOrderRequestDTO request)
+        //[Authorize(Roles = "admin,user")]
+        [HttpPost("cancel-order")]
+        [ValidateRequest]
+        public async Task<IActionResult> CancelOrder([FromBody] CancelOrderRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            request.UserId = GetUserId();
-            if (request.UserId == Guid.Empty)
-            {
-                return BadRequest("User not authenticated");
-            }
-
             try
             {
-                var result = await _orderService.CancelOrder(request);
-                if (result == null)
-                    return NotFound("Order not found or already cancelled.");
+                var UserId = GetUserIdOrThrow();
+                var result = await _orderService.CancelOrder(UserId,request.OrderId);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message);
+                throw;
+            }
+        }
+
+        //[Authorize(Roles = "admin,user")]
+        [HttpPost("get-all-orders")]
+        [ValidateRequest]
+        public async Task<IActionResult> GetAllOrders(GetAllOrderRequestDTO request)
+        {
+            try
+            {
+                var UserId = GetUserIdOrThrow();
+                var Result = await _orderService.GetAllOrders(request);
+                return Ok(Result);
+            }
+            catch
+            {
+                throw;
             }
         }
 
         //[HttpGet("user")]
-        [HttpPost("GetUserOrders")]
-        public async Task<ActionResult<IEnumerable<GetUserOrderDetailsResponseDTO>>> GetOrderByUserId([FromBody] GetUserOrderDetailsRequestDTO request)
+        [HttpPost("get-user-orders")]
+        [ValidateRequest]
+        public async Task<IActionResult> GetOrderByUserId([FromBody] GetUserOrderDetailsRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            if (request.PageNumber <= 0 || request.Limit <= 0)
-                return BadRequest("Invalid pagination values.");
-
-            request.UserId = GetUserId();
-            if(request.UserId == Guid.Empty)
-            {
-                return BadRequest("User not authenticated");
-            }
-
             try
             {
-                var orders = await _orderService.GetUserOrderById(request);
-
-                if (!orders.Any())
-                    return NotFound("No orders found.");
-                return Ok(orders);
+                var UserId = GetUserIdOrThrow();
+                var result = await _orderService.GetUserOrderById(UserId,request);
+                return Ok(result);
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message);
+                throw;
             }
         }
 
-        [HttpPost("PlaceOrder")]
-        public async Task<ActionResult<GetUserOrderDetailsResponseDTO>> PlaceOrder([FromBody] PlaceOrderRequestDTO request)
+        //[Authorize(Roles = "admin,user")]
+        [HttpPost("place-order")]
+        [ValidateRequest]
+        public async Task<IActionResult> PlaceOrder([FromBody] PlaceOrderRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            request.UserId = GetUserId();
-            if (request.UserId == Guid.Empty)
-            {
-                return BadRequest("User not authenticated");
-            }
             try
             {
-                var orders = await _orderService.PlaceOrder(request);
-                return Ok(orders); 
-            } catch (Exception ex) 
-            { 
-                return BadRequest(ex.Message);
+                var UserId = GetUserIdOrThrow();
+                var result = await _orderService.PlaceOrder(UserId,request);
+                return Ok(result); 
+            } 
+            catch 
+            {
+                throw;
             }
         }
 
-        [HttpPost("UpdateOrderStatus")]
-        public async Task<ActionResult<UpdateOrderResponseDTO>> UpdateOrder(UpdateOrderRequestDTO request)
+        //[Authorize(Roles = "admin,user")]
+        [HttpPost("update-order-status")]
+        [ValidateRequest]
+        public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrderRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
             try
             {
-                var orders = await _orderService.UpdateOrder(request.OrderId,request.OrderStatus);
-                return Ok(new UpdateOrderResponseDTO()
-                {
-                    IsUpdated = orders
-                });
+                var UserId = GetUserIdOrThrow();
+                var result = await _orderService.UpdateOrder(UserId,request.OrderId,request.OrderStatus);
+                return Ok(result);
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message);
+                throw;
             }
         }
     }

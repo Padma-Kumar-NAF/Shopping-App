@@ -1,5 +1,6 @@
 import { Component, inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { Router } from '@angular/router';
 import { CartService } from '../../../services/cart.service';
 import { PaginationModel } from '../../../models/pagination.model';
 
@@ -9,36 +10,34 @@ import { PaginationModel } from '../../../models/pagination.model';
   templateUrl: './cart.html',
   styleUrl: './cart.css',
 })
-export class Cart implements OnChanges,OnInit {
-  constructor() {
+export class Cart implements OnChanges, OnInit {
+  constructor(private router: Router) {
     this.pagination = new PaginationModel();
     this.pagination.PageSize = 10;
     this.pagination.PageNumber = 1;
   }
 
-  private readonly apiService : CartService = inject(CartService);
+  private readonly apiService: CartService = inject(CartService);
   ngOnChanges(changes: SimpleChanges): void {}
 
   ngOnInit(): void {
-    this.getUserCarts()
+    this.getUserCarts();
   }
 
-  getUserCarts(){
+  getUserCarts() {
     this.apiService.GetUserCart(this.pagination).subscribe({
-      next:(response) => {
-        console.log("response")
-        console.log(response)
+      next: (response) => {
+        console.log('response');
+        console.log(response);
       },
-      error:(err) => {
-        console.error(err)
+      error: (err) => {
+        console.error(err);
       },
       complete() {
-        console.log("getUserCarts completed")
+        console.log('getUserCarts completed');
       },
-    })
+    });
   }
-
-  
 
   pagination: PaginationModel;
 
@@ -68,6 +67,10 @@ export class Cart implements OnChanges,OnInit {
 
   placeAllOrders() {
     console.log('Placing order for:', this.cartItems);
+  }
+
+  proceedToCheckout() {
+    this.router.navigate(['/checkout']);
   }
 
   increaseQty(item: any) {

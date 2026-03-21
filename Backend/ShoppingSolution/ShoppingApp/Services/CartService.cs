@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Azure.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using ShoppingApp.Contexts;
 using ShoppingApp.Exceptions;
 using ShoppingApp.Interfaces.RepositoriesInterface;
@@ -42,77 +43,17 @@ namespace ShoppingApp.Services
                 _unitOfWork = unitOfWork;
             }
 
-        public async Task<ApiResponse<GetCartResponseDTO>> GetUserCarts(Guid userId, int pageNumber, int pageSize)
+        public async Task<ApiResponse<AddToCartResponseDTO>> AddCart(Guid UserId, AddToCartRequestDTO request)
         {
-            var userCart = await _repository
-                .FirstOrDefaultAsync(c => c.UserId == userId);
-
-            if (userCart == null)
+            if (request.Quantity <= 0)
             {
-                return new ApiResponse<GetCartResponseDTO>
-                {
-                    StatusCode = 200,
-                    Message = "Cart not found",
-                    Action = "",
-                    Data = new GetCartResponseDTO()
-                };
-            }
-
-            var pagedItems = _cartItemRepository
-                .GetQueryable()
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Where(ci => ci.CartId == userCart.CartId)
-                .Select(ci => new CartItemDTO
-                {
-                    ProductId = ci.ProductId,
-                    CategoryId = ci.Product!.CategoryId,
-                    ProductName = ci.Product.Name,
-                    ImagePath = ci.Product.ImagePath,
-                    Description = ci.Product.Description,
-                    Price = ci.Product.Price,
-                    Quantity = ci.Quantity
-                }).ToList();
-
-            var response = new GetCartResponseDTO
-            {
-                CartId = userCart.CartId,
-                CartItems = pagedItems,
-            };
-
-            return new ApiResponse<GetCartResponseDTO>
-            {
-                StatusCode = 200,
-                Message = pagedItems == null
-                    ? "Cart is empty"
-                    : "Cart fetched successfully",
-                Action = "",
-                Data = response
-            };
-        }
-        public async Task<ApiResponse<AddToCartResponseDTO>> AddCart(Guid UserId,AddToCartRequestDTO request)
-        {
-            if(request.Quantity <= 0)
-            {
-                return new ApiResponse<AddToCartResponseDTO>()
-                {
-                    StatusCode = 400,
-                    Message = "Quantity must be greater than zero",
-                    Action = "",
-                    Data = null
-                };
+                throw new AppException("Quantity must be greater than zero",400);
             }
 
             var product = await _productRepository.GetAsync(request.ProductId);
-            if(product == null)
+            if (product == null)
             {
-                return new ApiResponse<AddToCartResponseDTO>()
-                {
-                    StatusCode = 400,
-                    Message = "Product not found",
-                    Action = "",
-                    Data = null
-                };
+                throw new AppException("Product not found",404);
             }
             await _unitOfWork.BeginTransactionAsync();
 
@@ -130,9 +71,9 @@ namespace ShoppingApp.Services
 
                 var existingItem = await _cartItemRepository.FirstOrDefaultAsync(ci => ci.CartId == cart.CartId && ci.ProductId == request.ProductId);
 
-                if(existingItem != null)
+                if (existingItem != null)
                 {
-                    if(request.Quantity > existingItem.Quantity)
+                    if (request.Quantity > existingItem.Quantity)
                     {
                         existingItem.Quantity = request.Quantity;
                     }
@@ -166,58 +107,118 @@ namespace ShoppingApp.Services
                     StatusCode = 200,
                     Message = "Product added Successfully",
                     Data = response,
-                    Action = ""
+                    Action = "Add product to cart"
                 };
             }
-            catch
+            catch (AppException)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
             }
+            catch (DbUpdateException ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Database error while adding to cart", ex,500);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Something went wrong while adding to cart", ex,500);
+            }
         }
 
-        public async Task<ApiResponse<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCart(Guid userId, Guid addressId, string PaymentType)
+        public async Task<ApiResponse<GetCartResponseDTO>> GetUserCarts(Guid userId, int pageNumber, int pageSize)
         {
-
-            var userCart = await _repository.GetQueryable().FirstOrDefaultAsync(c => c.UserId == userId);
-            if(userCart == null)
+            try
             {
-                return new ApiResponse<OrderAllFromCartResponseDTO>()
+                var userCart = await _repository.FirstOrDefaultAsync(c => c.UserId == userId);
+
+                if (userCart == null)
                 {
-                    StatusCode = 404,
-                    Message = "No cart found for this user",
-                    Data = null,
-                    Action = ""
+                    return new ApiResponse<GetCartResponseDTO>
+                    {
+                        StatusCode = 200,
+                        Message = "Cart not found",
+                        Action = "",
+                        Data = new GetCartResponseDTO()
+                    };
+                }
+
+                var pagedItems = _cartItemRepository
+                    .GetQueryable()
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .Where(ci => ci.CartId == userCart.CartId)
+                    .Select(ci => new CartItemDTO
+                    {
+                        ProductId = ci.ProductId,
+                        CategoryId = ci.Product!.CategoryId,
+                        ProductName = ci.Product.Name,
+                        ImagePath = ci.Product.ImagePath,
+                        Description = ci.Product.Description,
+                        Price = ci.Product.Price,
+                        Quantity = ci.Quantity
+                    }).ToList();
+
+                var response = new GetCartResponseDTO
+                {
+                    CartId = userCart.CartId,
+                    CartItems = pagedItems,
                 };
+
+                return new ApiResponse<GetCartResponseDTO>
+                {
+                    StatusCode = 200,
+                    Message = pagedItems == null
+                        ? "Cart is empty"
+                        : "Cart fetched successfully",
+                    Action = "",
+                    Data = response
+                };
+            }
+            catch (AppException)
+            {
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Database error while getting the user cart", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while getting the user cart", ex, 500);
+            }
+        }
+
+        public async Task<ApiResponse<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCart(Guid userId, Guid addressId, string paymentType)
+        {
+            var userCart = await _repository.GetQueryable().FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (userCart == null)
+            {
+                throw new AppException("No cart found for this user", 404);
             }
 
             var addressExists = await _addressRepository.GetQueryable().FirstOrDefaultAsync(a => a.AddressId == addressId && a.UserId == userId);
 
             if (addressExists == null)
             {
-                return new ApiResponse<OrderAllFromCartResponseDTO>()
-                {
-                    StatusCode = 404,
-                    Message = "Address not found",
-                    Data = null,
-                    Action = ""
-                };
+                throw new AppException("Address not found", 404);
             }
+
             await _unitOfWork.BeginTransactionAsync();
 
             try
             {
-                var cart = await _repository.GetQueryable().Include(c => c.CartItems!).ThenInclude(ci => ci.Product)
+                var cart = await _repository.GetQueryable()
+                    .Include(c => c.CartItems!)
+                    .ThenInclude(ci => ci.Product)
                     .FirstOrDefaultAsync(c => c.CartId == userCart.CartId && c.UserId == userId);
 
                 if (cart == null || cart.CartItems == null || !cart.CartItems.Any())
-                    return new ApiResponse<OrderAllFromCartResponseDTO>()
-                    {
-                        StatusCode = 404,
-                        Message = "No cart items found",
-                        Data = null,
-                        Action = ""
-                    }; ;
+                {
+                    throw new AppException("No cart items found", 404);
+                }
 
                 var cartItems = cart.CartItems.ToList();
                 var productIds = cartItems.Select(ci => ci.ProductId).ToList();
@@ -231,10 +232,10 @@ namespace ShoppingApp.Services
                     var stock = stocks.FirstOrDefault(s => s.ProductId == item.ProductId);
 
                     if (stock == null)
-                        throw new AppException($"Stock not found for {item.Product!.Name}");
+                        throw new AppException($"Stock not found for {item.Product!.Name}", 404);
 
                     if (stock.Quantity < item.Quantity)
-                        throw new AppException($"Insufficient stock for {item.Product!.Name}");
+                        throw new AppException($"Insufficient stock for {item.Product!.Name}", 409);
                 }
 
                 var order = new Order
@@ -244,7 +245,7 @@ namespace ShoppingApp.Services
                     TotalProductsCount = cartItems.Sum(x => x.Quantity),
                     TotalAmount = cartItems.Sum(x => x.Quantity * x.Product!.Price),
                     AddressId = addressId,
-                    DeliveryDate = DateTime.Now.AddDays(2),
+                    DeliveryDate = DateTime.UtcNow.AddDays(2),
                     OrderDetails = new List<OrderDetails>()
                 };
 
@@ -253,7 +254,6 @@ namespace ShoppingApp.Services
                     var stock = stocks.First(s => s.ProductId == item.ProductId);
 
                     stock.Quantity -= item.Quantity;
-
                     await _stockRepository.UpdateAsync(stock.StockId, stock);
 
                     order.OrderDetails!.Add(new OrderDetails
@@ -273,7 +273,7 @@ namespace ShoppingApp.Services
                     UserId = userId,
                     OrderId = order.OrderId,
                     TotalAmount = order.TotalAmount,
-                    PaymentType = PaymentType
+                    PaymentType = paymentType
                 };
 
                 await _paymentRepository.AddAsync(payment);
@@ -288,126 +288,206 @@ namespace ShoppingApp.Services
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitAsync();
 
-                OrderAllFromCartResponseDTO response = new OrderAllFromCartResponseDTO()
-                {
-                    IsSuccess = true
-                };
-
                 return new ApiResponse<OrderAllFromCartResponseDTO>()
                 {
-                    StatusCode = 404,
-                    Message = "Order placed",
-                    Data = response,
-                    Action = ""
-                }; ;
+                    StatusCode = 200,
+                    Message = "Order placed successfully",
+                    Data = new OrderAllFromCartResponseDTO
+                    {
+                        IsSuccess = true
+                    },
+                    Action = "PlaceOrderAllFromCart"
+                };
             }
-            catch
+            catch (AppException)
             {
                 await _unitOfWork.RollbackAsync();
-                return new ApiResponse<OrderAllFromCartResponseDTO>()
-                {
-                    StatusCode = 404,
-                    Message = "Try again",
-                    Data = null,
-                    Action = ""
-                }; ; ;
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Database error while placing order", ex,500);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Something went wrong while placing order", ex,500);
             }
         }
 
         public async Task<ApiResponse<RemoveAllFromCartResponseDTO>> RemoveAllFromCartByUserID(Guid userId)
         {
-            var cart = await _repository.GetQueryable().FirstOrDefaultAsync(c => c.UserId == userId);
-
-            RemoveAllFromCartResponseDTO response = new RemoveAllFromCartResponseDTO()
-            {
-                IsRemoved = false,
-            };
+            var cart = await _repository.GetQueryable()
+                .FirstOrDefaultAsync(c => c.UserId == userId);
 
             if (cart == null)
             {
+                throw new AppException("Cart not found for this user", 404);
+            }
+
+            var cartItems = await _cartItemRepository.GetQueryable()
+                .Where(ci => ci.CartId == cart.CartId)
+                .ToListAsync();
+
+            if (!cartItems.Any())
+            {
+                throw new AppException("No cart items found", 404);
+            }
+
+            await _unitOfWork.BeginTransactionAsync();
+
+            try
+            {
+                foreach (var item in cartItems)
+                {
+                    await _cartItemRepository.DeleteAsync(item.CartItemId);
+                }
+
+                await _repository.DeleteAsync(cart.CartId);
+
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitAsync();
+
                 return new ApiResponse<RemoveAllFromCartResponseDTO>()
                 {
-                    StatusCode = 404,
-                    Message = "Cart not found for this user",
-                    Data = response,
-                    Action = ""
+                    StatusCode = 200,
+                    Message = "Cart cleared successfully",
+                    Data = new RemoveAllFromCartResponseDTO
+                    {
+                        IsRemoved = true
+                    },
+                    Action = "RemoveAllFromCart"
                 };
             }
-                
-            var cartItems = await _cartItemRepository.GetQueryable().Where(ci => ci.CartId == cart.CartId).ToListAsync();
-
-            if(!cartItems.Any())
+            catch (AppException)
             {
-                return new ApiResponse<RemoveAllFromCartResponseDTO>()
-                {
-                    StatusCode = 404,
-                    Message = "No cart items found",
-                    Data = response,
-                    Action = ""
-                };
+                await _unitOfWork.RollbackAsync();
+                throw;
             }
-
-            foreach (var item in cartItems)
+            catch (DbUpdateException ex)
             {
-                await _cartItemRepository.DeleteAsync(item.CartItemId);
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Database error while clearing cart", ex,500);
             }
-
-            await _repository.DeleteAsync(cart.CartId);
-
-            await _unitOfWork.SaveChangesAsync();
-            response.IsRemoved = true;
-
-            return new ApiResponse<RemoveAllFromCartResponseDTO>()
+            catch (Exception ex)
             {
-                StatusCode = 200,
-                Message = "Cart cleared",
-                Data = response,
-                Action = ""
-            };
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Something went wrong while clearing cart", ex,500);
+            }
         }
 
-        public async Task<ApiResponse<RemoveFromCartResponseDTO>> RemoveFromCart(Guid userId, Guid cartId,Guid cartItemId, Guid productId)
+        public async Task<ApiResponse<RemoveFromCartResponseDTO>> RemoveFromCart(Guid userId, Guid cartId, Guid cartItemId, Guid productId)
         {
             var cart = await _repository.GetQueryable().FirstOrDefaultAsync(c => c.CartId == cartId && c.UserId == userId);
-            RemoveFromCartResponseDTO response = new RemoveFromCartResponseDTO()
-            {
-                IsRemoved = false,
-            };
 
-            if (cart == null)
-            {
-                return new ApiResponse<RemoveFromCartResponseDTO>()
-                {
-                    StatusCode = 404,
-                    Message = "Cart not found",
-                    Data = response,
-                    Action = ""
-                };
-            }
-
-            var cartItem = await _cartItemRepository.GetQueryable().FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == productId && ci.CartItemId == cartItemId);
+            var cartItem = await _cartItemRepository.GetQueryable().FirstOrDefaultAsync(ci =>ci.CartId == cartId && ci.CartItemId == cartItemId);
 
             if (cartItem == null)
             {
-                return new ApiResponse<RemoveFromCartResponseDTO>()
-                {
-                    StatusCode = 404,
-                    Message = "Product not found in this cart",
-                    Data = response,
-                    Action = ""
-                };
+                throw new AppException("Cart item not found in this cart", 404);
             }
 
-            await _cartItemRepository.DeleteAsync(cartItem.CartItemId);
-            await _repository.DeleteAsync(cartId);
-            response.IsRemoved = true;
-            return new ApiResponse<RemoveFromCartResponseDTO>()
+            if (cartItem.ProductId != productId)
             {
-                StatusCode = 200,
-                Message = "Products removed",
-                Data = response,
-                Action = ""
-            };
+                throw new AppException("Product mismatch for this cart item", 400);
+            }
+
+            try
+            {
+                await _cartItemRepository.DeleteAsync(cartItem.CartItemId);
+                return new ApiResponse<RemoveFromCartResponseDTO>()
+                {
+                    StatusCode = 200,
+                    Message = "Product removed from cart",
+                    Data = new RemoveFromCartResponseDTO
+                    {
+                        IsRemoved = true
+                    },
+                    Action = "RemoveFromCart"
+                };
+            }
+            catch (AppException)
+            {
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Database error while removing item from cart", ex,500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while removing item from cart", ex, 500);
+            }
+        }
+
+        public async Task<ApiResponse<UpdateUserCartResponseDTO>> UpdateCart(Guid userId,Guid cartId,Guid cartItemId,Guid productId,int quantity)
+        {
+            var cart = await _repository.GetQueryable()
+                .FirstOrDefaultAsync(c => c.CartId == cartId && c.UserId == userId);
+
+            if (cart == null)
+            {
+                throw new AppException("Cart not found", 404);
+            }
+
+            var cartItem = await _cartItemRepository.GetQueryable()
+                .FirstOrDefaultAsync(ci =>
+                    ci.CartId == cartId &&
+                    ci.CartItemId == cartItemId);
+
+            if (cartItem == null)
+            {
+                throw new AppException("Cart item not found in this cart", 404);
+            }
+
+            if (cartItem.ProductId != productId)
+            {
+                throw new AppException("Product mismatch for this cart item", 400);
+            }
+
+            if (quantity <= 0)
+            {
+                throw new AppException("Quantity must be greater than zero", 400);
+            }
+
+            await _unitOfWork.BeginTransactionAsync();
+
+            try
+            {
+                cartItem.Quantity = quantity;
+
+                await _cartItemRepository.UpdateAsync(cartItemId,cartItem);
+
+                await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.CommitAsync();
+
+                return new ApiResponse<UpdateUserCartResponseDTO>()
+                {
+                    StatusCode = 200,
+                    Message = "Cart updated successfully",
+                    Data = new UpdateUserCartResponseDTO
+                    {
+                        IsUpdated = true
+                    },
+                    Action = "UpdateCart"
+                };
+            }
+            catch (AppException)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Database error while updating cart", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Something went wrong while updating cart", ex, 500);
+            }
         }
     }
 }

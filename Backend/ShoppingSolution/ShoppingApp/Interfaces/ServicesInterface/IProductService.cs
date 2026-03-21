@@ -6,11 +6,10 @@ namespace ShoppingApp.Interfaces.ServicesInterface
 {
     public interface IProductService
     {
-        public Task<IEnumerable<GetAllProductsResponseDTO>> GetProducts(GetAllProductsRequestDTO request);
-        public Task<IEnumerable<GetAllProductsResponseDTO>> SearchProductByName(SearchProductRequestDTO request);
-        public Task<GetAllProductsResponseDTO> SearchProductById(SearchProductByIdRequestDTO request);
-        public Task<GetAllProductsResponseDTO> AddProduct(AddNewProductRequestDTO request);
-        public Task<UpdateProductResponseDTO> UpdateProduct(UpdateProductRequestDTO request);
-
+        public Task<ApiResponse<AddNewProductResponseDTO>> AddProduct(Guid userId,AddNewProductRequestDTO request);
+        public Task<ApiResponse<GetAllProductsResponseDTO>> GetProducts(GetAllProductsRequestDTO request);
+        public Task<ApiResponse<SearchProductByIdResponseDTO>> SearchProductById(SearchProductByIdRequestDTO request);
+        public Task<ApiResponse<SearchProductByNameResponseDTO>> SearchProductByName(SearchProductByNameRequestDTO request);
+        public Task<ApiResponse<UpdateProductResponseDTO>> UpdateProduct(Guid userId,UpdateProductRequestDTO request);
     }
 }

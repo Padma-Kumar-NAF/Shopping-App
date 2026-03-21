@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ShoppingApp.Filters;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models.DTOs.Review;
@@ -8,6 +9,7 @@ namespace ShoppingApp.Controllers
     //[Authorize(Roles = "User")]
     [Route("[controller]")]
     [ApiController]
+
     public class ReviewController : BaseController, IReviewController
     {
         private readonly IReviewService _reviewService;
@@ -16,49 +18,35 @@ namespace ShoppingApp.Controllers
             _reviewService = reviewService;
         }
 
-        [HttpPost("AddReview")]
-        public async Task<ActionResult<AddReviewResponseDTO>> AddReview(AddReviewRequestDTO request)
+        [HttpPost("add-review")]
+        [ValidateRequest]
+        public async Task<IActionResult> AddReview([FromBody] AddReviewRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            request.UserId = GetUserId();
-            if(request.UserId == Guid.Empty)
-            {
-                return BadRequest("User not found");
-            }
-
             try
             {
-                var review =await _reviewService.AddReview(request);
-                return Ok(review);
+                var UserId = GetUserIdOrThrow();
+                var Result =await _reviewService.AddReview(UserId,request);
+                return Ok(Result);
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message);
+                throw;
             }
         }
 
-        [HttpPost("DeleteReview")]
-        public async Task<ActionResult<DeleteReviewResponseDTO>> DeleteReview(DeleteReviewRequestDTO request)
+        [HttpPost("delete-review")]
+        [ValidateRequest]
+        public async Task<IActionResult> DeleteReview([FromBody] DeleteReviewRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            request.UserId = GetUserId();
-            if (request.UserId == Guid.Empty)
-            {
-                return BadRequest("User not found");
-            }
-
             try
             {
-                var review = await _reviewService.DeleteReview(request.UserId,request.ReviewId);
-                return Ok(review);
+                var UserId = GetUserIdOrThrow();
+                var Result = await _reviewService.DeleteReview(UserId,request.ReviewId);
+                return Ok(Result);
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message);
+                throw;
             }
         }
     }

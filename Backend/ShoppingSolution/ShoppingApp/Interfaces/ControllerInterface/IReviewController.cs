@@ -5,7 +5,7 @@ namespace ShoppingApp.Interfaces.ControllerInterface
 {
     public interface IReviewController
     {
-        public Task<ActionResult<AddReviewResponseDTO>> AddReview(AddReviewRequestDTO request);
-        public Task<ActionResult<DeleteReviewResponseDTO>> DeleteReview(DeleteReviewRequestDTO request);
+        public Task<IActionResult> AddReview(AddReviewRequestDTO request);
+        public Task<IActionResult> DeleteReview(DeleteReviewRequestDTO request);
     }
 }

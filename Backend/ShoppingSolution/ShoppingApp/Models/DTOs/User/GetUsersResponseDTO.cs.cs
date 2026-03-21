@@ -4,6 +4,11 @@ namespace ShoppingApp.Models.DTOs.User
 {
     public record GetUsersResponseDTO
     {
+        public ICollection<UserDetailsDTO> UsersList { get; set; } = new List<UserDetailsDTO>();
+    }
+
+    public record UserDetailsDTO
+    {
         public Guid UserId { get; set; }
         public Guid UserDetailsId { get; set; }
         public string Name { get; set; } = string.Empty;
@@ -15,6 +20,5 @@ namespace ShoppingApp.Models.DTOs.User
         public string State { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
         public string Pincode { get; set; } = string.Empty;
-
     }
 }

@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Filters;
-using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
-using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.Cart;
-using System.Security.Claims;
 
 namespace ShoppingApp.Controllers
 {
-    //[Authorize]
+    [Authorize(Roles = "user")]
     [Route("[controller]")]
     [ApiController]
     [ValidateRequest]
@@ -21,19 +19,14 @@ namespace ShoppingApp.Controllers
             _cartService = cartService;
         }
 
-        //[Authorize(Roles = "User")]
-        
+        [Authorize(Roles = "user")]
         [HttpPost("add-to-cart")]
         [ValidateRequest]
         public async Task<IActionResult> AddToCart([FromBody] AddToCartRequestDTO request)
         {
-            Guid UserId = GetUserId();
-            
-            if (UserId == Guid.Empty)
-                return Unauthorized("User not authenticated");
-
             try
             {
+                var UserId = GetUserIdOrThrow();
                 var response = await _cartService.AddCart(UserId,request);
                 return Ok(response);
             }
@@ -43,22 +36,16 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        //[Authorize(Roles = "User")]
+        [Authorize(Roles = "user")]
         [HttpPost("get-user-cart")]
         [ValidateRequest]
         public async Task<IActionResult> GetCart([FromBody] GetCartRequestDTO request)
         {
             try
             {
-                Guid UserId = GetUserId();
+                var UserId = GetUserIdOrThrow();
 
                 var result = await _cartService.GetUserCarts(UserId, request.Pagination.PageNumber, request.Pagination.PageSize);
-
-                if (result.StatusCode == 200)
-                    return Ok(result);
-
-                if (result.StatusCode == 404)
-                    return NotFound(result);
 
                 return BadRequest(result);
             }
@@ -68,24 +55,23 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        //[Authorize(Roles = "User")]
+        /// <summary>
+        /// If user Increase or decrease the quantity from cart age page then this controller should be call
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "user")]
         [HttpPost("update-user-cart")]
         [ValidateRequest]
-        public async Task<IActionResult> UpdateUserCart(UpdateUserCartRequestDTO request)
+        public async Task<IActionResult> UpdateUserCart([FromBody] UpdateUserCartRequestDTO request)
         {
             try
             {
-                Guid UserId = GetUserId();
+                var UserId = GetUserIdOrThrow();
 
-                
+                var result = await _cartService.UpdateCart(UserId,request.CartId, request.CartItemId, request.ProductId, request.Quantity);
 
-                //if (result.StatusCode == 200)
-                    return Ok();
-
-                //if (result.StatusCode == 404)
-                //    return NotFound(result);
-
-                //return BadRequest(result);
+                return Ok(result);
             }
             catch
             {
@@ -93,22 +79,14 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        [Authorize(Roles = "user")]
         [HttpPost("order-all-from-cart")]
         [ValidateRequest]
         public async Task<IActionResult> PlaceOrderAllFromCarts([FromBody] OrderAllFromCartRequestDTO request)
         {
             try
             {
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
-
-                Guid UserId = GetUserId();
-
-                if (UserId == Guid.Empty)
-                    return BadRequest("Invalid user.");
-
-                if (request.PaymentType == "")
-                    return BadRequest("Payment type required");
+                var UserId = GetUserIdOrThrow();
 
                 var result = await _cartService.PlaceOrderAllFromCart(UserId,request.AddressId,request.PaymentType);
 
@@ -120,17 +98,14 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        //[Authorize(Roles = "User")]
+        [Authorize(Roles = "user")]
         [HttpPost("remove-all-from-cart")]
         [ValidateRequest]
         public async Task<IActionResult> ClearCart()
         {
             try
             {
-                Guid UserId = GetUserId();
-
-                if (UserId == Guid.Empty)
-                    return BadRequest("Invalid UserId");
+                var UserId = GetUserIdOrThrow();
 
                 var result = await _cartService.RemoveAllFromCartByUserID(UserId);
 
@@ -142,19 +117,14 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        //[Authorize(Roles = "User")]
+        [Authorize(Roles = "user")]
         [HttpDelete("remove-from-cart")]
         [ValidateRequest]
         public async Task<IActionResult> RemoveFromCart( [FromBody] RemoveFromCartRequestDTO request)
         {
             try
             {
-                Guid UserId = GetUserId();
-
-                if (UserId == Guid.Empty)
-                {
-                    return BadRequest("User not found");
-                }
+                var UserId = GetUserIdOrThrow();
 
                 var result = await _cartService.RemoveFromCart(UserId, request.CartId, request.CartItemId,request.ProductId);
 

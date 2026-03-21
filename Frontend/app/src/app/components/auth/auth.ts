@@ -18,6 +18,7 @@ import {
 import { AuthApiService } from '../../services/auth.service';
 import { AuthStateService } from '../../services/auth-state.service';
 import { Router } from '@angular/router';
+import { ApiResponse } from '../../models/apiResponse.model';
 
 @Component({
   selector: 'app-auth',
@@ -49,10 +50,10 @@ export class Auth {
     this.loginDetails = new LoginResponseDTO();
 
     this.loginForm = new FormGroup({
-      // email: new FormControl('admin@gmail.com', [Validators.required, Validators.email]),
-      // password: new FormControl('admin123', [Validators.required, Validators.minLength(6)]),
-      email: new FormControl('padmakumar23.dev@gmail.com', [Validators.required, Validators.email]),
-      password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
+      email: new FormControl('admin@gmail.com', [Validators.required, Validators.email]),
+      password: new FormControl('admin123', [Validators.required, Validators.minLength(6)]),
+      // email: new FormControl('padmakumar23.dev@gmail.com', [Validators.required, Validators.email]),
+      // password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
     });
 
     this.signUpForm = new FormGroup({
@@ -104,21 +105,24 @@ export class Auth {
     this.loginData = this.loginForm.value;
     const toastId = toast.loading('Signing in...');
     this.apiService.LoginApi(this.loginData).subscribe({
-      next: (response: LoginResponseDTO) => {
-        const user = this.apiService.decodeToken(response.token);
+      next: (response: ApiResponse<LoginResponseDTO>) => {
         console.log('response');
         console.log(response);
-        if (response.token) {
-          this.authState.setUser(user, response.token);
+        if (response.data) {
+          const user = this.apiService.decodeToken(response.data.token);
+          if (response.data.token) {
+            this.authState.setUser(user, response.data.token);
+          }
+          console.log(user?.userRole === 'admin')
+          if (user?.userRole === 'admin') {
+            this.router.navigate(['/admin']);
+          } else {
+            this.router.navigate(['/']);
+          }
+          this.loginForm.reset();
+          toast.dismiss(toastId);
+          toast.success('Login Successfull');
         }
-        if (user?.userRole === 'admin') {
-          this.router.navigate(['/admin']);
-        } else {
-          this.router.navigate(['/']);
-        }
-        this.loginForm.reset();
-        toast.dismiss(toastId);
-        toast.success('Login Successfull');
       },
       error: (error: any) => {
         toast.dismiss(toastId);
@@ -164,6 +168,7 @@ export class Auth {
         toast.dismiss(toastId);
         toast.success('Signup Successfully');
         this.signUpForm.reset();
+        this.isLoginMode.set(true);
       },
       error: (error: any) => {
         if (error.status === 400 && error.error?.errors) {

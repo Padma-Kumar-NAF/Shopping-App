@@ -13,17 +13,7 @@ export class SignupModel {
   state: string = '';
   city: string = '';
   pincode: string = '';
-  // userDetails: UserDetails = new UserDetails();
 }
-
-// export class UserDetails {
-//   phoneNumbe: string = '';
-//   addressLine1: string = '';
-//   addressLine2: string = '';
-//   state: string = '';
-//   city: string = '';
-//   pincode: string = '';
-// }
 
 export class CreateUserResponseDTO {
   userId: string = '';

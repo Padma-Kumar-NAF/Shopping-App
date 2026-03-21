@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using ShoppingApp.Filters;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
@@ -14,80 +16,38 @@ namespace ShoppingApp.Controllers
     public class UserController : BaseController, IUserController
     {
         private readonly IUserService _userService;
-        private readonly IUserDetailsService _userDetailsService;
 
-        public UserController(IUserService userService, IUserDetailsService userDetailsService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _userDetailsService = userDetailsService;
         }
 
-        //[Authorize(Roles = "User")]
-        [HttpPost("AddUserDetails")]
-        public async Task<ActionResult<AddUserDetailsResponseDTO>> AddUserDetails(AddUserDetailsRequestDTO request)
+        [HttpPost("edit-user-email")]
+        [ValidateRequest]
+        public async Task<IActionResult> EditUserMail([FromBody] EditUserEmailRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            request.UserId = GetUserId();
-            if (request.UserId == Guid.Empty)
-            {
-                return BadRequest("User not authenticated");
-            }
-
             try
             {
-                var Id = await _userDetailsService.AddUserDetails(request);
-                AddUserDetailsResponseDTO response = new AddUserDetailsResponseDTO();
-                response.UserDetailsId = Id;
-                return Ok(response);
+                var UserId = GetUserIdOrThrow();
+                var Result = await _userService.EditUserEmail(UserId,request);
+                return Ok(Result);
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPost("EditUserMail")]
-        public async Task<ActionResult<EditUserEmailResponseDTO>> EditUserMail(EditUserEmailRequestDTO request)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            request.UserId = GetUserId();
-
-            if (request.UserId == Guid.Empty)
-            {
-                return BadRequest("User not authenticated");
-            }
-
-            try
-            {
-                var result = await _userService.EditUserEmail(request);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
+                throw;
             }
         }
 
         //[Authorize(Roles = "Admin")]
-        [HttpPost("GetAllUsers")]
-        public async Task<ActionResult<GetUsersResponseDTO>> GetAllUsers(GetUsersRequestDTO request)
+        [HttpPost("get-all-users")]
+        [ValidateRequest]
+        public async Task<IActionResult> GetAllUsers([FromBody] GetUsersRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            request.UserId = GetUserId();
-            if (request.UserId == Guid.Empty)
-            {
-                return BadRequest("User not authenticated");
-            }
-
             try
             {
-                var result = await _userService.GetAllUsers(request);
-                return Ok(result);
+                var UserId = GetUserIdOrThrow();
+                var Result = await _userService.GetAllUsers(request);
+                return Ok(Result);
             }
             catch
             {
@@ -95,18 +55,15 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        [HttpGet("GetUserById")]
-        public async Task<ActionResult<CreateUserResponseDTO>> GetUserById()
+        [HttpGet("get-user-by-id")]
+        [ValidateRequest]
+        public async Task<IActionResult> GetUserById()
         { 
-            //request.UserId = GetUserId();
-            if (GetUserId() == Guid.Empty)
-            {
-                return BadRequest("User not authenticated");
-            }
             try
             {
-                var result = await _userService.GetUserById(GetUserId());
-                return Ok(result);
+                var UserId = GetUserIdOrThrow();
+                var Result = await _userService.GetUserById(GetUserId());
+                return Ok(Result);
             }
             catch
             {
@@ -114,24 +71,19 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        [HttpPost("UpdateUserDetails")]
-        public async Task<ActionResult<UpdateProfileResponseDTO>> UpdateUserDetails(UpdateProfileRequestDTO request)
+        [HttpPost("update-user-details")]
+        [ValidateRequest]
+        public async Task<IActionResult> UpdateUserDetails([FromBody] UpdateProfileRequestDTO request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            request.UserId = GetUserId();
-            if (request.UserId == Guid.Empty)
-            {
-                return BadRequest("User not authenticated");
-            }
             try
             {
-                var result = await _userDetailsService.UpdateUserDetails(request);
-                return Ok(result);
+                var UserId = GetUserIdOrThrow();
+                var Result = await _userService.UpdateUserDetails(UserId,request);
+                return Ok(Result);
             }
-            catch (Exception ex)
+            catch
             {
-                return BadRequest(ex.Message);
+                throw;
             }
         }
     }

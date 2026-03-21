@@ -1,16 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Filters;
-using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models.DTOs.Address;
-using System.Security.Claims;
 
 namespace ShoppingApp.Controllers
 {
-    //[Authorize(Roles = "User")]
+    [Authorize(Roles = "user")]
     [Route("[controller]")]
     [ApiController]
-    public class AddressController : BaseController , IAddressController
+    public class AddressController : BaseController
     {
         private readonly IAddressService _addressService;
         public AddressController(IAddressService addressService)
@@ -18,23 +17,16 @@ namespace ShoppingApp.Controllers
             _addressService = addressService;
         }
 
+        [Authorize(Roles = "user")]
         [HttpPut("create-address")]
         [ValidateRequest]
-        public async Task<ActionResult<CreateNewAddressResponseDTO>> AddAddress(CreateNewAddressRequestDTO request)
+        public async Task<IActionResult> AddAddress([FromBody] CreateNewAddressRequestDTO request)
         {
             try
             {
-                Guid UserId = GetUserId();
-
-                if (UserId == Guid.Empty)
-                {
-                    return BadRequest("User not found");
-                }
+                var UserId = GetUserIdOrThrow();
 
                 var result = await _addressService.AddAddress(UserId,request);
-
-                if (result == null)
-                    return BadRequest("Unable to create address at the moment");
 
                 return Ok(result);
             }
@@ -44,23 +36,18 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        [Authorize(Roles = "user")]
         [HttpDelete("delete-address")]
         [ValidateRequest]
-        public async Task<ActionResult<DeleteUserAddressResponseDTO>> DeleteUserAddress(DeleteUserAddressRequestDTO request)
+        public async Task<IActionResult> DeleteUserAddress([FromBody] DeleteUserAddressRequestDTO request)
         {
             try
             {
-                Guid UserId = GetUserId();
-
-                if (UserId == Guid.Empty)
-                    return Unauthorized("User not authenticated");
+                var UserId = GetUserIdOrThrow();
 
                 var result = await _addressService.DeleteUserAddress(UserId,request);
 
-                return Ok(new DeleteUserAddressResponseDTO()
-                {
-                    Success = result,
-                });
+                return Ok(result);
             }
             catch
             {
@@ -68,17 +55,15 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        [Authorize(Roles = "user")]
         [HttpPost("edit-address")]
         [ValidateRequest]
-        public async Task<ActionResult<EditUserAddressResponseDTO>> EditUserAddress(EditUserAddressRequestDTO request)
+        public async Task<IActionResult> EditUserAddress([FromBody] EditUserAddressRequestDTO request)
         {
             try
             {
-                Guid UserId = GetUserId();
-                if (UserId == Guid.Empty)
-                {
-                    return BadRequest("User not authenticated");
-                }
+                var UserId = GetUserIdOrThrow();
+
                 var addressList = await _addressService.EditUserAddress(UserId,request);
 
                 return Ok(addressList);
@@ -89,17 +74,15 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        [Authorize(Roles = "user")]
         [HttpPost("get-address")]
         [ValidateRequest]
-        public async Task<ActionResult<GetUserAddressResposneDTO>> GetUserAddress(GetUserAddressRequestDTO request)
+        public async Task<IActionResult> GetUserAddress([FromBody] GetUserAddressRequestDTO request)
         {
             try
             {
-                Guid UserId = GetUserId();
-                if (UserId == Guid.Empty)
-                {
-                    return BadRequest("User not authenticated");
-                }
+                var UserId = GetUserIdOrThrow();
+
                 var addressList = await _addressService.GetUserAddress(UserId,request);
 
                 return Ok(addressList);

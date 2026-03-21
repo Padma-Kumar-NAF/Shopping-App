@@ -5,10 +5,10 @@ namespace ShoppingApp.Interfaces.ControllerInterface
 {
     public interface IWishListController
     {
-        public Task<ActionResult<CreateWishListResponseDTO>> CreateWishList(CreateWishListRequestDTO request);
-        public Task<ActionResult<DeleteWishListResponseDTO>> DeleteWishList(DeleteWishListRequestDTO request);
-        public Task<ActionResult<AddProductToWishListResponseDTO>> AddToWishListAsync(AddProductToWishListRequestDTO request);
-        public Task<ActionResult<RemoveProductFromWishListResponseDTO>> RemoveFromWishList(RemoveProductFromWishListRequestDTO request);
-        public Task<ActionResult<GetUserWishListResponseDTO>> GetUserWishList(GetUserWishListRequestDTOClass request);
+        public Task<IActionResult> CreateWishList(CreateWishListRequestDTO request);
+        public Task<IActionResult> DeleteWishList(DeleteWishListRequestDTO request);
+        public Task<IActionResult> AddToWishListAsync(AddProductToWishListRequestDTO request);
+        public Task<IActionResult> RemoveFromWishList(RemoveProductFromWishListRequestDTO request);
+        public Task<IActionResult> GetUserWishList(GetUserWishListRequestDTOClass request);
     }
 }

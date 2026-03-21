@@ -5,8 +5,11 @@ namespace ShoppingApp.Models.DTOs.Order
 {
     public record GetUserOrderDetailsResponseDTO
     {
+        public ICollection<OrderDetailsResponseDTO> Items { get; set; } = new List<OrderDetailsResponseDTO>();
+    }
+    public record OrderDetailsResponseDTO
+    {
         public Guid OrderId { get; set; }
-        public Guid UserId { get; set; }
         public string Status { get; set; } = string.Empty;
         public int TotalProductsCount { get; set; }
         public decimal TotalAmount { get; set; }

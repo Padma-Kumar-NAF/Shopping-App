@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsersManagement } from '../users-management/users-management';
 import { OrdersManagement } from '../orders-management/orders-management';
@@ -21,8 +21,11 @@ interface TabConfig {
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css',
 })
-export class AdminDashboard {
-  activeTab = signal<AdminTab>('dashboard');
+export class AdminDashboard implements OnInit {
+  ngOnInit(): void {
+    
+  }
+  activeTab = signal<AdminTab>('categories');
 
   tabs: TabConfig[] = [
     { id: 'dashboard', label: 'Dashboard', icon: '📊' },
