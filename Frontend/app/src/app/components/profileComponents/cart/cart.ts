@@ -13,8 +13,8 @@ import { PaginationModel } from '../../../models/pagination.model';
 export class Cart implements OnChanges, OnInit {
   constructor(private router: Router) {
     this.pagination = new PaginationModel();
-    this.pagination.PageSize = 10;
-    this.pagination.PageNumber = 1;
+    this.pagination.pageSize = 10;
+    this.pagination.pageNumber = 1;
   }
 
   private readonly apiService: CartService = inject(CartService);

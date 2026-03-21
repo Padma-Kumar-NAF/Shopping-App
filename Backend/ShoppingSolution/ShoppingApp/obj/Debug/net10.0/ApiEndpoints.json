@@ -288,7 +288,7 @@
   {
     "ContainingType": "ShoppingApp.Controllers.CategoryController",
     "Method": "AddCategory",
-    "RelativePath": "Category/add-category",
+    "RelativePath": "category/add-category",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -304,7 +304,7 @@
   {
     "ContainingType": "ShoppingApp.Controllers.CategoryController",
     "Method": "DeleteCategory",
-    "RelativePath": "Category/delete-category",
+    "RelativePath": "category/delete-category",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -320,7 +320,7 @@
   {
     "ContainingType": "ShoppingApp.Controllers.CategoryController",
     "Method": "EditCategory",
-    "RelativePath": "Category/edit-category",
+    "RelativePath": "category/edit-category",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -336,7 +336,7 @@
   {
     "ContainingType": "ShoppingApp.Controllers.CategoryController",
     "Method": "GetAllCategories",
-    "RelativePath": "Category/get-all-categories",
+    "RelativePath": "category/get-all-categories",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -352,7 +352,7 @@
   {
     "ContainingType": "ShoppingApp.Controllers.CategoryController",
     "Method": "GetProductsByCategory",
-    "RelativePath": "Category/products-by-category",
+    "RelativePath": "category/products-by-category",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

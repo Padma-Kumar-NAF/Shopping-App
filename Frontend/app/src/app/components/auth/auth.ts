@@ -17,6 +17,7 @@ import {
 } from '../../models/auth.model';
 import { AuthApiService } from '../../services/auth.service';
 import { AuthStateService } from '../../services/auth-state.service';
+import { RedirectService } from '../../services/redirect.service';
 import { Router } from '@angular/router';
 import { ApiResponse } from '../../models/apiResponse.model';
 
@@ -30,6 +31,7 @@ export class Auth {
   disabledButton = signal<boolean>(true);
   private apiService: AuthApiService = inject(AuthApiService);
   private authState: AuthStateService = inject(AuthStateService);
+  private redirectService: RedirectService = inject(RedirectService);
 
   isLoginMode = signal(true);
 
@@ -43,6 +45,14 @@ export class Auth {
   signUpForm: FormGroup;
 
   constructor(private router: Router) {
+    if (this.authState.isAuthenticated()) {
+      if (this.authState.role() === 'admin') {
+        this.router.navigate(['/admin']);
+      } else {
+        this.router.navigate(['/']);
+      }
+    }
+
     this.loginData = new LoginModel();
     this.signupData = new SignupModel();
 
@@ -113,15 +123,24 @@ export class Auth {
           if (response.data.token) {
             this.authState.setUser(user, response.data.token);
           }
-          console.log(user?.userRole === 'admin')
-          if (user?.userRole === 'admin') {
-            this.router.navigate(['/admin']);
-          } else {
-            this.router.navigate(['/']);
-          }
+          console.log(user?.userRole === 'admin');
+
           this.loginForm.reset();
           toast.dismiss(toastId);
-          toast.success('Login Successfull');
+          toast.success('Login Successful');
+
+          // Handle post-login redirection
+          if (this.redirectService.hasPendingRedirect()) {
+            // Redirect to the intended route
+            this.redirectService.navigateToIntendedRoute();
+          } else {
+            // Default navigation based on role
+            if (user?.userRole === 'admin') {
+              this.router.navigate(['/admin']);
+            } else {
+              this.router.navigate(['/']);
+            }
+          }
         }
       },
       error: (error: any) => {

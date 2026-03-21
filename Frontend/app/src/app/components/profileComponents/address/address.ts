@@ -26,8 +26,6 @@ import { LoaderService } from '../../../services/loading.service';
   styleUrl: './address.css',
 })
 export class Address implements OnInit {
-
-  loader = inject(LoaderService);
   ngOnInit(): void {
     this.getUserAddress();
   }
@@ -37,8 +35,8 @@ export class Address implements OnInit {
     this.newAddress = new AddressDTO();
     this.pagination = new PaginationModel();
     this.deleteAddressId = new DeleteAddressRequestDTO();
-    this.pagination.PageSize = 10;
-    this.pagination.PageNumber = 1;
+    this.pagination.pageSize = 10;
+    this.pagination.pageNumber = 1;
     this.addressForm = new FormGroup({
       addressLine1: new FormControl('', [Validators.required]),
       addressLine2: new FormControl('', [Validators.required]),
@@ -48,6 +46,7 @@ export class Address implements OnInit {
     });
   }
 
+  loader = inject(LoaderService);
   private apiService: AddressApiService = inject(AddressApiService);
 
   addresses: WritableSignal<AddressModel> = signal<AddressModel>(new AddressModel());

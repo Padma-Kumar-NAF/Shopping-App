@@ -11,7 +11,7 @@ using System.Security.Claims;
 namespace ShoppingApp.Controllers
 {
     //[Authorize(Roles = "admin")]
-    [Route("[controller]")]
+    [Route("category")]
     [ApiController]
     public class CategoryController : BaseController
     {

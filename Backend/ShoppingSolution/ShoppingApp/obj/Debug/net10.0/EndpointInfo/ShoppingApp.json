@@ -411,7 +411,7 @@
         }
       }
     },
-    "/Category/add-category": {
+    "/category/add-category": {
       "post": {
         "tags": [
           "Category"
@@ -443,7 +443,7 @@
         }
       }
     },
-    "/Category/delete-category": {
+    "/category/delete-category": {
       "delete": {
         "tags": [
           "Category"
@@ -475,7 +475,7 @@
         }
       }
     },
-    "/Category/get-all-categories": {
+    "/category/get-all-categories": {
       "post": {
         "tags": [
           "Category"
@@ -507,7 +507,7 @@
         }
       }
     },
-    "/Category/edit-category": {
+    "/category/edit-category": {
       "post": {
         "tags": [
           "Category"
@@ -539,7 +539,7 @@
         }
       }
     },
-    "/Category/products-by-category": {
+    "/category/products-by-category": {
       "post": {
         "tags": [
           "Category"
