@@ -11,5 +11,6 @@ namespace ShoppingApp.Interfaces.ServicesInterface
         public Task<ApiResponse<GetUserOrderDetailsResponseDTO>> GetUserOrderById(Guid userId,GetUserOrderDetailsRequestDTO request);
         public Task<ApiResponse<PlaceOrderResponseDTO>> PlaceOrder(Guid userId,PlaceOrderRequestDTO request);
         public Task<ApiResponse<UpdateOrderResponseDTO>> UpdateOrder(Guid userId,Guid orderId,string status);
+        public Task<ApiResponse<GetAllOrderResponseDTO>> GetAllOrders(GetAllOrderRequestDTO request);
     }
 }

@@ -20,7 +20,7 @@ namespace ShoppingApp.Controllers
         }
 
         //[Authorize(Roles = "admin,user")]
-        [HttpPut("cancel-order")]
+        [HttpPost("cancel-order")]
         [ValidateRequest]
         public async Task<IActionResult> CancelOrder([FromBody] CancelOrderRequestDTO request)
         {
@@ -29,6 +29,23 @@ namespace ShoppingApp.Controllers
                 var UserId = GetUserIdOrThrow();
                 var result = await _orderService.CancelOrder(UserId,request.OrderId);
                 return Ok(result);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        //[Authorize(Roles = "admin,user")]
+        [HttpPost("get-all-orders")]
+        [ValidateRequest]
+        public async Task<IActionResult> GetAllOrders(GetAllOrderRequestDTO request)
+        {
+            try
+            {
+                var UserId = GetUserIdOrThrow();
+                var Result = await _orderService.GetAllOrders(request);
+                return Ok(Result);
             }
             catch
             {

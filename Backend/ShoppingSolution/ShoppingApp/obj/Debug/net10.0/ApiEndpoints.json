@@ -369,13 +369,29 @@
     "ContainingType": "ShoppingApp.Controllers.OrderController",
     "Method": "CancelOrder",
     "RelativePath": "orders/cancel-order",
-    "HttpMethod": "PUT",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "request",
         "Type": "ShoppingApp.Models.DTOs.Order.CancelOrderRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.OrderController",
+    "Method": "GetAllOrders",
+    "RelativePath": "orders/get-all-orders",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Order.GetAllOrderRequestDTO",
         "IsRequired": true
       }
     ],

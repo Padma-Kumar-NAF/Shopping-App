@@ -104,6 +104,7 @@
 
     <!-- Content Area -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8 animate-fade-in">
+
       <!-- Profile Tab -->
       @if (activeTab() === 'profile') {
         <div class="space-y-8">
@@ -337,8 +338,11 @@
         </div>
       }
 
-      <!-- Cart Tab -->
-      
+      <!-- Child routes (cart, wishlist, orders, address) render here -->
+      @if (activeTab() !== 'profile') {
+        <router-outlet></router-outlet>
+      }
+
     </div>
   </div>
 </div>
@@ -550,5 +554,3 @@
     </div>
   </div>
 </div>
-
-<router-outlet></router-outlet>

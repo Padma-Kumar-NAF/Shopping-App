@@ -9,5 +9,6 @@ namespace ShoppingApp.Interfaces.ControllerInterface
         public Task<IActionResult> PlaceOrder(PlaceOrderRequestDTO request);
         public Task<IActionResult> CancelOrder(CancelOrderRequestDTO request);
         public Task<IActionResult> UpdateOrder(UpdateOrderRequestDTO request);
+        public Task<IActionResult> GetAllOrders(GetAllOrderRequestDTO request);
     }
 }

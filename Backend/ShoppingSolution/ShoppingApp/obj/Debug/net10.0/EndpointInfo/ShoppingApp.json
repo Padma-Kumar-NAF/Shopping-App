@@ -572,7 +572,7 @@
       }
     },
     "/orders/cancel-order": {
-      "put": {
+      "post": {
         "tags": [
           "Order"
         ],
@@ -591,6 +591,38 @@
             "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/CancelOrderRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/orders/get-all-orders": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAllOrderRequestDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAllOrderRequestDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAllOrderRequestDTO"
               }
             }
           },
@@ -1539,6 +1571,14 @@
         "required": [
           "pagination"
         ],
+        "type": "object",
+        "properties": {
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "GetAllOrderRequestDTO": {
         "type": "object",
         "properties": {
           "pagination": {

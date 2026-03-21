@@ -11,8 +11,8 @@ namespace ShoppingApp.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly IRepository<Guid, Stock> _stockRepository;
         private readonly IRepository<Guid, Order> _repository;
+        private readonly IRepository<Guid, Stock> _stockRepository;
         private readonly IRepository<Guid, Payment> _paymentRepository;
         private readonly IRepository<Guid, Refund> _refundRepository;
         private readonly IRepository<Guid, User> _userRepository;
@@ -131,6 +131,97 @@ namespace ShoppingApp.Services
             {
                 await _unitOfWork.RollbackAsync();
                 throw new AppException("Something went wrong while canceling order", ex, 500);
+            }
+        }
+
+        public async Task<ApiResponse<GetAllOrderResponseDTO>> GetAllOrders(GetAllOrderRequestDTO request)
+        {
+            try
+            {
+                var query = _repository.GetQueryable()
+                            .Include(o => o.Address)
+                            .Include(o => o.Payment)
+                            .Include(o => o.OrderDetails)
+                                .ThenInclude(od => od.Product);
+
+                var totalOrders = await query.CountAsync();
+
+                if (totalOrders == 0)
+                {
+                    return new ApiResponse<GetAllOrderResponseDTO>
+                    {
+                        StatusCode = 404,
+                        Message = "No orders found",
+                        Data = new GetAllOrderResponseDTO(),
+                        Action = "GetAllOrders"
+                    };
+                }
+
+                var orders = await query
+                    .OrderByDescending(o => o.CreatedAt)
+                    .Skip((request.pagination.PageNumber - 1) * request.pagination.PageSize)
+                    .Take(request.pagination.PageSize)
+                    .ToListAsync();
+
+                var response = new GetAllOrderResponseDTO
+                {
+                    Items = orders.Select(o => new OrderDetailsResponseDTO
+                    {
+                        OrderId = o.OrderId,
+                        Status = o.Status,
+                        DeliveryDate = o.DeliveryDate!.Value,
+
+                        TotalProductsCount = o.OrderDetails!.Count,
+                        TotalAmount = o.OrderDetails.Sum(x => x.Quantity * x.ProductPrice),
+
+                        Address = new AddressDTO
+                        {
+                            AddressId = o.Address!.AddressId,
+                            AddressLine1 = o.Address.AddressLine1,
+                            AddressLine2 = o.Address.AddressLine2,
+                            City = o.Address.City,
+                            State = o.Address.State,
+                            Pincode = o.Address.Pincode
+                        },
+
+                        Payment = new PaymentDTO
+                        {
+                            PaymentId = o.Payment!.PaymentId,
+                            PaymentType = o.Payment.PaymentType
+                        },
+
+                        Items = o.OrderDetails.Select(od => new OrderDetailsDTO
+                        {
+                            OrderDetailsId = od.OrderDetailsId,
+                            ProductId = od.ProductId,
+                            ProductName = od.Product!.Name,
+                            ImagePath = od.Product.ImagePath,
+                            Quantity = od.Quantity,
+                            ProductPrice = od.ProductPrice
+                        }).ToList()
+
+                    }).ToList()
+                };
+
+                return new ApiResponse<GetAllOrderResponseDTO>
+                {
+                    StatusCode = 200,
+                    Message = "Orders fetched successfully",
+                    Data = response,
+                    Action = "GetAllOrders"
+                };
+            }
+            catch (AppException)
+            {
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while Fetching orders", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while Fetching orders", ex, 500);
             }
         }
 

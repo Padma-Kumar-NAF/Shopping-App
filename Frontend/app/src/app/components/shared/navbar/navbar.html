@@ -52,7 +52,7 @@
       </button>
 
       <!-- Cart -->
-      <button class="navbar__action-btn" (click)="navigateTo('/cart')"
+      <button class="navbar__action-btn" (click)="navigateTo('/profile/cart')"
         aria-label="Shopping cart" title="Cart">
         <svg class="navbar__action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -146,7 +146,7 @@
       <a class="navbar__mobile-link" (click)="navigateTo('/profile/wishlist')">
         ❤️ Wishlist
       </a>
-      <a class="navbar__mobile-link" (click)="navigateTo('/cart')">
+      <a class="navbar__mobile-link" (click)="navigateTo('/profile/cart')">
         🛍️ Cart
       </a>
       @if (isAuthenticated()) {

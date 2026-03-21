@@ -2,6 +2,7 @@ import { Component, signal, OnInit, inject, WritableSignal } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { ProfileApiService } from '../../../services/profile.service';
 import { AuthStateService } from '../../../services/auth-state.service';
+import { ActivatedRoute } from '@angular/router';
 import {
   newEmailRequestDTO,
   EditMailRequestDTOModel,
@@ -9,7 +10,8 @@ import {
   UserProfile,
 } from '../../../models/profile.model';
 import { toast } from 'ngx-sonner';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import {
   FormControl,
   FormGroup,
@@ -18,7 +20,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 
-type TabType = 'profile' | 'cart' | 'wishlist' | 'orders' | 'address';
+type TabType = 'cart' | 'wishlist' | 'orders' | 'address' | 'profile';
 
 interface TabConfig {
   id: TabType;
@@ -38,7 +40,7 @@ export class Profile implements OnInit {
   showDetailsModal = signal(false);
   showEmailModal = signal(false);
   showMobileMenu = signal(false);
-  activeTab = signal<TabType>('cart');
+  activeTab = signal<TabType>('profile');
   user: WritableSignal<UserProfile> = signal(new UserProfile());
   isLoading = signal<boolean>(false);
 
@@ -47,6 +49,7 @@ export class Profile implements OnInit {
   editMail: newEmailRequestDTO;
   editUser: EditUserDetailsModel;
 
+  private route = inject(ActivatedRoute);
   private apiService: ProfileApiService = inject(ProfileApiService);
   private authState: AuthStateService = inject(AuthStateService);
 
@@ -74,7 +77,38 @@ export class Profile implements OnInit {
 
   ngOnInit(): void {
     this.GetUserProfileDetails();
+
+    // Sync activeTab with the active child route on every navigation
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.syncTabFromRoute();
+      });
+
+    // Also sync on initial load
+    this.syncTabFromRoute();
   }
+
+  /**
+   * Reads the first child route segment (e.g. 'cart', 'orders') and sets
+   * activeTab accordingly. Falls back to 'profile' when there is no child
+   * route active (i.e. the user is on /profile itself).
+   */
+  private syncTabFromRoute(): void {
+    const child = this.route.firstChild;
+    if (child) {
+      child.url.subscribe((segments) => {
+        if (segments.length > 0) {
+          this.activeTab.set(segments[0].path as TabType);
+        } else {
+          this.activeTab.set('profile');
+        }
+      });
+    } else {
+      this.activeTab.set('profile');
+    }
+  }
+
   toggleMobileMenu(): void {
     this.showMobileMenu.update((value) => !value);
   }
@@ -121,9 +155,6 @@ export class Profile implements OnInit {
     this.showMobileMenu.set(false);
   }
 
-  /**
-   * Save user details
-   */
   saveDetails(): void {
     if (this.userDetailsForm.invalid) {
       this.userDetailsForm.markAllAsTouched();
@@ -217,9 +248,15 @@ export class Profile implements OnInit {
   }
 
   setTab(tab: TabType): void {
+    if (tab === 'profile') {
+      this.activeTab.set(tab);
+      this.router.navigate(['/profile']);
+      return;
+    }
     this.activeTab.set(tab);
-    this.router.navigate([tab]);
+    this.router.navigate(['/profile', tab]);
   }
+
   goHome(): void {
     this.closeMobileMenu();
     this.router.navigate(['/']);
