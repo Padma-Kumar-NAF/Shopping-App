@@ -31,12 +31,6 @@ class udpateUserDetailsDTO {
   pincode : string = ''
 }
 
-// export class EditMailModel {
-//   oldMail: string = '';
-//   newEmail: string = '';
-//   password: string = '';
-// }
-
 export class EditMailRequestDTOModel{
   isSuccess : boolean = false;
 }

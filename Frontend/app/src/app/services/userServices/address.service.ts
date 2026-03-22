@@ -8,8 +8,8 @@ import {
   DeleteAddressResponseDTO,
   NewAddressResponseDTO,
   UpdateAddressResponseDTO,
-} from '../models/address.model';
-import { PaginationModel } from '../models/pagination.model';
+} from '../../models/users/address.model';
+import { PaginationModel } from '../../models/users/pagination.model';
 
 @Injectable({
   providedIn: 'root',

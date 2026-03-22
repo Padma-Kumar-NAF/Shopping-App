@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PaginationModel } from '../../models/pagination.model';
+import { PaginationModel } from '../../models/users/pagination.model';
 import { Observable } from 'rxjs';
 import {
   AddCategoryRequestDTO,
@@ -11,7 +11,7 @@ import {
   EditCategoryResponseDTO,
   GetAllCategoryResponseDTO,
 } from '../../models/admin/categories.model';
-import { ApiResponse } from '../../models/apiResponse.model';
+import { ApiResponse } from '../../models/users/apiResponse.model';
 
 @Injectable({
   providedIn: 'root',

@@ -8,7 +8,7 @@ import {
   EditMailRequestDTOModel,
   EditUserDetailsModel,
   UserProfile,
-} from '../../../models/profile.model';
+} from '../../../models/users/profile.model';
 import { toast } from 'ngx-sonner';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';

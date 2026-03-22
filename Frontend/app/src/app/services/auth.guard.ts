@@ -6,8 +6,6 @@ export const roleGuard: CanActivateFn = (route) => {
   const authState = inject(AuthStateService);
   const router = inject(Router);
 
-  // By the time any guard runs, provideAppInitializer has already completed,
-  // so user() is guaranteed to be populated if a valid token exists.
   const user = authState.user();
 
   if (!user) {
@@ -18,7 +16,6 @@ export const roleGuard: CanActivateFn = (route) => {
   const userRole = user.userRole?.toLowerCase();
 
   if (expectedRole && userRole !== expectedRole.toLowerCase()) {
-    // Redirect to the correct home for this role instead of blocking
     const fallback = userRole === 'admin' ? '/admin' : '/';
     return router.createUrlTree([fallback]);
   }

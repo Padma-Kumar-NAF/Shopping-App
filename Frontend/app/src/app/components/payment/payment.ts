@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../services/product.service';
-import { ProductItem } from '../../models/product.model';
+import { ProductItem } from '../../models/users/product.model';
 import { toast } from 'ngx-sonner';
 
 interface CartItem {

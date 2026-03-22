@@ -133,13 +133,13 @@ namespace ShoppingApp.Services
                         Price = p.Price,
                         StockId = p.Stock!.StockId,
                         Quantity = p.Stock.Quantity,
-                        Review = (p.Reviews ?? new List<Review>())
-                            .Select(r => new ReviewDTO
+                        Review = p.Reviews != null
+                            ? p.Reviews.Select(r => new ReviewDTO
                             {
                                 Summary = r.Summary,
                                 ReviewPoints = r.ReviewPoints
-                            })
-                            .ToList()
+                            }).ToList()
+                            : new List<ReviewDTO>()
                     })
                     .ToListAsync();
 
@@ -335,6 +335,8 @@ namespace ShoppingApp.Services
 
                 await _productRepository.UpdateAsync(product.ProductId, product);
                 await _stockRepository.UpdateAsync(stock.StockId, stock);
+
+                await _unitOfWork.CommitAsync();
 
                 return new ApiResponse<UpdateProductResponseDTO>()
                 {

@@ -14,12 +14,12 @@ import {
   LoginModel,
   SignupModel,
   LoginResponseDTO,
-} from '../../models/auth.model';
+} from '../../models/users/auth.model';
 import { AuthApiService } from '../../services/auth.service';
 import { AuthStateService } from '../../services/auth-state.service';
 import { RedirectService } from '../../services/redirect.service';
 import { Router } from '@angular/router';
-import { ApiResponse } from '../../models/apiResponse.model';
+import { ApiResponse } from '../../models/users/apiResponse.model';
 
 @Component({
   selector: 'app-auth',

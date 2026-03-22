@@ -139,10 +139,11 @@ namespace ShoppingApp.Services
             try
             {
                 var query = _repository.GetQueryable()
+                            .Include(o => o.User)
                             .Include(o => o.Address)
                             .Include(o => o.Payment)
                             .Include(o => o.OrderDetails)
-                                .ThenInclude(od => od.Product);
+                             .ThenInclude(od => od.Product);
 
                 var totalOrders = await query.CountAsync();
 
@@ -173,6 +174,12 @@ namespace ShoppingApp.Services
 
                         TotalProductsCount = o.OrderDetails!.Count,
                         TotalAmount = o.OrderDetails.Sum(x => x.Quantity * x.ProductPrice),
+
+                        OrderBy = new OrderBy
+                        {
+                            UserEmail = o.User!.Email,
+                            UserName = o.User.Name,
+                        },
 
                         Address = new AddressDTO
                         {
@@ -344,6 +351,8 @@ namespace ShoppingApp.Services
                     DeliveryDate = DateTime.Now.AddDays(2),
                 };
 
+                await _repository.AddAsync(order);
+
                 stock.Quantity -= request.OrderProductdDetails.Quantity;
 
                 var orderDetails = new OrderDetails()
@@ -355,6 +364,8 @@ namespace ShoppingApp.Services
                     Quantity = request.OrderProductdDetails.Quantity
                 };
 
+                await _orderDetailsRepository.AddAsync(orderDetails);
+
                 var payment = new Payment
                 {
                     UserId = userId,
@@ -363,9 +374,6 @@ namespace ShoppingApp.Services
                     PaymentType = request.PaymentType
                 };
 
-                await _repository.AddAsync(order);
-
-                await _orderDetailsRepository.AddAsync(orderDetails);
 
                 await _stockRepository.UpdateAsync(stock.StockId, stock);
 
@@ -414,9 +422,23 @@ namespace ShoppingApp.Services
                 throw new AppException("User not found",401);
             }
 
-            if(Status != "Cancel" || Status != "Delivered" || Status != "Shipped" || Status != "Not Delivered")
+            if(Status != "Cancelled" && Status != "Delivered" && Status != "Shipped" && Status != "Not Delivered")
             {
                 throw new AppException("Invalid Status",400);
+            }
+            if(Status == "Cancelled")
+            {
+                await CancelOrder(userId,OrderId);
+                return new ApiResponse<UpdateOrderResponseDTO>()
+                {
+                    StatusCode = 200,
+                    Data = new UpdateOrderResponseDTO()
+                    {
+                        IsUpdated = true,
+                    },
+                    Message = "Order updated successfully",
+                    Action = "Update order status"
+                };
             }
             try
             {

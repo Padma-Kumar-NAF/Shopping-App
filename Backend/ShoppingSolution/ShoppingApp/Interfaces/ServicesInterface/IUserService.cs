@@ -11,6 +11,5 @@ namespace ShoppingApp.Interfaces.ServicesInterface
         public Task<ApiResponse<GetUsersResponseDTO>> GetAllUsers(GetUsersRequestDTO request);
         public Task<ApiResponse<GetUserByIdResponseDTO>> GetUserById(Guid UserId);
         public Task<ApiResponse<UpdateProfileResponseDTO>> UpdateUserDetails(Guid userId,UpdateProfileRequestDTO request);
-        //public Task<ApiResponse<Guid>> AddUserDetails(AddUserDetailsRequestDTO request);
     }
 }

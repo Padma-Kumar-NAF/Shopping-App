@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { AuthStateService } from '../../services/auth-state.service';
 import { RedirectService } from '../../services/redirect.service';
-import { ProductItem, SearchResult } from '../../models/product.model';
+import { ProductItem, SearchResult } from '../../models/users/product.model';
 import { toast } from 'ngx-sonner';
 
 @Component({

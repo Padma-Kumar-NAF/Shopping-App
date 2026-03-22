@@ -43,8 +43,6 @@ export const routes: Routes = [
     data: { role: 'admin' },
     component: AdminDashboard,
   },
-
-  // Protected routes - require authentication
   {
     path: 'checkout',
     canActivate: [authRequiredGuard],
@@ -58,7 +56,6 @@ export const routes: Routes = [
     component: PaymentComponent,
   },
 
-  // Profile routes - require authentication
   {
     path: 'profile',
     canActivate: [authRequiredGuard],
@@ -73,7 +70,6 @@ export const routes: Routes = [
     ],
   },
 
-  // Auth and utility routes
   { path: 'auth', component: Auth },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: 'page-not-found', component: PageNotFound },

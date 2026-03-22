@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PaginationModel } from '../models/pagination.model';
+import { PaginationModel } from '../models/users/pagination.model';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({

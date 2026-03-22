@@ -1,7 +1,14 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { User } from '../../../models/admin.model';
+import { User } from '../../../models/users/admin.model';
 import { toast } from 'ngx-sonner';
+import { UserServcie } from '../../../services/adminServices/user.service';
+import { PaginationModel } from '../../../models/users/pagination.model';
+import { ApiResponse } from '../../../models/admin/apiResponse.model';
+import { GetUsersResponseDTO, UserDetailsDTO } from '../../../models/admin/users.model';
+import { StoreService } from '../../../services/adminServices/store.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-users-management',
@@ -10,129 +17,135 @@ import { toast } from 'ngx-sonner';
   templateUrl: './users-management.html',
   styleUrl: './users-management.css',
 })
-export class UsersManagement {
-  users = signal<User[]>([
-    {
-      id: '1',
-      name: 'John Doe',
-      email: 'john@example.com',
-      role: 'customer',
-      status: 'active',
-      createdAt: new Date('2024-01-15'),
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      email: 'jane@example.com',
-      role: 'customer',
-      status: 'active',
-      createdAt: new Date('2024-02-20'),
-    },
-    {
-      id: '3',
-      name: 'Admin User',
-      email: 'admin@example.com',
-      role: 'admin',
-      status: 'active',
-      createdAt: new Date('2023-12-01'),
-    },
-    {
-      id: '4',
-      name: 'Bob Johnson',
-      email: 'bob@example.com',
-      role: 'customer',
-      status: 'inactive',
-      createdAt: new Date('2024-03-10'),
-    },
-    {
-      id: '5',
-      name: 'Alice Williams',
-      email: 'alice@example.com',
-      role: 'customer',
-      status: 'suspended',
-      createdAt: new Date('2024-01-25'),
-    },
-  ]);
+export class UsersManagement implements OnInit {
+  private readonly apiService = inject(UserServcie);
+  store = inject(StoreService);
 
+  users$!: Observable<UserDetailsDTO[]>;
+  filteredUsers$!: Observable<UserDetailsDTO[]>;
+
+  // Confirm delete modal state
+  confirmModal = signal<boolean>(false);
+  pendingDeleteId = signal<string | null>(null);
+
+  // Filter signals
   searchTerm = signal<string>('');
   filterRole = signal<string>('all');
   filterStatus = signal<string>('all');
 
-  get filteredUsers(): User[] {
-    let filtered = this.users();
+  pagination: PaginationModel;
 
-    // Search filter
-    if (this.searchTerm()) {
-      const term = this.searchTerm().toLowerCase();
-      filtered = filtered.filter(
-        (user) => user.name.toLowerCase().includes(term) || user.email.toLowerCase().includes(term)
-      );
-    }
+  constructor() {
+    this.pagination = new PaginationModel();
+    this.pagination.pageNumber = 1;
+    this.pagination.pageSize = 10;
+  }
 
-    // Role filter
-    if (this.filterRole() !== 'all') {
-      filtered = filtered.filter((user) => user.role === this.filterRole());
-    }
+  ngOnInit(): void {
+    this.users$ = this.store.state$.pipe(map(s => s.users));
 
-    // Status filter
-    if (this.filterStatus() !== 'all') {
-      filtered = filtered.filter((user) => user.status === this.filterStatus());
-    }
+    this.filteredUsers$ = this.store.state$.pipe(
+      map(s => {
+        let filtered = s.users;
 
-    return filtered;
+        const term = this.searchTerm().toLowerCase();
+        if (term) {
+          filtered = filtered.filter(
+            u => u.name.toLowerCase().includes(term) || u.email.toLowerCase().includes(term)
+          );
+        }
+
+        if (this.filterRole() !== 'all') {
+          filtered = filtered.filter(u => u.role === this.filterRole());
+        }
+
+        if (this.filterStatus() !== 'all') {
+          filtered = filtered.filter(u => (u as any).status === this.filterStatus());
+        }
+
+        return filtered;
+      })
+    );
+  }
+
+  // Trigger re-evaluation of filteredUsers$ by updating the store reference
+  private refreshFilter(): void {
+    const current = this.store.value.users;
+    this.store.setUsers([...current]);
   }
 
   updateSearch(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.searchTerm.set(value);
+    this.refreshFilter();
   }
 
   updateRoleFilter(event: Event): void {
     const value = (event.target as HTMLSelectElement).value;
     this.filterRole.set(value);
+    this.refreshFilter();
   }
 
   updateStatusFilter(event: Event): void {
     const value = (event.target as HTMLSelectElement).value;
     this.filterStatus.set(value);
+    this.refreshFilter();
   }
 
-  changeUserStatus(userId: string, newStatus: User['status']): void {
-    const updatedUsers = this.users().map((user) =>
-      user.id === userId ? { ...user, status: newStatus } : user
-    );
-    this.users.set(updatedUsers);
-    toast.success(`User status updated to ${newStatus}`);
+  // Opens confirm modal and stores the id to delete
+  openDeleteModal(userId: string): void {
+    this.pendingDeleteId.set(userId);
+    this.confirmModal.set(true);
   }
 
-  changeUserRole(userId: string, newRole: User['role']): void {
-    const updatedUsers = this.users().map((user) =>
-      user.id === userId ? { ...user, role: newRole } : user
-    );
-    this.users.set(updatedUsers);
-    toast.success(`User role updated to ${newRole}`);
+  cancelDelete(): void {
+    this.confirmModal.set(false);
+    this.pendingDeleteId.set(null);
   }
 
-  deleteUser(userId: string): void {
-    const updatedUsers = this.users().filter((user) => user.id !== userId);
-    this.users.set(updatedUsers);
+  // Called when user confirms deletion
+  deleteUser(): void {
+    const userId = this.pendingDeleteId();
+    if (!userId) return;
+
+    console.log('Deleting user with id:', userId);
+
+    // Update store
+    const updatedUsers = this.store.value.users.filter(u => u.userId !== userId);
+    this.store.setUsers(updatedUsers);
+
+    this.confirmModal.set(false);
+    this.pendingDeleteId.set(null);
+
     toast.success('User deleted successfully');
   }
 
-  getStatusColor(status: User['status']): string {
+  changeUserRole(userId: string, newRole: string): void {
+    const updatedUsers = this.store.value.users.map(u =>
+      u.userId === userId ? { ...u, role: newRole } : u
+    );
+    this.store.setUsers(updatedUsers);
+    toast.success(`User role updated to ${newRole}`);
+  }
+
+  changeUserStatus(userId: string, newStatus: string): void {
+    const updatedUsers = this.store.value.users.map(u =>
+      u.userId === userId ? { ...u, status: newStatus } : u
+    );
+    this.store.setUsers(updatedUsers);
+    toast.success(`User status updated to ${newStatus}`);
+  }
+
+  getStatusColor(status: string): string {
     switch (status) {
-      case 'active':
-        return 'bg-green-100 text-green-800';
-      case 'inactive':
-        return 'bg-gray-100 text-gray-800';
-      case 'suspended':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+      case 'active': return 'bg-green-100 text-green-800';
+      case 'inactive': return 'bg-gray-100 text-gray-800';
+      case 'suspended': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   }
 
-  getRoleColor(role: User['role']): string {
+  getRoleColor(role: string): string {
     return role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800';
   }
 }

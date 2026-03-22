@@ -2,7 +2,7 @@ import { Component, inject, OnChanges, OnInit, SimpleChanges } from '@angular/co
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { CartService } from '../../../services/cart.service';
-import { PaginationModel } from '../../../models/pagination.model';
+import { PaginationModel } from '../../../models/users/pagination.model';
 
 @Component({
   selector: 'app-cart',

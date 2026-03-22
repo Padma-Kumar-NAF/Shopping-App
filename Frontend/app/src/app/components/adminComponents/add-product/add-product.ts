@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Product } from '../../../models/admin.model';
+import { Product } from '../../../models/users/admin.model';
 import { toast } from 'ngx-sonner';
 
 @Component({

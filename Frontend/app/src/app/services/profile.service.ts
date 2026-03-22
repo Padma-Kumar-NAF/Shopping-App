@@ -6,7 +6,7 @@ import {
   EditUserDetailsModel,
   newEmailRequestDTO,
   UserProfile,
-} from '../models/profile.model';
+} from '../models/users/profile.model';
 
 @Injectable({
   providedIn: 'root',

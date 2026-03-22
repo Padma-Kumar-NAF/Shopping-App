@@ -1,19 +1,19 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Category } from '../../../models/admin.model';
 import { toast } from 'ngx-sonner';
-import { LoaderService } from '../../../services/loading.service';
-import { PaginationModel } from '../../../models/pagination.model';
+import { PaginationModel } from '../../../models/users/pagination.model';
 import { AdminCategoryService } from '../../../services/adminServices/category.service';
-import { ApiResponse } from '../../../models/apiResponse.model';
+import { ApiResponse } from '../../../models/users/apiResponse.model';
 import {
   CategoryDTO,
   DeleteCategoryResponseDTO,
-  GetAllCategoryResponseDTO,
   AddCategoryResponseDTO,
   EditCategoryResponseDTO,
 } from '../../../models/admin/categories.model';
+import { StoreService } from '../../../services/adminServices/store.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-category-management',
@@ -23,12 +23,25 @@ import {
   styleUrl: './category-management.css',
 })
 export class CategoryManagement implements OnInit {
-  // loader = inject(LoaderService);
-  apiService: AdminCategoryService = inject(AdminCategoryService);
+  apiService = inject(AdminCategoryService);
+  store = inject(StoreService);
+
+  categories$!: Observable<CategoryDTO[]>;
 
   pagination: PaginationModel;
-  deleteCategoryId = signal<string>('');
+
+  // Add form
+  newCategory = signal<string>('');
+  showAddForm = signal<boolean>(false);
+
+  // Edit modal
+  showEditModal = signal<boolean>(false);
+  editingCategory = signal<CategoryDTO | null>(null);
+  editForm = signal<{ name: string }>({ name: '' });
+
+  // Delete confirm modal
   confirmModal = signal<boolean>(false);
+  deleteCategoryId = signal<string>('');
 
   constructor() {
     this.pagination = new PaginationModel();
@@ -37,123 +50,56 @@ export class CategoryManagement implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getAllCategories();
+    this.categories$ = this.store.state$.pipe(map(s => s.categories));
   }
 
-  getAllCategories() {
-    // this.loader.show();
-    this.apiService.getAllCategories(this.pagination).subscribe({
-      next: (response: ApiResponse<GetAllCategoryResponseDTO>) => {
-        console.log('response', response);
-        this.categories.set(response.data?.categoryList ?? []);
-      },
-      error: (err) => {
-        console.error(err);
-        toast.error('Failed to load categories');
-      },
-      complete: () => {
-        // this.loader.hide();
-      },
-    });
-  }
-
-  categories = signal<CategoryDTO[]>([]);
-  newCategory = signal<string>('');
-  showAddForm = signal<boolean>(false);
-  showEditModal = signal<boolean>(false);
-  editingCategory = signal<CategoryDTO | null>(null);
-  editForm = signal<{ name: string }>({ name: '' });
+  // ── Add ──────────────────────────────────────────────────────────────────
 
   toggleAddForm(): void {
-    this.showAddForm.update((v) => !v);
-    if (!this.showAddForm()) {
-      this.resetForm();
-    }
+    this.showAddForm.update(v => !v);
+    if (!this.showAddForm()) this.resetForm();
   }
 
   addCategory(): void {
-    const cat = this.newCategory();
+    const name = this.newCategory().trim();
 
-    if (!cat.trim()) {
+    if (!name) {
       toast.error('Category name is required');
       return;
     }
 
-    const exists = this.categories().some(
-      (c) => c.categoryName.toLowerCase() === cat.trim().toLowerCase()
+    const exists = this.store.value.categories.some(
+      c => c.categoryName.toLowerCase() === name.toLowerCase()
     );
-
     if (exists) {
       toast.error('Category already exists');
       return;
     }
 
-    // this.loader.show();
-    this.apiService.addCategory(cat.trim()).subscribe({
+    this.apiService.addCategory(name).subscribe({
       next: (response: ApiResponse<AddCategoryResponseDTO>) => {
         const newCat: CategoryDTO = {
           categoryId: response.data?.categoryId ?? Date.now().toString(),
-          categoryName: cat.trim(),
+          categoryName: name,
           productsCount: 0,
           createdAt: new Date(),
         };
-        this.categories.update((cats) => [...cats, newCat]);
+        this.store.addCategory(newCat);
         toast.success('Category added successfully!');
         this.resetForm();
         this.showAddForm.set(false);
       },
       error: (err) => {
-        console.error(err);
-        const errorMessage = err?.error?.message || 'Something went wrong';
-        toast.error(errorMessage);
-      },
-      complete: () => {
-        // this.loader.hide();
+        toast.error(err?.error?.message || 'Something went wrong');
       },
     });
-  }
-
-  getDeleteCategoryId(categoryId: string): void {
-    this.deleteCategoryId.set(categoryId);
-    this.confirmModal.set(true);
-  }
-
-  deleteCategory(): void {
-    const id = this.deleteCategoryId();
-
-    // this.loader.show();
-    this.apiService.deleteCategory(id).subscribe({
-      next: (response: ApiResponse<DeleteCategoryResponseDTO>) => {
-        if (response.data?.isSuccess) {
-          this.categories.update((cats) =>
-            cats.filter((c) => c.categoryId !== id)
-          );
-          toast.success(response.message || 'Category deleted successfully');
-        } else {
-          toast.error('Failed to delete category');
-        }
-      },
-      error: (err) => {
-        console.error(err);
-        const errorMessage = err?.error?.message || 'Something went wrong';
-        toast.error(errorMessage);
-      },
-      complete: () => {
-        // this.loader.hide();
-        this.deleteCategoryId.set('');
-        this.confirmModal.set(false);
-      },
-    });
-  }
-
-  cancelDelete(): void {
-    this.deleteCategoryId.set('');
-    this.confirmModal.set(false);
   }
 
   resetForm(): void {
     this.newCategory.set('');
   }
+
+  // ── Edit ─────────────────────────────────────────────────────────────────
 
   openEditModal(category: CategoryDTO): void {
     this.editingCategory.set(category);
@@ -170,35 +116,26 @@ export class CategoryManagement implements OnInit {
     const category = this.editingCategory();
     if (!category) return;
 
-    const form = this.editForm();
+    const name = this.editForm().name.trim();
 
-    if (!form.name.trim()) {
+    if (!name) {
       toast.error('Category name is required');
       return;
     }
 
-    const exists = this.categories().some(
-      (c) =>
-        c.categoryId !== category.categoryId &&
-        c.categoryName.toLowerCase() === form.name.trim().toLowerCase()
+    const exists = this.store.value.categories.some(
+      c => c.categoryId !== category.categoryId &&
+           c.categoryName.toLowerCase() === name.toLowerCase()
     );
-
     if (exists) {
       toast.error('Category name already exists');
       return;
     }
 
-    // this.loader.show();
-    this.apiService.updateCategory(category.categoryId, form.name.trim()).subscribe({
+    this.apiService.updateCategory(category.categoryId, name).subscribe({
       next: (response: ApiResponse<EditCategoryResponseDTO>) => {
         if (response.data?.isSuccess) {
-          this.categories.update((cats) =>
-            cats.map((c) =>
-              c.categoryId === category.categoryId
-                ? { ...c, categoryName: form.name.trim() }
-                : c
-            )
-          );
+          this.store.updateCategory({ ...category, categoryName: name });
           toast.success('Category updated successfully!');
           this.closeEditModal();
         } else {
@@ -206,13 +143,54 @@ export class CategoryManagement implements OnInit {
         }
       },
       error: (err) => {
-        console.error(err);
-        const errorMessage = err?.error?.message || 'Something went wrong';
-        toast.error(errorMessage);
-      },
-      complete: () => {
-        // this.loader.hide();
+        toast.error(err?.error?.message || 'Something went wrong');
       },
     });
+  }
+
+  // ── Delete ───────────────────────────────────────────────────────────────
+
+  getDeleteCategoryId(categoryId: string): void {
+    this.deleteCategoryId.set(categoryId);
+    this.confirmModal.set(true);
+  }
+
+  cancelDelete(): void {
+    this.deleteCategoryId.set('');
+    this.confirmModal.set(false);
+  }
+
+  deleteCategory(): void {
+    const id = this.deleteCategoryId();
+
+    this.apiService.deleteCategory(id).subscribe({
+      next: (response: ApiResponse<DeleteCategoryResponseDTO>) => {
+        if (response.data?.isSuccess) {
+          const updated = this.store.value.categories.filter(c => c.categoryId !== id);
+          this.store.setCategories(updated);
+          toast.success(response.message || 'Category deleted successfully');
+        } else {
+          toast.error('Failed to delete category');
+        }
+      },
+      error: (err) => {
+        toast.error(err?.error?.message || 'Something went wrong');
+      },
+      complete: () => {
+        this.deleteCategoryId.set('');
+        this.confirmModal.set(false);
+      },
+    });
+  }
+
+  // ── Helpers ──────────────────────────────────────────────────────────────
+
+  totalProducts(categories: CategoryDTO[]): number {
+    return categories.reduce((sum, cat) => sum + (cat.productsCount || 0), 0);
+  }
+
+  avgProducts(categories: CategoryDTO[]): string {
+    if (!categories.length) return '0';
+    return (this.totalProducts(categories) / categories.length).toFixed(1);
   }
 }

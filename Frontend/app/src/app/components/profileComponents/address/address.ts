@@ -6,7 +6,7 @@ import {
   DeleteAddressRequestDTO,
   DeleteAddressResponseDTO,
   UpdateAddressResponseDTO,
-} from '../../../models/address.model';
+} from '../../../models/users/address.model';
 import {
   FormControl,
   FormGroup,
@@ -15,8 +15,8 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { toast } from 'ngx-sonner';
-import { AddressApiService } from '../../../services/address.service';
-import { PaginationModel } from '../../../models/pagination.model';
+import { AddressApiService } from '../../../services/userServices/address.service';
+import { PaginationModel } from '../../../models/users/pagination.model';
 import { LoaderService } from '../../../services/loading.service';
 
 @Component({
