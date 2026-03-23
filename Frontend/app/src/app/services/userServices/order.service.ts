@@ -72,4 +72,11 @@ export class OrderService {
       requestBody
     );
   }
+
+  cancelOrder(orderId: string): Observable<ApiResponse<any>> {
+    const requestBody = {
+      OrderId: orderId,
+    };
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/cancel-order`, requestBody);
+  }
 }

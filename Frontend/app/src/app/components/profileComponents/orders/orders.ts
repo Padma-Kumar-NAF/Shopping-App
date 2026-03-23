@@ -7,12 +7,15 @@ import {
   OrderDetailsResponseDTO,
 } from '../../../services/userServices/order.service';
 import { PaginationModel } from '../../../models/users/pagination.model';
+import { PaginationComponent } from '../../shared/pagination/pagination.component';
 import { toast } from 'ngx-sonner';
+import { isOrderCancellable, OrderStatus } from '../../../constants/order-status.constants';
+import { DEFAULT_PAGE_SIZE, calculateTotalPages } from '../../../constants/pagination.constants';
 
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule, MatIconModule, MatButtonModule, PaginationComponent],
   templateUrl: './orders.html',
   styleUrls: ['./orders.css'],
 })
@@ -25,8 +28,15 @@ export class OrdersComponent implements OnInit {
   showProducts = signal(false);
   isLoading = signal(false);
 
+  // Pagination
   currentPage = signal(1);
-  pageSize = 10;
+  pageSize = DEFAULT_PAGE_SIZE;
+  totalItems = signal(0);
+  totalPages = signal(0);
+
+  // Cancel order modal
+  showCancelModal = signal(false);
+  orderToCancel = signal<OrderDetailsResponseDTO | null>(null);
 
   ngOnInit(): void {
     this.loadOrders();
@@ -42,6 +52,9 @@ export class OrdersComponent implements OnInit {
       next: (response) => {
         if (response.data?.items) {
           this.orders.set(response.data.items);
+          // Note: Backend should return total count, using items length as fallback
+          this.totalItems.set(response.data.items.length);
+          this.totalPages.set(calculateTotalPages(this.totalItems(), this.pageSize));
         }
         this.isLoading.set(false);
       },
@@ -49,6 +62,53 @@ export class OrdersComponent implements OnInit {
         console.error('Failed to load orders:', err);
         toast.error(err?.error?.message || 'Failed to load orders');
         this.isLoading.set(false);
+      },
+    });
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage.set(page);
+    this.loadOrders();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  canCancelOrder(order: OrderDetailsResponseDTO): boolean {
+    return isOrderCancellable(order.status);
+  }
+
+  openCancelModal(order: OrderDetailsResponseDTO): void {
+    this.orderToCancel.set(order);
+    this.showCancelModal.set(true);
+  }
+
+  closeCancelModal(): void {
+    this.showCancelModal.set(false);
+    this.orderToCancel.set(null);
+  }
+
+  confirmCancelOrder(): void {
+    const order = this.orderToCancel();
+    if (!order) return;
+
+    const toastId = toast.loading('Cancelling order...');
+
+    this.orderService.cancelOrder(order.orderId).subscribe({
+      next: (response) => {
+        toast.dismiss(toastId);
+        toast.success(response.message || 'Order cancelled successfully');
+
+        // Update order status in the list
+        this.orders.update((orders) =>
+          orders.map((o) =>
+            o.orderId === order.orderId ? { ...o, status: OrderStatus.CANCELLED } : o
+          )
+        );
+
+        this.closeCancelModal();
+      },
+      error: (err) => {
+        toast.dismiss(toastId);
+        toast.error(err?.error?.message || 'Failed to cancel order');
       },
     });
   }
