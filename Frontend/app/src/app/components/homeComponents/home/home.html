@@ -104,8 +104,7 @@
 
   <section class="bg-gray-50 py-6">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-2xl font-semibold mb-4 text-gray-800">Shop by Category</h2>
-      <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-800">Shop by Category</h2>      <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
         @for (category of categories; track category) {
         <button
           (click)="onCategoryClick(category)"

@@ -79,7 +79,58 @@
 
         <!-- Shipping Details -->
         <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">Shipping Details</h2>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-900">Shipping Details</h2>
+            @if (availableAddresses().length > 0 && !selectedAddress()) {
+            <button
+              (click)="showAddressPicker.set(!showAddressPicker())"
+              class="text-sm text-blue-600 hover:text-blue-700 font-medium"
+            >
+              {{ showAddressPicker() ? 'Hide' : '📍 Select Saved Address' }}
+            </button>
+            }
+          </div>
+
+          <!-- Saved Address Picker -->
+          @if (showAddressPicker() && availableAddresses().length > 0) {
+          <div class="mb-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            @for (addr of availableAddresses(); track addr.addressId) {
+            <div
+              (click)="selectAddress(addr)"
+              class="p-3 border-2 rounded-lg cursor-pointer transition-all duration-200"
+              [class.border-blue-500]="selectedAddress()?.addressId === addr.addressId"
+              [class.bg-blue-50]="selectedAddress()?.addressId === addr.addressId"
+              [class.border-gray-200]="selectedAddress()?.addressId !== addr.addressId"
+            >
+              <p class="font-semibold text-gray-900 text-sm">{{ addr.addressLine1 }}</p>
+              @if (addr.addressLine2) {
+              <p class="text-gray-500 text-xs">{{ addr.addressLine2 }}</p>
+              }
+              <p class="text-gray-600 text-xs mt-1">{{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}</p>
+            </div>
+            }
+          </div>
+          }
+
+          <!-- Selected address banner with unselect -->
+          @if (selectedAddress()) {
+          <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-start justify-between gap-2">
+            <div class="flex items-start gap-2 text-sm text-green-800">
+              <span class="text-green-600 mt-0.5">✓</span>
+              <div>
+                <p class="font-semibold">{{ selectedAddress()!.addressLine1 }}@if (selectedAddress()!.addressLine2) {, {{ selectedAddress()!.addressLine2 }}}</p>
+                <p>{{ selectedAddress()!.city }}, {{ selectedAddress()!.state }} - {{ selectedAddress()!.pincode }}</p>
+              </div>
+            </div>
+            <button
+              (click)="unselectAddress()"
+              class="text-xs text-red-500 hover:text-red-700 font-medium whitespace-nowrap mt-0.5"
+            >
+              ✕ Unselect
+            </button>
+          </div>
+          }
+
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="sm:col-span-2">
               <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
@@ -114,7 +165,8 @@
                 [(ngModel)]="address"
                 placeholder="House No., Building Name, Street"
                 rows="2"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                [disabled]="!!selectedAddress()"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
               ></textarea>
             </div>
             <div>
@@ -123,7 +175,8 @@
                 type="text"
                 [(ngModel)]="city"
                 placeholder="City"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                [disabled]="!!selectedAddress()"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
               />
             </div>
             <div>
@@ -132,7 +185,8 @@
                 type="text"
                 [(ngModel)]="state"
                 placeholder="State"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                [disabled]="!!selectedAddress()"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
               />
             </div>
             <div>
@@ -142,7 +196,8 @@
                 [(ngModel)]="pincode"
                 placeholder="6-digit pincode"
                 maxlength="6"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                [disabled]="!!selectedAddress()"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
               />
             </div>
           </div>

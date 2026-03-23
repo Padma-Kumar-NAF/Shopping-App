@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -9,13 +10,19 @@ import {
 import { PaginationModel } from '../../../models/users/pagination.model';
 import { PaginationComponent } from '../../shared/pagination/pagination.component';
 import { toast } from 'ngx-sonner';
-import { isOrderCancellable, OrderStatus } from '../../../constants/order-status.constants';
+import { isOrderCancellable, isOrderDelivered, OrderStatus } from '../../../constants/order-status.constants';
 import { DEFAULT_PAGE_SIZE, calculateTotalPages } from '../../../constants/pagination.constants';
+
+interface ReviewData {
+  orderId: string;
+  summary: string;
+  rating: number;
+}
 
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, PaginationComponent],
+  imports: [CommonModule, FormsModule, MatIconModule, MatButtonModule, PaginationComponent],
   templateUrl: './orders.html',
   styleUrls: ['./orders.css'],
 })
@@ -37,6 +44,17 @@ export class OrdersComponent implements OnInit {
   // Cancel order modal
   showCancelModal = signal(false);
   orderToCancel = signal<OrderDetailsResponseDTO | null>(null);
+  cancelReason = signal('');
+
+  // Review modal
+  showReviewModal = signal(false);
+  orderToReview = signal<OrderDetailsResponseDTO | null>(null);
+  reviewSummary = signal('');
+  reviewRating = signal(0);
+  reviewHoverRating = signal(0);
+
+  // Local reviews store (frontend only)
+  reviews = signal<ReviewData[]>([]);
 
   ngOnInit(): void {
     this.loadOrders();
@@ -52,7 +70,6 @@ export class OrdersComponent implements OnInit {
       next: (response) => {
         if (response.data?.items) {
           this.orders.set(response.data.items);
-          // Note: Backend should return total count, using items length as fallback
           this.totalItems.set(response.data.items.length);
           this.totalPages.set(calculateTotalPages(this.totalItems(), this.pageSize));
         }
@@ -72,23 +89,32 @@ export class OrdersComponent implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // ── Cancel ──────────────────────────────────────────────────────
+
   canCancelOrder(order: OrderDetailsResponseDTO): boolean {
     return isOrderCancellable(order.status);
   }
 
   openCancelModal(order: OrderDetailsResponseDTO): void {
     this.orderToCancel.set(order);
+    this.cancelReason.set('');
     this.showCancelModal.set(true);
   }
 
   closeCancelModal(): void {
     this.showCancelModal.set(false);
     this.orderToCancel.set(null);
+    this.cancelReason.set('');
   }
 
   confirmCancelOrder(): void {
     const order = this.orderToCancel();
     if (!order) return;
+
+    if (!this.cancelReason().trim()) {
+      toast.error('Please enter a reason for cancellation');
+      return;
+    }
 
     const toastId = toast.loading('Cancelling order...');
 
@@ -96,14 +122,11 @@ export class OrdersComponent implements OnInit {
       next: (response) => {
         toast.dismiss(toastId);
         toast.success(response.message || 'Order cancelled successfully');
-
-        // Update order status in the list
         this.orders.update((orders) =>
           orders.map((o) =>
             o.orderId === order.orderId ? { ...o, status: OrderStatus.CANCELLED } : o
           )
         );
-
         this.closeCancelModal();
       },
       error: (err) => {
@@ -113,18 +136,92 @@ export class OrdersComponent implements OnInit {
     });
   }
 
+  // ── Review ──────────────────────────────────────────────────────
+
+  canReviewOrder(order: OrderDetailsResponseDTO): boolean {
+    return isOrderDelivered(order.status);
+  }
+
+  hasReview(orderId: string): boolean {
+    return this.reviews().some((r) => r.orderId === orderId);
+  }
+
+  getReview(orderId: string): ReviewData | undefined {
+    return this.reviews().find((r) => r.orderId === orderId);
+  }
+
+  openReviewModal(order: OrderDetailsResponseDTO): void {
+    const existing = this.getReview(order.orderId);
+    this.orderToReview.set(order);
+    this.reviewSummary.set(existing?.summary ?? '');
+    this.reviewRating.set(existing?.rating ?? 0);
+    this.reviewHoverRating.set(0);
+    this.showReviewModal.set(true);
+  }
+
+  closeReviewModal(): void {
+    this.showReviewModal.set(false);
+    this.orderToReview.set(null);
+    this.reviewSummary.set('');
+    this.reviewRating.set(0);
+    this.reviewHoverRating.set(0);
+  }
+
+  submitReview(): void {
+    const order = this.orderToReview();
+    if (!order) return;
+
+    if (!this.reviewSummary().trim()) {
+      toast.error('Please enter a review summary');
+      return;
+    }
+    if (this.reviewRating() === 0) {
+      toast.error('Please select a rating');
+      return;
+    }
+
+    const review: ReviewData = {
+      orderId: order.orderId,
+      summary: this.reviewSummary().trim(),
+      rating: this.reviewRating(),
+    };
+
+    this.reviews.update((list) => {
+      const idx = list.findIndex((r) => r.orderId === order.orderId);
+      if (idx >= 0) {
+        const updated = [...list];
+        updated[idx] = review;
+        return updated;
+      }
+      return [...list, review];
+    });
+
+    toast.success('Review submitted successfully');
+    this.closeReviewModal();
+  }
+
+  setRating(value: number): void {
+    this.reviewRating.set(value);
+  }
+
+  setHoverRating(value: number): void {
+    this.reviewHoverRating.set(value);
+  }
+
+  getStarClass(star: number): string {
+    const active = this.reviewHoverRating() || this.reviewRating();
+    return star <= active ? 'text-yellow-400' : 'text-gray-300';
+  }
+
+  // ── Helpers ─────────────────────────────────────────────────────
+
   getStatusColor(status: string): string {
     switch (status.toLowerCase()) {
-      case 'not delivered':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'shipped':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'delivered':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800 border-red-200';
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'not delivered': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'shipped':       return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'delivered':     return 'bg-green-100 text-green-800 border-green-200';
+      case 'cancelled':     return 'bg-red-100 text-red-800 border-red-200';
+      default:              return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
 
@@ -147,12 +244,9 @@ export class OrdersComponent implements OnInit {
   }
 
   getProductIcon(name: string): string {
-    if (name.toLowerCase().includes('iphone') || name.toLowerCase().includes('phone'))
-      return 'smartphone';
-    if (name.toLowerCase().includes('macbook') || name.toLowerCase().includes('laptop'))
-      return 'laptop';
-    if (name.toLowerCase().includes('airpods') || name.toLowerCase().includes('headphones'))
-      return 'headphones';
+    if (name.toLowerCase().includes('iphone') || name.toLowerCase().includes('phone')) return 'smartphone';
+    if (name.toLowerCase().includes('macbook') || name.toLowerCase().includes('laptop')) return 'laptop';
+    if (name.toLowerCase().includes('airpods') || name.toLowerCase().includes('headphones')) return 'headphones';
     return 'shopping_bag';
   }
 }

@@ -51,7 +51,7 @@ select * from OrderDetails
 select * from Reviews
 
 update orders
-set Status = 'Not Delivered'
+set Status = 'Delivered'
 
 -- delete from logs
 

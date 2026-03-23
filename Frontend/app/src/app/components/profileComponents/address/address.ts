@@ -29,6 +29,7 @@ import { AddressSelectionService } from '../../../services/address-selection.ser
 import { PaginationModel } from '../../../models/users/pagination.model';
 import { LoaderService } from '../../../services/loading.service';
 import { CommonModule } from '@angular/common';
+import { ApiResponse } from '../../../models/users/apiResponse.model';
 
 @Component({
   selector: 'app-address',
@@ -37,10 +38,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './address.css',
 })
 export class Address implements OnInit {
-  @Input() selectionMode = false; // Enable selection mode for checkout/payment
+  @Input() selectionMode = false;
   @Output() addressSelected = new EventEmitter<AddressDTO>();
 
-  loader = inject(LoaderService);
+  // loader = inject(LoaderService);
   private apiService: AddressApiService = inject(AddressApiService);
   private addressSelectionService = inject(AddressSelectionService);
 
@@ -91,21 +92,24 @@ export class Address implements OnInit {
   }
 
   getUserAddress() {
-    this.loader.show();
+    // this.loader.show();
     this.apiService.GetUserAddresses(this.pagination).subscribe({
-      next: (respose: AddressModel) => {
-        this.addresses.set(respose);
-        // Store addresses in selection service for reuse
-        this.addressSelectionService.setAvailableAddresses(respose.addressList);
+      next: (response: ApiResponse<AddressModel>) => {
+        console.log('response', response);
+        if (response?.data) {
+          this.addresses.set(response.data);
+          this.addressSelectionService.setAvailableAddresses(response.data.addressList);
+        }
       },
       error: () => {
         console.error('Failed to fetch addresses');
+        // this.loader.hide();
       },
       complete: () => {
+        // this.loader.hide();
         console.log('Get user address completed');
       },
     });
-    this.loader.hide();
   }
 
   openDeleteConfirm(id: string) {
@@ -136,12 +140,9 @@ export class Address implements OnInit {
     };
 
     if (this.editMode()) {
-      console.log(this.formAddress);
-
       this.apiService.UpdateAddress(this.formAddress).subscribe({
-        next: (response: UpdateAddressResponseDTO) => {
-          console.log('response');
-          console.log(response);
+        next: (response: ApiResponse<UpdateAddressResponseDTO>) => {
+          console.log('Update response', response);
           toast.dismiss(toastId);
           toast.success('Address updated');
 
@@ -156,32 +157,36 @@ export class Address implements OnInit {
           toast.dismiss(toastId);
           const errorMessage = err?.error?.message || err?.error || 'Something went wrong';
           toast.error(errorMessage);
+          this.isSaveButtonDisabled.set(false);
+          this.isCancelButtonDisabled.set(false);
         },
         complete: () => {
+          this.isSaveButtonDisabled.set(false);
+          this.isCancelButtonDisabled.set(false);
           this.closeModal();
         },
       });
     } else {
       this.apiService.AddNewAddress(this.formAddress).subscribe({
-        next: (response: NewAddressResponseDTO) => {
-          this.formAddress.addressId = response.addressId;
-          this.addresses.update((data) => ({
-            ...data,
-            addressList: [...data.addressList, this.formAddress],
-          }));
-
-          console.log('response');
-          console.log(response);
-
+        next: (response: ApiResponse<NewAddressResponseDTO>) => {
+          if (response.data) {
+            this.formAddress.addressId = response.data.addressId;
+            this.addresses.update((data) => ({
+              ...data,
+              addressList: [...data.addressList, this.formAddress],
+            }));
+          }
+          console.log('Add response', response);
           toast.dismiss(toastId);
           toast.success('Address added');
-
           this.closeModal();
         },
         error: (err: any) => {
           toast.dismiss(toastId);
           const errorMessage = err?.error?.message || err?.error || 'Something went wrong';
           toast.error(errorMessage);
+          this.isSaveButtonDisabled.set(false);
+          this.isCancelButtonDisabled.set(false);
         },
         complete: () => {
           this.isSaveButtonDisabled.set(false);
@@ -197,16 +202,12 @@ export class Address implements OnInit {
 
     this.cancelDelete();
 
-    console.log('addressId');
-    console.log(addressId);
     const toastId = toast.loading('Deleting address...');
-
     this.deleteAddressId.addressId = addressId;
 
     this.apiService.DeleteAddress(this.deleteAddressId).subscribe({
-      next: (response: DeleteAddressResponseDTO) => {
-        console.log(response);
-
+      next: (response: ApiResponse<DeleteAddressResponseDTO>) => {
+        console.log('Delete response', response);
         toast.dismiss(toastId);
         toast.success('Address deleted');
 
@@ -246,12 +247,9 @@ export class Address implements OnInit {
 
   openAddModal() {
     this.editMode.set(false);
-
     this.addressForm.reset();
-
     this.addressForm.markAsPristine();
     this.addressForm.markAsUntouched();
-
     this.formAddress = {
       addressId: '',
       addressLine1: '',
@@ -260,13 +258,11 @@ export class Address implements OnInit {
       state: '',
       pincode: '',
     };
-
     this.showModal.set(false);
   }
 
   openEditModal(address: AddressDTO) {
     this.editMode.set(true);
-
     this.formAddress = { ...address };
     this.addressForm.patchValue({
       addressLine1: address.addressLine1,
@@ -275,7 +271,6 @@ export class Address implements OnInit {
       state: address.state,
       pincode: address.pincode,
     });
-
     this.showModal.set(false);
   }
 
@@ -283,5 +278,7 @@ export class Address implements OnInit {
     this.showModal.set(true);
     this.addressForm.reset();
     this.editMode.set(false);
+    this.isSaveButtonDisabled.set(false);
+    this.isCancelButtonDisabled.set(false);
   }
 }

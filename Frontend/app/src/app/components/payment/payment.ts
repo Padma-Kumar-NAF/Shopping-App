@@ -5,8 +5,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { ProductStateService } from '../../services/product-state.service';
 import { CartService } from '../../services/cart.service';
-import { ProductItem } from '../../models/users/product.model';
+import { AddressSelectionService } from '../../services/address-selection.service';
+import { AddressApiService } from '../../services/userServices/address.service';
+import { AuthStateService } from '../../services/auth-state.service';
+import { AddressDTO } from '../../models/users/address.model';
 import { PaginationModel } from '../../models/users/pagination.model';
+import { ProductItem } from '../../models/users/product.model';
 import { toast } from 'ngx-sonner';
 
 interface CartItem {
@@ -30,6 +34,9 @@ export class PaymentComponent implements OnInit {
   private productService = inject(ProductService);
   private productStateService = inject(ProductStateService);
   private cartService = inject(CartService);
+  private addressSelectionService = inject(AddressSelectionService);
+  private addressApiService = inject(AddressApiService);
+  private authStateService = inject(AuthStateService);
 
   // Payment mode: 'single' for single product, 'cart' for cart items
   paymentMode = signal<'single' | 'cart'>('single');
@@ -59,6 +66,11 @@ export class PaymentComponent implements OnInit {
   city = signal<string>('');
   state = signal<string>('');
   pincode = signal<string>('');
+
+  // Address selection
+  availableAddresses = signal<AddressDTO[]>([]);
+  selectedAddress = signal<AddressDTO | null>(null);
+  showAddressPicker = signal<boolean>(false);
 
   ngOnInit(): void {
     const fromCart = this.route.snapshot.queryParamMap.get('fromCart');
@@ -90,6 +102,63 @@ export class PaymentComponent implements OnInit {
         this.router.navigate(['/products']);
       }
     }
+
+    this.loadAddresses();
+
+    // Pre-fill name and email from auth store
+    this.fullName.set(this.authStateService.username());
+    this.email.set(this.authStateService.email());
+  }
+
+  private loadAddresses(): void {
+    // Use addresses already loaded in the service (from home page)
+    const cached = this.addressSelectionService.getAvailableAddresses();
+    if (cached.length > 0) {
+      this.availableAddresses.set(cached);
+    } else {
+      const pagination = new PaginationModel();
+      pagination.pageSize = 10;
+      pagination.pageNumber = 1;
+      this.addressApiService.GetUserAddresses(pagination).subscribe({
+        next: (response) => {
+          if (response?.data?.addressList) {
+            this.availableAddresses.set(response.data.addressList);
+            this.addressSelectionService.setAvailableAddresses(response.data.addressList);
+          }
+        },
+        error: () => {},
+      });
+    }
+
+    // Pre-fill from previously selected address
+    const selected = this.addressSelectionService.getSelectedAddress();
+    if (selected) {
+      this.applyAddress(selected);
+    }
+  }
+
+  selectAddress(addr: AddressDTO): void {
+    this.selectedAddress.set(addr);
+    this.addressSelectionService.setSelectedAddress(addr);
+    this.applyAddress(addr);
+    this.showAddressPicker.set(false);
+  }
+
+  unselectAddress(): void {
+    this.selectedAddress.set(null);
+    this.addressSelectionService.clearSelectedAddress();
+    this.address.set('');
+    this.city.set('');
+    this.state.set('');
+    this.pincode.set('');
+  }
+
+  private applyAddress(addr: AddressDTO): void {
+    this.selectedAddress.set(addr);
+    this.address.set(`${addr.addressLine1}${addr.addressLine2 ? ', ' + addr.addressLine2 : ''}`);
+    this.city.set(addr.city);
+    this.state.set(addr.state);
+    this.pincode.set(addr.pincode);
   }
 
   private loadProductFromState(): void {
