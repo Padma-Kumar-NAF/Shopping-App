@@ -1,4 +1,13 @@
-import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  WritableSignal,
+  Output,
+  EventEmitter,
+  Input,
+} from '@angular/core';
 import {
   AddressModel,
   AddressDTO,
@@ -16,16 +25,43 @@ import {
 } from '@angular/forms';
 import { toast } from 'ngx-sonner';
 import { AddressApiService } from '../../../services/userServices/address.service';
+import { AddressSelectionService } from '../../../services/address-selection.service';
 import { PaginationModel } from '../../../models/users/pagination.model';
 import { LoaderService } from '../../../services/loading.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-address',
-  imports: [FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './address.html',
   styleUrl: './address.css',
 })
 export class Address implements OnInit {
+  @Input() selectionMode = false; // Enable selection mode for checkout/payment
+  @Output() addressSelected = new EventEmitter<AddressDTO>();
+
+  loader = inject(LoaderService);
+  private apiService: AddressApiService = inject(AddressApiService);
+  private addressSelectionService = inject(AddressSelectionService);
+
+  addresses: WritableSignal<AddressModel> = signal<AddressModel>(new AddressModel());
+  editingId = signal<string | null>(null);
+  pagination: PaginationModel;
+
+  newAddress: AddressDTO;
+  addressForm: FormGroup;
+  deleteAddressId: DeleteAddressRequestDTO;
+
+  showModal = signal(true);
+  editMode = signal(false);
+  formAddress: AddressDTO;
+
+  confirmModal = signal(false);
+  deleteId = signal<string | null>(null);
+
+  isSaveButtonDisabled = signal(false);
+  isCancelButtonDisabled = signal(false);
+
   ngOnInit(): void {
     this.getUserAddress();
   }
@@ -46,42 +82,30 @@ export class Address implements OnInit {
     });
   }
 
-  loader = inject(LoaderService);
-  private apiService: AddressApiService = inject(AddressApiService);
-
-  addresses: WritableSignal<AddressModel> = signal<AddressModel>(new AddressModel());
-  editingId = signal<string | null>(null);
-  pagination: PaginationModel;
-
-  newAddress: AddressDTO;
-  addressForm: FormGroup;
-  deleteAddressId: DeleteAddressRequestDTO;
-
-  showModal = signal(true);
-  editMode = signal(false);
-  formAddress: AddressDTO;
-
-  confirmModal = signal(false);
-  deleteId = signal<string | null>(null);
-
-  isSaveButtonDisabled = signal(false);
-  isCancelButtonDisabled = signal(false);
+  selectAddress(address: AddressDTO): void {
+    if (this.selectionMode) {
+      this.addressSelectionService.setSelectedAddress(address);
+      this.addressSelected.emit(address);
+      toast.success('Address selected');
+    }
+  }
 
   getUserAddress() {
-    this.loader.show()
+    this.loader.show();
     this.apiService.GetUserAddresses(this.pagination).subscribe({
       next: (respose: AddressModel) => {
         this.addresses.set(respose);
+        // Store addresses in selection service for reuse
+        this.addressSelectionService.setAvailableAddresses(respose.addressList);
       },
       error: () => {
         console.error('Failed to fetch addresses');
       },
-      complete:()=> {
-        console.log("Get user address completed");
+      complete: () => {
+        console.log('Get user address completed');
       },
-      
     });
-    this.loader.hide()
+    this.loader.hide();
   }
 
   openDeleteConfirm(id: string) {
@@ -124,7 +148,7 @@ export class Address implements OnInit {
           this.addresses.update((data) => ({
             ...data,
             addressList: data.addressList.map((a) =>
-              a.addressId === this.formAddress.addressId ? this.formAddress : a,
+              a.addressId === this.formAddress.addressId ? this.formAddress : a
             ),
           }));
         },

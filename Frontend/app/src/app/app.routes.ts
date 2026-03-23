@@ -3,7 +3,12 @@ import { authRequiredGuard, publicGuard } from './services/public-auth.guard';
 import { roleGuard } from './services/auth.guard';
 
 import { HomeComponent } from './components/homeComponents/home/home';
-import { AdminDashboard } from './components/adminComponents/admin-dashboard/admin-dashboard';
+import { AdminLayout } from './components/adminComponents/admin-layout/admin-layout';
+import { DashboardOverview } from './components/adminComponents/dashboard-overview/dashboard-overview';
+import { UsersManagement } from './components/adminComponents/users-management/users-management';
+import { OrdersManagement } from './components/adminComponents/orders-management/orders-management';
+import { ProductManagement } from './components/adminComponents/product-management/product-management';
+import { CategoryManagement } from './components/adminComponents/category-management/category-management';
 import { ProductListing } from './components/product-listing/product-listing';
 import { ProductDetail } from './components/product-detail/product-detail';
 import { Profile } from './components/profileComponents/profile/profile';
@@ -39,7 +44,34 @@ export const routes: Routes = [
     path: 'admin',
     canActivate: [roleGuard],
     data: { role: 'admin' },
-    component: AdminDashboard,
+    component: AdminLayout,
+    children: [
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
+      },
+      {
+        path: 'dashboard',
+        component: DashboardOverview,
+      },
+      {
+        path: 'users',
+        component: UsersManagement,
+      },
+      {
+        path: 'orders',
+        component: OrdersManagement,
+      },
+      {
+        path: 'products',
+        component: ProductManagement,
+      },
+      {
+        path: 'categories',
+        component: CategoryManagement,
+      },
+    ],
   },
   {
     path: 'checkout',
