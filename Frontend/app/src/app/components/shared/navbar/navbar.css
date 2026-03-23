@@ -51,6 +51,31 @@
 }
 
 /* ══════════════════════════════════════════════
+   Back Button (products page)
+   ══════════════════════════════════════════════ */
+.navbar__back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  background: transparent;
+  border: 1.5px solid var(--search-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.navbar__back-btn:hover {
+  background: var(--link-hover-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ══════════════════════════════════════════════
    Brand / Logo
    ══════════════════════════════════════════════ */
 .navbar__brand {

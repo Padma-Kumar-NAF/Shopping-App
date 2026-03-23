@@ -1,8 +1,9 @@
-import { Component, signal, OnInit, inject, WritableSignal } from '@angular/core';
+﻿import { Component, signal, OnInit, inject, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProfileApiService } from '../../../services/profile.service';
 import { AuthStateService } from '../../../services/auth-state.service';
 import { ActivatedRoute } from '@angular/router';
+import { NavbarComponent } from '../../shared/navbar/navbar';
 import {
   newEmailRequestDTO,
   EditMailResponseDTOModel,
@@ -33,14 +34,13 @@ interface TabConfig {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterOutlet],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterOutlet, NavbarComponent],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
 export class Profile implements OnInit {
   showDetailsModal = signal(false);
   showEmailModal = signal(false);
-  showMobileMenu = signal(false);
   activeTab = signal<TabType>('profile');
   user: WritableSignal<GetUserByIdResponseDTO> = signal(new GetUserByIdResponseDTO());
   isLoading = signal<boolean>(false);
@@ -79,22 +79,15 @@ export class Profile implements OnInit {
   ngOnInit(): void {
     this.GetUserProfileDetails();
 
-    // Sync activeTab with the active child route on every navigation
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         this.syncTabFromRoute();
       });
 
-    // Also sync on initial load
     this.syncTabFromRoute();
   }
 
-  /**
-   * Reads the first child route segment (e.g. 'cart', 'orders') and sets
-   * activeTab accordingly. Falls back to 'profile' when there is no child
-   * route active (i.e. the user is on /profile itself).
-   */
   private syncTabFromRoute(): void {
     const child = this.route.firstChild;
     if (child) {
@@ -110,20 +103,10 @@ export class Profile implements OnInit {
     }
   }
 
-  toggleMobileMenu(): void {
-    this.showMobileMenu.update((value) => !value);
-  }
-
-  closeMobileMenu(): void {
-    this.showMobileMenu.set(false);
-  }
-
   GetUserProfileDetails(): void {
     this.isLoading.set(true);
     this.apiService.GetUserProfile().subscribe({
       next: (response: ApiResponse<GetUserByIdResponseDTO>) => {
-        console.log("response")
-        console.log(response)
         this.user.set(response!.data!);
         this.isLoading.set(false);
       },
@@ -139,7 +122,6 @@ export class Profile implements OnInit {
 
   openDetailsModal(): void {
     const user = this.user();
-
     this.userDetailsForm.patchValue({
       name: user.name,
       phoneNumber: user.userDetails?.phoneNumber,
@@ -149,13 +131,11 @@ export class Profile implements OnInit {
       city: user.userDetails?.city,
       pincode: user.userDetails?.pincode,
     });
-
     this.showDetailsModal.set(true);
   }
 
   closeDetailsModal(): void {
     this.showDetailsModal.set(false);
-    this.showMobileMenu.set(false);
   }
 
   saveDetails(): void {
@@ -170,10 +150,7 @@ export class Profile implements OnInit {
 
     this.apiService.updateUserDetails(this.editUser).subscribe({
       next: (response: any) => {
-        console.log("response")
-        console.log(response)
         toast.dismiss(toastId);
-
         this.user.update((user) => ({
           ...user,
           name: this.editUser.Details.name,
@@ -187,7 +164,6 @@ export class Profile implements OnInit {
             pincode: this.editUser.Details.pincode,
           },
         }));
-
         toast.success('Details updated successfully');
         this.closeDetailsModal();
       },
@@ -207,7 +183,6 @@ export class Profile implements OnInit {
     this.showEmailModal.set(false);
     this.passwordVerified = false;
     this.editMail = new newEmailRequestDTO();
-    this.showMobileMenu.set(false);
   }
 
   updateEmail(): void {
@@ -215,7 +190,6 @@ export class Profile implements OnInit {
       toast.error('Password is required');
       return;
     }
-
     if (!this.editMail.newEmail?.trim()) {
       toast.error('New Email is required');
       return;
@@ -227,28 +201,21 @@ export class Profile implements OnInit {
     }
 
     this.editMail.oldEmail = this.user().email;
-
     const toastId = toast.loading('Updating email...');
 
     this.apiService.updateUserEmail(this.editMail).subscribe({
       next: (response: ApiResponse<EditMailResponseDTOModel>) => {
-
-        console.log("response")
-        console.log(response)
         toast.dismiss(toastId);
-
         this.user.update((user) => ({
           ...user,
           email: this.editMail.newEmail || user.email,
         }));
-
         toast.success('Email updated successfully');
         this.closeEmailModal();
       },
       error: (error: any) => {
         toast.dismiss(toastId);
         console.error('Update failed:', error);
-
         const errorMessage = error?.error?.message || error?.error || 'Server error occurred';
         toast.error(errorMessage);
       },
@@ -263,11 +230,6 @@ export class Profile implements OnInit {
     }
     this.activeTab.set(tab);
     this.router.navigate(['/profile', tab]);
-  }
-
-  goHome(): void {
-    this.closeMobileMenu();
-    this.router.navigate(['/']);
   }
 
   logout(): void {

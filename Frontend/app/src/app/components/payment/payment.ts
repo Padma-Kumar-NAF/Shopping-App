@@ -236,15 +236,4 @@ export class PaymentComponent implements OnInit {
     }, 2000);
   }
 
-  goBack(): void {
-    if (this.paymentMode() === 'cart') {
-      this.router.navigate(['/profile/cart']);
-    } else {
-      const product = this.product();
-      if (product) {
-        this.productStateService.setSelectedProduct(product);
-      }
-      this.router.navigate(['/product-detail']);
-    }
-  }
 }

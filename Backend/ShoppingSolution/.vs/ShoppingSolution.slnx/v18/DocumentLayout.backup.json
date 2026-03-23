@@ -46,8 +46,7 @@
               "RelativeToolTip": "ShoppingApp\\Models\\DTOs\\Order\\GetUserOrderDetailsResponseDTO.cs.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-23T12:00:57.27Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-23T12:00:57.27Z"
             },
             {
               "$type": "Document",
@@ -59,8 +58,7 @@
               "RelativeToolTip": "ShoppingApp\\Controllers\\OrderController.cs",
               "ViewState": "AgIAABYAAAAAAAAAAAAQwDQAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-23T10:41:58.615Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-23T10:41:58.615Z"
             },
             {
               "$type": "Document",
@@ -70,7 +68,7 @@
               "RelativeDocumentMoniker": "ShoppingApp\\Services\\OrderService.cs",
               "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Services\\OrderService.cs",
               "RelativeToolTip": "ShoppingApp\\Services\\OrderService.cs",
-              "ViewState": "AgIAAC4BAAAAAAAAAAAUwEoBAAARAAAAAAAAAA==",
+              "ViewState": "AgIAADcBAAAAAAAAAAAkwD4BAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-23T10:34:47.078Z",
               "EditorCaption": ""
@@ -85,8 +83,7 @@
               "RelativeToolTip": "ShoppingApp\\Models\\DTOs\\Cart\\GetCartResponseDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-23T09:05:49.563Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-23T09:05:49.563Z"
             },
             {
               "$type": "Document",
@@ -98,8 +95,7 @@
               "RelativeToolTip": "ShoppingApp\\Services\\CartService.cs",
               "ViewState": "AgIAADkBAAAAAAAAAAAkwJgAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-23T08:49:44.176Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-23T08:49:44.176Z"
             },
             {
               "$type": "Document",
@@ -111,8 +107,7 @@
               "RelativeToolTip": "ShoppingApp\\Controllers\\CartController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAHgAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-23T08:49:08.476Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-23T08:49:08.476Z"
             }
           ]
         }

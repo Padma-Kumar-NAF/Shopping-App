@@ -179,10 +179,6 @@ export class ProductListing implements OnInit {
       .map((_, i) => (i < Math.floor(rating) ? 1 : 0));
   }
 
-  goBack(): void {
-    this.router.navigate(['/']);
-  }
-
   extractCategories(products: ProductItem[]): void {
     const uniqueCategories = [...new Set(products.map((p) => p.category))];
     this.categories.set(uniqueCategories);

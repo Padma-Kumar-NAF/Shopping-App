@@ -5,6 +5,10 @@
   focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500;
 }
 
+.page-content {
+  padding-top: 64px; /* matches --nav-height in navbar */
+}
+
 body {
   font-family: 'Poppins', sans-serif;
 }

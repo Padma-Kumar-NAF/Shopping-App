@@ -2,6 +2,14 @@
 <nav class="navbar" role="navigation" aria-label="Main navigation">
   <div class="navbar__container">
 
+    @if (showBackButton()) {
+      <button class="navbar__back-btn" (click)="goBack()" aria-label="Go back">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back
+      </button>
+    }
     <a class="navbar__brand" routerLink="/" (click)="closeMobileMenu()" aria-label="ShopApp home">
       <span class="navbar__brand-icon">🛍️</span>
       <span class="navbar__brand-text">ShopApp</span>

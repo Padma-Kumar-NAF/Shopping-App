@@ -213,10 +213,6 @@ export class ProductDetail implements OnInit {
     this.showWishlistPopup.set(false);
   }
 
-  goBack(): void {
-    this.router.navigate(['/products']);
-  }
-
   viewRelatedProduct(product: ProductItem): void {
     this.productStateService.setSelectedProduct(product);
     this.router.navigate(['/product-detail']).then(() => {

@@ -104,7 +104,4 @@ export class CheckoutComponent implements OnInit {
     }, 2000);
   }
 
-  goBack(): void {
-    this.router.navigate(['/profile/cart']);
-  }
 }
