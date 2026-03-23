@@ -251,8 +251,7 @@ namespace ShoppingApp.Services
         {
             try
             {
-                var user = await _userRepository.GetQueryable().AsNoTracking().Include(u => u.UserDetails)
-                    .FirstOrDefaultAsync(u => u.UserId == userId);
+                var user = await _userRepository.GetQueryable().AsNoTracking().Include(u => u.UserDetails).FirstOrDefaultAsync(u => u.UserId == userId);
 
                 if (user == null)
                 {

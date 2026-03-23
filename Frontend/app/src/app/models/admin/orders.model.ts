@@ -8,6 +8,7 @@ export class OrderDetailsResponseDTO {
   totalProductsCount: number = 0;
   totalAmount: number = 0;
   deliveryDate: string = '';
+  isRefunded : boolean = false;
   address: AddressDTO = new AddressDTO();
   payment: PaymentDTO = new PaymentDTO();
   orderBy: OrderBy = new OrderBy();
@@ -49,4 +50,14 @@ export class UpdateOrderResponseDTO {
 export class UpdateOrderRequestDTO {
   OrderId: string = '';
   OrderStatus: string = '';
+}
+
+export class OrderRefundRequestDTO {
+  OrderId: string = '';
+  PaymentId: string = '';
+  TotalAmount: number = 0;
+}
+
+export class OrderRefundResponseDTO {
+  IsRefund: boolean = false;
 }

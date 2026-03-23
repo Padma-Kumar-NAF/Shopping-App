@@ -16,17 +16,24 @@ where AddressLine2 = 'Test line 1'
 
 delete from Users
 where UserId = '15C095AD-D196-49BF-B2A2-8995DC6B3E81'
-select * from Users
+select count(*) from Users
 
+select count(*) from Products
 select * from Products
 
 select * from Payments
-select * from Orders
+select * from Orders	
+
 
 select * from Refunds
+delete from Refunds where OrderId = 'A22DF22F-2606-4262-A1DA-4A5DF0746EE2'
 
 select * from Logs
 order by CreatedAt desc
+
+select * from Refunds
+
+
 
 select * from Category
 select * from Users
@@ -43,6 +50,8 @@ select * from OrderDetails
 
 select * from Reviews
 
+update orders
+set Status = 'Not Delivered'
 
 -- delete from logs
 

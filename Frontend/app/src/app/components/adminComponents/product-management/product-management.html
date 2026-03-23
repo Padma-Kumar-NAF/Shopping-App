@@ -1,4 +1,3 @@
-<!-- ── Delete Confirm Modal ──────────────────────────────────────────────── -->
 @if (confirmModal()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
     <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
@@ -20,7 +19,6 @@
   </div>
 }
 
-<!-- ── Edit Modal ────────────────────────────────────────────────────────── -->
 @if (showEditModal()) {
   <div class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -36,11 +34,8 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-          <!-- Form -->
           <div class="lg:col-span-2">
             <form (ngSubmit)="saveProduct()" class="space-y-4">
-
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                   Product Name <span class="text-red-500">*</span>
@@ -48,7 +43,6 @@
                 <input type="text" [(ngModel)]="editForm().name" name="name" required
                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
               </div>
-
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                   Category <span class="text-red-500">*</span>
@@ -61,7 +55,6 @@
                   }
                 </select>
               </div>
-
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -80,20 +73,17 @@
                     class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
               </div>
-
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
                 <input type="text" [value]="editForm().imagePath" (input)="updateEditImage($event)"
                   name="imagePath"
                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
               </div>
-
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
                 <textarea [(ngModel)]="editForm().description" name="description" rows="3"
                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
               </div>
-
               <div class="flex gap-3 pt-2">
                 <button type="submit"
                   class="flex-1 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
@@ -104,7 +94,6 @@
                   Cancel
                 </button>
               </div>
-
             </form>
           </div>
 
@@ -130,7 +119,6 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -149,27 +137,37 @@
       </p>
     </div>
 
-    <div class="flex items-center gap-1 bg-gray-100 p-1 rounded-xl w-fit">
-      <button
-        (click)="switchView('list')"
-        [class]="activeView() === 'list' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
-        class="px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2"
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-        </svg>
-        All Products
-      </button>
-      <button
-        (click)="switchView('add')"
-        [class]="activeView() === 'add' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
-        class="px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2"
-      >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg>
-        Add Product
-      </button>
+    <div class="flex items-center gap-3">
+      @if (isLoading()) {
+        <div class="flex items-center gap-2 text-blue-600 text-sm font-medium">
+          <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+          </svg>
+          Loading…
+        </div>
+      }
+
+      <div class="flex items-center gap-1 bg-gray-100 p-1 rounded-xl w-fit">
+        <button
+          (click)="switchView('list')"
+          [class]="activeView() === 'list' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+          class="px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+          </svg>
+          All Products
+        </button>
+        <button
+          (click)="switchView('add')"
+          [class]="activeView() === 'add' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+          class="px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Add Product
+        </button>
+      </div>
     </div>
   </div>
 
@@ -205,6 +203,9 @@
       of
       <span class="font-semibold text-gray-700">{{ (products$ | async)?.length ?? 0 }}</span>
       products
+      @if (hasMoreData()) {
+        <span class="text-gray-400 ml-1">(more available on server)</span>
+      }
     </p>
 
     <!-- Desktop Table -->
@@ -221,72 +222,82 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-          @for (product of filteredProducts$ | async; track product.productId) {
-          <tr class="hover:bg-gray-50 transition-colors">
-            <td class="px-6 py-4">
-              <div class="flex items-center gap-3">
-                <img [src]="product.imagePath" [alt]="product.productName"
-                  class="w-12 h-12 object-cover rounded-lg border border-gray-100 flex-shrink-0" />
-                <div>
-                  <p class="font-medium text-gray-900">{{ product.productName }}</p>
-                  <p class="text-sm text-gray-500 line-clamp-1 max-w-xs">{{ product.description }}</p>
-                </div>
-              </div>
-            </td>
-            <td class="px-6 py-4">
-              <span class="px-2.5 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-                {{ product.categoryName }}
-              </span>
-            </td>
-            <td class="px-6 py-4 font-semibold text-gray-900">
-              ₹{{ product.price.toLocaleString() }}
-            </td>
-            <td class="px-6 py-4">
-              @if (product.quantity > 0) {
-                <span [class]="product.quantity > 20 ? 'text-green-600' : 'text-orange-500'"
-                  class="text-sm font-medium">
-                  {{ product.quantity }} units
-                </span>
-              } @else {
-                <span class="text-red-600 text-sm font-medium">Out of stock</span>
-              }
-            </td>
-            <td class="px-6 py-4">
-              @if (product.review?.length) {
-                <div class="flex items-center gap-1">
-                  <svg class="w-4 h-4 text-yellow-400 fill-yellow-400" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+          @if (isLoading() && (products$ | async)?.length === 0) {
+            @for (i of [1,2,3,4,5]; track i) {
+              <tr>
+                <td colspan="6" class="px-6 py-4">
+                  <div class="h-10 bg-gray-100 rounded animate-pulse"></div>
+                </td>
+              </tr>
+            }
+          } @else {
+            @for (product of filteredProducts$ | async; track product.productId) {
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <img [src]="product.imagePath" [alt]="product.productName"
+                      class="w-12 h-12 object-cover rounded-lg border border-gray-100 flex-shrink-0" />
+                    <div>
+                      <p class="font-medium text-gray-900">{{ product.productName }}</p>
+                      <p class="text-sm text-gray-500 line-clamp-1 max-w-xs">{{ product.description }}</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="px-2.5 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                    {{ product.categoryName }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 font-semibold text-gray-900">
+                  ₹{{ product.price.toLocaleString() }}
+                </td>
+                <td class="px-6 py-4">
+                  @if (product.quantity > 0) {
+                    <span [class]="product.quantity > 20 ? 'text-green-600' : 'text-orange-500'"
+                      class="text-sm font-medium">
+                      {{ product.quantity }} units
+                    </span>
+                  } @else {
+                    <span class="text-red-600 text-sm font-medium">Out of stock</span>
+                  }
+                </td>
+                <td class="px-6 py-4">
+                  @if (product.review?.length) {
+                    <div class="flex items-center gap-1">
+                      <svg class="w-4 h-4 text-yellow-400 fill-yellow-400" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                      </svg>
+                      <span class="text-sm font-medium text-gray-700">{{ avgRating(product.review) }}</span>
+                      <span class="text-xs text-gray-400">({{ product.review.length }})</span>
+                    </div>
+                  } @else {
+                    <span class="text-xs text-gray-400">No reviews</span>
+                  }
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <div class="flex items-center justify-end gap-2">
+                    <button (click)="openEditModal(product)"
+                      class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
+                      Edit
+                    </button>
+                    <button (click)="openDeleteModal(product.productId)"
+                      class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors">
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                  <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                   </svg>
-                  <span class="text-sm font-medium text-gray-700">{{ avgRating(product.review) }}</span>
-                  <span class="text-xs text-gray-400">({{ product.review.length }})</span>
-                </div>
-              } @else {
-                <span class="text-xs text-gray-400">No reviews</span>
-              }
-            </td>
-            <td class="px-6 py-4 text-right">
-              <div class="flex items-center justify-end gap-2">
-                <button (click)="openEditModal(product)"
-                  class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
-                  Edit
-                </button>
-                <button (click)="openDeleteModal(product.productId)"
-                  class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors">
-                  Delete
-                </button>
-              </div>
-            </td>
-          </tr>
-          } @empty {
-          <tr>
-            <td colspan="6" class="px-6 py-12 text-center text-gray-500">
-              <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-              </svg>
-              No products found
-            </td>
-          </tr>
+                  No products found
+                </td>
+              </tr>
+            }
           }
         </tbody>
       </table>
@@ -294,59 +305,95 @@
 
     <!-- Mobile Cards -->
     <div class="md:hidden space-y-4">
-      @for (product of filteredProducts$ | async; track product.productId) {
-      <div class="bg-gray-50 rounded-xl border border-gray-200 p-4">
-        <div class="flex gap-3 mb-3">
-          <img [src]="product.imagePath" [alt]="product.productName"
-            class="w-20 h-20 object-cover rounded-lg flex-shrink-0" />
-          <div class="flex-1 min-w-0">
-            <h3 class="font-semibold text-gray-900 mb-1 truncate">{{ product.productName }}</h3>
-            <span class="inline-block px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium mb-1">
-              {{ product.categoryName }}
-            </span>
-            <p class="text-sm text-gray-500 line-clamp-2">{{ product.description }}</p>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between mb-3">
-          <p class="text-lg font-bold text-gray-900">₹{{ product.price.toLocaleString() }}</p>
-          <div class="text-right">
-            @if (product.quantity > 0) {
-              <span [class]="product.quantity > 20 ? 'text-green-600' : 'text-orange-500'"
-                class="text-sm font-medium">
-                {{ product.quantity }} units
-              </span>
-            } @else {
-              <span class="text-red-600 text-sm">Out of stock</span>
-            }
-          </div>
-        </div>
-
-        @if (product.review?.length) {
-          <div class="flex items-center gap-1 mb-3">
-            <svg class="w-4 h-4 text-yellow-400 fill-yellow-400" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-            </svg>
-            <span class="text-sm font-medium text-gray-700">{{ avgRating(product.review) }}</span>
-            <span class="text-xs text-gray-400">({{ product.review.length }} reviews)</span>
-          </div>
+      @if (isLoading() && (products$ | async)?.length === 0) {
+        @for (i of [1,2,3]; track i) {
+          <div class="h-40 bg-gray-100 rounded-xl animate-pulse"></div>
         }
-
-        <div class="flex gap-2">
-          <button (click)="openEditModal(product)"
-            class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
-            Edit
-          </button>
-          <button (click)="openDeleteModal(product.productId)"
-            class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors">
-            Delete
-          </button>
-        </div>
-      </div>
-      } @empty {
-      <div class="text-center py-12 text-gray-500">No products found</div>
+      } @else {
+        @for (product of filteredProducts$ | async; track product.productId) {
+          <div class="bg-gray-50 rounded-xl border border-gray-200 p-4">
+            <div class="flex gap-3 mb-3">
+              <img [src]="product.imagePath" [alt]="product.productName"
+                class="w-20 h-20 object-cover rounded-lg flex-shrink-0" />
+              <div class="flex-1 min-w-0">
+                <h3 class="font-semibold text-gray-900 mb-1 truncate">{{ product.productName }}</h3>
+                <span class="inline-block px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium mb-1">
+                  {{ product.categoryName }}
+                </span>
+                <p class="text-sm text-gray-500 line-clamp-2">{{ product.description }}</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-lg font-bold text-gray-900">₹{{ product.price.toLocaleString() }}</p>
+              <div class="text-right">
+                @if (product.quantity > 0) {
+                  <span [class]="product.quantity > 20 ? 'text-green-600' : 'text-orange-500'"
+                    class="text-sm font-medium">
+                    {{ product.quantity }} units
+                  </span>
+                } @else {
+                  <span class="text-red-600 text-sm">Out of stock</span>
+                }
+              </div>
+            </div>
+            @if (product.review?.length) {
+              <div class="flex items-center gap-1 mb-3">
+                <svg class="w-4 h-4 text-yellow-400 fill-yellow-400" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                <span class="text-sm font-medium text-gray-700">{{ avgRating(product.review) }}</span>
+                <span class="text-xs text-gray-400">({{ product.review.length }} reviews)</span>
+              </div>
+            }
+            <div class="flex gap-2">
+              <button (click)="openEditModal(product)"
+                class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Edit
+              </button>
+              <button (click)="openDeleteModal(product.productId)"
+                class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Delete
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <div class="text-center py-12 text-gray-500">No products found</div>
+        }
       }
     </div>
+
+    <!-- ── Load More ──────────────────────────────────────────────────────── -->
+    @if (hasMoreData()) {
+      <div class="mt-8 flex flex-col items-center gap-2 pt-4 border-t border-gray-200">
+        <p class="text-sm text-gray-500">
+          Loaded <span class="font-semibold text-gray-700">{{ (products$ | async)?.length ?? 0 }}</span> products
+          &nbsp;·&nbsp; Page size: <span class="font-semibold text-gray-700">{{ pageSize }}</span>
+        </p>
+        <button (click)="loadNextPage()"
+          [disabled]="isLoading()"
+          class="flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium border transition-colors"
+          [class]="isLoading()
+            ? 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
+            : 'border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100'">
+          @if (isLoading()) {
+            <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+            </svg>
+            Loading next {{ pageSize }} products…
+          } @else {
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+            Load next {{ pageSize }} products
+          }
+        </button>
+      </div>
+    } @else {
+      <div class="mt-6 pt-4 border-t border-gray-200 text-center text-sm text-gray-400">
+        ✓ All <span class="font-semibold">{{ (products$ | async)?.length ?? 0 }}</span> products loaded
+      </div>
+    }
 
   }
 
@@ -360,7 +407,6 @@
       <!-- Form -->
       <div class="lg:col-span-2">
         <form (ngSubmit)="addProduct()" class="space-y-5">
-
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
               Product Name <span class="text-red-500">*</span>
@@ -437,7 +483,6 @@
               Reset Form
             </button>
           </div>
-
         </form>
       </div>
 
@@ -446,7 +491,6 @@
         <div class="sticky top-6">
           <h3 class="text-lg font-semibold text-gray-900 mb-4">Product Preview</h3>
           <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
-
             @if (imagePreview()) {
               <img [src]="imagePreview()" [alt]="addForm().name"
                 class="w-full h-48 object-cover" (error)="imagePreview.set('')" />
@@ -458,7 +502,6 @@
                 </svg>
               </div>
             }
-
             <div class="p-5 space-y-3">
               <h4 class="font-semibold text-gray-900 text-lg">
                 {{ addForm().name || 'Product Name' }}
@@ -480,7 +523,6 @@
                 </div>
               }
             </div>
-
           </div>
         </div>
       </div>

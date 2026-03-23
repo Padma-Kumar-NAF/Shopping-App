@@ -431,6 +431,22 @@
   },
   {
     "ContainingType": "ShoppingApp.Controllers.OrderController",
+    "Method": "OrderRefund",
+    "RelativePath": "orders/refund-order",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Order.OrderRefundRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.OrderController",
     "Method": "UpdateOrder",
     "RelativePath": "orders/update-order-status",
     "HttpMethod": "POST",

@@ -2,7 +2,6 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsersManagement } from '../users-management/users-management';
 import { OrdersManagement } from '../orders-management/orders-management';
-import { AddProduct } from '../add-product/add-product';
 import { CategoryManagement } from '../category-management/category-management';
 import { ProductManagement } from '../product-management/product-management';
 import { DashboardStats } from '../../../models/users/admin.model';
@@ -17,7 +16,6 @@ import { Router } from '@angular/router';
 import { AdminOrderService } from '../../../services/adminServices/orders.service';
 import {
   GetAllOrderResponseDTO,
-  OrderDetailsResponseDTO,
 } from '../../../models/admin/orders.model';
 import { GetAllCategoryResponseDTO } from '../../../models/admin/categories.model';
 import { AdminCategoryService } from '../../../services/adminServices/category.service';
@@ -35,14 +33,7 @@ interface TabConfig {
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [
-    CommonModule,
-    UsersManagement,
-    OrdersManagement,
-    AddProduct,
-    CategoryManagement,
-    ProductManagement,
-  ],
+  imports: [CommonModule, UsersManagement, OrdersManagement, CategoryManagement, ProductManagement],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css',
 })
@@ -56,13 +47,16 @@ export class AdminDashboard implements OnInit {
   activeTab = signal<AdminTab>('dashboard');
   mobileMenuOpen = signal<boolean>(false);
 
+  /** Page size used for the initial load on the dashboard — matches child components */
+  private readonly PAGE_SIZE = 10;
+
   pagination: PaginationModel;
   private authState: AuthStateService = inject(AuthStateService);
 
   constructor(private router: Router) {
     this.pagination = new PaginationModel();
     this.pagination.pageNumber = 1;
-    this.pagination.pageSize = 10;
+    this.pagination.pageSize = this.PAGE_SIZE;
   }
 
   ngOnInit(): void {
@@ -76,9 +70,11 @@ export class AdminDashboard implements OnInit {
   getAllProdcuts(): void {
     this.productApiService.getAllProducts(this.pagination).subscribe({
       next: (response: ApiResponse<GetAllProductsResponseDTO>) => {
-        console.log('response');
-        console.log(response);
-        this.store.setProducts(response.data?.productList ?? []);
+        const list = response.data?.productList ?? [];
+        this.store.setProducts(list);
+        // Mark page 1 as fetched so child component won't re-fetch
+        this.store.pageCache.products.add(1);
+        this.updateStats();
       },
       error: (err) => {
         console.error(err);
@@ -93,9 +89,11 @@ export class AdminDashboard implements OnInit {
   getAllUser(): void {
     this.userApiService.getAllUser(this.pagination).subscribe({
       next: (response: ApiResponse<GetUsersResponseDTO>) => {
-        console.log('response');
-        console.log(response);
-        this.store.setUsers(response.data?.usersList ?? []);
+        const list = response.data?.usersList ?? [];
+        this.store.setUsers(list);
+        // Mark page 1 as fetched so child component won't re-fetch
+        this.store.pageCache.users.add(1);
+        this.updateStats();
       },
       error: (err) => {
         console.error(err);
@@ -110,9 +108,12 @@ export class AdminDashboard implements OnInit {
   getAllOrders(): void {
     this.orderApiService.getAllOrders(this.pagination).subscribe({
       next: (response: ApiResponse<GetAllOrderResponseDTO>) => {
-        console.log('response');
-        console.log(response);
-        this.store.setOrders(response.data?.items ?? []);
+        const list = response.data?.items ?? [];
+        this.store.setOrders(list);
+        // Mark page 1 as fetched so child component won't re-fetch
+        this.store.pageCache.orders.add(1);
+        this.updateStats();
+        console.log(response)
       },
       error: (err) => {
         console.error(err);
@@ -127,8 +128,10 @@ export class AdminDashboard implements OnInit {
   getAllCategories() {
     this.categoryApiService.getAllCategories(this.pagination).subscribe({
       next: (response: ApiResponse<GetAllCategoryResponseDTO>) => {
-        console.log('response', response);
-        this.store.setCategories(response.data?.categoryList ?? []);
+        const list = response.data?.categoryList ?? [];
+        this.store.setCategories(list);
+        // Mark page 1 as fetched so child component won't re-fetch
+        this.store.pageCache.categories.add(1);
       },
       error: (err) => {
         console.error(err);
@@ -144,19 +147,31 @@ export class AdminDashboard implements OnInit {
     { id: 'dashboard', label: 'Dashboard', icon: '📊' },
     { id: 'users', label: 'Users', icon: '👥' },
     { id: 'orders', label: 'Orders', icon: '📦' },
-    { id: 'products', label: 'Add Product', icon: '➕' },
     { id: 'manage-products', label: 'Manage Products', icon: '📦' },
     { id: 'categories', label: 'Categories', icon: '🏷️' },
   ];
 
   stats = signal<DashboardStats>({
-    totalUsers: 1248,
-    totalOrders: 3567,
-    totalProducts: 892,
-    totalRevenue: 458920,
-    pendingOrders: 45,
-    activeUsers: 1102,
+    totalUsers: 0,
+    totalOrders: 0,
+    totalProducts: 0,
+    totalRevenue: 0,
+    pendingOrders: 0,
+    activeUsers: 0,
   });
+
+  private updateStats(): void {
+    const { users, orders, products } = this.store.value;
+
+    this.stats.set({
+      totalUsers: users.length,
+      activeUsers: users.length,
+      totalOrders: orders.length,
+      pendingOrders: orders.filter((o) => o.status === 'Not Delivered').length,
+      totalProducts: products.length,
+      totalRevenue: orders.reduce((sum, o) => sum + (o.totalAmount ?? 0), 0),
+    });
+  }
 
   setTab(tab: AdminTab): void {
     this.activeTab.set(tab);

@@ -6,6 +6,13 @@ import { OrderDetailsResponseDTO } from '../../models/admin/orders.model';
 import { CategoryDTO } from '../../models/admin/categories.model';
 import { ProductDetails } from '../../models/admin/products.model';
 
+export interface PageCache {
+  users: Set<number>;
+  orders: Set<number>;
+  products: Set<number>;
+  categories: Set<number>;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -21,7 +28,13 @@ export class StoreService {
 
   state$: Observable<AppState> = this.store.asObservable();
 
-  // Snapshot getter
+  readonly pageCache: PageCache = {
+    users: new Set<number>(),
+    orders: new Set<number>(),
+    products: new Set<number>(),
+    categories: new Set<number>(),
+  };
+
   get value(): AppState {
     return this.store.getValue();
   }
@@ -34,29 +47,36 @@ export class StoreService {
     this.setState({ ...this.value, users });
   }
 
+  appendUsers(users: UserDetailsDTO[]) {
+    const existing = this.value.users;
+    const existingIds = new Set(existing.map(u => u.userId));
+    const newOnes = users.filter(u => !existingIds.has(u.userId));
+    this.setState({ ...this.value, users: [...existing, ...newOnes] });
+  }
+
   addUser(user: UserDetailsDTO) {
-    this.setState({
-      ...this.value,
-      users: [...this.value.users, user],
-    });
+    this.setState({ ...this.value, users: [...this.value.users, user] });
   }
 
   setCategories(categories: CategoryDTO[]) {
     this.setState({ ...this.value, categories });
   }
 
+  appendCategories(categories: CategoryDTO[]) {
+    const existing = this.value.categories;
+    const existingIds = new Set(existing.map(c => c.categoryId));
+    const newOnes = categories.filter(c => !existingIds.has(c.categoryId));
+    this.setState({ ...this.value, categories: [...existing, ...newOnes] });
+  }
+
   addCategory(category: CategoryDTO) {
-    this.setState({
-      ...this.value,
-      categories: [...this.value.categories, category],
-    });
+    this.setState({ ...this.value, categories: [...this.value.categories, category] });
   }
 
   updateCategory(updated: CategoryDTO) {
     const categories = this.value.categories.map(c =>
       c.categoryId === updated.categoryId ? updated : c
     );
-
     this.setState({ ...this.value, categories });
   }
 
@@ -64,18 +84,21 @@ export class StoreService {
     this.setState({ ...this.value, products });
   }
 
+  appendProducts(products: ProductDetails[]) {
+    const existing = this.value.products;
+    const existingIds = new Set(existing.map(p => p.productId));
+    const newOnes = products.filter(p => !existingIds.has(p.productId));
+    this.setState({ ...this.value, products: [...existing, ...newOnes] });
+  }
+
   addProduct(product: ProductDetails) {
-    this.setState({
-      ...this.value,
-      products: [...this.value.products, product],
-    });
+    this.setState({ ...this.value, products: [...this.value.products, product] });
   }
 
   updateProduct(updated: ProductDetails) {
     const products = this.value.products.map(p =>
       p.productId === updated.productId ? updated : p
     );
-
     this.setState({ ...this.value, products });
   }
 
@@ -83,10 +106,14 @@ export class StoreService {
     this.setState({ ...this.value, orders });
   }
 
+  appendOrders(orders: OrderDetailsResponseDTO[]) {
+    const existing = this.value.orders;
+    const existingIds = new Set(existing.map(o => o.orderId));
+    const newOnes = orders.filter(o => !existingIds.has(o.orderId));
+    this.setState({ ...this.value, orders: [...existing, ...newOnes] });
+  }
+
   addOrder(order: OrderDetailsResponseDTO) {
-    this.setState({
-      ...this.value,
-      orders: [...this.value.orders, order],
-    });
+    this.setState({ ...this.value, orders: [...this.value.orders, order] });
   }
 }

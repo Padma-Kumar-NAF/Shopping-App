@@ -47,7 +47,7 @@ namespace ShoppingApp.Controllers
 
                 var result = await _cartService.GetUserCarts(UserId, request.Pagination.PageNumber, request.Pagination.PageSize);
 
-                return BadRequest(result);
+                return Ok(result);
             }
             catch
             {
@@ -90,7 +90,7 @@ namespace ShoppingApp.Controllers
 
                 var result = await _cartService.PlaceOrderAllFromCart(UserId,request.AddressId,request.PaymentType);
 
-                return Ok(result);
+                return Ok(result);  
             }
             catch
             {

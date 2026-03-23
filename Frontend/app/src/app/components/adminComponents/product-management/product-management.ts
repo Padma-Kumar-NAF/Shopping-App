@@ -15,6 +15,7 @@ import {
   UpdateProductRequestDTO,
   UpdateProductResponseDTO,
   ReviewDTO,
+  GetAllProductsResponseDTO,
 } from '../../../models/admin/products.model';
 import { CategoryDTO } from '../../../models/admin/categories.model';
 
@@ -31,19 +32,29 @@ export class ProductManagement implements OnInit {
   store = inject(StoreService);
   productService = inject(AdminProductService);
 
-  // ── View toggle ───────────────────────────────────────────────────────────
   activeView = signal<ActiveView>('list');
 
-  // ── Store observables ─────────────────────────────────────────────────────
   products$!: Observable<ProductDetails[]>;
   categories$!: Observable<CategoryDTO[]>;
   filteredProducts$!: Observable<ProductDetails[]>;
 
-  // ── Filters ───────────────────────────────────────────────────────────────
   searchQuery = signal<string>('');
   selectedCategoryId = signal<string>('all');
+  imagePreview = signal<string>('');
+  showEditModal = signal<boolean>(false);
+  editingProduct = signal<ProductDetails | null>(null);
+  editImagePreview = signal<string>('');
 
-  // ── Add form ──────────────────────────────────────────────────────────────
+  confirmModal = signal<boolean>(false);
+  pendingDeleteId = signal<string>('');
+
+  // ── Pagination ────────────────────────────────────────────────────────────
+  readonly pageSize = 10;
+  hasMoreData = signal<boolean>(true);
+  isLoading = signal<boolean>(false);
+
+  pagination: PaginationModel;
+
   addForm = signal<AddNewProductRequestDTO>({
     categoryId: '',
     name: '',
@@ -52,11 +63,7 @@ export class ProductManagement implements OnInit {
     price: 0,
     quantity: 0,
   });
-  imagePreview = signal<string>('');
 
-  // ── Edit modal ────────────────────────────────────────────────────────────
-  showEditModal = signal<boolean>(false);
-  editingProduct = signal<ProductDetails | null>(null);
   editForm = signal<UpdateProductRequestDTO>({
     productId: '',
     categoryId: '',
@@ -66,18 +73,11 @@ export class ProductManagement implements OnInit {
     price: 0,
     quantity: 0,
   });
-  editImagePreview = signal<string>('');
-
-  // ── Delete modal ──────────────────────────────────────────────────────────
-  confirmModal = signal<boolean>(false);
-  pendingDeleteId = signal<string>('');
-
-  pagination: PaginationModel;
 
   constructor() {
     this.pagination = new PaginationModel();
     this.pagination.pageNumber = 1;
-    this.pagination.pageSize = 50;
+    this.pagination.pageSize = this.pageSize;
   }
 
   ngOnInit(): void {
@@ -85,39 +85,38 @@ export class ProductManagement implements OnInit {
     this.categories$ = this.store.state$.pipe(map(s => s.categories));
 
     this.filteredProducts$ = this.store.state$.pipe(
-      map(s => {
-        let filtered = s.products;
-
-        const q = this.searchQuery().toLowerCase();
-        if (q) {
-          filtered = filtered.filter(
-            p =>
-              p.productName.toLowerCase().includes(q) ||
-              p.categoryName.toLowerCase().includes(q) ||
-              p.description.toLowerCase().includes(q),
-          );
-        }
-
-        if (this.selectedCategoryId() !== 'all') {
-          filtered = filtered.filter(p => p.categoryId === this.selectedCategoryId());
-        }
-
-        return filtered;
-      }),
+      map(s => this.applyFilters(s.products))
     );
+  }
+
+  // ── Filter helpers ────────────────────────────────────────────────────────
+
+  private applyFilters(products: ProductDetails[]): ProductDetails[] {
+    let filtered = products;
+    const q = this.searchQuery().toLowerCase();
+    if (q) {
+      filtered = filtered.filter(
+        p =>
+          p.productName.toLowerCase().includes(q) ||
+          p.categoryName.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q),
+      );
+    }
+    if (this.selectedCategoryId() !== 'all') {
+      filtered = filtered.filter(p => p.categoryId === this.selectedCategoryId());
+    }
+    return filtered;
   }
 
   private refreshFilter(): void {
     this.store.setProducts([...this.store.value.products]);
   }
 
-  // ── View ──────────────────────────────────────────────────────────────────
   switchView(view: ActiveView): void {
     this.activeView.set(view);
     if (view === 'add') this.resetAddForm();
   }
 
-  // ── Filters ───────────────────────────────────────────────────────────────
   onSearchChange(event: Event): void {
     this.searchQuery.set((event.target as HTMLInputElement).value);
     this.refreshFilter();
@@ -128,7 +127,58 @@ export class ProductManagement implements OnInit {
     this.refreshFilter();
   }
 
-  // ── Add ───────────────────────────────────────────────────────────────────
+  // ── Smart pagination (products use filteredProducts$ so no separate paged getter needed) ──
+
+  /**
+   * Called when the user wants to load the next page.
+   * Checks the cache; only hits the API if the data isn't in the store yet.
+   */
+  loadNextPage(): void {
+    if (this.isLoading() || !this.hasMoreData()) return;
+
+    const nextApiPage = Math.floor(this.store.value.products.length / this.pageSize) + 1;
+    const alreadyFetched = this.store.pageCache.products.has(nextApiPage);
+
+    if (alreadyFetched) {
+      // Data is already in the store — nothing to fetch
+      return;
+    }
+
+    this.fetchPage(nextApiPage);
+  }
+
+  private fetchPage(page: number): void {
+    this.isLoading.set(true);
+    this.pagination.pageNumber = page;
+    this.pagination.pageSize = this.pageSize;
+
+    this.productService.getAllProducts(this.pagination).subscribe({
+      next: (response: ApiResponse<GetAllProductsResponseDTO>) => {
+        const incoming = response.data?.productList ?? [];
+
+        if (incoming.length === 0) {
+          this.hasMoreData.set(false);
+          toast.info('No more products to load');
+        } else {
+          this.store.appendProducts(incoming);
+          this.store.pageCache.products.add(page);
+
+          if (incoming.length < this.pageSize) {
+            this.hasMoreData.set(false);
+          }
+        }
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        toast.error(err?.error?.message || 'Failed to load products');
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  // ── Form helpers ──────────────────────────────────────────────────────────
+
   updateAddField<K extends keyof AddNewProductRequestDTO>(
     field: K,
     value: AddNewProductRequestDTO[K],
@@ -144,12 +194,12 @@ export class ProductManagement implements OnInit {
 
   validateAddForm(): boolean {
     const f = this.addForm();
-    if (!f.name.trim())        { toast.error('Product name is required');       return false; }
-    if (!f.categoryId)         { toast.error('Please select a category');       return false; }
-    if (f.quantity <= 0)       { toast.error('Quantity must be greater than 0'); return false; }
-    if (f.price <= 0)          { toast.error('Price must be greater than 0');   return false; }
-    if (!f.imagePath.trim())   { toast.error('Image URL is required');          return false; }
-    if (!f.description.trim()) { toast.error('Description is required');        return false; }
+    if (!f.name.trim())        { toast.error('Product name is required');         return false; }
+    if (!f.categoryId)         { toast.error('Please select a category');          return false; }
+    if (f.quantity <= 0)       { toast.error('Quantity must be greater than 0');   return false; }
+    if (f.price <= 0)          { toast.error('Price must be greater than 0');      return false; }
+    if (!f.imagePath.trim())   { toast.error('Image URL is required');             return false; }
+    if (!f.description.trim()) { toast.error('Description is required');           return false; }
     return true;
   }
 
@@ -187,7 +237,6 @@ export class ProductManagement implements OnInit {
     this.imagePreview.set('');
   }
 
-  // ── Edit ──────────────────────────────────────────────────────────────────
   openEditModal(product: ProductDetails): void {
     this.editingProduct.set(product);
     this.editForm.set({
@@ -225,8 +274,8 @@ export class ProductManagement implements OnInit {
     this.productService.updateProduct(f).subscribe({
       next: (response: ApiResponse<UpdateProductResponseDTO>) => {
         if (response.data?.isUpdate) {
-          const category = this.store.value.categories.find(c => c.categoryId === f.categoryId);
-          const existing = this.store.value.products.find(p => p.productId === f.productId);
+          const category  = this.store.value.categories.find(c => c.categoryId === f.categoryId);
+          const existing  = this.store.value.products.find(p => p.productId === f.productId);
           this.store.updateProduct({
             productId:    f.productId,
             stockId:      existing?.stockId ?? '',
@@ -249,7 +298,6 @@ export class ProductManagement implements OnInit {
     });
   }
 
-  // ── Delete ────────────────────────────────────────────────────────────────
   openDeleteModal(productId: string): void {
     this.pendingDeleteId.set(productId);
     this.confirmModal.set(true);
@@ -260,7 +308,6 @@ export class ProductManagement implements OnInit {
     this.confirmModal.set(false);
   }
 
-  // Removes from store only — wire your API call here when ready
   deleteProduct(): void {
     const id = this.pendingDeleteId();
     if (!id) return;
@@ -269,7 +316,6 @@ export class ProductManagement implements OnInit {
     this.cancelDelete();
   }
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
   avgRating(reviews: ReviewDTO[]): string {
     if (!reviews?.length) return '—';
     const avg = reviews.reduce((s, r) => s + r.reviewPoints, 0) / reviews.length;

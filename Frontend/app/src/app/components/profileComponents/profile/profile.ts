@@ -5,9 +5,9 @@ import { AuthStateService } from '../../../services/auth-state.service';
 import { ActivatedRoute } from '@angular/router';
 import {
   newEmailRequestDTO,
-  EditMailRequestDTOModel,
+  EditMailResponseDTOModel,
   EditUserDetailsModel,
-  UserProfile,
+  GetUserByIdResponseDTO,
 } from '../../../models/users/profile.model';
 import { toast } from 'ngx-sonner';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
@@ -19,6 +19,7 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { ApiResponse } from '../../../models/users/apiResponse.model';
 
 type TabType = 'cart' | 'wishlist' | 'orders' | 'address' | 'profile';
 
@@ -41,7 +42,7 @@ export class Profile implements OnInit {
   showEmailModal = signal(false);
   showMobileMenu = signal(false);
   activeTab = signal<TabType>('profile');
-  user: WritableSignal<UserProfile> = signal(new UserProfile());
+  user: WritableSignal<GetUserByIdResponseDTO> = signal(new GetUserByIdResponseDTO());
   isLoading = signal<boolean>(false);
 
   passwordVerified = false;
@@ -120,8 +121,10 @@ export class Profile implements OnInit {
   GetUserProfileDetails(): void {
     this.isLoading.set(true);
     this.apiService.GetUserProfile().subscribe({
-      next: (response: UserProfile) => {
-        this.user.set(response);
+      next: (response: ApiResponse<GetUserByIdResponseDTO>) => {
+        console.log("response")
+        console.log(response)
+        this.user.set(response!.data!);
         this.isLoading.set(false);
       },
       error: (error: any) => {
@@ -167,6 +170,8 @@ export class Profile implements OnInit {
 
     this.apiService.updateUserDetails(this.editUser).subscribe({
       next: (response: any) => {
+        console.log("response")
+        console.log(response)
         toast.dismiss(toastId);
 
         this.user.update((user) => ({
@@ -226,7 +231,10 @@ export class Profile implements OnInit {
     const toastId = toast.loading('Updating email...');
 
     this.apiService.updateUserEmail(this.editMail).subscribe({
-      next: (response: EditMailRequestDTOModel) => {
+      next: (response: ApiResponse<EditMailResponseDTOModel>) => {
+
+        console.log("response")
+        console.log(response)
         toast.dismiss(toastId);
 
         this.user.update((user) => ({

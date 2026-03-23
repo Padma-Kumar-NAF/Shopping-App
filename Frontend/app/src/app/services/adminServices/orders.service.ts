@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import { ApiResponse } from '../../models/users/apiResponse.model';
 import {
   GetAllOrderResponseDTO,
+  OrderRefundRequestDTO,
+  OrderRefundResponseDTO,
   UpdateOrderRequestDTO,
   UpdateOrderResponseDTO,
 } from '../../models/admin/orders.model';
@@ -34,6 +36,13 @@ export class AdminOrderService {
     return this.http.post<ApiResponse<UpdateOrderResponseDTO>>(
       `${this.baseUrl}/update-order-status`,
       updateOrderRequestDTO,
+    );
+  }
+
+  refundOrder(request: OrderRefundRequestDTO): Observable<ApiResponse<OrderRefundResponseDTO>> {
+    return this.http.post<ApiResponse<OrderRefundResponseDTO>>(
+      `${this.baseUrl}/refund-order`,
+      request,
     );
   }
 }

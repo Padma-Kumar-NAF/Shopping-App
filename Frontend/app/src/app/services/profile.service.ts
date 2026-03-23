@@ -2,11 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
-  EditMailRequestDTOModel,
   EditUserDetailsModel,
   newEmailRequestDTO,
-  UserProfile,
+  GetUserByIdResponseDTO,
+  EditMailResponseDTOModel,
 } from '../models/users/profile.model';
+import { ApiResponse } from '../models/users/apiResponse.model';
 
 @Injectable({
   providedIn: 'root',
@@ -16,18 +17,17 @@ export class ProfileApiService {
 
   constructor(private Http: HttpClient) {}
 
-  GetUserProfile(): Observable<UserProfile> {
-    return this.Http.get<UserProfile>(`${this.baseUrl}/GetUserById`);
+  GetUserProfile(): Observable<ApiResponse<GetUserByIdResponseDTO>> {
+    return this.Http.get<ApiResponse<GetUserByIdResponseDTO>>(`${this.baseUrl}/get-user-by-id`);
+  }
+  updateUserDetails(updatedUserDetails: EditUserDetailsModel): Observable<ApiResponse<EditMailResponseDTOModel>> {
+    return this.Http.post<ApiResponse<EditMailResponseDTOModel>>(`${this.baseUrl}/update-user-details`, updatedUserDetails);
   }
 
-  updateUserDetails(updatedUserDetails: EditUserDetailsModel) {
-    return this.Http.post(`${this.baseUrl}/UpdateUserDetails`, updatedUserDetails);
-  }
+  updateUserEmail(newEmailRequestDTO: newEmailRequestDTO): Observable<ApiResponse<EditMailResponseDTOModel>> {
 
-  updateUserEmail(newEmailRequestDTO: newEmailRequestDTO): Observable<EditMailRequestDTOModel> {
-
-    return this.Http.post<EditMailRequestDTOModel>(
-      `${this.baseUrl}/EditUserMail`,
+    return this.Http.post<ApiResponse<EditMailResponseDTOModel>>(
+      `${this.baseUrl}/edit-user-email`,
       newEmailRequestDTO,
     );
   }

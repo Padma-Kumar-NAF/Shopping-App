@@ -93,15 +93,15 @@ namespace ShoppingApp.Services
                 order.Status = "Cancelled";
                 await _repository.UpdateAsync(order.OrderId, order);
 
-                var refund = new Refund
-                {
-                    UserId = userId,
-                    OrderId = order.OrderId,
-                    PaymentId = order.Payment!.PaymentId,
-                    RefundAmount = order.TotalAmount
-                };
+                //var refund = new Refund
+                //{
+                //    UserId = userId,
+                //    OrderId = order.OrderId,
+                //    PaymentId = order.Payment!.PaymentId,
+                //    RefundAmount = order.TotalAmount
+                //};
 
-                await _refundRepository.AddAsync(refund);
+                //await _refundRepository.AddAsync(refund);
 
                 await _unitOfWork.CommitAsync();
 
@@ -142,6 +142,7 @@ namespace ShoppingApp.Services
                             .Include(o => o.User)
                             .Include(o => o.Address)
                             .Include(o => o.Payment)
+                            .Include(o => o.Refund)
                             .Include(o => o.OrderDetails)
                              .ThenInclude(od => od.Product);
 
@@ -174,6 +175,7 @@ namespace ShoppingApp.Services
 
                         TotalProductsCount = o.OrderDetails!.Count,
                         TotalAmount = o.OrderDetails.Sum(x => x.Quantity * x.ProductPrice),
+                        IsRefunded = o.Refund?.RefundId != null ? true : false,
 
                         OrderBy = new OrderBy
                         {
@@ -236,7 +238,6 @@ namespace ShoppingApp.Services
         {
             try
             {
-
                 if (await IsUserNotFound(userId))
                 {
                     throw new AppException("User not found", 404);
@@ -308,6 +309,73 @@ namespace ShoppingApp.Services
             {
                 throw new AppException("Something went wrong while Fetching users orders", ex, 500);
             }
+        }
+
+        public async Task<ApiResponse<OrderRefundResponseDTO>> OrderRefund(Guid userId, OrderRefundRequestDTO request)
+        {
+            if(request.TotalAmount <= 0)
+            {
+                throw new AppException("Total amount is must greater then 0");
+            }
+            if (await IsUserNotFound(userId))
+            {
+                throw new AppException("User not found", 404);
+            }
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var order = await _repository.GetAsync(request.OrderId);
+                if(order == null)
+                {
+                    throw new AppException("Order not found",404);
+                }
+
+                var payment = await _paymentRepository.GetAsync(request.PaymentId);
+
+                if (payment == null)
+                {
+                    throw new AppException("Payment not found", 404);
+                }
+
+                var refund = new Refund
+                {
+                    UserId = userId,
+                    OrderId = request.OrderId,
+                    PaymentId = request.PaymentId,
+                    RefundAmount = request.TotalAmount
+                };
+
+                await _refundRepository.AddAsync(refund);
+
+                await _unitOfWork.CommitAsync();
+
+                return new ApiResponse<OrderRefundResponseDTO>()
+                {
+                    StatusCode = 200,
+                    Data = new OrderRefundResponseDTO()
+                    {
+                        IsRefund = true
+                    },
+                    Action = "UpdateRefund",
+                    Message = "Refund Successful"
+                };
+            }
+            catch (AppException)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Error while refunding the amount", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Something went wrong while refunding", ex, 500);
+            }
+
         }
 
         public async Task<ApiResponse<PlaceOrderResponseDTO>> PlaceOrder(Guid userId,PlaceOrderRequestDTO request)
@@ -446,6 +514,16 @@ namespace ShoppingApp.Services
                 if (Order == null)
                 {
                     throw new AppException($"{nameof(Order)} is null.");
+                }
+
+                if(Order.Status == "Cancelled" )
+                {
+                    throw new AppException("Order cancelled");
+                }
+
+                if(Order.Status == "Delivered")
+                {
+                    throw new AppException("Order delivered");
                 }
 
                 Order.Status = Status;

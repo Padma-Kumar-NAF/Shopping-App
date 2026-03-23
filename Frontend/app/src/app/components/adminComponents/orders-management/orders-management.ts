@@ -4,9 +4,15 @@ import { toast } from 'ngx-sonner';
 import { StoreService } from '../../../services/adminServices/store.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { OrderDetailsResponseDTO, UpdateOrderResponseDTO } from '../../../models/admin/orders.model';
+import {
+  OrderDetailsResponseDTO,
+  OrderRefundRequestDTO,
+  OrderRefundResponseDTO,
+} from '../../../models/admin/orders.model';
 import { AdminOrderService } from '../../../services/adminServices/orders.service';
 import { ApiResponse } from '../../../models/users/apiResponse.model';
+import { GetAllOrderResponseDTO } from '../../../models/admin/orders.model';
+import { PaginationModel } from '../../../models/users/pagination.model';
 
 @Component({
   selector: 'app-orders-management',
@@ -15,51 +21,167 @@ import { ApiResponse } from '../../../models/users/apiResponse.model';
   templateUrl: './orders-management.html',
   styleUrl: './orders-management.css',
 })
+
 export class OrdersManagement implements OnInit {
   private readonly apiService = inject(AdminOrderService);
   store = inject(StoreService);
 
   orders$!: Observable<OrderDetailsResponseDTO[]>;
-  filteredOrders$!: Observable<OrderDetailsResponseDTO[]>;
 
   searchTerm = signal<string>('');
   filterStatus = signal<string>('all');
-
   expandedOrderId = signal<string | null>(null);
 
   statusModal = signal<boolean>(false);
-  pendingStatusOrderId = signal<string>("");
+  pendingStatusOrderId = signal<string>('');
   selectedStatus = signal<string>('');
 
-  readonly statusOptions = ['Not Delivered', 'Shipped', 'Delivered', 'Cancelled'];
+  currentPage = signal<number>(1);
+  readonly pageSize = 10;
+
+  hasMoreData = signal<boolean>(true);
+  isLoading = signal<boolean>(false);
+
+  pagination: PaginationModel;
+
+  readonly statusOptions = ['Not Delivered', 'Shipped', 'Delivered'];
+
+  constructor() {
+    this.pagination = new PaginationModel();
+    this.pagination.pageNumber = 1;
+    this.pagination.pageSize = this.pageSize;
+  }
 
   ngOnInit(): void {
     this.orders$ = this.store.state$.pipe(map((s) => s.orders));
-    this.filteredOrders$ = this.store.state$.pipe(
-      map((s) => {
-        let filtered = s.orders;
+  }
 
-        const term = this.searchTerm().toLowerCase();
-        if (term) {
-          filtered = filtered.filter(
-            (o) =>
-              o.orderId.toLowerCase().includes(term) ||
-              o.orderBy.userName.toLowerCase().includes(term) ||
-              o.orderBy.userEmail.toLowerCase().includes(term),
-          );
+  private applyFilters(orders: OrderDetailsResponseDTO[]): OrderDetailsResponseDTO[] {
+    const term = this.searchTerm().toLowerCase();
+    return orders.filter((o) => {
+      const matchesTerm =
+        !term ||
+        o.orderId.toLowerCase().includes(term) ||
+        o.orderBy.userName.toLowerCase().includes(term) ||
+        o.orderBy.userEmail.toLowerCase().includes(term);
+      const matchesStatus = this.filterStatus() === 'all' || o.status === this.filterStatus();
+      return matchesTerm && matchesStatus;
+    });
+  }
+
+  get pagedOrders(): OrderDetailsResponseDTO[] {
+    const filtered = this.applyFilters(this.store.value.orders);
+    const start = (this.currentPage() - 1) * this.pageSize;
+    return filtered.slice(start, start + this.pageSize);
+  }
+
+  get totalFiltered(): number {
+    return this.applyFilters(this.store.value.orders).length;
+  }
+
+  get totalPages(): number {
+    const fromStore = Math.max(1, Math.ceil(this.totalFiltered / this.pageSize));
+    return this.hasMoreData() ? fromStore + 1 : fromStore;
+  }
+
+  giveRefund(order: OrderDetailsResponseDTO) {
+    const request: OrderRefundRequestDTO = {
+      OrderId: order.orderId,
+      PaymentId: order.payment.paymentId,
+      TotalAmount: order.totalAmount,
+    };
+
+    this.apiService.refundOrder(request).subscribe({
+      next: (response: ApiResponse<OrderRefundResponseDTO>) => {
+        toast.success(response.message ?? 'Refund Successful');
+        this.store.setOrders(
+          this.store.value.orders.map((o) =>
+            o.orderId === order.orderId ? { ...o, isRefunded: true } : o,
+          ),
+        );
+      },
+      error: (err) => {
+        console.error(err);
+        toast.error(err?.error?.message || 'Failed to process refund');
+        this.isLoading.set(false);
+      },
+      complete: () => {
+        console.log('giveRefund completed');
+      },
+    });
+  }
+
+  getPageNumbers(): number[] {
+    const total = Math.max(1, Math.ceil(this.totalFiltered / this.pageSize));
+    const current = this.currentPage();
+    const start = Math.max(1, current - 2);
+    const end = Math.min(total, current + 2);
+    const range: number[] = [];
+    for (let i = start; i <= end; i++) range.push(i);
+    return range;
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || this.isLoading()) return;
+
+    const alreadyFetched = this.store.pageCache.orders.has(page);
+    const dataExistsForPage =
+      this.store.value.orders.length >= page * this.pageSize || alreadyFetched;
+
+    if (dataExistsForPage) {
+      this.currentPage.set(page);
+      return;
+    }
+
+    this.fetchPage(page);
+  }
+
+  prevPage(): void {
+    if (this.currentPage() <= 1 || this.isLoading()) return;
+    this.currentPage.update((p) => p - 1);
+  }
+
+  nextPage(): void {
+    if (this.isLoading()) return;
+    this.goToPage(this.currentPage() + 1);
+  }
+
+  private fetchPage(page: number): void {
+    this.isLoading.set(true);
+    this.pagination.pageNumber = page;
+    this.pagination.pageSize = this.pageSize;
+
+    this.apiService.getAllOrders(this.pagination).subscribe({
+      next: (response: ApiResponse<GetAllOrderResponseDTO>) => {
+        const incoming = response.data?.items ?? [];
+
+        if (incoming.length === 0) {
+          this.hasMoreData.set(false);
+          toast.info('No more orders to load');
+        } else {
+          this.store.appendOrders(incoming);
+          this.store.pageCache.orders.add(page);
+          this.currentPage.set(page);
+
+          if (incoming.length < this.pageSize) {
+            this.hasMoreData.set(false);
+          }
         }
-
-        if (this.filterStatus() !== 'all') {
-          filtered = filtered.filter((o) => o.status === this.filterStatus());
-        }
-
-        return filtered;
-      }),
-    );
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        toast.error(err?.error?.message || 'Failed to load orders');
+        this.isLoading.set(false);
+      },
+      complete: () => {
+        console.log('getAllOrders completed');
+      },
+    });
   }
 
   private refreshFilter(): void {
-    this.store.setOrders([...this.store.value.orders]);
+    this.currentPage.set(1);
   }
 
   updateSearch(event: Event): void {
@@ -84,36 +206,27 @@ export class OrdersManagement implements OnInit {
 
   cancelStatusChange(): void {
     this.statusModal.set(false);
-    this.pendingStatusOrderId.set("");
+    this.pendingStatusOrderId.set('');
     this.selectedStatus.set('');
   }
 
   confirmStatusChange(): void {
     const orderId = this.pendingStatusOrderId();
     const newStatus = this.selectedStatus();
-
-    this.apiService.updateOrder(orderId,newStatus).subscribe({
-      next : (response : ApiResponse<UpdateOrderResponseDTO>)=> {
-        console.log("response")
-        console.log(response)
-        toast.success(`Order status updated to ${newStatus}`);
-      },
-      error: (err) => {
-        console.error(err)
-        console.log(err?.error?.message)
-        toast.error(err?.error?.message ?? "Try again !")
-      },
-    })
-
     if (!orderId || !newStatus) return;
 
-    const updatedOrders = this.store.value.orders.map((o) =>
-      o.orderId === orderId ? { ...o, status: newStatus } : o,
-    );
-    this.store.setOrders(updatedOrders);
-
-    toast.success(`Order status updated to ${newStatus}`);
-    this.cancelStatusChange();
+    this.apiService.updateOrder(orderId, newStatus).subscribe({
+      next: () => {
+        toast.success(`Order status updated to ${newStatus}`);
+        this.store.setOrders(
+          this.store.value.orders.map((o) =>
+            o.orderId === orderId ? { ...o, status: newStatus } : o,
+          ),
+        );
+        this.cancelStatusChange();
+      },
+      error: (err) => toast.error(err?.error?.message ?? 'Try again!'),
+    });
   }
 
   setSelectedStatus(status: string): void {

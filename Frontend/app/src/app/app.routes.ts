@@ -19,7 +19,6 @@ import { UnauthorizedComponent } from './components/unauthorized/unauthorized';
 import { PageNotFound } from './components/page-not-found/page-not-found';
 
 export const routes: Routes = [
-  // Public routes - no authentication required
   {
     path: '',
     canActivate: [publicGuard],
@@ -36,7 +35,6 @@ export const routes: Routes = [
     component: ProductDetail,
   },
 
-  // Admin routes - require admin role
   {
     path: 'admin',
     canActivate: [roleGuard],
@@ -69,7 +67,6 @@ export const routes: Routes = [
       { path: '**', redirectTo: '/profile' },
     ],
   },
-
   { path: 'auth', component: Auth },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: 'page-not-found', component: PageNotFound },

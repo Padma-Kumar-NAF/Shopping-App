@@ -10,6 +10,7 @@ import {
   DeleteCategoryResponseDTO,
   AddCategoryResponseDTO,
   EditCategoryResponseDTO,
+  GetAllCategoryResponseDTO,
 } from '../../../models/admin/categories.model';
 import { StoreService } from '../../../services/adminServices/store.service';
 import { Observable } from 'rxjs';
@@ -30,30 +31,120 @@ export class CategoryManagement implements OnInit {
 
   pagination: PaginationModel;
 
-  // Add form
   newCategory = signal<string>('');
   showAddForm = signal<boolean>(false);
 
-  // Edit modal
   showEditModal = signal<boolean>(false);
   editingCategory = signal<CategoryDTO | null>(null);
   editForm = signal<{ name: string }>({ name: '' });
 
-  // Delete confirm modal
   confirmModal = signal<boolean>(false);
   deleteCategoryId = signal<string>('');
+
+  // ── Pagination ────────────────────────────────────────────────────────────
+  currentPage = signal<number>(1);
+  readonly pageSize = 10;
+
+  hasMoreData = signal<boolean>(true);
+  isLoading = signal<boolean>(false);
 
   constructor() {
     this.pagination = new PaginationModel();
     this.pagination.pageNumber = 1;
-    this.pagination.pageSize = 10;
+    this.pagination.pageSize = this.pageSize;
   }
 
   ngOnInit(): void {
     this.categories$ = this.store.state$.pipe(map(s => s.categories));
   }
 
-  // ── Add ──────────────────────────────────────────────────────────────────
+  // ── Paged getter ──────────────────────────────────────────────────────────
+
+  get pagedCategories(): CategoryDTO[] {
+    const start = (this.currentPage() - 1) * this.pageSize;
+    return this.store.value.categories.slice(start, start + this.pageSize);
+  }
+
+  // ── Pagination helpers ────────────────────────────────────────────────────
+
+  get totalCategories(): number {
+    return this.store.value.categories.length;
+  }
+
+  get totalPages(): number {
+    const fromStore = Math.max(1, Math.ceil(this.totalCategories / this.pageSize));
+    return this.hasMoreData() ? fromStore + 1 : fromStore;
+  }
+
+  getPageNumbers(): number[] {
+    const total = Math.max(1, Math.ceil(this.totalCategories / this.pageSize));
+    const current = this.currentPage();
+    const start = Math.max(1, current - 2);
+    const end = Math.min(total, current + 2);
+    const range: number[] = [];
+    for (let i = start; i <= end; i++) range.push(i);
+    return range;
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || this.isLoading()) return;
+
+    const alreadyFetched = this.store.pageCache.categories.has(page);
+    const dataExistsForPage =
+      this.store.value.categories.length >= page * this.pageSize || alreadyFetched;
+
+    if (dataExistsForPage) {
+      this.currentPage.set(page);
+      return;
+    }
+
+    this.fetchPage(page);
+  }
+
+  prevPage(): void {
+    if (this.currentPage() <= 1 || this.isLoading()) return;
+    this.currentPage.update(p => p - 1);
+  }
+
+  nextPage(): void {
+    if (this.isLoading()) return;
+    this.goToPage(this.currentPage() + 1);
+  }
+
+  // ── API fetch ─────────────────────────────────────────────────────────────
+
+  private fetchPage(page: number): void {
+    this.isLoading.set(true);
+    this.pagination.pageNumber = page;
+    this.pagination.pageSize = this.pageSize;
+
+    this.apiService.getAllCategories(this.pagination).subscribe({
+      next: (response: ApiResponse<GetAllCategoryResponseDTO>) => {
+        const incoming = response.data?.categoryList ?? [];
+
+        if (incoming.length === 0) {
+          this.hasMoreData.set(false);
+          toast.info('No more categories to load');
+        } else {
+          this.store.appendCategories(incoming);
+          this.store.pageCache.categories.add(page);
+          this.currentPage.set(page);
+
+          if (incoming.length < this.pageSize) {
+            this.hasMoreData.set(false);
+          }
+        }
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        toast.error(err?.error?.message || 'Failed to load categories');
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  // ── Add ───────────────────────────────────────────────────────────────────
 
   toggleAddForm(): void {
     this.showAddForm.update(v => !v);
@@ -62,19 +153,11 @@ export class CategoryManagement implements OnInit {
 
   addCategory(): void {
     const name = this.newCategory().trim();
-
-    if (!name) {
-      toast.error('Category name is required');
-      return;
-    }
-
+    if (!name) { toast.error('Category name is required'); return; }
     const exists = this.store.value.categories.some(
       c => c.categoryName.toLowerCase() === name.toLowerCase()
     );
-    if (exists) {
-      toast.error('Category already exists');
-      return;
-    }
+    if (exists) { toast.error('Category already exists'); return; }
 
     this.apiService.addCategory(name).subscribe({
       next: (response: ApiResponse<AddCategoryResponseDTO>) => {
@@ -89,17 +172,13 @@ export class CategoryManagement implements OnInit {
         this.resetForm();
         this.showAddForm.set(false);
       },
-      error: (err) => {
-        toast.error(err?.error?.message || 'Something went wrong');
-      },
+      error: err => toast.error(err?.error?.message || 'Something went wrong'),
     });
   }
 
-  resetForm(): void {
-    this.newCategory.set('');
-  }
+  resetForm(): void { this.newCategory.set(''); }
 
-  // ── Edit ─────────────────────────────────────────────────────────────────
+  // ── Edit ──────────────────────────────────────────────────────────────────
 
   openEditModal(category: CategoryDTO): void {
     this.editingCategory.set(category);
@@ -115,22 +194,13 @@ export class CategoryManagement implements OnInit {
   saveCategory(): void {
     const category = this.editingCategory();
     if (!category) return;
-
     const name = this.editForm().name.trim();
-
-    if (!name) {
-      toast.error('Category name is required');
-      return;
-    }
-
+    if (!name) { toast.error('Category name is required'); return; }
     const exists = this.store.value.categories.some(
       c => c.categoryId !== category.categoryId &&
            c.categoryName.toLowerCase() === name.toLowerCase()
     );
-    if (exists) {
-      toast.error('Category name already exists');
-      return;
-    }
+    if (exists) { toast.error('Category name already exists'); return; }
 
     this.apiService.updateCategory(category.categoryId, name).subscribe({
       next: (response: ApiResponse<EditCategoryResponseDTO>) => {
@@ -142,13 +212,9 @@ export class CategoryManagement implements OnInit {
           toast.error('Failed to update category');
         }
       },
-      error: (err) => {
-        toast.error(err?.error?.message || 'Something went wrong');
-      },
+      error: err => toast.error(err?.error?.message || 'Something went wrong'),
     });
   }
-
-  // ── Delete ───────────────────────────────────────────────────────────────
 
   getDeleteCategoryId(categoryId: string): void {
     this.deleteCategoryId.set(categoryId);
@@ -162,28 +228,22 @@ export class CategoryManagement implements OnInit {
 
   deleteCategory(): void {
     const id = this.deleteCategoryId();
-
     this.apiService.deleteCategory(id).subscribe({
       next: (response: ApiResponse<DeleteCategoryResponseDTO>) => {
         if (response.data?.isSuccess) {
-          const updated = this.store.value.categories.filter(c => c.categoryId !== id);
-          this.store.setCategories(updated);
+          this.store.setCategories(this.store.value.categories.filter(c => c.categoryId !== id));
           toast.success(response.message || 'Category deleted successfully');
         } else {
           toast.error('Failed to delete category');
         }
       },
-      error: (err) => {
-        toast.error(err?.error?.message || 'Something went wrong');
-      },
+      error: err => toast.error(err?.error?.message || 'Something went wrong'),
       complete: () => {
         this.deleteCategoryId.set('');
         this.confirmModal.set(false);
       },
     });
   }
-
-  // ── Helpers ──────────────────────────────────────────────────────────────
 
   totalProducts(categories: CategoryDTO[]): number {
     return categories.reduce((sum, cat) => sum + (cat.productsCount || 0), 0);
