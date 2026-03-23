@@ -16,7 +16,15 @@ namespace ShoppingApp.Models.DTOs.Order
         public DateTime DeliveryDate { get; set; }
         public AddressDTO Address { get; set; } = new AddressDTO();
         public PaymentDTO Payment { get; set; } = new PaymentDTO();
+        public OrderBy OrderBy { get; set; } = new OrderBy();
+        public bool IsRefunded { get; set; } = false;
         public ICollection<OrderDetailsDTO> Items { get; set; } = new List<OrderDetailsDTO>();
+    }
+
+    public record OrderBy
+    {
+        public string UserEmail { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
     }
 
     public class AddressDTO
@@ -38,7 +46,6 @@ namespace ShoppingApp.Models.DTOs.Order
         public int Quantity { get; set; }
         public decimal ProductPrice { get; set; }
     }
-
     public class PaymentDTO
     {
         public Guid PaymentId { get; set; }

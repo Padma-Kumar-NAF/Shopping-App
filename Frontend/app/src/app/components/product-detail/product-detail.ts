@@ -2,7 +2,9 @@ import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../services/product.service';
-import { ProductItem } from '../../models/product.model';
+import { AuthStateService } from '../../services/auth-state.service';
+import { RedirectService } from '../../services/redirect.service';
+import { ProductItem } from '../../models/users/product.model';
 import { toast } from 'ngx-sonner';
 
 interface WishlistItem {
@@ -21,6 +23,8 @@ export class ProductDetail implements OnInit {
   private productService = inject(ProductService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private authState = inject(AuthStateService);
+  private redirectService = inject(RedirectService);
 
   product = signal<ProductItem | null>(null);
   isLoading = signal<boolean>(true);
@@ -36,12 +40,16 @@ export class ProductDetail implements OnInit {
       name: 'Dream Wardrobe',
       products: [
         {
-          id: '101', name: 'Premium Leather Jacket', price: 4999,
-          image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop'
+          id: '101',
+          name: 'Premium Leather Jacket',
+          price: 4999,
+          image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop',
         },
         {
-          id: '102', name: 'Designer High-Top Sneakers', price: 2999,
-          image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop'
+          id: '102',
+          name: 'Designer High-Top Sneakers',
+          price: 2999,
+          image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop',
         },
       ],
     },
@@ -50,8 +58,11 @@ export class ProductDetail implements OnInit {
       name: 'Tech Gadgets',
       products: [
         {
-          id: '201', name: 'Wireless Headphones', price: 12999,
-          image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop'
+          id: '201',
+          name: 'Wireless Headphones',
+          price: 12999,
+          image:
+            'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop',
         },
       ],
     },
@@ -114,26 +125,63 @@ export class ProductDetail implements OnInit {
     }
   }
 
-  addToCart(): void {
-    const product = this.product();
-    if (product) {
-      console.log('Adding to cart:', {
-        product,
-        quantity: this.quantity(),
-      });
-      toast.success(`${product.name} added to cart!`);
-    }
-  }
-
   buyNow(): void {
     const product = this.product();
-    if (product) {
-      console.log('Buy now:', {
-        product,
+    if (!product) return;
+
+    // Check if user is authenticated
+    if (!this.authState.isAuthenticated()) {
+      // Store the intended action
+      this.redirectService.storeIntendedRoute('/payment', {
+        productId: product.id,
         quantity: this.quantity(),
       });
-      toast.success('Proceeding to checkout...');
+
+      toast.info('Please login to continue with your purchase');
+      this.router.navigate(['/auth']);
+      return;
     }
+
+    // User is authenticated, proceed to payment
+    this.router.navigate(['/payment'], {
+      queryParams: {
+        productId: product.id,
+        quantity: this.quantity(),
+      },
+    });
+  }
+
+  addToCart(): void {
+    const product = this.product();
+    if (!product) return;
+
+    // Check if user is authenticated
+    if (!this.authState.isAuthenticated()) {
+      toast.info('Please login to add items to cart');
+      this.redirectService.storeIntendedRoute(`/product/${product.id}`);
+      this.router.navigate(['/auth']);
+      return;
+    }
+
+    // User is authenticated, add to cart
+    console.log('Adding to cart:', {
+      product,
+      quantity: this.quantity(),
+    });
+    toast.success(`${product.name} added to cart!`);
+  }
+
+  openWishlistPopup(): void {
+    // Check if user is authenticated
+    if (!this.authState.isAuthenticated()) {
+      const product = this.product();
+      toast.info('Please login to add items to wishlist');
+      this.redirectService.storeIntendedRoute(`/product/${product?.id}`);
+      this.router.navigate(['/auth']);
+      return;
+    }
+
+    this.showWishlistPopup.set(true);
   }
 
   addToWishlist(wishlistId: number): void {
@@ -153,21 +201,17 @@ export class ProductDetail implements OnInit {
       lists.map((w) =>
         w.id === wishlistId
           ? {
-            ...w,
-            products: [
-              ...w.products,
-              { id: product.id, name: product.name, price: product.price, image: product.image },
-            ],
-          }
-          : w,
-      ),
+              ...w,
+              products: [
+                ...w.products,
+                { id: product.id, name: product.name, price: product.price, image: product.image },
+              ],
+            }
+          : w
+      )
     );
     toast.success(`${product.name} added to wishlist!`);
     this.showWishlistPopup.set(false);
-  }
-
-  openWishlistPopup(): void {
-    this.showWishlistPopup.set(true);
   }
 
   closeWishlistPopup(): void {

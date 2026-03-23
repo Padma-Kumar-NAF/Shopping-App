@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Exceptions;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.Order;
@@ -12,5 +13,6 @@ namespace ShoppingApp.Interfaces.ServicesInterface
         public Task<ApiResponse<PlaceOrderResponseDTO>> PlaceOrder(Guid userId,PlaceOrderRequestDTO request);
         public Task<ApiResponse<UpdateOrderResponseDTO>> UpdateOrder(Guid userId,Guid orderId,string status);
         public Task<ApiResponse<GetAllOrderResponseDTO>> GetAllOrders(GetAllOrderRequestDTO request);
+        public Task<ApiResponse<OrderRefundResponseDTO>> OrderRefund(Guid userId,OrderRefundRequestDTO request);
     }
 }

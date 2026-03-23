@@ -58,6 +58,8 @@ namespace ShoppingApp.Services
 
                 await _wishListItemsRepository.AddAsync(item);
 
+                await _unitOfWork.CommitAsync();
+
                 return new ApiResponse<AddProductToWishListResponseDTO>()
                 {
                     StatusCode = 200,

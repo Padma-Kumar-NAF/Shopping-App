@@ -411,7 +411,7 @@
         }
       }
     },
-    "/Category/add-category": {
+    "/category/add-category": {
       "post": {
         "tags": [
           "Category"
@@ -443,7 +443,7 @@
         }
       }
     },
-    "/Category/delete-category": {
+    "/category/delete-category": {
       "delete": {
         "tags": [
           "Category"
@@ -475,7 +475,7 @@
         }
       }
     },
-    "/Category/get-all-categories": {
+    "/category/get-all-categories": {
       "post": {
         "tags": [
           "Category"
@@ -507,7 +507,7 @@
         }
       }
     },
-    "/Category/edit-category": {
+    "/category/edit-category": {
       "post": {
         "tags": [
           "Category"
@@ -539,7 +539,7 @@
         }
       }
     },
-    "/Category/products-by-category": {
+    "/category/products-by-category": {
       "post": {
         "tags": [
           "Category"
@@ -655,6 +655,38 @@
             "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/GetUserOrderDetailsRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/orders/refund-order": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderRefundRequestDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderRefundRequestDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderRefundRequestDTO"
               }
             }
           },
@@ -1687,6 +1719,32 @@
           },
           "paymentType": {
             "type": "string"
+          }
+        }
+      },
+      "OrderRefundRequestDTO": {
+        "required": [
+          "orderId",
+          "paymentId",
+          "totalAmount"
+        ],
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "paymentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "totalAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },

@@ -70,6 +70,23 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        //[HttpGet("user")]
+        [HttpPost("refund-order")]
+        [ValidateRequest]
+        public async Task<IActionResult> OrderRefund([FromBody] OrderRefundRequestDTO request)
+        {
+            try
+            {
+                var UserId = GetUserIdOrThrow();
+                var result = await _orderService.OrderRefund(UserId, request);
+                return Ok(result);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         //[Authorize(Roles = "admin,user")]
         [HttpPost("place-order")]
         [ValidateRequest]

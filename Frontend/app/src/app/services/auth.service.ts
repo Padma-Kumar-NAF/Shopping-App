@@ -4,13 +4,13 @@ import {
   LoginModel,
   SignupModel,
   LoginResponseDTO,
-} from '../models/auth.model';
+} from '../models/users/auth.model';
 import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { jwtDecode } from 'jwt-decode';
-import { UserDetails } from '../models/user.model';
-import { ApiResponse } from '../models/apiResponse.model';
+import { UserDetails } from '../models/users/user.model';
+import { ApiResponse } from '../models/users/apiResponse.model';
 
 @Injectable({
   providedIn: 'root',

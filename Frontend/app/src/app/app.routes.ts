@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authRequiredGuard, publicGuard } from './services/public-auth.guard';
 import { roleGuard } from './services/auth.guard';
 
 import { HomeComponent } from './components/homeComponents/home/home';
@@ -13,16 +14,27 @@ import { WishlistComponent } from './components/profileComponents/wishlist/wishl
 import { Auth } from './components/auth/auth';
 import { Game } from './game/game';
 import { CheckoutComponent } from './components/checkout/checkout';
+import { PaymentComponent } from './components/payment/payment';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized';
 import { PageNotFound } from './components/page-not-found/page-not-found';
 
 export const routes: Routes = [
   {
     path: '',
-    canActivate: [roleGuard],
-    data: { role: 'user' },
+    canActivate: [publicGuard],
     component: HomeComponent,
   },
+  {
+    path: 'products',
+    canActivate: [publicGuard],
+    component: ProductListing,
+  },
+  {
+    path: 'product/:id',
+    canActivate: [publicGuard],
+    component: ProductDetail,
+  },
+
   {
     path: 'admin',
     canActivate: [roleGuard],
@@ -30,26 +42,21 @@ export const routes: Routes = [
     component: AdminDashboard,
   },
   {
-    path: 'products',
-    canActivate: [roleGuard],
-    data: { role: 'user' },
-    component: ProductListing,
-  },
-  {
-    path: 'product/:id',
-    canActivate: [roleGuard],
-    data: { role: 'user' },
-    component: ProductDetail,
-  },
-  {
     path: 'checkout',
-    canActivate: [roleGuard],
+    canActivate: [authRequiredGuard],
     data: { role: 'user' },
     component: CheckoutComponent,
+  },
+  {
+    path: 'payment',
+    canActivate: [authRequiredGuard],
+    data: { role: 'user' },
+    component: PaymentComponent,
   },
 
   {
     path: 'profile',
+    canActivate: [authRequiredGuard],
     component: Profile,
     children: [
       { path: 'cart', component: Cart },
@@ -60,7 +67,6 @@ export const routes: Routes = [
       { path: '**', redirectTo: '/profile' },
     ],
   },
-
   { path: 'auth', component: Auth },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: 'page-not-found', component: PageNotFound },

@@ -151,6 +151,7 @@ namespace ShoppingApp.Services
                     .Where(ci => ci.CartId == userCart.CartId)
                     .Select(ci => new CartItemDTO
                     {
+                        CartItemId = ci.CartItemId,
                         ProductId = ci.ProductId,
                         CategoryId = ci.Product!.CategoryId,
                         ProductName = ci.Product.Name,

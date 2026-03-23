@@ -14,11 +14,12 @@ import {
   LoginModel,
   SignupModel,
   LoginResponseDTO,
-} from '../../models/auth.model';
+} from '../../models/users/auth.model';
 import { AuthApiService } from '../../services/auth.service';
 import { AuthStateService } from '../../services/auth-state.service';
+import { RedirectService } from '../../services/redirect.service';
 import { Router } from '@angular/router';
-import { ApiResponse } from '../../models/apiResponse.model';
+import { ApiResponse } from '../../models/users/apiResponse.model';
 
 @Component({
   selector: 'app-auth',
@@ -30,6 +31,7 @@ export class Auth {
   disabledButton = signal<boolean>(true);
   private apiService: AuthApiService = inject(AuthApiService);
   private authState: AuthStateService = inject(AuthStateService);
+  private redirectService: RedirectService = inject(RedirectService);
 
   isLoginMode = signal(true);
 
@@ -43,6 +45,14 @@ export class Auth {
   signUpForm: FormGroup;
 
   constructor(private router: Router) {
+    if (this.authState.isAuthenticated()) {
+      if (this.authState.role() === 'admin') {
+        this.router.navigate(['/admin']);
+      } else {
+        this.router.navigate(['/']);
+      }
+    }
+
     this.loginData = new LoginModel();
     this.signupData = new SignupModel();
 
@@ -50,10 +60,10 @@ export class Auth {
     this.loginDetails = new LoginResponseDTO();
 
     this.loginForm = new FormGroup({
-      email: new FormControl('admin@gmail.com', [Validators.required, Validators.email]),
-      password: new FormControl('admin123', [Validators.required, Validators.minLength(6)]),
-      // email: new FormControl('padmakumar23.dev@gmail.com', [Validators.required, Validators.email]),
-      // password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
+      // email: new FormControl('admin@gmail.com', [Validators.required, Validators.email]),
+      // password: new FormControl('admin123', [Validators.required, Validators.minLength(6)]),
+      email: new FormControl('padmakumar23.dev@gmail.com', [Validators.required, Validators.email]),
+      password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
     });
 
     this.signUpForm = new FormGroup({
@@ -113,15 +123,24 @@ export class Auth {
           if (response.data.token) {
             this.authState.setUser(user, response.data.token);
           }
-          console.log(user?.userRole === 'admin')
-          if (user?.userRole === 'admin') {
-            this.router.navigate(['/admin']);
-          } else {
-            this.router.navigate(['/']);
-          }
+          console.log(user?.userRole === 'admin');
+
           this.loginForm.reset();
           toast.dismiss(toastId);
-          toast.success('Login Successfull');
+          toast.success('Login Successful');
+
+          // Handle post-login redirection
+          if (this.redirectService.hasPendingRedirect()) {
+            // Redirect to the intended route
+            this.redirectService.navigateToIntendedRoute();
+          } else {
+            // Default navigation based on role
+            if (user?.userRole === 'admin') {
+              this.router.navigate(['/admin']);
+            } else {
+              this.router.navigate(['/']);
+            }
+          }
         }
       },
       error: (error: any) => {

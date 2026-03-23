@@ -170,12 +170,6 @@ namespace ShoppingApp.Services
 
         public async Task<ApiResponse<GetAllCategoryResponseDTO>> GetAllCategories(int limit, int pageNumber)
         {
-            if (limit <= 0)
-                throw new AppException("Page size must be greater than 0", 400);
-
-            if (pageNumber <= 0)
-                throw new AppException("Page number must be greater than 0", 400);
-
             try
             {
                 var categories = await _repository
@@ -187,13 +181,21 @@ namespace ShoppingApp.Services
                     .Select(c => new CategoryDTO
                     {
                         CategoryId = c.CategoryId,
-                        CategoryName = c.CategoryName
+                        CategoryName = c.CategoryName,
+                        ProductsCount = c.Products.Count() == 0 ? 0 : c.Products.Count(),
+                        CreatedAt = c.CreatedAt.ToString()
                     })
                     .ToListAsync();
 
                 if (!categories.Any())
                 {
-                    throw new AppException("No categories found", 404);
+                    return new ApiResponse<GetAllCategoryResponseDTO>()
+                    {
+                        StatusCode = 200,
+                        Message = "No categories found",
+                        Data = new GetAllCategoryResponseDTO(),
+                        Action = "GetAllCategories"
+                    };
                 }
 
                 return new ApiResponse<GetAllCategoryResponseDTO>()

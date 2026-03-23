@@ -4,11 +4,21 @@ import { NgxSonnerToaster } from 'ngx-sonner';
 import { NavbarComponent } from './components/shared/navbar/navbar';
 import { LoaderService } from './services/loading.service';
 import { Spinner } from './components/spinner/spinner';
-import { OrdersComponent } from "./components/profileComponents/orders/orders";
+import { OrdersComponent } from './components/profileComponents/orders/orders';
+import { AdminDashboard } from './components/adminComponents/admin-dashboard/admin-dashboard';
+import { HomeComponent } from './components/homeComponents/home/home';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NgxSonnerToaster, NavbarComponent, Spinner, OrdersComponent],
+  imports: [
+    RouterOutlet,
+    NgxSonnerToaster,
+    NavbarComponent,
+    Spinner,
+    OrdersComponent,
+    AdminDashboard,
+    HomeComponent,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

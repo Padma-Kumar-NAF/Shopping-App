@@ -1,8 +1,18 @@
-import { Component, inject, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, inject, OnChanges, OnInit, signal, SimpleChanges } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { CartService } from '../../../services/cart.service';
-import { PaginationModel } from '../../../models/pagination.model';
+import { PaginationModel } from '../../../models/users/pagination.model';
+import { ApiResponse } from '../../../models/users/apiResponse.model';
+import {
+  CartItemDTO,
+  GetCartResponseDTO,
+  RemoveAllFromCartResponseDTO,
+  RemoveFromCartRequestDTO,
+  RemoveFromCartResponseDTO,
+} from '../../../models/users/cart.model';
+import { sign } from 'crypto';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-cart',
@@ -11,10 +21,12 @@ import { PaginationModel } from '../../../models/pagination.model';
   styleUrl: './cart.css',
 })
 export class Cart implements OnChanges, OnInit {
+  private readonly cartId = signal<string>('');
+  cartItems = signal<CartItemDTO[]>([]);
   constructor(private router: Router) {
     this.pagination = new PaginationModel();
-    this.pagination.PageSize = 10;
-    this.pagination.PageNumber = 1;
+    this.pagination.pageSize = 10;
+    this.pagination.pageNumber = 1;
   }
 
   private readonly apiService: CartService = inject(CartService);
@@ -26,7 +38,9 @@ export class Cart implements OnChanges, OnInit {
 
   getUserCarts() {
     this.apiService.GetUserCart(this.pagination).subscribe({
-      next: (response) => {
+      next: (response: ApiResponse<GetCartResponseDTO>) => {
+        this.cartId.set(response.data?.cartId ?? '');
+        this.cartItems.set(response.data?.cartItems ?? []);
         console.log('response');
         console.log(response);
       },
@@ -44,24 +58,23 @@ export class Cart implements OnChanges, OnInit {
   itemsPerPage = 6;
   currentPage = 1;
 
-  cartItems = [
-    {
-      id: 1,
-      name: 'Red Nail Polish',
-      price: 799,
-      quantity: 1,
-      image: 'https://cdn.dummyjson.com/product-images/beauty/red-nail-polish/1.webp',
-    },
-    {
-      id: 2,
-      name: 'Nike Shoes',
-      price: 4999,
-      quantity: 2,
-      image: 'https://cdn.dummyjson.com/product-images/fragrances/chanel-coco-noir-eau-de/1.webp',
-    },
-  ];
   removeAllCart() {
-    this.cartItems = [];
+    this.apiService.removeAllFromCart().subscribe({
+      next: (response: ApiResponse<RemoveAllFromCartResponseDTO>) => {
+        console.log('response');
+        console.log(response);
+        toast.success(response.message);
+      },
+      error: (err) => {
+        console.error(err);
+        console.error(err?.error?.message ?? 'Remove all cart failed');
+        toast.error(err?.error?.message ?? 'Remove all cart failed');
+      },
+      complete() {
+        console.log('remove all cart completed');
+      },
+    });
+    this.cartItems.set([]);
     this.currentPage = 1;
   }
 
@@ -70,7 +83,7 @@ export class Cart implements OnChanges, OnInit {
   }
 
   proceedToCheckout() {
-    this.router.navigate(['/checkout']);
+    this.router.navigate(['/payment']);
   }
 
   increaseQty(item: any) {
@@ -83,16 +96,45 @@ export class Cart implements OnChanges, OnInit {
     }
   }
 
-  removeFromCart(item: any) {
-    this.cartItems = this.cartItems.filter((i) => i.id !== item.id);
+  removeFromCart(item: CartItemDTO) {
+    console.log('item');
+    console.log(item);
+    const request: RemoveFromCartRequestDTO = {
+      CartId: this.cartId(),
+      CartItemId: item.cartItemId,
+      ProductId: item.productId,
+    };
+
+    this.apiService.removeFromCart(request).subscribe({
+      next: (response: ApiResponse<RemoveFromCartResponseDTO>) => {
+        console.log('response');
+        console.log(response);
+        toast.success(response.message)
+      },
+      error: (err) => {
+        console.error(err);
+        console.error(err?.error?.message ?? 'Remove all cart failed');
+        toast.error(err?.error?.message ?? 'Remove all cart failed');
+      },
+      complete() {
+        console.log('remove from cart completed');
+      },
+    });
+    console.log('request');
+    console.log(request);
+    this.cartItems.set(this.cartItems().filter((i) => i.cartItemId !== item.cartItemId));
   }
 
   get totalItems() {
-    return this.cartItems.length;
+    return this.cartItems().length;
   }
 
   get totalPrice() {
-    return this.cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    return Number(
+      this.cartItems()
+        .reduce((sum, item) => sum + item.price * item.quantity, 0)
+        .toFixed(2),
+    );
   }
 
   get totalPages() {
@@ -105,7 +147,7 @@ export class Cart implements OnChanges, OnInit {
 
   get paginatedItems() {
     const start = (this.currentPage - 1) * this.itemsPerPage;
-    return this.cartItems.slice(start, start + this.itemsPerPage);
+    return this.cartItems().slice(start, start + this.itemsPerPage);
   }
 
   goToPage(page: number) {

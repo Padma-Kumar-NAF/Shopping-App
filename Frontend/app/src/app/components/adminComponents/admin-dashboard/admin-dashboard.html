@@ -1,9 +1,36 @@
 <div class="min-h-screen bg-gray-100">
-  <!-- Top Navigation Bar -->
   <nav class="bg-white shadow-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16">
         <div class="flex items-center gap-3">
+          <button
+            (click)="toggleMobileMenu()"
+            class="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <svg
+              class="w-6 h-6 text-gray-700"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              @if (mobileMenuOpen()) {
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+              } @else {
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+              }
+            </svg>
+          </button>
+
           <div
             class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center"
           >
@@ -11,7 +38,7 @@
           </div>
           <div>
             <h1 class="text-xl font-bold text-gray-900">Admin Panel</h1>
-            <p class="text-xs text-gray-500">ShopApp Management</p>
+            <p class="text-xs text-gray-500 hidden sm:block">ShopApp Management</p>
           </div>
         </div>
 
@@ -31,12 +58,29 @@
         </button>
       </div>
     </div>
+
+    @if (mobileMenuOpen()) {
+    <div class="lg:hidden border-t border-gray-200 bg-white">
+      <div class="px-4 py-2 space-y-1">
+        @for (tab of tabs; track tab.id) {
+        <button
+          (click)="setTab(tab.id)"
+          [class.bg-blue-50]="activeTab() === tab.id"
+          [class.text-blue-600]="activeTab() === tab.id"
+          [class.text-gray-700]="activeTab() !== tab.id"
+          class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          <span class="text-xl">{{ tab.icon }}</span>
+          <span class="font-medium">{{ tab.label }}</span>
+        </button>
+        }
+      </div>
+    </div>
+    }
   </nav>
 
-  <!-- Main Content -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Tab Navigation -->
-    <div class="bg-white rounded-xl shadow-md mb-6 overflow-hidden">
+    <div class="bg-white rounded-xl shadow-md mb-6 overflow-hidden hidden lg:block">
       <nav class="flex overflow-x-auto scrollbar-hide">
         @for (tab of tabs; track tab.id) {
         <button
@@ -57,14 +101,11 @@
       </nav>
     </div>
 
-    <!-- Dashboard Overview -->
     @if (activeTab() === 'dashboard') {
     <div class="animate-fade-in">
       <h2 class="text-2xl font-bold text-gray-900 mb-6">Dashboard Overview</h2>
 
-      <!-- Stats Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <!-- Total Users -->
         <div
           class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg"
         >
@@ -82,7 +123,6 @@
           <p class="text-blue-100 text-sm mt-1">{{ stats().activeUsers }} active</p>
         </div>
 
-        <!-- Total Orders -->
         <div
           class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg"
         >
@@ -100,7 +140,6 @@
           <p class="text-green-100 text-sm mt-1">{{ stats().pendingOrders }} pending</p>
         </div>
 
-        <!-- Total Products -->
         <div
           class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg"
         >
@@ -118,7 +157,6 @@
           <p class="text-purple-100 text-sm mt-1">In inventory</p>
         </div>
 
-        <!-- Total Revenue -->
         <div
           class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg sm:col-span-2 lg:col-span-3"
         >
@@ -138,66 +176,27 @@
           </div>
         </div>
       </div>
-
-      <!-- Quick Actions -->
-      <div class="bg-white rounded-xl shadow-md p-6">
-        <h3 class="text-xl font-bold text-gray-900 mb-4">Quick Actions</h3>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <button
-            (click)="setTab('users')"
-            class="p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors duration-200 text-center"
-          >
-            <div class="text-3xl mb-2">👥</div>
-            <p class="text-sm font-medium text-gray-700">Manage Users</p>
-          </button>
-          <button
-            (click)="setTab('orders')"
-            class="p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors duration-200 text-center"
-          >
-            <div class="text-3xl mb-2">📦</div>
-            <p class="text-sm font-medium text-gray-700">View Orders</p>
-          </button>
-          <button
-            (click)="setTab('products')"
-            class="p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors duration-200 text-center"
-          >
-            <div class="text-3xl mb-2">➕</div>
-            <p class="text-sm font-medium text-gray-700">Add Product</p>
-          </button>
-          <button
-            (click)="setTab('categories')"
-            class="p-4 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors duration-200 text-center"
-          >
-            <div class="text-3xl mb-2">🏷️</div>
-            <p class="text-sm font-medium text-gray-700">Categories</p>
-          </button>
-        </div>
-      </div>
     </div>
     }
 
-    <!-- Users Management -->
     @if (activeTab() === 'users') {
     <div class="animate-fade-in">
       <app-users-management></app-users-management>
     </div>
     }
 
-    <!-- Orders Management -->
     @if (activeTab() === 'orders') {
     <div class="animate-fade-in">
       <app-orders-management></app-orders-management>
     </div>
     }
 
-    <!-- Add Product -->
-    @if (activeTab() === 'products') {
+    @if (activeTab() === 'manage-products') {
     <div class="animate-fade-in">
-      <app-add-product></app-add-product>
+      <app-product-management></app-product-management>
     </div>
     }
 
-    <!-- Category Management -->
     @if (activeTab() === 'categories') {
     <div class="animate-fade-in">
       <app-category-management></app-category-management>
