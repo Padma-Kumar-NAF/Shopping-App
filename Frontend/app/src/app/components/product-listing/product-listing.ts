@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
+import { ProductStateService } from '../../services/product-state.service';
 import { AuthStateService } from '../../services/auth-state.service';
 import { RedirectService } from '../../services/redirect.service';
 import { ProductItem, SearchResult } from '../../models/users/product.model';
@@ -16,6 +17,7 @@ import { toast } from 'ngx-sonner';
 })
 export class ProductListing implements OnInit {
   private productService = inject(ProductService);
+  private productStateService = inject(ProductStateService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private authState = inject(AuthStateService);
@@ -131,7 +133,8 @@ export class ProductListing implements OnInit {
   }
 
   viewProductDetail(product: ProductItem): void {
-    this.router.navigate(['/product', product.id]);
+    this.productStateService.setSelectedProduct(product);
+    this.router.navigate(['/product-detail']);
   }
 
   buyNow(product: ProductItem, event: Event): void {
@@ -139,9 +142,10 @@ export class ProductListing implements OnInit {
 
     // Check if user is authenticated
     if (!this.authState.isAuthenticated()) {
-      // Store the intended action
+      // Store the product in state for later
+      this.productStateService.setSelectedProduct(product);
       this.redirectService.storeIntendedRoute('/payment', {
-        productId: product.id,
+        fromProduct: 'true',
         quantity: 1,
       });
 
@@ -150,10 +154,11 @@ export class ProductListing implements OnInit {
       return;
     }
 
-    // User is authenticated, proceed to payment
+    // User is authenticated, set product state and proceed to payment
+    this.productStateService.setSelectedProduct(product);
     this.router.navigate(['/payment'], {
       queryParams: {
-        productId: product.id,
+        fromProduct: 'true',
         quantity: 1,
       },
     });

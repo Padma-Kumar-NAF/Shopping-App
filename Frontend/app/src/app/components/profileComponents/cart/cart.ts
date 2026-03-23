@@ -83,7 +83,9 @@ export class Cart implements OnChanges, OnInit {
   }
 
   proceedToCheckout() {
-    this.router.navigate(['/payment']);
+    this.router.navigate(['/payment'], {
+      queryParams: { fromCart: 'true' },
+    });
   }
 
   increaseQty(item: any) {
@@ -109,7 +111,7 @@ export class Cart implements OnChanges, OnInit {
       next: (response: ApiResponse<RemoveFromCartResponseDTO>) => {
         console.log('response');
         console.log(response);
-        toast.success(response.message)
+        toast.success(response.message);
       },
       error: (err) => {
         console.error(err);
@@ -133,7 +135,7 @@ export class Cart implements OnChanges, OnInit {
     return Number(
       this.cartItems()
         .reduce((sum, item) => sum + item.price * item.quantity, 0)
-        .toFixed(2),
+        .toFixed(2)
     );
   }
 

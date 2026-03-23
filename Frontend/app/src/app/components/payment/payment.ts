@@ -3,7 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../services/product.service';
+import { ProductStateService } from '../../services/product-state.service';
+import { CartService } from '../../services/cart.service';
 import { ProductItem } from '../../models/users/product.model';
+import { PaginationModel } from '../../models/users/pagination.model';
 import { toast } from 'ngx-sonner';
 
 interface CartItem {
@@ -25,6 +28,8 @@ export class PaymentComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
+  private productStateService = inject(ProductStateService);
+  private cartService = inject(CartService);
 
   // Payment mode: 'single' for single product, 'cart' for cart items
   paymentMode = signal<'single' | 'cart'>('single');
@@ -56,23 +61,43 @@ export class PaymentComponent implements OnInit {
   pincode = signal<string>('');
 
   ngOnInit(): void {
-    const productId = this.route.snapshot.queryParamMap.get('productId');
-    const qty = this.route.snapshot.queryParamMap.get('quantity');
     const fromCart = this.route.snapshot.queryParamMap.get('fromCart');
+    const fromProduct = this.route.snapshot.queryParamMap.get('fromProduct');
+    const qty = this.route.snapshot.queryParamMap.get('quantity');
 
     // Check if coming from cart
     if (fromCart === 'true') {
       this.paymentMode.set('cart');
       this.loadCartItems();
-    } else if (productId) {
-      // Single product purchase
+    } else if (fromProduct === 'true') {
+      // Single product purchase - get from state
       this.paymentMode.set('single');
       if (qty) {
         this.quantity.set(parseInt(qty));
       }
-      this.loadSingleProduct(productId);
+      this.loadProductFromState();
     } else {
-      toast.error('No items to checkout');
+      // Fallback: check for productId in query params (for backward compatibility)
+      const productId = this.route.snapshot.queryParamMap.get('productId');
+      if (productId) {
+        this.paymentMode.set('single');
+        if (qty) {
+          this.quantity.set(parseInt(qty));
+        }
+        this.loadSingleProduct(productId);
+      } else {
+        toast.error('No items to checkout');
+        this.router.navigate(['/products']);
+      }
+    }
+  }
+
+  private loadProductFromState(): void {
+    const product = this.productStateService.getSelectedProduct();
+    if (product) {
+      this.product.set(product);
+    } else {
+      toast.error('Product not found');
       this.router.navigate(['/products']);
     }
   }
@@ -95,25 +120,31 @@ export class PaymentComponent implements OnInit {
   }
 
   private loadCartItems(): void {
-    // Mock cart items - replace with actual cart service call
-    // You can integrate with your backend cart service here
-    const mockCartItems: CartItem[] = [
-      {
-        id: '1',
-        name: 'Wireless Bluetooth Headphones',
-        price: 2999,
-        quantity: 1,
-        image: 'https://picsum.photos/400/300?random=1',
+    // Load actual cart items from the cart service
+    const pagination = new PaginationModel();
+    pagination.pageSize = 100; // Load all items for checkout
+    pagination.pageNumber = 1;
+
+    this.cartService.GetUserCart(pagination).subscribe({
+      next: (response) => {
+        if (response.data?.cartItems) {
+          // Map backend CartItemDTO to local CartItem interface
+          const items: CartItem[] = response.data.cartItems.map((item) => ({
+            id: item.productId,
+            name: item.productName,
+            price: item.price,
+            quantity: item.quantity,
+            image: item.imagePath,
+          }));
+          this.cartItems.set(items);
+        }
       },
-      {
-        id: '2',
-        name: 'Smart Watch Pro',
-        price: 8999,
-        quantity: 2,
-        image: 'https://picsum.photos/400/300?random=2',
+      error: (err) => {
+        console.error('Failed to load cart items:', err);
+        toast.error('Failed to load cart items');
+        this.router.navigate(['/profile/cart']);
       },
-    ];
-    this.cartItems.set(mockCartItems);
+    });
   }
 
   get subtotal(): number {
@@ -209,7 +240,11 @@ export class PaymentComponent implements OnInit {
     if (this.paymentMode() === 'cart') {
       this.router.navigate(['/profile/cart']);
     } else {
-      this.router.navigate(['/product', this.product()?.id]);
+      const product = this.product();
+      if (product) {
+        this.productStateService.setSelectedProduct(product);
+      }
+      this.router.navigate(['/product-detail']);
     }
   }
 }

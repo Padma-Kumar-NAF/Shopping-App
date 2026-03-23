@@ -30,7 +30,7 @@ export const routes: Routes = [
     component: ProductListing,
   },
   {
-    path: 'product/:id',
+    path: 'product-detail',
     canActivate: [publicGuard],
     component: ProductDetail,
   },

@@ -90,10 +90,18 @@ export class CheckoutComponent implements OnInit {
       }
     }
 
-    // Navigate to payment page with cart flag
-    this.router.navigate(['/payment'], {
-      queryParams: { fromCart: 'true' },
-    });
+    this.isProcessing.set(true);
+    const toastId = toast.loading('Processing payment...');
+
+    // Simulate payment processing
+    setTimeout(() => {
+      this.isProcessing.set(false);
+      toast.dismiss(toastId);
+      toast.success('Payment successful! Order placed.');
+
+      // Navigate to orders page
+      this.router.navigate(['/profile/orders']);
+    }, 2000);
   }
 
   goBack(): void {

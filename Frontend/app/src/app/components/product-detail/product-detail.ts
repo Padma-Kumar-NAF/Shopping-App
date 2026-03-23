@@ -1,7 +1,8 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../services/product.service';
+import { ProductStateService } from '../../services/product-state.service';
 import { AuthStateService } from '../../services/auth-state.service';
 import { RedirectService } from '../../services/redirect.service';
 import { ProductItem } from '../../models/users/product.model';
@@ -21,7 +22,7 @@ interface WishlistItem {
 })
 export class ProductDetail implements OnInit {
   private productService = inject(ProductService);
-  private route = inject(ActivatedRoute);
+  private productStateService = inject(ProductStateService);
   private router = inject(Router);
   private authState = inject(AuthStateService);
   private redirectService = inject(RedirectService);
@@ -69,34 +70,22 @@ export class ProductDetail implements OnInit {
   ]);
 
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      const productId = params['id'];
-      if (productId) {
-        this.loadProduct(productId);
-      }
-    });
+    const selectedProduct = this.productStateService.getSelectedProduct();
+
+    if (selectedProduct) {
+      this.loadProduct(selectedProduct);
+    } else {
+      toast.error('No product selected');
+      this.router.navigate(['/products']);
+    }
   }
 
-  loadProduct(id: string): void {
+  loadProduct(product: ProductItem): void {
     this.isLoading.set(true);
-    this.productService.getProductById(id).subscribe({
-      next: (product) => {
-        if (product) {
-          this.product.set(product);
-          this.selectedImage.set(product.image);
-          this.loadRelatedProducts(product.category);
-        } else {
-          toast.error('Product not found');
-          this.router.navigate(['/products']);
-        }
-        this.isLoading.set(false);
-      },
-      error: (error) => {
-        console.error('Error loading product:', error);
-        toast.error('Failed to load product');
-        this.isLoading.set(false);
-      },
-    });
+    this.product.set(product);
+    this.selectedImage.set(product.image);
+    this.loadRelatedProducts(product.category);
+    this.isLoading.set(false);
   }
 
   loadRelatedProducts(category: string): void {
@@ -131,9 +120,10 @@ export class ProductDetail implements OnInit {
 
     // Check if user is authenticated
     if (!this.authState.isAuthenticated()) {
-      // Store the intended action
+      // Store the product in state for later
+      this.productStateService.setSelectedProduct(product);
       this.redirectService.storeIntendedRoute('/payment', {
-        productId: product.id,
+        fromProduct: 'true',
         quantity: this.quantity(),
       });
 
@@ -142,10 +132,11 @@ export class ProductDetail implements OnInit {
       return;
     }
 
-    // User is authenticated, proceed to payment
+    // User is authenticated, set product state and proceed to payment
+    this.productStateService.setSelectedProduct(product);
     this.router.navigate(['/payment'], {
       queryParams: {
-        productId: product.id,
+        fromProduct: 'true',
         quantity: this.quantity(),
       },
     });
@@ -158,7 +149,8 @@ export class ProductDetail implements OnInit {
     // Check if user is authenticated
     if (!this.authState.isAuthenticated()) {
       toast.info('Please login to add items to cart');
-      this.redirectService.storeIntendedRoute(`/product/${product.id}`);
+      this.productStateService.setSelectedProduct(product);
+      this.redirectService.storeIntendedRoute('/product-detail');
       this.router.navigate(['/auth']);
       return;
     }
@@ -175,8 +167,11 @@ export class ProductDetail implements OnInit {
     // Check if user is authenticated
     if (!this.authState.isAuthenticated()) {
       const product = this.product();
+      if (product) {
+        this.productStateService.setSelectedProduct(product);
+      }
       toast.info('Please login to add items to wishlist');
-      this.redirectService.storeIntendedRoute(`/product/${product?.id}`);
+      this.redirectService.storeIntendedRoute('/product-detail');
       this.router.navigate(['/auth']);
       return;
     }
@@ -222,8 +217,12 @@ export class ProductDetail implements OnInit {
     this.router.navigate(['/products']);
   }
 
-  viewRelatedProduct(productId: string): void {
-    this.router.navigate(['/product', productId]);
+  viewRelatedProduct(product: ProductItem): void {
+    this.productStateService.setSelectedProduct(product);
+    this.router.navigate(['/product-detail']).then(() => {
+      // Reload the component with new product
+      this.loadProduct(product);
+    });
   }
 
   getStarArray(rating: number): number[] {

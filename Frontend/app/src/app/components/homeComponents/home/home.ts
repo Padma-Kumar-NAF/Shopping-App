@@ -1,7 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Footer } from '../footer/footer';
 import { FormsModule } from '@angular/forms';
+import { ProductStateService } from '../../../services/product-state.service';
+import { ProductItem } from '../../../models/users/product.model';
 
 interface Product {
   id: number;
@@ -13,17 +15,19 @@ interface Product {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [ Footer, FormsModule],
+  imports: [Footer, FormsModule],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
-
 export class HomeComponent {
+  private router = inject(Router);
+  private productStateService = inject(ProductStateService);
+
   carouselSlides = [
     {
       image: 'https://images.unsplash.com/photo-1607082349566-187342175e2f?w=1280&h=420&fit=crop',
       title: 'Mega Sale — Up to 60% Off',
-      subtitle: 'Grab the best deals before they\'re gone!',
+      subtitle: "Grab the best deals before they're gone!",
     },
     {
       image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1280&h=420&fit=crop',
@@ -75,13 +79,21 @@ export class HomeComponent {
   selectedProduct: Product | null = null;
   searchQuery = signal<string>('');
 
-  constructor(private router: Router) {
-    console.log("Home constructorrr")
-  }
-
-  onProductClick(product: Product): void {  
+  onProductClick(product: Product): void {
     console.log('Product clicked:', product);
-    this.router.navigate(['/product', product.id]);
+    // Convert home Product to ProductItem format
+    const productItem: ProductItem = {
+      id: product.id.toString(),
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      category: 'General',
+      description: product.name,
+      rating: 4.5,
+      stock: 10,
+    };
+    this.productStateService.setSelectedProduct(productItem);
+    this.router.navigate(['/product-detail']);
   }
 
   clearSelection(): void {

@@ -4,223 +4,253 @@
     <div class="text-sm text-gray-500">{{ orders().length }} orders</div>
   </div>
 
-  <div class=" w-full  overflow-x-auto rounded-3xl">
-    @if (true) {
-      <div class="hidden md:block">
-        <div class="overflow-hidden">
-          <table class="min-w-full divide-y divide-gray-300 bg-white">
-            <thead class="bg-gray-50">
-              <tr>
-                <!-- <th class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">S.No</th> -->
-                <th
-                  class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider"
+  @if (isLoading()) {
+  <div class="flex justify-center items-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+  } @else if (orders().length === 0) {
+  <div class="text-center py-12 text-gray-500">
+    <mat-icon class="text-6xl text-gray-300 mb-4">shopping_bag</mat-icon>
+    <p class="text-lg">No orders found</p>
+  </div>
+  } @else {
+  <div class="w-full overflow-x-auto rounded-3xl">
+    <div class="hidden md:block">
+      <div class="overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-300 bg-white">
+          <thead class="bg-gray-50">
+            <tr>
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider"
+              >
+                Order ID
+              </th>
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider"
+              >
+                Status
+              </th>
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider"
+              >
+                Amount
+              </th>
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider"
+              >
+                Delivery Date
+              </th>
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider"
+              >
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            @for (order of orders(); track order.orderId) {
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                {{ order.orderId.split('-')[0].toUpperCase() }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex flex-col gap-1">
+                  <span
+                    class="inline-flex px-3 py-1 text-xs font-semibold rounded-full border"
+                    [ngClass]="getStatusColor(order.status)"
+                  >
+                    {{ order.status }}
+                  </span>
+                  @if (order.isRefunded) {
+                  <span
+                    class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 border-green-200"
+                  >
+                    ✓ Refunded
+                  </span>
+                  }
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
+                ₹{{ order.totalAmount.toLocaleString() }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <span class="font-medium">
+                  {{ order.deliveryDate | date : 'MMM d, yyyy' }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                <button
+                  (click)="viewAddress(order)"
+                  class="cursor-pointer px-4 py-1.5 text-sm rounded-lg button-shadow text-blue-600 hover:bg-gray-100"
                 >
-                  Order Date
-                </th>
-                <th
-                  class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider"
+                  View Address
+                </button>
+                <button
+                  (click)="viewProducts(order)"
+                  class="cursor-pointer px-4 py-1.5 text-sm rounded-lg button-shadow text-green-600 hover:bg-gray-100"
                 >
-                  Status
-                </th>
-                <th
-                  class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider"
-                >
-                  Delivery
-                </th>
-                <th
-                  class="px-6 py-4 text-left text-xs font-bold text-gray-900 uppercase tracking-wider"
-                >
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-              @for (order of orders(); track order.id) {
-                <tr class="hover:bg-gray-50">
-                  <!-- <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {{ order.id }}
-                  </td> -->
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    @if (order.deliveryDate) {
-                      <span class="font-medium">
-                        {{ order.deliveryDate | date: 'MMM d, yyyy' }}
-                      </span>
-                    } @else {
-                      <span class="text-gray-500">—</span>
-                    }
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span
-                      class="inline-flex px-3 py-1 text-xs font-semibold rounded-full border"
-                      [ngClass]="statusColor[order.status]"
-                    >
-                      {{ order.status | titlecase }}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    @if (order.deliveryDate) {
-                      <span class="font-medium">
-                        {{ order.deliveryDate | date: 'MMM d, yyyy' }}
-                      </span>
-                    } @else {
-                      <span class="text-gray-500">—</span>
-                    }
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                    <button
-                      (click)="viewAddress(order)"
-                      class="cursor-pointer px-4 py-1.5 text-sm rounded-lg button-shadow text-blue-600 hover:bg-gray-100"
-                    >
-                      View Address
-                    </button>
-                    <button
-                      (click)="viewProducts(order)"
-                      class="cursor-pointer px-4 py-1.5 text-sm rounded-lg button-shadow text-green-600 hover:bg-gray-100"
-                    >
-                      Products
-                    </button>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
+                  Products
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="md:hidden space-y-4">
+      @for (order of orders(); track order.orderId) {
+      <div
+        class="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow"
+      >
+        <div class="flex items-start justify-between mb-4">
+          <div class="font-semibold text-lg text-gray-900 truncate">
+            {{ order.orderId.split('-')[0].toUpperCase() }}
+          </div>
+          <div class="flex flex-col gap-1 items-end">
+            <span
+              class="inline-flex px-3 py-1 text-xs font-semibold rounded-full border"
+              [ngClass]="getStatusColor(order.status)"
+            >
+              {{ order.status }}
+            </span>
+            @if (order.isRefunded) {
+            <span
+              class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 border-green-200"
+            >
+              ✓ Refunded
+            </span>
+            }
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <div class="text-2xl font-bold text-gray-900 mb-1">
+            ₹{{ order.totalAmount.toLocaleString() }}
+          </div>
+          <div class="text-sm text-gray-600">
+            <mat-icon class="text-indigo-500 text-sm">schedule</mat-icon>
+            Delivery: {{ order.deliveryDate | date : 'MMM d, yyyy' }}
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <button
+            (click)="viewAddress(order)"
+            class="cursor-pointer px-4 py-1.5 text-sm rounded-lg button-shadow text-blue-600 hover:bg-gray-100"
+          >
+            View Address
+          </button>
+          <button
+            (click)="viewProducts(order)"
+            class="cursor-pointer px-4 py-1.5 text-sm rounded-lg button-shadow text-green-600 hover:bg-gray-100"
+          >
+            Products
+          </button>
         </div>
       </div>
-    }
-
-    @if (true) {
-      <div class="md:hidden space-y-4">
-        @for (order of orders(); track order.id) {
-          <div
-            class="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow"
-          >
-            <div class="flex items-start justify-between mb-4">
-              <div class="font-semibold text-lg text-gray-900 truncate">{{ order.id }}</div>
-              <span
-                class="inline-flex px-3 py-1 text-xs font-semibold rounded-full border ml-2"
-                [ngClass]="statusColor[order.status]"
-              >
-                {{ order.status | titlecase }}
-              </span>
-            </div>
-
-            @if (order.deliveryDate) {
-              <div class="text-sm text-gray-600 mb-4">
-                <mat-icon class="text-indigo-500 text-sm">schedule</mat-icon>
-                Expected: {{ order.deliveryDate | date: 'MMM d, yyyy' }}
-              </div>
-            }
-
-            <div class="flex flex-wrap gap-3">
-              <button
-                (click)="viewAddress(order)"
-                class="cursor-pointer px-4 py-1.5 text-sm rounded-lg button-shadow text-blue-600 hover:bg-gray-100"
-              >
-                View Address
-              </button>
-              <button
-                (click)="viewProducts(order)"
-                class="cursor-pointer px-4 py-1.5 text-sm rounded-lg button-shadow text-green-600 hover:bg-gray-100"
-              >
-                Products
-              </button>
+      }
+    </div>
+  </div>
+  } @if (showAddress() && selectedOrder()) {
+  <div
+    class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 md:p-8 animate-in fade-in zoom-in duration-200"
+    (click)="closeDetails()"
+  >
+    <div
+      class="bg-white rounded-3xl p-8 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
+          <mat-icon class="text-indigo-500">location_on</mat-icon>
+          Delivery Address
+        </h2>
+        <button (click)="closeDetails()" class="p-2 hover:bg-gray-100 rounded-xl">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="space-y-6">
+        <div class="space-y-4">
+          <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+            <mat-icon class="text-orange-500 mt-1 w-5 h-5 flex-shrink-0">home</mat-icon>
+            <div>
+              <p class="text-lg font-medium text-gray-900">
+                {{ selectedOrder()!.address.addressLine1 }}
+              </p>
+              @if (selectedOrder()!.address.addressLine2) {
+              <p class="text-gray-600 mt-1">{{ selectedOrder()!.address.addressLine2 }}</p>
+              }
             </div>
           </div>
+          <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-200">
+            <div class="flex items-center gap-3">
+              <mat-icon class="text-indigo-500 w-5 h-5 flex-shrink-0">location_city</mat-icon>
+              <p class="text-lg font-semibold text-indigo-900">
+                {{ selectedOrder()!.address.city }}, {{ selectedOrder()!.address.state }} -
+                {{ selectedOrder()!.address.pincode }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  } @if (showProducts() && selectedOrder()) {
+  <div
+    class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 md:p-8 animate-in fade-in zoom-in duration-200"
+    (click)="closeDetails()"
+  >
+    <div
+      class="bg-white rounded-3xl p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
+          <mat-icon class="text-green-500">shopping_bag</mat-icon>
+          Order Products
+        </h2>
+        <button (click)="closeDetails()" class="p-2 hover:bg-gray-100 rounded-xl">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="space-y-4">
+        @for (product of selectedOrder()!.items; track product.orderDetailsId) {
+        <div
+          class="flex items-center gap-4 p-6 border border-gray-200 rounded-2xl hover:bg-gray-50 transition-all"
+        >
+          <div class="w-20 h-20 rounded-2xl flex-shrink-0 overflow-hidden">
+            <img
+              [src]="product.imagePath"
+              [alt]="product.productName"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-bold text-lg text-gray-900 truncate">
+              {{ product.productName }}
+            </h3>
+            <p class="text-sm text-gray-600 mt-1">Quantity: {{ product.quantity }}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-2xl font-bold text-gray-900">
+              ₹{{ product.productPrice.toLocaleString() }}
+            </p>
+            <p class="text-sm text-gray-500">each</p>
+          </div>
+        </div>
         }
       </div>
-    }
+      <div class="mt-6 pt-6 border-t border-gray-200">
+        <div class="flex justify-between items-center">
+          <span class="text-lg font-semibold text-gray-900">Total Amount:</span>
+          <span class="text-2xl font-bold text-blue-600"
+            >₹{{ selectedOrder()!.totalAmount.toLocaleString() }}</span
+          >
+        </div>
+      </div>
+    </div>
   </div>
-
-  @if (showAddress() && selectedOrder()) {
-    <div
-      class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 md:p-8 animate-in fade-in zoom-in duration-200"
-      (click)="closeDetails()"
-    >
-      <div
-        class="bg-white rounded-3xl p-8 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl"
-        (click)="$event.stopPropagation()"
-      >
-        <div class="flex items-center justify-between mb-8">
-          <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
-            <mat-icon class="text-indigo-500">location_on</mat-icon>
-            Delivery Address
-          </h2>
-          <button (click)="closeDetails()" class="p-2 hover:bg-gray-100 rounded-xl">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
-        <div class="space-y-6">
-          <div class="flex items-start gap-4 p-6 bg-indigo-50 rounded-2xl border border-indigo-100">
-            <mat-icon class="text-indigo-500 mt-1 w-6 h-6 flex-shrink-0">person</mat-icon>
-            <div>
-              <p class="text-xl font-bold text-gray-900">{{ selectedOrder()!.address.name }}</p>
-            </div>
-          </div>
-          <div class="space-y-4">
-            <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-              <mat-icon class="text-orange-500 mt-1 w-5 h-5 flex-shrink-0">home</mat-icon>
-              <p class="text-lg font-medium text-gray-900">{{ selectedOrder()!.address.line1 }}</p>
-              @if (selectedOrder()!.address.line2) {
-                <p class="text-gray-600 ml-10">{{ selectedOrder()!.address.line2 }}</p>
-              }
-            </div>
-            <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-200">
-              <div class="flex items-center gap-3">
-                <mat-icon class="text-indigo-500 w-5 h-5 flex-shrink-0">location_city</mat-icon>
-                <p class="text-lg font-semibold text-indigo-900">
-                  {{ selectedOrder()!.address.city }}, {{ selectedOrder()!.address.state }} -
-                  {{ selectedOrder()!.address.pincode }}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  }
-
-  @if (showProducts() && selectedOrder()) {
-    <div
-      class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 md:p-8 animate-in fade-in zoom-in duration-200"
-      (click)="closeDetails()"
-    >
-      <div
-        class="bg-white rounded-3xl p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl"
-        (click)="$event.stopPropagation()"
-      >
-        <div class="flex items-center justify-between mb-8">
-          <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
-            <mat-icon class="text-green-500">shopping_bag</mat-icon>
-            Order Products
-          </h2>
-          <button (click)="closeDetails()" class="p-2 hover:bg-gray-100 rounded-xl">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
-        <div class="space-y-4">
-          @for (product of selectedOrder()!.products; track product.name) {
-            <div
-              class="flex items-center gap-4 p-6 border border-gray-200 rounded-2xl hover:bg-gray-50 transition-all"
-            >
-              <div
-                class="w-20 h-20 bg-gradient-to-br from-indigo-100 to-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0 overflow-hidden"
-              >
-                <mat-icon class="text-3xl text-indigo-500">{{
-                  getProductIcon(product.name)
-                }}</mat-icon>
-              </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="font-bold text-lg text-gray-900 truncate">{{ product.name }}</h3>
-                <p class="text-sm text-gray-600 mt-1">Quantity: {{ product.quantity }}</p>
-              </div>
-              <div class="text-right">
-                <p class="text-2xl font-bold text-gray-900">${{ product.price }}</p>
-                <p class="text-sm text-gray-500">each</p>
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-    </div>
   }
 </div>
