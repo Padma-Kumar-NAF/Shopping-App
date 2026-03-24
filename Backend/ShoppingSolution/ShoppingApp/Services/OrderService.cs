@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ShoppingApp.Contexts;
 using ShoppingApp.Exceptions;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
-using ShoppingApp.Models.DTOs;
 using ShoppingApp.Models.DTOs.Order;
 
 namespace ShoppingApp.Services
@@ -19,6 +17,8 @@ namespace ShoppingApp.Services
         private readonly IRepository<Guid, Address> _addressRepository;
         private readonly IRepository<Guid,Product> _productRepository;
         private readonly IRepository<Guid, OrderDetails> _orderDetailsRepository;
+        private readonly IRepository<Guid, PromoCode> _promoRepository;
+        private readonly IRepository<Guid, Wallet> _walletRepository;
 
         private readonly IUnitOfWork _unitOfWork;
 
@@ -31,6 +31,8 @@ namespace ShoppingApp.Services
             IRepository<Guid, Address> addressRepository,
             IRepository<Guid, Product> productRepository,
             IRepository<Guid, OrderDetails> orderDetailsRepository,
+            IRepository<Guid, PromoCode> promoRepository,
+            IRepository<Guid, Wallet> walletRepository,
             IUnitOfWork unitOfWork)
         {
             _repository = repository;
@@ -42,6 +44,8 @@ namespace ShoppingApp.Services
             _addressRepository = addressRepository;
             _productRepository = productRepository;
             _orderDetailsRepository = orderDetailsRepository;
+            _promoRepository = promoRepository;
+            _walletRepository = walletRepository;
         }
 
         public async Task<ApiResponse<CancelOrderResponseDTO>> CancelOrder(Guid userId, Guid orderId)
@@ -92,16 +96,6 @@ namespace ShoppingApp.Services
 
                 order.Status = "Cancelled";
                 await _repository.UpdateAsync(order.OrderId, order);
-
-                //var refund = new Refund
-                //{
-                //    UserId = userId,
-                //    OrderId = order.OrderId,
-                //    PaymentId = order.Payment!.PaymentId,
-                //    RefundAmount = order.TotalAmount
-                //};
-
-                //await _refundRepository.AddAsync(refund);
 
                 await _unitOfWork.CommitAsync();
 
@@ -171,7 +165,7 @@ namespace ShoppingApp.Services
                     {
                         OrderId = o.OrderId,
                         Status = o.Status,
-                        DeliveryDate = o.DeliveryDate!.Value,
+                        DeliveryDate = o.DeliveryDate!,
 
                         TotalProductsCount = o.OrderDetails!.Count,
                         TotalAmount = o.OrderDetails.Sum(x => x.Quantity * x.ProductPrice),
@@ -245,46 +239,48 @@ namespace ShoppingApp.Services
                 var query = _repository.GetQueryable().Where(order => order.UserId == userId).OrderByDescending(o => o.CreatedAt);
 
                 var orders = await query
-                .Skip((request.pagination.PageNumber - 1) * request.pagination.PageSize)
-                .Take(request.pagination.PageSize)
-                .Select(o => new OrderDetailsResponseDTO
-                {
-                    OrderId = o.OrderId,
-                    Status = o.Status,
-                    TotalProductsCount = o.TotalProductsCount,
-                    TotalAmount = o.TotalAmount,
-                    DeliveryDate = (DateTime)o.DeliveryDate!,
-
-                    Address = new AddressDTO
+                    .Skip((request.pagination.PageNumber - 1) * request.pagination.PageSize)
+                    .Take(request.pagination.PageSize)
+                    .Select(o => new OrderDetailsResponseDTO
                     {
-                        AddressId = o.Address!.AddressId,
-                        AddressLine1 = o.Address.AddressLine1,
-                        AddressLine2 = o.Address.AddressLine2,
-                        State = o.Address.State,
-                        City = o.Address.City,
-                        Pincode = o.Address.Pincode
-                    },
+                        OrderId = o.OrderId,
+                        Status = o.Status,
+                        TotalProductsCount = o.TotalProductsCount,
+                        TotalAmount = o.TotalAmount,
+                        DeliveryDate = (DateTime)o.DeliveryDate!,
 
-                    Payment = new PaymentDTO
-                    {
-                        PaymentId = o.Payment!.PaymentId,
-                        PaymentType = o.Payment.PaymentType
-                    },
+                        IsRefunded = _refundRepository.GetQueryable().Where(r => r.OrderId == o.OrderId).FirstOrDefault() != null ? true : false,
 
-                    Items = o.OrderDetails!
-                    .Select(od => new OrderDetailsDTO
-                    {
-                        OrderDetailsId = od.OrderDetailsId,
-                        ProductId = od.ProductId,
-                        ProductName = od.ProductName,
-                        Quantity = od.Quantity,
-                        ProductPrice = od.ProductPrice,
-                        ImagePath = od.Product!.ImagePath
+                        Address = new AddressDTO
+                        {
+                            AddressId = o.Address!.AddressId,
+                            AddressLine1 = o.Address.AddressLine1,
+                            AddressLine2 = o.Address.AddressLine2,
+                            State = o.Address.State,
+                            City = o.Address.City,
+                            Pincode = o.Address.Pincode
+                        },
+
+                        Payment = new PaymentDTO
+                        {
+                            PaymentId = o.Payment!.PaymentId,
+                            PaymentType = o.Payment.PaymentType
+                        },
+
+                        Items = o.OrderDetails!
+                        .Select(od => new OrderDetailsDTO
+                        {
+                            OrderDetailsId = od.OrderDetailsId,
+                            ProductId = od.ProductId,
+                            ProductName = od.ProductName,
+                            Quantity = od.Quantity,
+                            ProductPrice = od.ProductPrice,
+                            ImagePath = od.Product!.ImagePath
+                        })
+                        .OrderBy(od => od.ProductName)
+                        .ToList()
                     })
-                    .OrderBy(od => od.ProductName)
-                    .ToList()
-                })
-                .ToListAsync();
+                    .ToListAsync();
 
                 return new ApiResponse<GetUserOrderDetailsResponseDTO>
                 {
@@ -313,28 +309,29 @@ namespace ShoppingApp.Services
 
         public async Task<ApiResponse<OrderRefundResponseDTO>> OrderRefund(Guid userId, OrderRefundRequestDTO request)
         {
-            if(request.TotalAmount <= 0)
+            if (request.TotalAmount <= 0)
             {
-                throw new AppException("Total amount is must greater then 0");
+                throw new AppException("Total amount must be greater than 0");
             }
+
             if (await IsUserNotFound(userId))
             {
                 throw new AppException("User not found", 404);
             }
+
             await _unitOfWork.BeginTransactionAsync();
+
             try
             {
-                var order = await _repository.GetAsync(request.OrderId);
-                if(order == null)
-                {
-                    throw new AppException("Order not found",404);
-                }
+                var order = await _repository.GetAsync(request.OrderId) ?? throw new AppException("Order not found", 404);
 
-                var payment = await _paymentRepository.GetAsync(request.PaymentId);
+                var payment = await _paymentRepository.GetAsync(request.PaymentId) ?? throw new AppException("Payment not found", 404);
 
-                if (payment == null)
+                var existingRefund = await _refundRepository.GetQueryable().FirstOrDefaultAsync(r => r.OrderId == request.OrderId);
+
+                if (existingRefund != null)
                 {
-                    throw new AppException("Payment not found", 404);
+                    throw new AppException("Refund already processed", 400);
                 }
 
                 var refund = new Refund
@@ -347,6 +344,19 @@ namespace ShoppingApp.Services
 
                 await _refundRepository.AddAsync(refund);
 
+                var wallet = await _walletRepository
+                    .GetQueryable()
+                    .FirstOrDefaultAsync(w => w.UserId == userId);
+
+                if (wallet == null)
+                {
+                    throw new AppException("Wallet not found", 404);
+                }
+
+                wallet.WalletAmount += (int)request.TotalAmount;
+
+                await _walletRepository.UpdateAsync(wallet.WalletId, wallet);
+
                 await _unitOfWork.CommitAsync();
 
                 return new ApiResponse<OrderRefundResponseDTO>()
@@ -357,7 +367,7 @@ namespace ShoppingApp.Services
                         IsRefund = true
                     },
                     Action = "UpdateRefund",
-                    Message = "Refund Successful"
+                    Message = "Refund successful and wallet credited"
                 };
             }
             catch (AppException)
@@ -375,95 +385,82 @@ namespace ShoppingApp.Services
                 await _unitOfWork.RollbackAsync();
                 throw new AppException("Something went wrong while refunding", ex, 500);
             }
-
         }
-
-        public async Task<ApiResponse<PlaceOrderResponseDTO>> PlaceOrder(Guid userId,PlaceOrderRequestDTO request)
+        public async Task<ApiResponse<PlaceOrderResponseDTO>> PlaceOrder(Guid userId, PlaceOrderRequestDTO request)
         {
             await _unitOfWork.BeginTransactionAsync();
+
             try
             {
                 if (await IsUserNotFound(userId))
-                {
                     throw new AppException("User not found", 404);
-                }
 
-                var Address = await _addressRepository.GetAsync(request.AddressId);
+                var address = await _addressRepository.GetAsync(request.AddressId)
+                    ?? throw new AppException("Address not found", 404);
 
-                if (Address == null)
-                {
-                    throw new AppException($"{nameof(Address)} not found", 404);    
-                }
+                var product = await _productRepository.GetAsync(request.OrderProductdDetails.ProductId)
+                    ?? throw new AppException("Product not found", 404);
 
-                var Product = await _productRepository.GetAsync(request.OrderProductdDetails.ProductId);
-
-                if (Product == null)
-                {
-                    throw new AppException("Product not found", 404);
-                }
-                var stock = await _stockRepository.FirstOrDefaultAsync(s => s.ProductId == request.OrderProductdDetails.ProductId);
-
-                if (stock == null)
-                    throw new AppException($"Stock not found for product {request.OrderProductdDetails.ProductId}",404);
+                var stock = await _stockRepository.FirstOrDefaultAsync(s => s.ProductId == product.ProductId)
+                    ?? throw new AppException("Stock not found", 404);
 
                 if (stock.Quantity < request.OrderProductdDetails.Quantity)
-                    throw new AppException($"Insufficient stock for product {request.OrderProductdDetails.ProductName}",404);
+                    throw new AppException("Insufficient stock", 400);
 
-                var order = new Order
+                int discountPercentage = 0;
+                int discountAmount = 0;
+                Guid? promoCodeId = null;
+
+                if (!string.IsNullOrWhiteSpace(request.PromoCode))
                 {
-                    UserId = userId,
-                    Status = "Not Delivered",
-                    TotalAmount = request.TotalAmount,
-                    TotalProductsCount = request.TotalProductsCount,
-                    AddressId = request.AddressId,
-                    DeliveryDate = DateTime.Now.AddDays(2),
-                };
+                    var promo = await _promoRepository.GetQueryable()
+                        .FirstOrDefaultAsync(p => p.PromoCodeName == request.PromoCode.Trim().ToUpper());
 
+                    if (promo == null)
+                        throw new AppException("Invalid promo code", 400);
+
+                    var now = DateTime.UtcNow;
+
+                    if (now < promo.FromDate)
+                        throw new AppException("Promo not active");
+
+                    if (now > promo.ToDate)
+                        throw new AppException("Promo expired");
+
+                    discountPercentage = promo.DiscountPercentage;
+                    discountAmount = (int)((request.TotalAmount * discountPercentage) / 100);
+                    promoCodeId = promo.PromoCodeId;
+                }
+
+                var finalAmount = request.TotalAmount - discountAmount;
+
+                if (request.PaymentType.ToLower() == "wallet")
+                {
+                    await HandleWalletPayment(userId, finalAmount);
+                }
+
+                var order = CreateOrder(userId, request, discountPercentage, discountAmount, finalAmount, promoCodeId);
                 await _repository.AddAsync(order);
 
-                stock.Quantity -= request.OrderProductdDetails.Quantity;
+                var orderDetails = await CreateOrderDetailsAndUpdateStock(request, stock, order);
 
-                var orderDetails = new OrderDetails()
-                {
-                    OrderId = order.OrderId,
-                    ProductId = request.OrderProductdDetails.ProductId,
-                    ProductName = request.OrderProductdDetails.ProductName,
-                    ProductPrice = request.OrderProductdDetails.ProductPrice,
-                    Quantity = request.OrderProductdDetails.Quantity
-                };
-
-                await _orderDetailsRepository.AddAsync(orderDetails);
-
-                var payment = new Payment
-                {
-                    UserId = userId,
-                    OrderId = order.OrderId,
-                    TotalAmount = request.TotalAmount,
-                    PaymentType = request.PaymentType
-                };
-
-
-                await _stockRepository.UpdateAsync(stock.StockId, stock);
-
-                await _paymentRepository.AddAsync(payment);
+                var payment = await CreatePayment(userId, order, finalAmount, request.PaymentType);
 
                 await _unitOfWork.CommitAsync();
 
-                PlaceOrderResponseDTO response = new PlaceOrderResponseDTO()
-                {
-                    IsSuccess = true,
-                    OrderId = order.OrderId,
-                    PaymentId = payment.PaymentId,
-                    DeliveryDate = (DateTime)order.DeliveryDate,
-                    OrderDetailsId = orderDetails.OrderDetailsId,
-                };
-
-                return new ApiResponse<PlaceOrderResponseDTO>()
+                return new ApiResponse<PlaceOrderResponseDTO>
                 {
                     StatusCode = 200,
-                    Data = response,
-                    Action = "OrderedConfirmed",
-                    Message = "Ordered Successfully"
+                    Data = new PlaceOrderResponseDTO
+                    {
+                        IsSuccess = true,
+                        OrderId = order.OrderId,
+                        PaymentId = payment.PaymentId,
+                        DeliveryDate = (DateTime)order.DeliveryDate,
+                        OrderDetailsId = orderDetails.OrderDetailsId,
+                    },
+                    Message = "Order placed successfully",
+                    Action = "OrderedConfirmed"
                 };
             }
             catch (AppException)
@@ -471,17 +468,287 @@ namespace ShoppingApp.Services
                 await _unitOfWork.RollbackAsync();
                 throw;
             }
-            catch (DbUpdateException ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Error while Placing the order", ex, 500);
-            }
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackAsync();
-                throw new AppException("Something went wrong while placing the user order", ex, 500);
+                throw new AppException("Error while placing order", ex, 500);
             }
         }
+
+        private Order CreateOrder(Guid userId, PlaceOrderRequestDTO request, int discountPercentage, int discountAmount, decimal finalAmount, Guid? promoCodeId)
+        {
+            return new Order
+            {
+                UserId = userId,
+                Status = "Not Delivered",
+                TotalAmount = request.TotalAmount,
+                TotalProductsCount = request.TotalProductsCount,
+                AddressId = request.AddressId,
+                DeliveryDate = DateTime.UtcNow.AddDays(2),
+
+                DiscountPercentage = discountPercentage,
+                DiscountAmount = discountAmount,
+                OrderTotalAmount = (int)finalAmount,
+                PromoCodeId = promoCodeId
+            };
+        }
+
+        private async Task<Payment> CreatePayment(Guid userId, Order order, decimal finalAmount, string paymentType)
+        {
+            var payment = new Payment
+            {
+                UserId = userId,
+                OrderId = order.OrderId,
+                TotalAmount = finalAmount,
+                PaymentType = paymentType
+            };
+
+            await _paymentRepository.AddAsync(payment);
+            return payment;
+        }
+
+        private async Task HandleWalletPayment(Guid userId, decimal finalAmount)
+        {
+            var wallet = await _walletRepository
+                .GetQueryable()
+                .FirstOrDefaultAsync(w => w.UserId == userId);
+
+            if (wallet == null)
+                throw new AppException("Wallet not found", 404);
+
+            if (wallet.WalletAmount < finalAmount)
+                throw new AppException("Insufficient wallet balance", 400);
+
+            wallet.WalletAmount -= (int)finalAmount;
+
+            await _walletRepository.UpdateAsync(wallet.WalletId, wallet);
+        }
+
+        private async Task<OrderDetails> CreateOrderDetailsAndUpdateStock(PlaceOrderRequestDTO request, Stock stock, Order order)
+        {
+            stock.Quantity -= request.OrderProductdDetails.Quantity;
+            await _stockRepository.UpdateAsync(stock.StockId, stock);
+
+            var orderDetails = new OrderDetails
+            {
+                OrderId = order.OrderId,
+                ProductId = request.OrderProductdDetails.ProductId,
+                ProductName = request.OrderProductdDetails.ProductName,
+                ProductPrice = request.OrderProductdDetails.ProductPrice,
+                Quantity = request.OrderProductdDetails.Quantity
+            };
+
+            await _orderDetailsRepository.AddAsync(orderDetails);
+
+            return orderDetails;
+        }
+
+        //public async Task<ApiResponse<PlaceOrderResponseDTO>> PlaceOrder(Guid userId, PlaceOrderRequestDTO request)
+        //{
+        //    await _unitOfWork.BeginTransactionAsync();
+
+        //    try
+        //    {
+        //        if (await IsUserNotFound(userId))
+        //            throw new AppException("User not found", 404);
+
+        //        var address = await _addressRepository.GetAsync(request.AddressId);
+        //        if (address == null)
+        //            throw new AppException("Address not found", 404);
+
+        //        var product = await _productRepository.GetAsync(request.OrderProductdDetails.ProductId);
+        //        if (product == null)
+        //            throw new AppException("Product not found", 404);
+
+        //        var stock = await _stockRepository.FirstOrDefaultAsync(s => s.ProductId == product.ProductId);
+        //        if (stock == null)
+        //            throw new AppException("Stock not found", 404);
+
+        //        if (stock.Quantity < request.OrderProductdDetails.Quantity)
+        //            throw new AppException("Insufficient stock", 400);
+
+        //        int discountPercentage = 0;
+        //        int discountAmount = 0;
+        //        Guid? promoCodeId = null;
+
+        //        if (!string.IsNullOrWhiteSpace(request.PromoCode))
+        //        {
+        //            var code = request.PromoCode.Trim().ToUpper();
+
+        //            var promo = await _promoRepository
+        //                .GetQueryable()
+        //                .FirstOrDefaultAsync(p => p.PromoCodeName == code);
+
+        //            if (promo == null)
+        //                throw new AppException("Invalid promo code", 400);
+
+        //            var now = DateTime.UtcNow;
+
+        //            if (now < promo.FromDate)
+        //                throw new AppException("Promo code not active yet", 400);
+
+        //            if (now > promo.ToDate)
+        //                throw new AppException("Promo code expired", 400);
+
+        //            discountPercentage = promo.DiscountPercentage;
+        //            discountAmount = (int)((request.TotalAmount * discountPercentage) / 100);
+        //            promoCodeId = promo.PromoCodeId;
+        //        }
+
+        //        var finalAmount = request.TotalAmount - discountAmount;
+
+        //        if (request.PaymentType.ToLower() == "wallet")
+        //        {
+        //            var wallet = await _walletRepository
+        //                .GetQueryable()
+        //                .FirstOrDefaultAsync(w => w.UserId == userId);
+
+        //            if (wallet == null)
+        //                throw new AppException("Wallet not found", 404);
+
+        //            if (wallet.WalletAmount < finalAmount)
+        //                throw new AppException("Insufficient wallet balance", 400);
+
+        //            wallet.WalletAmount = (int)(wallet.WalletAmount - finalAmount);
+
+        //            await _walletRepository.UpdateAsync(wallet.WalletId, wallet);
+
+        //            var order = new Order
+        //            {
+        //                UserId = userId,
+        //                Status = "Not Delivered",
+        //                TotalAmount = request.TotalAmount,
+        //                TotalProductsCount = request.TotalProductsCount,
+        //                AddressId = request.AddressId,
+        //                DeliveryDate = DateTime.UtcNow.AddDays(2),
+
+        //                // Promo fields 
+        //                DiscountPercentage = discountPercentage,
+        //                DiscountAmount = discountAmount,
+        //                OrderTotalAmount = (int)finalAmount,
+        //                PromoCodeId = promoCodeId
+        //            };
+
+        //            await _repository.AddAsync(order);
+
+        //            stock.Quantity -= request.OrderProductdDetails.Quantity;
+        //            await _stockRepository.UpdateAsync(stock.StockId, stock);
+
+        //            var orderDetails = new OrderDetails
+        //            {
+        //                OrderId = order.OrderId,
+        //                ProductId = request.OrderProductdDetails.ProductId,
+        //                ProductName = request.OrderProductdDetails.ProductName,
+        //                ProductPrice = request.OrderProductdDetails.ProductPrice,
+        //                Quantity = request.OrderProductdDetails.Quantity
+        //            };
+
+        //            await _orderDetailsRepository.AddAsync(orderDetails);
+
+        //            var payment = new Payment
+        //            {
+        //                UserId = userId,
+        //                OrderId = order.OrderId,
+        //                TotalAmount = finalAmount,
+        //                PaymentType = request.PaymentType
+        //            };
+
+        //            await _paymentRepository.AddAsync(payment);
+
+        //            await _unitOfWork.CommitAsync();
+
+        //            return new ApiResponse<PlaceOrderResponseDTO>()
+        //            {
+        //                StatusCode = 200,
+        //                Data = new PlaceOrderResponseDTO
+        //                {
+        //                    IsSuccess = true,
+        //                    OrderId = order.OrderId,
+        //                    PaymentId = payment.PaymentId,
+        //                    DeliveryDate = (DateTime)order.DeliveryDate,
+        //                    OrderDetailsId = orderDetails.OrderDetailsId,
+        //                },
+        //                Message = "Order placed successfully",
+        //                Action = "OrderedConfirmed"
+        //            };
+        //        }
+        //        else
+        //        {
+        //            var order = new Order
+        //            {
+        //                UserId = userId,
+        //                Status = "Not Delivered",
+        //                TotalAmount = request.TotalAmount,
+        //                TotalProductsCount = request.TotalProductsCount,
+        //                AddressId = request.AddressId,
+        //                DeliveryDate = DateTime.UtcNow.AddDays(2),
+
+        //                DiscountPercentage = discountPercentage,
+        //                DiscountAmount = discountAmount,
+        //                OrderTotalAmount = (int)finalAmount,
+        //                PromoCodeId = promoCodeId
+        //            };
+
+        //            await _repository.AddAsync(order);
+
+        //            stock.Quantity -= request.OrderProductdDetails.Quantity;
+        //            await _stockRepository.UpdateAsync(stock.StockId, stock);
+
+        //            var orderDetails = new OrderDetails
+        //            {
+        //                OrderId = order.OrderId,
+        //                ProductId = request.OrderProductdDetails.ProductId,
+        //                ProductName = request.OrderProductdDetails.ProductName,
+        //                ProductPrice = request.OrderProductdDetails.ProductPrice,
+        //                Quantity = request.OrderProductdDetails.Quantity
+        //            };
+
+        //            await _orderDetailsRepository.AddAsync(orderDetails);
+
+        //            var payment = new Payment
+        //            {
+        //                UserId = userId,
+        //                OrderId = order.OrderId,
+        //                TotalAmount = finalAmount,
+        //                PaymentType = request.PaymentType
+        //            };
+
+        //            await _paymentRepository.AddAsync(payment);
+
+        //            await _unitOfWork.CommitAsync();
+
+        //            return new ApiResponse<PlaceOrderResponseDTO>()
+        //            {
+        //                StatusCode = 200,
+        //                Data = new PlaceOrderResponseDTO
+        //                {
+        //                    IsSuccess = true,
+        //                    OrderId = order.OrderId,
+        //                    PaymentId = payment.PaymentId,
+        //                    DeliveryDate = (DateTime)order.DeliveryDate,
+        //                    OrderDetailsId = orderDetails.OrderDetailsId,
+        //                },
+        //                Message = "Order placed successfully",
+        //                Action = "OrderedConfirmed"
+        //            };
+        //        }
+        //    }
+        //    catch(AppException)
+        //    {
+        //        await _unitOfWork.RollbackAsync();
+        //        throw;
+        //    }
+        //    catch(DbUpdateException ex)
+        //    {
+        //        await _unitOfWork.RollbackAsync();
+        //        throw new AppException("Error while placing order", ex, 500);
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        await _unitOfWork.RollbackAsync();
+        //        throw new AppException("Error while placing order", ex, 500);
+        //    }
+        //}
 
         public async Task<ApiResponse<UpdateOrderResponseDTO>> UpdateOrder(Guid userId,Guid OrderId, string Status)
         {

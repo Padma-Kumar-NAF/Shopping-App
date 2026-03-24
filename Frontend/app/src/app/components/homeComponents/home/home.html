@@ -1,10 +1,9 @@
-<div class="pt-16">
+<div>
 
   <!-- ── Image Carousel (pure CSS auto-slide) ── -->
   <section class="py-4 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="carousel-wrapper shadow-xl">
-        <!-- Track contains all slides TWICE for seamless loop — no JS needed -->
         <div class="carousel-track">
           @for (slide of carouselSlides; track slide.image) {
           <div class="carousel-slide">
@@ -15,7 +14,6 @@
             </div>
           </div>
           }
-          <!-- Duplicate set for seamless wrap -->
           @for (slide of carouselSlides; track slide.title) {
           <div class="carousel-slide">
             <img [src]="slide.image" [alt]="slide.title" loading="lazy" />
@@ -30,120 +28,68 @@
     </div>
   </section>
 
-  @if (selectedProduct) {
-  <section class="bg-gradient-to-r from-blue-50 to-indigo-50 py-8 border-b-4 border-blue-500">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-bold text-gray-800">Selected Product</h2>
-        <button
-          (click)="clearSelection()"
-          class="text-gray-600 hover:text-gray-800 transition-colors"
-        >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
-
-      <div
-        class="bg-white rounded-xl shadow-2xl overflow-hidden border-2 border-blue-300 animate-fade-in"
-      >
-        <div class="grid md:grid-cols-2 gap-6 p-6">
-          <!-- Product Image -->
-          <div class="relative">
-            <img
-              [src]="selectedProduct.image"
-              [alt]="selectedProduct.name"
-              class="w-full h-80 object-cover rounded-lg shadow-lg"
-            />
-            <div
-              class="absolute top-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-full font-bold"
-            >
-              Selected
-            </div>
-          </div>
-
-          <div class="flex flex-col justify-center">
-            <h3 class="text-3xl font-bold text-gray-900 mb-4">
-              {{ selectedProduct.name }}
-            </h3>
-
-            <div class="mb-6">
-              <span class="text-gray-600 text-lg">Price:</span>
-              <p class="text-4xl font-bold text-blue-600 mt-2">₹{{ selectedProduct.price }}</p>
-            </div>
-
-            <div class="mb-6">
-              <span class="text-gray-600 text-lg">Product ID:</span>
-              <p class="text-xl font-semibold text-gray-800 mt-1">#{{ selectedProduct.id }}</p>
-            </div>
-
-            <div class="flex gap-4 mt-4">
-              <button
-                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg"
-              >
-                Add to Cart
-              </button>
-              <button
-                class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-lg"
-              >
-                Buy Now
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  }
-
+  <!-- ── Categories ── -->
   <section class="bg-gray-50 py-6">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-2xl font-semibold mb-4 text-gray-800">Shop by Category</h2>
       <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-        @for (category of categories; track category) {
+        @for (category of categories(); track category.categoryId) {
         <button
           (click)="onCategoryClick(category)"
           class="flex-shrink-0 px-6 py-3 bg-white border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 whitespace-nowrap font-medium text-gray-700 hover:text-blue-600"
         >
-          {{ category }}
+          {{ category.categoryName }}
         </button>
         }
       </div>
     </div>
   </section>
 
+  <!-- ── Products ── -->
   <section class="py-8 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-2xl font-semibold mb-6 text-gray-800">Featured Products</h2>
 
-      @if (products.length) {
+      @if (isLoading()) {
+      <div class="flex justify-center items-center py-16">
+        <div class="flex flex-col items-center gap-4">
+          <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <p class="text-gray-500 text-lg">Loading products...</p>
+        </div>
+      </div>
+      } @else if (error()) {
+      <div class="flex flex-col items-center py-16 gap-4">
+        <p class="text-red-500 text-lg">{{ error() }}</p>
+        <button
+          (click)="loadData()"
+          class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+        >
+          Retry
+        </button>
+      </div>
+      } @else if (products().length) {
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 sm:gap-6">
-        @for (product of products; track product.id) {
+        @for (product of products(); track product.productId) {
         <div
           (click)="onProductClick(product)"
           class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer group"
         >
           <div class="relative overflow-hidden">
             <img
-              [src]="product.image"
-              [alt]="product.name"
+              [src]="product.imagePath"
+              [alt]="product.productName"
               class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
             />
           </div>
-
           <div class="p-4">
+            <p class="text-xs text-blue-500 font-medium mb-1">{{ product.categoryName }}</p>
             <h3 class="font-semibold text-lg text-gray-800 mb-2 line-clamp-1">
-              {{ product.name }}
+              {{ product.productName }}
             </h3>
-
-            <p class="text-blue-600 font-bold text-xl mb-3">₹{{ product.price }}</p>
-
+            <p class="text-blue-600 font-bold text-xl mb-1">₹{{ product.price }}</p>
+            @if (getAverageRating(product); as rating) {
+            <p class="text-yellow-500 text-sm mb-2">★ {{ rating }} ({{ product.review.length }})</p>
+            }
             <button
               class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
             >
@@ -160,5 +106,6 @@
       }
     </div>
   </section>
+
 </div>
 <app-footer></app-footer>

@@ -10,6 +10,7 @@ import {
   UpdateAddressResponseDTO,
 } from '../../models/users/address.model';
 import { PaginationModel } from '../../models/users/pagination.model';
+import { ApiResponse } from '../../models/users/apiResponse.model';
 
 @Injectable({
   providedIn: 'root',
@@ -21,24 +22,24 @@ export class AddressApiService {
     console.log("Address Service Constructorrrrrrrrrrrrrrrr")
   }
 
-  GetUserAddresses(pagination: PaginationModel): Observable<AddressModel> {
+  GetUserAddresses(pagination: PaginationModel): Observable<ApiResponse<AddressModel>> {
     const body = { Pagination: pagination };
-    return this.Http.post<AddressModel>(`${this.baseUrl}/GetUserAddress`, body);
+    return this.Http.post<ApiResponse<AddressModel>>(`${this.baseUrl}/get-address`, body);
   }
 
-  AddNewAddress(newAddress: AddressDTO): Observable<NewAddressResponseDTO> {
-    return this.Http.put<NewAddressResponseDTO>(`${this.baseUrl}/CreateAddress`, newAddress);
+  AddNewAddress(newAddress: AddressDTO): Observable<ApiResponse<NewAddressResponseDTO>> {
+    return this.Http.put<ApiResponse<NewAddressResponseDTO>>(`${this.baseUrl}/create-address`, newAddress);
   }
 
-  DeleteAddress(deleteAddress: DeleteAddressRequestDTO): Observable<DeleteAddressResponseDTO> {
-    return this.Http.delete<DeleteAddressResponseDTO>(`${this.baseUrl}/DeleteUserAddress`, {
+  DeleteAddress(deleteAddress: DeleteAddressRequestDTO): Observable<ApiResponse<DeleteAddressResponseDTO>> {
+    return this.Http.delete<ApiResponse<DeleteAddressResponseDTO>>(`${this.baseUrl}/delete-address`, {
       body: deleteAddress,
     });
   }
 
-  UpdateAddress(updatedAddress: AddressDTO): Observable<UpdateAddressResponseDTO> {
-    return this.Http.post<UpdateAddressResponseDTO>(
-      `${this.baseUrl}/EditUserAddress`,
+  UpdateAddress(updatedAddress: AddressDTO): Observable<ApiResponse<UpdateAddressResponseDTO>> {
+    return this.Http.post<ApiResponse<UpdateAddressResponseDTO>>(
+      `${this.baseUrl}/edit-address`,
       updatedAddress,
     );
   }

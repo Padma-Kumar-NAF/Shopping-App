@@ -169,6 +169,94 @@ namespace ShoppingApp.Services
             }
         }
 
+        public async Task<ApiResponse<GetAllProductsWithFilterResponseDTO>> GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request)
+        {
+            try
+            {
+                if (request.LowPrice > request.HighPrice)
+                {
+                    throw new AppException("Low price cannot be greater than high price", 400);
+                }
+
+                var query = _productRepository
+                    .GetQueryable()
+                    .AsNoTracking()
+                    .Where(p => p.Price >= request.LowPrice && p.Price <= request.HighPrice);
+
+                if (request.CategoryId.HasValue)
+                {
+                    query = query.Where(p => p.CategoryId == request.CategoryId.Value);
+                }
+
+                var totalCount = await query.CountAsync();
+
+                if (totalCount == 0)
+                {
+                    return new ApiResponse<GetAllProductsWithFilterResponseDTO>()
+                    {
+                        Data = new GetAllProductsWithFilterResponseDTO(),
+                        StatusCode = 200,
+                        Action = "ShowEmptyPage",
+                        Message = "No products found for the selected price range"
+                    };
+                }
+
+                query = query.OrderBy(p => p.Price);
+
+                var pageNumber = request.pagination.PageNumber;
+                var pageSize = request.pagination.PageSize;
+
+                var products = await query
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(p => new ProductDetails
+                    {
+                        ProductId = p.ProductId,
+                        CategoryId = p.CategoryId,
+                        ProductName = p.Name,
+                        ImagePath = p.ImagePath,
+                        Description = p.Description,
+                        CategoryName = p.Category!.CategoryName,
+                        Price = p.Price,
+                        StockId = p.Stock!.StockId,
+                        Quantity = p.Stock.Quantity,
+                        Review = p.Reviews != null
+                            ? p.Reviews.Select(r => new ReviewDTO
+                            {
+                                Summary = r.Summary,
+                                ReviewPoints = r.ReviewPoints
+                            }).ToList()
+                            : new List<ReviewDTO>()
+                    })
+                    .ToListAsync();
+
+                var response = new GetAllProductsWithFilterResponseDTO
+                {
+                    ProductList = products
+                };
+
+                return new ApiResponse<GetAllProductsWithFilterResponseDTO>()
+                {
+                    Data = response,
+                    StatusCode = 200,
+                    Message = "Filtered products fetched successfully",
+                    Action = "ShowProducts"
+                };
+            }
+            catch (AppException)
+            {
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while filtering products", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while filtering products", ex, 500);
+            }
+        }
+
         public async Task<ApiResponse<SearchProductByIdResponseDTO>> SearchProductById(SearchProductByIdRequestDTO request)
         {
             try

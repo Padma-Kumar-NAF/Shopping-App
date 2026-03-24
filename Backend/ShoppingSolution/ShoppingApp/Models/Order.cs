@@ -19,9 +19,19 @@ namespace ShoppingApp.Models
         [Required]
         public Guid AddressId { get; set; }
         [Required]
-        public DateTime? DeliveryDate { get; set; }
+        public DateTime DeliveryDate { get; set; }
+        //------------------------------------
+        [Required]
+        public int DiscountPercentage { get; set; } = 0;
+        [Required]
+        public Guid? PromoCodeId {  get; set; }
+        [Required]
+        public int OrderTotalAmount { get; set; } = 0;
+        [Required]
+        public int DiscountAmount { get; set; } = 0;
 
         // Navigation
+        public PromoCode? PromoCode { get; set; }
         public Address? Address { get; set; } // many-to-one
         public User? User { get; set; } // one to many
         public Payment? Payment { get; set; } // one to one 

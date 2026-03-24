@@ -65,6 +65,7 @@ namespace ShoppingApp.Services
                     Email = email,
                     Password = Convert.ToBase64String(hash),
                     SaltValue = Convert.ToBase64String(salt),
+                    Active = true,
                     Role = "user"
                 };
 
@@ -138,11 +139,16 @@ namespace ShoppingApp.Services
                     throw new AppException("Email not found",404);
                 }
 
-                var user = await _userRepository.GetQueryable()
-                    .FirstOrDefaultAsync(u => u.Email == email);
+                var user = await _userRepository.GetQueryable().FirstOrDefaultAsync(u => u.Email == email);
+
                 if (user == null)
                 {
                     throw new AppException("Invalid email", 400);
+                }
+
+                if(!user.Active)
+                {
+                    throw new AppException("User is not activated");
                 }
 
                 bool isValid = await _passwordService.VerifyPasswordAsync(request.Password,user.Password,user.SaltValue);
@@ -217,6 +223,7 @@ namespace ShoppingApp.Services
                         AddressLine2 = u.UserDetails.AddressLine2,
                         State = u.UserDetails.State,
                         City = u.UserDetails.City,
+                        ActiveStatus = u.Active,
                         Pincode = u.UserDetails.Pincode
                     })
                     .ToListAsync();
@@ -460,6 +467,118 @@ namespace ShoppingApp.Services
             {
                 await _unitOfWork.RollbackAsync();
                 throw new AppException("Something went wrong while updating profile", ex, 500);
+            }
+        }
+
+        public async Task<ApiResponse<DeleteUserResponseDTO>> DeactivateUser(Guid UserId, Guid DeleteUserId)
+        {
+            var admin = await _userRepository.GetAsync(UserId);
+            if (admin == null || admin.Role != "admin")
+            {
+                throw new AppException("Access denied",401);
+            }
+
+            try
+            {
+                var user = await _userRepository.GetAsync(DeleteUserId);
+                if(user  == null)
+                {
+                    throw new AppException("User not found",404);
+                }
+                user.Active = false;
+                return new ApiResponse<DeleteUserResponseDTO>()
+                {
+                    Data = new DeleteUserResponseDTO()
+                    {
+                        UnActivated = true
+                    },
+                    Message = "User deactivated successfully",
+                    Action = "De-activateUser",
+                    StatusCode = 200
+                };
+            }
+            catch (AppException)
+            {
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while deactivating user", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while deactivating user", ex, 500);
+            }
+        }
+
+        public async Task<ApiResponse<ChangeUserRoleResponseDTO>> ChangeUserRole(Guid adminId, Guid userId, string role)
+        {
+            try
+            {
+                var admin = await _userRepository.GetAsync(adminId);
+                if (admin == null || admin.Role.ToLower() != "admin")
+                {
+                    throw new AppException("Access denied", 401);
+                }
+
+                var user = await _userRepository.GetAsync(userId);
+                if (user == null)
+                {
+                    throw new AppException("User not found", 404);
+                }
+
+                var validRoles = new List<string> { "admin", "user" };
+
+                if (!validRoles.Contains(role.ToLower()))
+                {
+                    throw new AppException("Invalid role", 400);
+                }
+
+                if (user.Role.ToLower() == role.ToLower())
+                {
+                    return new ApiResponse<ChangeUserRoleResponseDTO>()
+                    {
+                        Data = new ChangeUserRoleResponseDTO
+                        {
+                            IsChanged = false
+                        },
+                        StatusCode = 200,
+                        Message = "User already has this role"
+                    };
+                }
+
+                user.Role = role.ToLower();
+
+                await _unitOfWork.BeginTransactionAsync();
+
+                await _userRepository.UpdateAsync(user.UserId, user);
+
+                await _unitOfWork.CommitAsync();
+
+                return new ApiResponse<ChangeUserRoleResponseDTO>()
+                {
+                    Data = new ChangeUserRoleResponseDTO
+                    {
+                        IsChanged = true
+                    },
+                    StatusCode = 200,
+                    Message = "User role updated successfully"
+                };
+            }
+            catch (AppException)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Error while changing user role", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Something went wrong while changing user role", ex, 500);
             }
         }
     }

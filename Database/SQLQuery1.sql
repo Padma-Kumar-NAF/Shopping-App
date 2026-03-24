@@ -2,17 +2,14 @@ select * from Stock
 select * from Users
 select * from Addresses
 
-delete from Logs
+update Users 
+set Active = 1
+where UserId = 'DBFEC735-AEFF-484B-8A3C-EFC92247E2E0'
 
-update Users
-set Role ='user'
-where UserId = '6A3AC425-EDF3-41D5-AB40-D26C1955C7FC'
+select * from PromoCodes
 
-delete from Addresses
-delete from Payments
-delete from Refunds
-delete from Addresses
-where AddressLine2 = 'Test line 1'
+select * from Logs
+delete from PromoCodes 
 
 delete from Users
 where UserId = '15C095AD-D196-49BF-B2A2-8995DC6B3E81'
@@ -22,7 +19,8 @@ select count(*) from Products
 select * from Products
 
 select * from Payments
-select * from Orders	
+select * from Orders
+
 
 
 select * from Refunds
@@ -51,7 +49,25 @@ select * from OrderDetails
 select * from Reviews
 
 update orders
-set Status = 'Not Delivered'
+set Status = 'Delivered'
+
+
+-- delete from UserDetails
+-- delete from Addresses
+delete from users
+delete from Refunds
+delete from Payments
+delete from Addresses
+delete from orders
+delete from OrderDetails
+delete from Carts
+delete from CartItems
+delete from Reviews
+delete from Logs
+delete from Category
+delete from Products
+delete from Stock
+delete from WishListItems
 
 -- delete from logs
 

@@ -19,6 +19,15 @@ namespace ShoppingApp.Controllers
             _productService = productService;
         }
 
+        /// <summary>
+        /// Retrieves a collection of products that match the specified filter and pagination criteria.
+        /// </summary>
+        /// <remarks>This method requires the caller to be authenticated and authorized with either the
+        /// 'admin' or 'user' role. The request is validated before processing. Any exceptions encountered are
+        /// propagated to the caller.</remarks>
+        /// <param name="request">An object containing the filtering and pagination options to apply when retrieving products. Cannot be null.</param>
+        /// <returns>An IActionResult containing a list of products that satisfy the request criteria. Returns an empty list if
+        /// no products are found.</returns>
         //[Authorize(Roles = "admin,user")]
         [HttpPost("get-products")]
         [ValidateRequest]
@@ -26,7 +35,6 @@ namespace ShoppingApp.Controllers
         {
             try
             {
-                var UserId = GetUserIdOrThrow();
                 var Result = await _productService.GetProducts(request);
                 return Ok(Result);
             }
@@ -36,6 +44,15 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Searches for a product by its name using the specified request data.
+        /// </summary>
+        /// <remarks>This action requires the user to be authenticated and authorized as either an admin
+        /// or user. The request is validated before processing. Exceptions encountered during execution are propagated
+        /// to the caller.</remarks>
+        /// <param name="request">An object containing the criteria for searching products by name. Must not be null.</param>
+        /// <returns>An IActionResult containing the search results. Returns a list of matching products if found; otherwise,
+        /// returns an empty result or an appropriate error response.</returns>
         //[Authorize(Roles = "admin,user")]
         [HttpPost("search-product")]
         [ValidateRequest]
@@ -43,7 +60,6 @@ namespace ShoppingApp.Controllers
         {
             try
             {
-                var UserId = GetUserIdOrThrow();
                 var Result = await _productService.SearchProductByName(request);
                 return Ok(Result);
             }
@@ -53,6 +69,16 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Adds a new product to the inventory using the specified product details.
+        /// </summary>
+        /// <remarks>This action requires the caller to be authenticated and authorized with the 'admin'
+        /// role. The request is validated before processing, and exceptions may be thrown if validation fails or if the
+        /// operation cannot be completed.</remarks>
+        /// <param name="request">An object containing the details of the product to add. This includes required attributes such as name,
+        /// price, and description.</param>
+        /// <returns>An IActionResult that represents the result of the operation. If successful, the response includes the
+        /// details of the newly added product.</returns>
         //[Authorize(Roles = "admin")]
         [HttpPost("add-product")]
         [ValidateRequest]
@@ -70,6 +96,15 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates the details of an existing product using the specified request data.
+        /// </summary>
+        /// <remarks>This action requires the user to be authenticated and authorized with the appropriate
+        /// roles. An exception is thrown if the user is not authorized or if the update operation fails.</remarks>
+        /// <param name="request">An <see cref="UpdateProductRequestDTO"/> object containing the updated product information. All required
+        /// fields for the update operation must be provided.</param>
+        /// <returns>An <see cref="IActionResult"/> that represents the result of the update operation. If successful, the
+        /// response includes the updated product details.</returns>
         //[Authorize(Roles = "admin,user")]
         [HttpPost("update-product")]
         [ValidateRequest]
@@ -87,6 +122,14 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves the details of a product that matches the specified product ID.
+        /// </summary>
+        /// <remarks>This method requires the caller to be authenticated and authorized as either an admin
+        /// or user. The user's ID is used to perform the search operation.</remarks>
+        /// <param name="request">An object containing the product ID to search for. Must not be null.</param>
+        /// <returns>An IActionResult containing the product details if found; otherwise, an error response indicating the reason
+        /// for failure.</returns>
         //[Authorize(Roles = "admin,user")]
         [HttpPost("get-product-by-id")]
         [ValidateRequest]
@@ -94,9 +137,33 @@ namespace ShoppingApp.Controllers
         {
             try
             {
-                var UserId = GetUserIdOrThrow();
                 var Result = await _productService.SearchProductById(request);
                 return Ok(Result);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Retrieves products based on price filter and pagination.
+        /// </summary>
+        /// <remarks>
+        /// Filters products between a specified price range.
+        /// Supports pagination and returns empty result if no products found.
+        /// </remarks>
+        /// <param name="request">Contains price range and pagination details.</param>
+        /// <returns>Filtered list of products.</returns>
+        //[Authorize(Roles = "admin,user")]
+        [HttpPost("get-products-with-filter")]
+        [ValidateRequest]
+        public async Task<IActionResult> GetProductsWithFilter([FromBody] GetAllProductsWithFilterRequestDTO request)
+        {
+            try
+            {
+                var result = await _productService.GetProductsWithFilter(request);
+                return Ok(result);
             }
             catch
             {

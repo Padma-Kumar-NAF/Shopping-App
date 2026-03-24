@@ -1,0 +1,114 @@
+<!-- Page header -->
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-subtitle">Welcome back — here's what's happening today.</p>
+  </div>
+  @if (isLoading()) {
+  <div class="loading-badge">
+    <svg class="spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+    </svg>
+    Refreshing…
+  </div>
+  }
+</div>
+
+<!-- Stat cards -->
+<div class="stats-grid">
+
+  @if (isLoading()) {
+    @for (i of [1,2,3,4]; track i) {
+    <div class="stat-skeleton"></div>
+    }
+  } @else {
+
+  <!-- Users -->
+  <div class="stat-card stat-blue">
+    <div class="stat-icon-wrap stat-icon-blue">
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+      </svg>
+    </div>
+    <div class="stat-body">
+      <p class="stat-label">Total Users</p>
+      <p class="stat-value">{{ stats().totalUsers }}</p>
+      <p class="stat-sub">{{ stats().activeUsers }} active accounts</p>
+    </div>
+    <div class="stat-trend stat-trend-up">↑ Active</div>
+  </div>
+
+  <!-- Orders -->
+  <div class="stat-card stat-green">
+    <div class="stat-icon-wrap stat-icon-green">
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/>
+      </svg>
+    </div>
+    <div class="stat-body">
+      <p class="stat-label">Total Orders</p>
+      <p class="stat-value">{{ stats().totalOrders }}</p>
+      <p class="stat-sub">{{ stats().pendingOrders }} pending delivery</p>
+    </div>
+    <div class="stat-trend stat-trend-warn">⏳ Pending</div>
+  </div>
+
+  <!-- Products -->
+  <div class="stat-card stat-purple">
+    <div class="stat-icon-wrap stat-icon-purple">
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+      </svg>
+    </div>
+    <div class="stat-body">
+      <p class="stat-label">Total Products</p>
+      <p class="stat-value">{{ stats().totalProducts }}</p>
+      <p class="stat-sub">In inventory</p>
+    </div>
+    <div class="stat-trend stat-trend-up">✓ Stocked</div>
+  </div>
+
+  <!-- Revenue -->
+  <div class="stat-card stat-orange">
+    <div class="stat-icon-wrap stat-icon-orange">
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+      </svg>
+    </div>
+    <div class="stat-body">
+      <p class="stat-label">Total Revenue</p>
+      <p class="stat-value rev-value">₹{{ stats().totalRevenue.toLocaleString() }}</p>
+      <p class="stat-sub">All-time earnings</p>
+    </div>
+    <div class="stat-trend stat-trend-up">↑ Revenue</div>
+  </div>
+
+  }
+</div>
+
+<!-- Quick summary row -->
+@if (!isLoading()) {
+<div class="summary-row">
+  <div class="summary-card">
+    <p class="summary-label">Delivery Rate</p>
+    <p class="summary-val">
+      {{ stats().totalOrders > 0 ? ((stats().totalOrders - stats().pendingOrders) / stats().totalOrders * 100 | number:'1.0-0') : 0 }}%
+    </p>
+  </div>
+  <div class="summary-card">
+    <p class="summary-label">Avg. Order Value</p>
+    <p class="summary-val">
+      ₹{{ stats().totalOrders > 0 ? (stats().totalRevenue / stats().totalOrders | number:'1.0-0') : 0 }}
+    </p>
+  </div>
+  <div class="summary-card">
+    <p class="summary-label">Pending Orders</p>
+    <p class="summary-val warn">{{ stats().pendingOrders }}</p>
+  </div>
+  <div class="summary-card">
+    <p class="summary-label">Products Listed</p>
+    <p class="summary-val">{{ stats().totalProducts }}</p>
+  </div>
+</div>
+}

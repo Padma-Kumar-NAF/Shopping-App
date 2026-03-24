@@ -3,7 +3,18 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../services/product.service';
-import { ProductItem } from '../../models/users/product.model';
+import { ProductStateService } from '../../services/product-state.service';
+import { CartService } from '../../services/cart.service';
+import { AddressSelectionService } from '../../services/address-selection.service';
+import { AddressApiService } from '../../services/userServices/address.service';
+import { AuthStateService } from '../../services/auth-state.service';
+import { OrderService, PlaceOrderRequestDTO } from '../../services/userServices/order.service';
+import { PromoCodeService } from '../../services/adminServices/promocode.service';
+import { WalletService } from '../../services/userServices/wallet.service';
+import { AddressDTO } from '../../models/users/address.model';
+import { PaginationModel } from '../../models/users/pagination.model';
+import { ProductDetails, SearchProductByIdResponseDTO } from '../../models/users/product.model';
+import { OrderAllFromCartRequestDTO } from '../../models/users/cart.model';
 import { toast } from 'ngx-sonner';
 
 interface CartItem {
@@ -25,12 +36,24 @@ export class PaymentComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
+  private productStateService = inject(ProductStateService);
+  private cartService = inject(CartService);
+  private addressSelectionService = inject(AddressSelectionService);
+  private addressApiService = inject(AddressApiService);
+  private authStateService = inject(AuthStateService);
+  private orderService = inject(OrderService);
+  private promoCodeService = inject(PromoCodeService);
+  private walletService = inject(WalletService);
+
+  // Wallet
+  walletBalance = signal<number | null>(null);
+  isLoadingWallet = signal<boolean>(false);
 
   // Payment mode: 'single' for single product, 'cart' for cart items
   paymentMode = signal<'single' | 'cart'>('single');
 
   // Single product purchase
-  product = signal<ProductItem | null>(null);
+  product = signal<ProductDetails | SearchProductByIdResponseDTO | null>(null);
   quantity = signal<number>(1);
 
   // Cart purchase
@@ -55,24 +78,113 @@ export class PaymentComponent implements OnInit {
   state = signal<string>('');
   pincode = signal<string>('');
 
+  // Address selection
+  availableAddresses = signal<AddressDTO[]>([]);
+  selectedAddress = signal<AddressDTO | null>(null);
+  showAddressPicker = signal<boolean>(false);
+
+  // Promo code
+  promoInput = signal<string>('');
+  appliedPromo = signal<string | null>(null);
+  discountPercent = signal<number>(0);
+  promoError = signal<string | null>(null);
+  isValidatingPromo = signal<boolean>(false);
+
   ngOnInit(): void {
-    const productId = this.route.snapshot.queryParamMap.get('productId');
-    const qty = this.route.snapshot.queryParamMap.get('quantity');
     const fromCart = this.route.snapshot.queryParamMap.get('fromCart');
+    const fromProduct = this.route.snapshot.queryParamMap.get('fromProduct');
+    const qty = this.route.snapshot.queryParamMap.get('quantity');
 
     // Check if coming from cart
     if (fromCart === 'true') {
       this.paymentMode.set('cart');
       this.loadCartItems();
-    } else if (productId) {
-      // Single product purchase
+    } else if (fromProduct === 'true') {
+      // Single product purchase - get from state
       this.paymentMode.set('single');
       if (qty) {
         this.quantity.set(parseInt(qty));
       }
-      this.loadSingleProduct(productId);
+      this.loadProductFromState();
     } else {
-      toast.error('No items to checkout');
+      // Fallback: check for productId in query params (for backward compatibility)
+      const productId = this.route.snapshot.queryParamMap.get('productId');
+      if (productId) {
+        this.paymentMode.set('single');
+        if (qty) {
+          this.quantity.set(parseInt(qty));
+        }
+        this.loadSingleProduct(productId);
+      } else {
+        toast.error('No items to checkout');
+        this.router.navigate(['/products']);
+      }
+    }
+
+    this.loadAddresses();
+
+    // Pre-fill name and email from auth store
+    this.fullName.set(this.authStateService.username());
+    this.email.set(this.authStateService.email());
+  }
+
+  private loadAddresses(): void {
+    // Use addresses already loaded in the service (from home page)
+    const cached = this.addressSelectionService.getAvailableAddresses();
+    if (cached.length > 0) {
+      this.availableAddresses.set(cached);
+    } else {
+      const pagination = new PaginationModel();
+      pagination.pageSize = 10;
+      pagination.pageNumber = 1;
+      this.addressApiService.GetUserAddresses(pagination).subscribe({
+        next: (response) => {
+          if (response?.data?.addressList) {
+            this.availableAddresses.set(response.data.addressList);
+            this.addressSelectionService.setAvailableAddresses(response.data.addressList);
+          }
+        },
+        error: () => {},
+      });
+    }
+
+    // Pre-fill from previously selected address
+    const selected = this.addressSelectionService.getSelectedAddress();
+    if (selected) {
+      this.applyAddress(selected);
+    }
+  }
+
+  selectAddress(addr: AddressDTO): void {
+    this.selectedAddress.set(addr);
+    this.addressSelectionService.setSelectedAddress(addr);
+    this.applyAddress(addr);
+    this.showAddressPicker.set(false);
+  }
+
+  unselectAddress(): void {
+    this.selectedAddress.set(null);
+    this.addressSelectionService.clearSelectedAddress();
+    this.address.set('');
+    this.city.set('');
+    this.state.set('');
+    this.pincode.set('');
+  }
+
+  private applyAddress(addr: AddressDTO): void {
+    this.selectedAddress.set(addr);
+    this.address.set(`${addr.addressLine1}${addr.addressLine2 ? ', ' + addr.addressLine2 : ''}`);
+    this.city.set(addr.city);
+    this.state.set(addr.state);
+    this.pincode.set(addr.pincode);
+  }
+
+  private loadProductFromState(): void {
+    const product = this.productStateService.getSelectedProduct();
+    if (product) {
+      this.product.set(product);
+    } else {
+      toast.error('Product not found');
       this.router.navigate(['/products']);
     }
   }
@@ -95,25 +207,31 @@ export class PaymentComponent implements OnInit {
   }
 
   private loadCartItems(): void {
-    // Mock cart items - replace with actual cart service call
-    // You can integrate with your backend cart service here
-    const mockCartItems: CartItem[] = [
-      {
-        id: '1',
-        name: 'Wireless Bluetooth Headphones',
-        price: 2999,
-        quantity: 1,
-        image: 'https://picsum.photos/400/300?random=1',
+    // Load actual cart items from the cart service
+    const pagination = new PaginationModel();
+    pagination.pageSize = 100; // Load all items for checkout
+    pagination.pageNumber = 1;
+
+    this.cartService.GetUserCart(pagination).subscribe({
+      next: (response) => {
+        if (response.data?.cartItems) {
+          // Map backend CartItemDTO to local CartItem interface
+          const items: CartItem[] = response.data.cartItems.map((item) => ({
+            id: item.productId,
+            name: item.productName,
+            price: item.price,
+            quantity: item.quantity,
+            image: item.imagePath,
+          }));
+          this.cartItems.set(items);
+        }
       },
-      {
-        id: '2',
-        name: 'Smart Watch Pro',
-        price: 8999,
-        quantity: 2,
-        image: 'https://picsum.photos/400/300?random=2',
+      error: (err) => {
+        console.error('Failed to load cart items:', err);
+        toast.error('Failed to load cart items');
+        this.router.navigate(['/profile/cart']);
       },
-    ];
-    this.cartItems.set(mockCartItems);
+    });
   }
 
   get subtotal(): number {
@@ -138,17 +256,84 @@ export class PaymentComponent implements OnInit {
     return this.subtotal > 5000 ? 0 : 99;
   }
 
+  get discountAmount(): number {
+    return (this.subtotal * this.discountPercent()) / 100;
+  }
+
   get total(): number {
-    return this.subtotal + this.tax + this.shipping;
+    return this.subtotal - this.discountAmount + this.tax + this.shipping;
+  }
+
+  applyPromo(): void {
+    if (this.appliedPromo() || this.isValidatingPromo()) return;
+    const code = this.promoInput().trim().toUpperCase();
+    if (!code) {
+      this.promoError.set('Please enter a promo code.');
+      return;
+    }
+
+    this.isValidatingPromo.set(true);
+    this.promoError.set(null);
+
+    this.promoCodeService.validatePromoCode({ promoCodeName: code }).subscribe({
+      next: (res) => {
+        this.isValidatingPromo.set(false);
+        if (res.data?.isValid) {
+          this.appliedPromo.set(code);
+          this.discountPercent.set(res.data.discountPercentage);
+          toast.success(`Promo code applied! ${res.data.discountPercentage}% off`);
+        } else {
+          this.promoError.set(res.message || 'Invalid promo code. Please try again.');
+        }
+      },
+      error: (err) => {
+        this.isValidatingPromo.set(false);
+        this.promoError.set(err?.error?.message || 'Invalid promo code. Please try again.');
+      },
+    });
+  }
+
+  removePromo(): void {
+    this.appliedPromo.set(null);
+    this.discountPercent.set(0);
+    this.promoInput.set('');
+    this.promoError.set(null);
   }
 
   selectPaymentMethod(method: string): void {
     this.selectedPaymentMethod.set(method);
+    if (method === 'wallet' && this.walletBalance() === null) {
+      this.fetchWalletBalance();
+    } else if (method !== 'wallet') {
+      this.walletBalance.set(null);
+    }
+  }
+
+  private fetchWalletBalance(): void {
+    this.isLoadingWallet.set(true);
+    this.walletService.getWalletBalance().subscribe({
+      next: (res) => {
+        const balance = res.data?.walletBalance ?? 0;
+        this.walletBalance.set(balance);
+        this.isLoadingWallet.set(false);
+        if (balance < this.total) {
+          toast.error(`Insufficient wallet balance (₹${balance.toLocaleString()}). Please choose another payment method.`);
+          this.selectedPaymentMethod.set('card');
+          this.walletBalance.set(null);
+        }
+      },
+      error: (err) => {
+        toast.error(err?.error?.message || 'Wallet not found. Please choose another payment method.');
+        this.isLoadingWallet.set(false);
+        this.selectedPaymentMethod.set('card');
+        this.walletBalance.set(null);
+      },
+    });
   }
 
   updateQuantity(change: number): void {
     const newQty = this.quantity() + change;
-    if (newQty >= 1 && newQty <= (this.product()?.stock || 1)) {
+    if (newQty >= 1 && newQty <= (this.product()?.quantity || 1)) {
       this.quantity.set(newQty);
     }
   }
@@ -182,34 +367,110 @@ export class PaymentComponent implements OnInit {
         toast.error('Please enter UPI ID');
         return false;
       }
+    } else if (method === 'wallet') {
+      const balance = this.walletBalance();
+      if (balance === null) {
+        toast.error('Wallet balance not loaded yet. Please wait.');
+        return false;
+      }
+      if (balance < this.total) {
+        toast.error(`Insufficient wallet balance. Available: ₹${balance.toLocaleString()}, Required: ₹${this.total.toLocaleString()}`);
+        return false;
+      }
     }
+    // cod requires no extra input
     return true;
   }
 
   processPayment(): void {
-    if (!this.validateShippingDetails() || !this.validatePaymentDetails()) {
+    if (!this.validateShippingDetails() || !this.validatePaymentDetails()) return;
+
+    const addr = this.selectedAddress();
+    if (!addr) {
+      toast.error('Please select a delivery address');
       return;
     }
 
     this.isProcessing.set(true);
     const toastId = toast.loading('Processing payment...');
 
-    // Simulate payment processing
-    setTimeout(() => {
-      this.isProcessing.set(false);
-      toast.dismiss(toastId);
-      toast.success('Payment successful! Order placed.');
-
-      // Navigate to orders page
-      this.router.navigate(['/profile/orders']);
-    }, 2000);
-  }
-
-  goBack(): void {
     if (this.paymentMode() === 'cart') {
-      this.router.navigate(['/profile/cart']);
+      // Order all items from cart
+      const cartId = this.cartItems().length > 0 ? (this.cartItems() as any)[0]?.cartId : '';
+      // We need the cartId — reload cart to get it
+      const pagination = new PaginationModel();
+      pagination.pageSize = 1;
+      pagination.pageNumber = 1;
+      this.cartService.GetUserCart(pagination).subscribe({
+        next: (cartRes) => {
+          const request = new OrderAllFromCartRequestDTO();
+          request.cartId = cartRes.data?.cartId ?? '';
+          request.addressId = addr.addressId;
+          request.paymentType = this.selectedPaymentMethod();
+          this.cartService.orderAllFromCart(request).subscribe({
+            next: (res) => {
+              this.isProcessing.set(false);
+              toast.dismiss(toastId);
+              if (res.data?.isSuccess) {
+                if (this.selectedPaymentMethod() === 'wallet') {
+                  this.walletBalance.update(b => b !== null ? b - this.total : b);
+                }
+                toast.success('Order placed successfully!');
+                this.router.navigate(['/profile/orders']);
+              } else {
+                toast.error(res.message || 'Failed to place order');
+              }
+            },
+            error: (err) => {
+              this.isProcessing.set(false);
+              toast.dismiss(toastId);
+              toast.error(err?.error?.message || 'Failed to place order');
+            },
+          });
+        },
+        error: () => {
+          this.isProcessing.set(false);
+          toast.dismiss(toastId);
+          toast.error('Failed to retrieve cart');
+        },
+      });
     } else {
-      this.router.navigate(['/product', this.product()?.id]);
+      // Single product order
+      const product = this.product();
+      if (!product) { this.isProcessing.set(false); toast.dismiss(toastId); return; }
+      const request: PlaceOrderRequestDTO = {
+        addressId: addr.addressId,
+        totalProductsCount: this.quantity(),
+        totalAmount: this.total,
+        paymentType: this.selectedPaymentMethod(),
+        promoCode: this.appliedPromo() ?? '',
+        orderProductdDetails: {
+          productId: product.productId,
+          productName: product.productName,
+          quantity: this.quantity(),
+          productPrice: product.price,
+        },
+      };
+      this.orderService.placeOrder(request).subscribe({
+        next: (res) => {
+          this.isProcessing.set(false);
+          toast.dismiss(toastId);
+          if (res.data?.isSuccess) {
+            if (this.selectedPaymentMethod() === 'wallet') {
+              this.walletBalance.update(b => b !== null ? b - this.total : b);
+            }
+            toast.success('Order placed successfully!');
+            this.router.navigate(['/profile/orders']);
+          } else {
+            toast.error(res.message || 'Failed to place order');
+          }
+        },
+        error: (err) => {
+          this.isProcessing.set(false);
+          toast.dismiss(toastId);
+          toast.error(err?.error?.message || 'Failed to place order');
+        },
+      });
     }
   }
 }

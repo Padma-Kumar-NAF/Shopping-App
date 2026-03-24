@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { toast } from 'ngx-sonner';
 import { UserServcie } from '../../../services/adminServices/user.service';
 import { PaginationModel } from '../../../models/users/pagination.model';
@@ -12,7 +13,7 @@ import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-users-management',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './users-management.html',
   styleUrl: './users-management.css',
 })
@@ -23,21 +24,23 @@ export class UsersManagement implements OnInit {
   users$!: Observable<UserDetailsDTO[]>;
   filteredUsers$!: Observable<UserDetailsDTO[]>;
 
+  // Status toggle confirm modal
   confirmModal = signal<boolean>(false);
-  pendingDeleteId = signal<string | null>(null);
+  pendingToggleId = signal<string | null>(null);
+  pendingToggleAction = signal<'activate' | 'deactivate'>('deactivate');
 
   searchTerm = signal<string>('');
   filterRole = signal<string>('all');
 
-  // ── Pagination ────────────────────────────────────────────────────────────
+  // Pagination
   currentPage = signal<number>(1);
   readonly pageSize = 10;
-
-  /** Whether all pages from the API have been fetched */
   hasMoreData = signal<boolean>(true);
-
-  /** Loading state for API calls */
   isLoading = signal<boolean>(false);
+
+  // Per-row loading states
+  roleChangingId = signal<string | null>(null);
+  statusTogglingId = signal<string | null>(null);
 
   pagination: PaginationModel;
 
@@ -49,13 +52,15 @@ export class UsersManagement implements OnInit {
 
   ngOnInit(): void {
     this.users$ = this.store.state$.pipe(map(s => s.users));
+    this.filteredUsers$ = this.store.state$.pipe(map(s => this.applyFilters(s.users)));
 
-    this.filteredUsers$ = this.store.state$.pipe(
-      map(s => this.applyFilters(s.users))
-    );
+    // Load first page if store is empty (e.g. direct navigation)
+    if (this.store.value.users.length === 0) {
+      this.fetchPage(1);
+    }
   }
 
-  // ── Filter helpers ────────────────────────────────────────────────────────
+  // ── Filters ───────────────────────────────────────────────────────────────
 
   private applyFilters(users: UserDetailsDTO[]): UserDetailsDTO[] {
     let filtered = users;
@@ -71,24 +76,16 @@ export class UsersManagement implements OnInit {
     return filtered;
   }
 
-  // ── Paged getter ──────────────────────────────────────────────────────────
-
   get pagedUsers(): UserDetailsDTO[] {
     const filtered = this.applyFilters(this.store.value.users);
     const start = (this.currentPage() - 1) * this.pageSize;
     return filtered.slice(start, start + this.pageSize);
   }
 
-  // ── Pagination helpers ────────────────────────────────────────────────────
-
   get totalFiltered(): number {
     return this.applyFilters(this.store.value.users).length;
   }
 
-  /**
-   * Total pages we can display based on data already in the store.
-   * If more data may exist on the server, we add +1 to keep Next enabled.
-   */
   get totalPages(): number {
     const fromStore = Math.max(1, Math.ceil(this.totalFiltered / this.pageSize));
     return this.hasMoreData() ? fromStore + 1 : fromStore;
@@ -104,31 +101,20 @@ export class UsersManagement implements OnInit {
     return range;
   }
 
-  /**
-   * Navigate to a page.
-   * - If we already have data for this page in the store → slice (no API call).
-   * - If we are moving forward and data is missing → fetch from API.
-   */
   goToPage(page: number): void {
     if (page < 1 || this.isLoading()) return;
-
     const alreadyFetched = this.store.pageCache.users.has(page);
     const dataExistsForPage =
       this.store.value.users.length >= page * this.pageSize || alreadyFetched;
-
     if (dataExistsForPage) {
-      // Use cached data — no API call needed
       this.currentPage.set(page);
       return;
     }
-
-    // Need to fetch from API
     this.fetchPage(page);
   }
 
   prevPage(): void {
     if (this.currentPage() <= 1 || this.isLoading()) return;
-    // Prev always uses already-fetched data
     this.currentPage.update(p => p - 1);
   }
 
@@ -147,25 +133,18 @@ export class UsersManagement implements OnInit {
     this.apiService.getAllUser(this.pagination).subscribe({
       next: (response: ApiResponse<GetUsersResponseDTO>) => {
         const incoming = response.data?.usersList ?? [];
-
         if (incoming.length === 0) {
-          // No more records — server exhausted
           this.hasMoreData.set(false);
           toast.info('No more users to load');
         } else {
           this.store.appendUsers(incoming);
           this.store.pageCache.users.add(page);
           this.currentPage.set(page);
-
-          // If the server returned fewer than a full page, we've reached the end
-          if (incoming.length < this.pageSize) {
-            this.hasMoreData.set(false);
-          }
+          if (incoming.length < this.pageSize) this.hasMoreData.set(false);
         }
         this.isLoading.set(false);
       },
       error: (err) => {
-        console.error(err);
         toast.error(err?.error?.message || 'Failed to load users');
         this.isLoading.set(false);
       },
@@ -186,44 +165,75 @@ export class UsersManagement implements OnInit {
     this.refreshFilter();
   }
 
-  // ── Actions ───────────────────────────────────────────────────────────────
+  // ── Role change ───────────────────────────────────────────────────────────
 
-  openDeleteModal(userId: string): void {
-    this.pendingDeleteId.set(userId);
+  changeUserRole(userId: string, newRole: string): void {
+    this.roleChangingId.set(userId);
+    this.apiService.changeUserRole(userId, newRole).subscribe({
+      next: (res) => {
+        this.roleChangingId.set(null);
+        const user = this.store.value.users.find(u => u.userId === userId);
+        if (!user) return;
+        if (res.data?.isChanged) {
+          this.store.updateUser({ ...user, role: newRole });
+          toast.success(`Role updated to "${newRole}"`);
+        } else {
+          toast.info(res.message || 'User already has this role');
+        }
+      },
+      error: (err) => {
+        this.roleChangingId.set(null);
+        toast.error(err?.error?.message || 'Failed to update role');
+      },
+    });
+  }
+
+  // ── Status toggle ─────────────────────────────────────────────────────────
+
+  openStatusModal(userId: string, currentlyActive: boolean): void {
+    this.pendingToggleId.set(userId);
+    this.pendingToggleAction.set(currentlyActive ? 'deactivate' : 'activate');
     this.confirmModal.set(true);
   }
 
-  cancelDelete(): void {
+  cancelStatusToggle(): void {
     this.confirmModal.set(false);
-    this.pendingDeleteId.set(null);
+    this.pendingToggleId.set(null);
   }
 
-  deleteUser(): void {
-    const userId = this.pendingDeleteId();
+  confirmStatusToggle(): void {
+    const userId = this.pendingToggleId();
+    const action = this.pendingToggleAction();
     if (!userId) return;
-    this.store.setUsers(this.store.value.users.filter(u => u.userId !== userId));
     this.confirmModal.set(false);
-    this.pendingDeleteId.set(null);
-    toast.success('User deleted successfully');
+    this.pendingToggleId.set(null);
+    this.statusTogglingId.set(userId);
+
+    const call$ = action === 'deactivate'
+      ? this.apiService.deactivateUser(userId)
+      : this.apiService.activateUser(userId);
+
+    call$.subscribe({
+      next: (_res) => {
+        this.statusTogglingId.set(null);
+        const user = this.store.value.users.find(u => u.userId === userId);
+        if (!user) return;
+        const newActive = action === 'activate';
+        this.store.updateUser({ ...user, activeStatus: newActive });
+        toast.success(`User ${newActive ? 'activated' : 'deactivated'} successfully`);
+      },
+      error: (err) => {
+        this.statusTogglingId.set(null);
+        toast.error(err?.error?.message || `Failed to ${action} user`);
+      },
+    });
   }
 
-  changeUserRole(userId: string, newRole: string): void {
-    this.store.setUsers(
-      this.store.value.users.map(u => u.userId === userId ? { ...u, role: newRole } : u)
-    );
-    toast.success(`User role updated to ${newRole}`);
-  }
+  // ── UI helpers ────────────────────────────────────────────────────────────
 
   getRoleColor(role: string): string {
-    return role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800';
-  }
-
-  getStatusColor(status: string): string {
-    switch (status) {
-      case 'active':    return 'bg-green-100 text-green-800';
-      case 'inactive':  return 'bg-gray-100 text-gray-800';
-      case 'suspended': return 'bg-red-100 text-red-800';
-      default:          return 'bg-gray-100 text-gray-800';
-    }
+    return role === 'admin'
+      ? 'bg-purple-100 text-purple-800'
+      : 'bg-blue-100 text-blue-800';
   }
 }

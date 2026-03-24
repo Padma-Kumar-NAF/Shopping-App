@@ -26,17 +26,20 @@ namespace ShoppingApp.Models
         [Required]
         public DateTime CreatedAt { get; set; }
 
-        // Navigation 
+        [Required]
+        public bool Active { get; set; }
+
+        // Navigation
         public UserDetails? UserDetails { get; set; }
         public Cart? Cart { get; set; }
+        public Wallet? Wallet { get; set; }
 
-        public ICollection<WishList>? WishLists { get; set; } = new List<WishList>();
-        public ICollection<Payment>? Payments { get; set; } = new List<Payment>();
-        public ICollection<Refund>? Refunds { get; set; } = new List<Refund>();
-
-        public ICollection<Review>? Reviews { get; set; } = new List<Review>(); 
-        public ICollection<Log>? Logs { get; set; } = new List<Log>();
-        public ICollection<Address>? Addresses { get; set; } = new List<Address>();  
-        public ICollection<Order>? Orders { get; set; } = new List<Order>();
+        public ICollection<WishList>? WishLists { get; set; }
+        public ICollection<Payment>? Payments { get; set; }
+        public ICollection<Refund>? Refunds { get; set; }
+        public ICollection<Review>? Reviews { get; set; }
+        public ICollection<Log>? Logs { get; set; }
+        public ICollection<Address>? Addresses { get; set; }
+        public ICollection<Order>? Orders { get; set; }
     }
 }

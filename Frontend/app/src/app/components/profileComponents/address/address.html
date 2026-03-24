@@ -20,27 +20,12 @@
     @if (addresses().addressList.length === 0) {
       <div class="flex items-center justify-center py-24">
         <div class="text-center">
-          <div
-            class="mb-6 inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full"
-          >
-            <svg
-              class="w-10 h-10 text-blue-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-              ></path>
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-              ></path>
+          <div class="mb-6 inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full">
+            <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
           </div>
           <h3 class="text-2xl font-bold text-gray-900 mb-2">No Addresses Yet</h3>
@@ -61,6 +46,8 @@
         @for (address of addresses().addressList; track address.addressId) {
           <div
             class="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200"
+            [class.cursor-pointer]="selectionMode"
+            (click)="selectAddress(address)"
           >
             <div
               class="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
@@ -77,39 +64,31 @@
                   <span class="text-xs font-semibold text-blue-600">Home Address</span>
                 </div>
 
-                <div
-                  class="flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300"
-                >
-                  <button
-                    (click)="openEditModal(address)"
-                    class="p-2 rounded-lg hover:bg-blue-50 text-blue-600 hover:text-blue-700 transition-colors"
-                    title="Edit address"
-                  >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                      ></path>
-                    </svg>
-                  </button>
+                @if (!selectionMode) {
+                  <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    <button
+                      (click)="openEditModal(address); $event.stopPropagation()"
+                      class="p-2 rounded-lg hover:bg-blue-50 text-blue-600 hover:text-blue-700 transition-colors"
+                      title="Edit address"
+                    >
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                      </svg>
+                    </button>
 
-                  <button
-                    (click)="openDeleteConfirm(address.addressId)"
-                    class="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors"
-                    title="Delete address"
-                  >
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
+                    <button
+                      (click)="openDeleteConfirm(address.addressId); $event.stopPropagation()"
+                      class="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors"
+                      title="Delete address"
+                    >
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                      </svg>
+                    </button>
+                  </div>
+                }
               </div>
 
               <div class="space-y-3">
@@ -140,20 +119,22 @@
                 </div>
               </div>
 
-              <div class="mt-6 pt-6 border-t border-gray-100 flex gap-3 md:hidden">
-                <button
-                  (click)="openEditModal(address)"
-                  class="flex-1 px-3 py-2 bg-blue-50 text-blue-600 font-semibold rounded-lg hover:bg-blue-100 transition-colors"
-                >
-                  Edit
-                </button>
-                <button
-                  (click)="openDeleteConfirm(address.addressId)"
-                  class="flex-1 px-3 py-2 bg-red-50 text-red-600 font-semibold rounded-lg hover:bg-red-100 transition-colors"
-                >
-                  Delete
-                </button>
-              </div>
+              @if (!selectionMode) {
+                <div class="mt-6 pt-6 border-t border-gray-100 flex gap-3 md:hidden">
+                  <button
+                    (click)="openEditModal(address); $event.stopPropagation()"
+                    class="flex-1 px-3 py-2 bg-blue-50 text-blue-600 font-semibold rounded-lg hover:bg-blue-100 transition-colors"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    (click)="openDeleteConfirm(address.addressId); $event.stopPropagation()"
+                    class="flex-1 px-3 py-2 bg-red-50 text-red-600 font-semibold rounded-lg hover:bg-red-100 transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
+              }
             </div>
           </div>
         }
@@ -161,6 +142,7 @@
     }
   </div>
 
+  <!-- Add / Edit Modal -->
   <div
     [hidden]="showModal()"
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-opacity duration-300"
@@ -185,35 +167,32 @@
           class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-lg transition-colors"
         >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            ></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"></path>
           </svg>
         </button>
       </div>
 
       <form [formGroup]="addressForm" (ngSubmit)="submitAddress()" class="p-6 space-y-5">
+
         <div>
           <label class="block text-sm font-semibold text-gray-900 mb-2">
             Street Address <span class="text-red-500">*</span>
           </label>
           <input
             type="text"
-            name="line1"
             formControlName="addressLine1"
             placeholder="Enter street address"
-            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+            class="w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200"
+            [class.border-gray-300]="!addressForm.get('addressLine1')?.invalid || !addressForm.get('addressLine1')?.touched"
+            [class.focus:ring-2]="true"
+            [class.border-red-400]="addressForm.get('addressLine1')?.invalid && addressForm.get('addressLine1')?.touched"
           />
-          <!-- @if (
-            addressForm.get('addressLine1')?.invalid && addressForm.get('addressLine1')?.touched
-          ) {
+          @if (addressForm.get('addressLine1')?.invalid && addressForm.get('addressLine1')?.touched) {
             <p class="text-red-500 text-sm mt-1 flex items-center gap-1">
-              <span>⚠️</span> This field is required
+              <span>⚠️</span> Street address is required
             </p>
-          } -->
+          }
         </div>
 
         <div>
@@ -222,11 +201,17 @@
           </label>
           <input
             type="text"
-            name="line2"
             formControlName="addressLine2"
             placeholder="Apartment, suite, etc."
-            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+            class="w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200"
+            [class.border-gray-300]="!addressForm.get('addressLine2')?.invalid || !addressForm.get('addressLine2')?.touched"
+            [class.border-red-400]="addressForm.get('addressLine2')?.invalid && addressForm.get('addressLine2')?.touched"
           />
+          @if (addressForm.get('addressLine2')?.invalid && addressForm.get('addressLine2')?.touched) {
+            <p class="text-red-500 text-sm mt-1 flex items-center gap-1">
+              <span>⚠️</span> This field is required
+            </p>
+          }
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -236,14 +221,15 @@
             </label>
             <input
               type="text"
-              name="city"
               formControlName="city"
               placeholder="City"
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+              class="w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200"
+              [class.border-gray-300]="!addressForm.get('city')?.invalid || !addressForm.get('city')?.touched"
+              [class.border-red-400]="addressForm.get('city')?.invalid && addressForm.get('city')?.touched"
             />
-            <!-- @if (addressForm.get('city')?.invalid && addressForm.get('city')?.touched) {
-              <p class="text-red-500 text-sm mt-1">Required</p>
-            } -->
+            @if (addressForm.get('city')?.invalid && addressForm.get('city')?.touched) {
+              <p class="text-red-500 text-sm mt-1">City is required</p>
+            }
           </div>
 
           <div>
@@ -252,14 +238,15 @@
             </label>
             <input
               type="text"
-              name="state"
               formControlName="state"
               placeholder="State"
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+              class="w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200"
+              [class.border-gray-300]="!addressForm.get('state')?.invalid || !addressForm.get('state')?.touched"
+              [class.border-red-400]="addressForm.get('state')?.invalid && addressForm.get('state')?.touched"
             />
-            <!-- @if (addressForm.get('state')?.invalid && addressForm.get('state')?.touched) {
-              <p class="text-red-500 text-sm mt-1">Required</p>
-            } -->
+            @if (addressForm.get('state')?.invalid && addressForm.get('state')?.touched) {
+              <p class="text-red-500 text-sm mt-1">State is required</p>
+            }
           </div>
         </div>
 
@@ -269,29 +256,30 @@
           </label>
           <input
             type="text"
-            name="pincode"
             formControlName="pincode"
             placeholder="6-digit pincode"
             maxlength="6"
-            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+            class="w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200"
+            [class.border-gray-300]="!addressForm.get('pincode')?.invalid || !addressForm.get('pincode')?.touched"
+            [class.border-red-400]="addressForm.get('pincode')?.invalid && addressForm.get('pincode')?.touched"
           />
-          <!-- @if (addressForm.get('pincode')?.invalid && addressForm.get('pincode')?.touched) {
-            <p class="text-red-500 text-sm mt-1">Required</p>
-          } -->
+          @if (addressForm.get('pincode')?.invalid && addressForm.get('pincode')?.touched) {
+            <p class="text-red-500 text-sm mt-1">Postal code is required</p>
+          }
         </div>
 
-        <!-- [disabled]="addressForm.invalid || isSaveButtonDisabled()" -->
         <div class="flex gap-3 pt-6 border-t border-gray-200">
           <button
             type="submit"
+            [disabled]="addressForm.invalid || isSaveButtonDisabled()"
             class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
           >
             {{ editMode() ? '✅ Update Address' : '➕ Add Address' }}
           </button>
 
-          <!-- [disabled]="isCancelButtonDisabled()" -->
           <button
             type="button"
+            [disabled]="isCancelButtonDisabled()"
             (click)="closeModal()"
             class="flex-1 px-6 py-3 bg-gray-100 text-gray-900 font-semibold rounded-xl hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -303,26 +291,24 @@
   </div>
 </div>
 
+<!-- Delete Confirm Modal -->
 @if (confirmModal()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
     <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
       <h2 class="text-xl font-bold text-gray-900 mb-2">⚠️ Delete Address</h2>
-
       <p class="text-gray-600 mb-6">
         Are you sure you want to delete this address? This action cannot be undone.
       </p>
-
       <div class="flex gap-3">
         <button
           (click)="cancelDelete()"
-          class="flex-1 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200"
+          class="flex-1 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 font-semibold transition-colors"
         >
-          No
+          No, Keep It
         </button>
-
         <button
           (click)="deleteAddress()"
-          class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+          class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold transition-colors"
         >
           Yes, Delete
         </button>

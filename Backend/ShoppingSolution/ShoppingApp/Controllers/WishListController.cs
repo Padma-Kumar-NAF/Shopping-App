@@ -20,6 +20,7 @@ namespace ShoppingApp.Controllers
             _wishlistService = wishlistService;
         }
 
+
         [Authorize(Roles = "user")]
         [HttpPost("add-product")]
         [ValidateRequest]

@@ -1,17 +1,15 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../services/product.service';
+import { ProductStateService } from '../../services/product-state.service';
 import { AuthStateService } from '../../services/auth-state.service';
 import { RedirectService } from '../../services/redirect.service';
-import { ProductItem } from '../../models/users/product.model';
+import { CartService } from '../../services/cart.service';
+import { WishlistService, WishListDTO } from '../../services/wishlist.service';
+import { ProductDetails } from '../../models/users/product.model';
+import { AddToCartRequestDTO } from '../../models/users/cart.model';
 import { toast } from 'ngx-sonner';
-
-interface WishlistItem {
-  id: number;
-  name: string;
-  products: { id: string; name: string; price: number; image: string }[];
-}
 
 @Component({
   selector: 'app-product-detail',
@@ -21,98 +19,55 @@ interface WishlistItem {
 })
 export class ProductDetail implements OnInit {
   private productService = inject(ProductService);
-  private route = inject(ActivatedRoute);
+  private productStateService = inject(ProductStateService);
   private router = inject(Router);
   private authState = inject(AuthStateService);
   private redirectService = inject(RedirectService);
+  private cartService = inject(CartService);
+  private wishlistService = inject(WishlistService);
 
-  product = signal<ProductItem | null>(null);
+  product = signal<ProductDetails | null>(null);
   isLoading = signal<boolean>(true);
+  error = signal<string | null>(null);
   quantity = signal<number>(1);
   selectedImage = signal<string>('');
-  relatedProducts = signal<ProductItem[]>([]);
+  relatedProducts = signal<ProductDetails[]>([]);
 
-  // Wishlist popup state
   showWishlistPopup = signal<boolean>(false);
-  wishlists = signal<WishlistItem[]>([
-    {
-      id: 1,
-      name: 'Dream Wardrobe',
-      products: [
-        {
-          id: '101',
-          name: 'Premium Leather Jacket',
-          price: 4999,
-          image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop',
-        },
-        {
-          id: '102',
-          name: 'Designer High-Top Sneakers',
-          price: 2999,
-          image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop',
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: 'Tech Gadgets',
-      products: [
-        {
-          id: '201',
-          name: 'Wireless Headphones',
-          price: 12999,
-          image:
-            'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop',
-        },
-      ],
-    },
-  ]);
+  wishlists = signal<WishListDTO[]>([]);
 
   ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      const productId = params['id'];
-      if (productId) {
-        this.loadProduct(productId);
-      }
-    });
+    const selectedProduct = this.productStateService.getSelectedProduct();
+    if (selectedProduct) {
+      this.loadProduct(selectedProduct);
+    } else {
+      toast.error('No product selected');
+      this.router.navigate(['/products']);
+    }
   }
 
-  loadProduct(id: string): void {
+  loadProduct(product: ProductDetails): void {
     this.isLoading.set(true);
-    this.productService.getProductById(id).subscribe({
-      next: (product) => {
-        if (product) {
-          this.product.set(product);
-          this.selectedImage.set(product.image);
-          this.loadRelatedProducts(product.category);
-        } else {
-          toast.error('Product not found');
-          this.router.navigate(['/products']);
-        }
-        this.isLoading.set(false);
-      },
-      error: (error) => {
-        console.error('Error loading product:', error);
-        toast.error('Failed to load product');
-        this.isLoading.set(false);
-      },
-    });
+    this.error.set(null);
+    this.product.set(product);
+    this.selectedImage.set(product.imagePath);
+    this.loadRelatedProducts(product.categoryName);
+    this.isLoading.set(false);
   }
 
-  loadRelatedProducts(category: string): void {
-    this.productService.getProductsByCategory(category).subscribe({
+  loadRelatedProducts(categoryName: string): void {
+    this.productService.getProductsByCategory(categoryName).subscribe({
       next: (products) => {
-        // Exclude current product and limit to 4
-        const filtered = products.filter((p) => p.id !== this.product()?.id).slice(0, 4);
-        this.relatedProducts.set(filtered);
+        this.relatedProducts.set(
+          products.filter((p) => p.productId !== this.product()?.productId).slice(0, 4)
+        );
       },
     });
   }
 
   increaseQuantity(): void {
-    const currentQty = this.quantity();
-    const maxStock = this.product()?.stock || 10;
-    if (currentQty < maxStock) {
+    const maxStock = this.product()?.quantity ?? 10;
+    if (this.quantity() < maxStock) {
       this.quantity.update((q) => q + 1);
     } else {
       toast.warning(`Maximum stock available: ${maxStock}`);
@@ -120,115 +75,90 @@ export class ProductDetail implements OnInit {
   }
 
   decreaseQuantity(): void {
-    if (this.quantity() > 1) {
-      this.quantity.update((q) => q - 1);
-    }
+    if (this.quantity() > 1) this.quantity.update((q) => q - 1);
   }
 
   buyNow(): void {
     const product = this.product();
     if (!product) return;
-
-    // Check if user is authenticated
     if (!this.authState.isAuthenticated()) {
-      // Store the intended action
-      this.redirectService.storeIntendedRoute('/payment', {
-        productId: product.id,
-        quantity: this.quantity(),
-      });
-
+      this.productStateService.setSelectedProduct(product);
+      this.redirectService.storeIntendedRoute('/payment', { fromProduct: 'true', quantity: this.quantity() });
       toast.info('Please login to continue with your purchase');
       this.router.navigate(['/auth']);
       return;
     }
-
-    // User is authenticated, proceed to payment
-    this.router.navigate(['/payment'], {
-      queryParams: {
-        productId: product.id,
-        quantity: this.quantity(),
-      },
-    });
+    this.productStateService.setSelectedProduct(product);
+    this.router.navigate(['/payment'], { queryParams: { fromProduct: 'true', quantity: this.quantity() } });
   }
 
   addToCart(): void {
     const product = this.product();
     if (!product) return;
-
-    // Check if user is authenticated
     if (!this.authState.isAuthenticated()) {
       toast.info('Please login to add items to cart');
-      this.redirectService.storeIntendedRoute(`/product/${product.id}`);
+      this.productStateService.setSelectedProduct(product);
+      this.redirectService.storeIntendedRoute('/product-detail');
       this.router.navigate(['/auth']);
       return;
     }
-
-    // User is authenticated, add to cart
-    console.log('Adding to cart:', {
-      product,
-      quantity: this.quantity(),
+    const request = new AddToCartRequestDTO();
+    request.productId = product.productId;
+    request.quantity = this.quantity();
+    this.cartService.addToCart(request).subscribe({
+      next: (res) => toast.success(res.message || `${product.productName} added to cart!`),
+      error: (err) => toast.error(err?.error?.message || 'Failed to add to cart'),
     });
-    toast.success(`${product.name} added to cart!`);
   }
 
   openWishlistPopup(): void {
-    // Check if user is authenticated
     if (!this.authState.isAuthenticated()) {
       const product = this.product();
+      if (product) this.productStateService.setSelectedProduct(product);
       toast.info('Please login to add items to wishlist');
-      this.redirectService.storeIntendedRoute(`/product/${product?.id}`);
+      this.redirectService.storeIntendedRoute('/product-detail');
       this.router.navigate(['/auth']);
       return;
     }
-
+    this.wishlistService.getUserWishlists().subscribe({
+      next: (res) => this.wishlists.set(res.data?.wishList ?? []),
+      error: () => this.wishlists.set([]),
+    });
     this.showWishlistPopup.set(true);
   }
 
-  addToWishlist(wishlistId: number): void {
+  addToWishlist(wishListId: string): void {
     const product = this.product();
     if (!product) return;
-
-    const alreadyAdded = this.wishlists().some(
-      (w) => w.id === wishlistId && w.products.some((p) => p.id === product.id)
-    );
-
-    if (alreadyAdded) {
-      toast.warning(`${product.name} is already in this wishlist!`);
-      return;
-    }
-
-    this.wishlists.update((lists) =>
-      lists.map((w) =>
-        w.id === wishlistId
-          ? {
-              ...w,
-              products: [
-                ...w.products,
-                { id: product.id, name: product.name, price: product.price, image: product.image },
-              ],
-            }
-          : w
-      )
-    );
-    toast.success(`${product.name} added to wishlist!`);
-    this.showWishlistPopup.set(false);
+    this.wishlistService.addProduct(wishListId, product.productId).subscribe({
+      next: (res) => {
+        if (res.data?.isSuccess) {
+          toast.success(`${product.productName} added to wishlist!`);
+          this.showWishlistPopup.set(false);
+        } else {
+          toast.error(res.message || 'Failed to add to wishlist');
+        }
+      },
+      error: (err) => toast.error(err?.error?.message || 'Failed to add to wishlist'),
+    });
   }
 
   closeWishlistPopup(): void {
     this.showWishlistPopup.set(false);
   }
 
-  goBack(): void {
-    this.router.navigate(['/products']);
+  viewRelatedProduct(product: ProductDetails): void {
+    this.productStateService.setSelectedProduct(product);
+    this.router.navigate(['/product-detail']).then(() => this.loadProduct(product));
   }
 
-  viewRelatedProduct(productId: string): void {
-    this.router.navigate(['/product', productId]);
+  getAverageRating(product: ProductDetails): number | null {
+    if (!product.review?.length) return null;
+    const avg = product.review.reduce((s, r) => s + r.reviewPoints, 0) / product.review.length;
+    return Math.round(avg * 10) / 10;
   }
 
   getStarArray(rating: number): number[] {
-    return Array(5)
-      .fill(0)
-      .map((_, i) => (i < Math.floor(rating) ? 1 : 0));
+    return Array(5).fill(0).map((_, i) => (i < Math.floor(rating) ? 1 : 0));
   }
 }

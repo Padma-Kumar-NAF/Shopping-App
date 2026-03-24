@@ -2,6 +2,7 @@ import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { toast } from 'ngx-sonner';
+import * as XLSX from 'xlsx';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StoreService } from '../../../services/adminServices/store.service';
@@ -19,7 +20,7 @@ import {
 } from '../../../models/admin/products.model';
 import { CategoryDTO } from '../../../models/admin/categories.model';
 
-type ActiveView = 'list' | 'add';
+type ActiveView = 'list' | 'add' | 'bulk';
 
 @Component({
   selector: 'app-product-management',
@@ -115,6 +116,7 @@ export class ProductManagement implements OnInit {
   switchView(view: ActiveView): void {
     this.activeView.set(view);
     if (view === 'add') this.resetAddForm();
+    if (view !== 'bulk') this.clearBulkUpload();
   }
 
   onSearchChange(event: Event): void {
@@ -235,6 +237,77 @@ export class ProductManagement implements OnInit {
   resetAddForm(): void {
     this.addForm.set({ categoryId: '', name: '', imagePath: '', description: '', price: 0, quantity: 0 });
     this.imagePreview.set('');
+  }
+
+  // ── Bulk Upload ───────────────────────────────────────────────────────────
+
+  bulkFileName = signal<string>('');
+  bulkProducts = signal<AddNewProductRequestDTO[]>([]);
+  bulkErrors = signal<string[]>([]);
+
+  onBulkFileChange(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    this.bulkFileName.set(file.name);
+    this.bulkProducts.set([]);
+    this.bulkErrors.set([]);
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = new Uint8Array(e.target!.result as ArrayBuffer);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows: any[] = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+
+        const errors: string[] = [];
+        const products: AddNewProductRequestDTO[] = [];
+
+        rows.forEach((row, i) => {
+          const rowNum = i + 2; // 1-indexed + header row
+          const product: AddNewProductRequestDTO = {
+            categoryId:  String(row['categoryId'] ?? '').trim(),
+            name:        String(row['name'] ?? '').trim(),
+            imagePath:   String(row['imagePath'] ?? '').trim(),
+            description: String(row['description'] ?? '').trim(),
+            price:       Number(row['price']),
+            quantity:    Number(row['quantity']),
+          };
+
+          if (!product.categoryId) errors.push(`Row ${rowNum}: categoryId is required`);
+          if (!product.name)       errors.push(`Row ${rowNum}: name is required`);
+          if (isNaN(product.price) || product.price <= 0)
+            errors.push(`Row ${rowNum}: price must be a positive number`);
+          if (isNaN(product.quantity) || product.quantity < 0)
+            errors.push(`Row ${rowNum}: quantity must be 0 or more`);
+
+          products.push(product);
+        });
+
+        this.bulkProducts.set(products);
+        this.bulkErrors.set(errors);
+
+        console.log('=== Bulk Upload: Parsed Products ===');
+        console.table(products);
+        if (errors.length) {
+          console.warn('Validation errors:', errors);
+          toast.warning(`Parsed ${products.length} rows with ${errors.length} validation issue(s). Check console.`);
+        } else {
+          toast.success(`Successfully parsed ${products.length} product(s). Check console.`);
+        }
+      } catch (err) {
+        toast.error('Failed to parse Excel file. Ensure it is a valid .xlsx or .xls file.');
+        console.error(err);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  clearBulkUpload(): void {
+    this.bulkFileName.set('');
+    this.bulkProducts.set([]);
+    this.bulkErrors.set([]);
   }
 
   openEditModal(product: ProductDetails): void {

@@ -1,20 +1,7 @@
 <div class="min-h-screen bg-gray-50 py-4 sm:py-8">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Header -->
-    <div class="mb-6 flex items-center gap-4">
-      <button
-        (click)="goBack()"
-        class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white transition-colors shadow-sm"
-      >
-        <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M10 19l-7-7m0 0l7-7m-7 7h18"
-          />
-        </svg>
-      </button>
+    <div class="mb-6">
       <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Complete Your Purchase</h1>
     </div>
 
@@ -28,15 +15,15 @@
           <h2 class="text-lg font-semibold text-gray-900 mb-4">Product Details</h2>
           <div class="flex gap-4">
             <img
-              [src]="product()!.image"
-              [alt]="product()!.name"
+              [src]="product()!.imagePath"
+              [alt]="product()!.productName"
               class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg"
             />
             <div class="flex-1">
               <h3 class="font-semibold text-gray-900 text-sm sm:text-base">
-                {{ product()!.name }}
+                {{ product()!.productName }}
               </h3>
-              <p class="text-xs sm:text-sm text-gray-600 mt-1">{{ product()!.category }}</p>
+              <p class="text-xs sm:text-sm text-gray-600 mt-1">{{ product()!.categoryName }}</p>
               <p class="text-lg sm:text-xl font-bold text-gray-900 mt-2">
                 ₹{{ product()!.price.toLocaleString() }}
               </p>
@@ -55,7 +42,7 @@
                   <span class="px-4 py-1 border-x border-gray-300">{{ quantity() }}</span>
                   <button
                     (click)="updateQuantity(1)"
-                    [disabled]="quantity() >= (product()!.stock || 1)"
+                    [disabled]="quantity() >= (product()!.quantity || 1)"
                     class="px-3 py-1 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     +
@@ -92,7 +79,58 @@
 
         <!-- Shipping Details -->
         <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">Shipping Details</h2>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-900">Shipping Details</h2>
+            @if (availableAddresses().length > 0 && !selectedAddress()) {
+            <button
+              (click)="showAddressPicker.set(!showAddressPicker())"
+              class="text-sm text-blue-600 hover:text-blue-700 font-medium"
+            >
+              {{ showAddressPicker() ? 'Hide' : '📍 Select Saved Address' }}
+            </button>
+            }
+          </div>
+
+          <!-- Saved Address Picker -->
+          @if (showAddressPicker() && availableAddresses().length > 0) {
+          <div class="mb-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            @for (addr of availableAddresses(); track addr.addressId) {
+            <div
+              (click)="selectAddress(addr)"
+              class="p-3 border-2 rounded-lg cursor-pointer transition-all duration-200"
+              [class.border-blue-500]="selectedAddress()?.addressId === addr.addressId"
+              [class.bg-blue-50]="selectedAddress()?.addressId === addr.addressId"
+              [class.border-gray-200]="selectedAddress()?.addressId !== addr.addressId"
+            >
+              <p class="font-semibold text-gray-900 text-sm">{{ addr.addressLine1 }}</p>
+              @if (addr.addressLine2) {
+              <p class="text-gray-500 text-xs">{{ addr.addressLine2 }}</p>
+              }
+              <p class="text-gray-600 text-xs mt-1">{{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}</p>
+            </div>
+            }
+          </div>
+          }
+
+          <!-- Selected address banner with unselect -->
+          @if (selectedAddress()) {
+          <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-start justify-between gap-2">
+            <div class="flex items-start gap-2 text-sm text-green-800">
+              <span class="text-green-600 mt-0.5">✓</span>
+              <div>
+                <p class="font-semibold">{{ selectedAddress()!.addressLine1 }}@if (selectedAddress()!.addressLine2) {, {{ selectedAddress()!.addressLine2 }}}</p>
+                <p>{{ selectedAddress()!.city }}, {{ selectedAddress()!.state }} - {{ selectedAddress()!.pincode }}</p>
+              </div>
+            </div>
+            <button
+              (click)="unselectAddress()"
+              class="text-xs text-red-500 hover:text-red-700 font-medium whitespace-nowrap mt-0.5"
+            >
+              ✕ Unselect
+            </button>
+          </div>
+          }
+
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="sm:col-span-2">
               <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
@@ -127,7 +165,8 @@
                 [(ngModel)]="address"
                 placeholder="House No., Building Name, Street"
                 rows="2"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                [disabled]="!!selectedAddress()"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
               ></textarea>
             </div>
             <div>
@@ -136,7 +175,8 @@
                 type="text"
                 [(ngModel)]="city"
                 placeholder="City"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                [disabled]="!!selectedAddress()"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
               />
             </div>
             <div>
@@ -145,7 +185,8 @@
                 type="text"
                 [(ngModel)]="state"
                 placeholder="State"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                [disabled]="!!selectedAddress()"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
               />
             </div>
             <div>
@@ -155,7 +196,8 @@
                 [(ngModel)]="pincode"
                 placeholder="6-digit pincode"
                 maxlength="6"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                [disabled]="!!selectedAddress()"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
               />
             </div>
           </div>
@@ -232,7 +274,69 @@
               </div>
               <span class="text-2xl">💵</span>
             </div>
+
+            <div
+              (click)="selectPaymentMethod('wallet')"
+              [class.border-blue-500]="selectedPaymentMethod() === 'wallet'"
+              [class.bg-blue-50]="selectedPaymentMethod() === 'wallet'"
+              class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer hover:border-blue-300 transition-colors"
+            >
+              <input
+                type="radio"
+                [checked]="selectedPaymentMethod() === 'wallet'"
+                class="w-4 h-4 text-blue-600"
+              />
+              <div class="flex-1">
+                <p class="font-medium text-gray-900">Wallet</p>
+                <p class="text-sm text-gray-600">Pay instantly using your wallet balance</p>
+              </div>
+              <span class="text-2xl">👛</span>
+            </div>
           </div>
+
+          <!-- Wallet info banner -->
+          @if (selectedPaymentMethod() === 'wallet') {
+          <div class="pt-4 border-t space-y-3">
+
+            <!-- Balance display -->
+            <div class="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg">
+              <div class="flex items-center gap-2 text-sm text-gray-700">
+                <span class="text-lg">👛</span>
+                <span class="font-medium">Wallet Balance</span>
+              </div>
+              @if (isLoadingWallet()) {
+                <div class="flex items-center gap-1.5 text-sm text-gray-500">
+                  <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                  </svg>
+                  Loading...
+                </div>
+              } @else if (walletBalance() !== null) {
+                <span class="font-bold text-gray-900">₹{{ walletBalance()!.toLocaleString() }}</span>
+              } @else {
+                <span class="text-sm text-red-500">Unavailable</span>
+              }
+            </div>
+
+            <!-- Sufficient balance -->
+            @if (!isLoadingWallet() && walletBalance() !== null && walletBalance()! >= total) {
+              <div class="flex items-start gap-2 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800">
+                <span class="text-base leading-none">✅</span>
+                <p>₹{{ total.toLocaleString() }} will be deducted from your wallet. Remaining balance: <span class="font-semibold">₹{{ (walletBalance()! - total).toLocaleString() }}</span></p>
+              </div>
+            }
+
+            <!-- Insufficient balance -->
+            @if (!isLoadingWallet() && walletBalance() !== null && walletBalance()! < total) {
+              <div class="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+                <span class="text-base leading-none">⚠️</span>
+                <p>Insufficient balance. You need <span class="font-semibold">₹{{ (total - walletBalance()!).toLocaleString() }}</span> more to complete this purchase.</p>
+              </div>
+            }
+
+          </div>
+          }
 
           <!-- Card Details -->
           @if (selectedPaymentMethod() === 'card') {
@@ -301,11 +405,51 @@
         <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 sticky top-4">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
 
+          <!-- Promo Code -->
+          <div class="mb-4">
+            @if (!appliedPromo()) {
+            <div class="flex gap-2">
+              <input
+                type="text"
+                [ngModel]="promoInput()"
+                (ngModelChange)="promoInput.set($event); promoError.set(null)"
+                placeholder="Enter promo code"
+                class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase"
+              />
+              <button
+                (click)="applyPromo()"
+                [disabled]="!promoInput().trim()"
+                class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+              >
+                Apply
+              </button>
+            </div>
+            @if (promoError()) {
+            <p class="text-xs text-red-500 mt-1">{{ promoError() }}</p>
+            }
+            } @else {
+            <div class="flex items-center justify-between px-3 py-2 bg-green-50 border border-green-200 rounded-lg">
+              <div class="flex items-center gap-2 text-sm text-green-700">
+                <span>🏷️</span>
+                <span class="font-semibold">{{ appliedPromo() }}</span>
+                <span class="text-green-600">({{ discountPercent() }}% off)</span>
+              </div>
+              <button (click)="removePromo()" class="text-xs text-red-500 hover:text-red-700 font-medium">✕ Remove</button>
+            </div>
+            }
+          </div>
+
           <div class="space-y-3 mb-4">
             <div class="flex justify-between text-gray-700">
               <span>Subtotal ({{ totalItems }} item{{ totalItems > 1 ? 's' : '' }})</span>
               <span>₹{{ subtotal.toLocaleString() }}</span>
             </div>
+            @if (appliedPromo()) {
+            <div class="flex justify-between text-green-600">
+              <span>Discount ({{ discountPercent() }}%)</span>
+              <span>- ₹{{ discountAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</span>
+            </div>
+            }
             <div class="flex justify-between text-gray-700">
               <span>Tax (18% GST)</span>
               <span>₹{{ tax.toFixed(2) }}</span>

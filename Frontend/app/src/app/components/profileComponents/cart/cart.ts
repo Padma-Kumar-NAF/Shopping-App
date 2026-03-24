@@ -1,4 +1,4 @@
-import { Component, inject, OnChanges, OnInit, signal, SimpleChanges } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { CartService } from '../../../services/cart.service';
@@ -10,8 +10,8 @@ import {
   RemoveAllFromCartResponseDTO,
   RemoveFromCartRequestDTO,
   RemoveFromCartResponseDTO,
+  UpdateUserCartRequestDTO,
 } from '../../../models/users/cart.model';
-import { sign } from 'crypto';
 import { toast } from 'ngx-sonner';
 
 @Component({
@@ -20,149 +20,123 @@ import { toast } from 'ngx-sonner';
   templateUrl: './cart.html',
   styleUrl: './cart.css',
 })
-export class Cart implements OnChanges, OnInit {
+export class Cart implements OnInit {
   private readonly cartId = signal<string>('');
   cartItems = signal<CartItemDTO[]>([]);
-  constructor(private router: Router) {
+  isLoading = signal<boolean>(false);
+
+  private readonly apiService = inject(CartService);
+  private readonly router = inject(Router);
+
+  pagination: PaginationModel;
+  itemsPerPage = 6;
+  currentPage = 1;
+
+  constructor() {
     this.pagination = new PaginationModel();
     this.pagination.pageSize = 10;
     this.pagination.pageNumber = 1;
   }
 
-  private readonly apiService: CartService = inject(CartService);
-  ngOnChanges(changes: SimpleChanges): void {}
-
   ngOnInit(): void {
     this.getUserCarts();
   }
 
-  getUserCarts() {
+  getUserCarts(): void {
+    this.isLoading.set(true);
     this.apiService.GetUserCart(this.pagination).subscribe({
       next: (response: ApiResponse<GetCartResponseDTO>) => {
         this.cartId.set(response.data?.cartId ?? '');
         this.cartItems.set(response.data?.cartItems ?? []);
-        console.log('response');
-        console.log(response);
+        this.isLoading.set(false);
       },
       error: (err) => {
-        console.error(err);
-      },
-      complete() {
-        console.log('getUserCarts completed');
+        toast.error(err?.error?.message || 'Failed to load cart');
+        this.isLoading.set(false);
       },
     });
   }
 
-  pagination: PaginationModel;
-
-  itemsPerPage = 6;
-  currentPage = 1;
-
-  removeAllCart() {
+  removeAllCart(): void {
     this.apiService.removeAllFromCart().subscribe({
       next: (response: ApiResponse<RemoveAllFromCartResponseDTO>) => {
-        console.log('response');
-        console.log(response);
-        toast.success(response.message);
+        toast.success(response.message || 'Cart cleared');
+        this.cartItems.set([]);
+        this.currentPage = 1;
       },
-      error: (err) => {
-        console.error(err);
-        console.error(err?.error?.message ?? 'Remove all cart failed');
-        toast.error(err?.error?.message ?? 'Remove all cart failed');
-      },
-      complete() {
-        console.log('remove all cart completed');
-      },
+      error: (err) => toast.error(err?.error?.message ?? 'Remove all cart failed'),
     });
-    this.cartItems.set([]);
-    this.currentPage = 1;
   }
 
-  placeAllOrders() {
-    console.log('Placing order for:', this.cartItems);
+  proceedToCheckout(): void {
+    this.router.navigate(['/payment'], { queryParams: { fromCart: 'true' } });
   }
 
-  proceedToCheckout() {
-    this.router.navigate(['/payment']);
+  increaseQty(item: CartItemDTO): void {
+    const newQty = item.quantity + 1;
+    this.updateCartItem(item, newQty);
   }
 
-  increaseQty(item: any) {
-    item.quantity++;
+  decreaseQty(item: CartItemDTO): void {
+    if (item.quantity <= 1) return;
+    const newQty = item.quantity - 1;
+    this.updateCartItem(item, newQty);
   }
 
-  decreaseQty(item: any) {
-    if (item.quantity > 1) {
-      item.quantity--;
-    }
+  private updateCartItem(item: CartItemDTO, newQty: number): void {
+    const request = new UpdateUserCartRequestDTO();
+    request.cartId = this.cartId();
+    request.cartItemId = item.cartItemId;
+    request.productId = item.productId;
+    request.quantity = newQty;
+
+    this.apiService.updateCart(request).subscribe({
+      next: (res) => {
+        if (res.data?.isUpdated) {
+          this.cartItems.update((items) =>
+            items.map((i) => (i.cartItemId === item.cartItemId ? { ...i, quantity: newQty } : i))
+          );
+        }
+      },
+      error: (err) => toast.error(err?.error?.message || 'Failed to update quantity'),
+    });
   }
 
-  removeFromCart(item: CartItemDTO) {
-    console.log('item');
-    console.log(item);
+  removeFromCart(item: CartItemDTO): void {
     const request: RemoveFromCartRequestDTO = {
       CartId: this.cartId(),
       CartItemId: item.cartItemId,
       ProductId: item.productId,
     };
-
     this.apiService.removeFromCart(request).subscribe({
       next: (response: ApiResponse<RemoveFromCartResponseDTO>) => {
-        console.log('response');
-        console.log(response);
-        toast.success(response.message)
+        toast.success(response.message || 'Item removed');
+        this.cartItems.update((items) => items.filter((i) => i.cartItemId !== item.cartItemId));
       },
-      error: (err) => {
-        console.error(err);
-        console.error(err?.error?.message ?? 'Remove all cart failed');
-        toast.error(err?.error?.message ?? 'Remove all cart failed');
-      },
-      complete() {
-        console.log('remove from cart completed');
-      },
+      error: (err) => toast.error(err?.error?.message ?? 'Remove from cart failed'),
     });
-    console.log('request');
-    console.log(request);
-    this.cartItems.set(this.cartItems().filter((i) => i.cartItemId !== item.cartItemId));
   }
 
-  get totalItems() {
+  get totalItems(): number {
     return this.cartItems().length;
   }
 
-  get totalPrice() {
+  get totalPrice(): number {
     return Number(
-      this.cartItems()
-        .reduce((sum, item) => sum + item.price * item.quantity, 0)
-        .toFixed(2),
+      this.cartItems().reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)
     );
   }
 
-  get totalPages() {
-    return Math.ceil(this.cartItems.length / this.itemsPerPage);
+  get totalPages(): number {
+    return Math.ceil(this.cartItems().length / this.itemsPerPage);
   }
 
-  get pages() {
-    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
-  }
-
-  get paginatedItems() {
+  get paginatedItems(): CartItemDTO[] {
     const start = (this.currentPage - 1) * this.itemsPerPage;
     return this.cartItems().slice(start, start + this.itemsPerPage);
   }
 
-  goToPage(page: number) {
-    this.currentPage = page;
-  }
-
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-    }
-  }
-
-  prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  }
+  goToPage(page: number): void { this.currentPage = page; }
+  nextPage(): void { if (this.currentPage < this.totalPages) this.currentPage++; }
+  prevPage(): void { if (this.currentPage > 1) this.currentPage--; }
 }

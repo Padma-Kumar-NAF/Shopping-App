@@ -1,0 +1,128 @@
+<div
+  class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-200"
+>
+  <!-- Items Info -->
+  <p class="text-sm text-gray-500">
+    @if (totalItems > 0) { Showing
+    <span class="font-semibold text-gray-800">{{ startItem }}</span> –
+    <span class="font-semibold text-gray-800">{{ endItem }}</span> of
+    <span class="font-semibold text-gray-800">{{ totalItems }}</span> items } @else { No items to
+    display }
+  </p>
+
+  <!-- Pagination Controls -->
+  @if (totalPages > 1) {
+  <div class="flex items-center gap-2">
+    <!-- First Page -->
+    <button
+      (click)="firstPage()"
+      [disabled]="currentPage === 1 || isLoading"
+      class="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium border transition-colors"
+      [class]="
+        currentPage === 1 || isLoading
+          ? 'border-gray-200 bg-gray-50 text-gray-300 cursor-not-allowed'
+          : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+      "
+      title="First page"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+        />
+      </svg>
+    </button>
+
+    <!-- Previous Page -->
+    <button
+      (click)="previousPage()"
+      [disabled]="!canGoPrevious"
+      class="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium border transition-colors"
+      [class]="
+        !canGoPrevious
+          ? 'border-gray-200 bg-gray-50 text-gray-300 cursor-not-allowed'
+          : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+      "
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+      <span class="hidden sm:inline">Prev</span>
+    </button>
+
+    <!-- Page Numbers -->
+    @for (page of pageNumbers; track page) {
+    <button
+      (click)="goToPage(page)"
+      [disabled]="isLoading"
+      class="w-9 h-9 rounded-lg text-sm font-medium border transition-colors"
+      [class]="
+        currentPage === page
+          ? 'bg-blue-600 border-blue-600 text-white shadow-sm'
+          : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+      "
+    >
+      {{ page }}
+    </button>
+    }
+
+    <!-- Next Page -->
+    <button
+      (click)="nextPage()"
+      [disabled]="!canGoNext"
+      class="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium border transition-colors"
+      [class]="
+        !canGoNext
+          ? 'border-gray-200 bg-gray-50 text-gray-300 cursor-not-allowed'
+          : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+      "
+    >
+      <span class="hidden sm:inline">Next</span>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+
+    <!-- Last Page -->
+    <button
+      (click)="lastPage()"
+      [disabled]="currentPage === totalPages || isLoading"
+      class="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium border transition-colors"
+      [class]="
+        currentPage === totalPages || isLoading
+          ? 'border-gray-200 bg-gray-50 text-gray-300 cursor-not-allowed'
+          : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+      "
+      title="Last page"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M13 5l7 7-7 7M5 5l7 7-7 7"
+        />
+      </svg>
+    </button>
+
+    <!-- Loading Indicator -->
+    @if (isLoading) {
+    <div class="flex items-center gap-2 text-blue-600 text-sm font-medium ml-2">
+      <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+      </svg>
+    </div>
+    }
+  </div>
+  }
+</div>

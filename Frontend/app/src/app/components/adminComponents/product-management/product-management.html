@@ -1,122 +1,88 @@
+<!-- ── Delete Confirm Modal ───────────────────────────────────────────────── -->
 @if (confirmModal()) {
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
-      <h2 class="text-xl font-bold text-gray-900 mb-2">⚠️ Delete Product</h2>
-      <p class="text-gray-600 mb-6">
-        Are you sure you want to delete this product? This action cannot be undone.
-      </p>
-      <div class="flex gap-3">
-        <button (click)="cancelDelete()"
-          class="flex-1 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium">
-          No
-        </button>
-        <button (click)="deleteProduct()"
-          class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium">
-          Yes, Delete
-        </button>
+  <div class="pm-modal-backdrop">
+    <div class="pm-modal pm-modal-sm">
+      <h2 class="pm-modal-title">⚠️ Delete Product</h2>
+      <p class="pm-modal-body">Are you sure you want to delete this product? This action cannot be undone.</p>
+      <div class="pm-modal-actions">
+        <button (click)="cancelDelete()" class="pm-btn pm-btn-ghost">Cancel</button>
+        <button (click)="deleteProduct()" class="pm-btn pm-btn-danger">Yes, Delete</button>
       </div>
     </div>
   </div>
 }
 
+<!-- ── Edit Modal ─────────────────────────────────────────────────────────── -->
 @if (showEditModal()) {
-  <div class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-      <div class="p-6">
+  <div class="pm-modal-backdrop">
+    <div class="pm-modal pm-modal-lg">
+      <div class="pm-modal-header">
+        <h3 class="pm-modal-title">Edit Product</h3>
+        <button (click)="closeEditModal()" class="pm-modal-close">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
 
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-xl font-bold text-gray-900">Edit Product</h3>
-          <button (click)="closeEditModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div class="lg:col-span-2">
-            <form (ngSubmit)="saveProduct()" class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Product Name <span class="text-red-500">*</span>
-                </label>
-                <input type="text" [(ngModel)]="editForm().name" name="name" required
-                  class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Category <span class="text-red-500">*</span>
-                </label>
-                <select [(ngModel)]="editForm().categoryId" name="categoryId" required
-                  class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="">Select a category</option>
-                  @for (cat of categories$ | async; track cat.categoryId) {
-                    <option [value]="cat.categoryId">{{ cat.categoryName }}</option>
-                  }
-                </select>
-              </div>
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">
-                    Price (₹) <span class="text-red-500">*</span>
-                  </label>
-                  <input type="number" [(ngModel)]="editForm().price" name="price"
-                    required min="0.01" step="0.01"
-                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">
-                    Quantity <span class="text-red-500">*</span>
-                  </label>
-                  <input type="number" [(ngModel)]="editForm().quantity" name="quantity"
-                    required min="0"
-                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                <input type="text" [value]="editForm().imagePath" (input)="updateEditImage($event)"
-                  name="imagePath"
-                  class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea [(ngModel)]="editForm().description" name="description" rows="3"
-                  class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
-              </div>
-              <div class="flex gap-3 pt-2">
-                <button type="submit"
-                  class="flex-1 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
-                  Save Changes
-                </button>
-                <button type="button" (click)="closeEditModal()"
-                  class="flex-1 px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg font-medium transition-colors">
-                  Cancel
-                </button>
-              </div>
-            </form>
+      <div class="pm-edit-grid">
+        <!-- Form -->
+        <form (ngSubmit)="saveProduct()" class="pm-form">
+          <div class="pm-field">
+            <label class="pm-label">Product Name <span class="pm-required">*</span></label>
+            <input type="text" [(ngModel)]="editForm().name" name="name" required class="pm-input" />
           </div>
-
-          <!-- Preview -->
-          <div class="lg:col-span-1">
-            <p class="text-sm font-medium text-gray-700 mb-2">Preview</p>
-            <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
-              @if (editImagePreview()) {
-                <img [src]="editImagePreview()" alt="preview"
-                  class="w-full h-40 object-cover" (error)="editImagePreview.set('')" />
-              } @else {
-                <div class="w-full h-40 bg-gray-200 flex items-center justify-center">
-                  <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </div>
+          <div class="pm-field">
+            <label class="pm-label">Category <span class="pm-required">*</span></label>
+            <select [(ngModel)]="editForm().categoryId" name="categoryId" required class="pm-input">
+              <option value="">Select a category</option>
+              @for (cat of categories$ | async; track cat.categoryId) {
+                <option [value]="cat.categoryId">{{ cat.categoryName }}</option>
               }
-              <div class="p-4 space-y-1">
-                <p class="font-semibold text-gray-900 text-sm">{{ editForm().name || 'Product Name' }}</p>
-                <p class="text-blue-600 font-bold">₹{{ editForm().price || 0 }}</p>
-                <p class="text-xs text-gray-500">Stock: {{ editForm().quantity || 0 }}</p>
+            </select>
+          </div>
+          <div class="pm-row">
+            <div class="pm-field">
+              <label class="pm-label">Price (₹) <span class="pm-required">*</span></label>
+              <input type="number" [(ngModel)]="editForm().price" name="price" min="0.01" step="0.01" class="pm-input" />
+            </div>
+            <div class="pm-field">
+              <label class="pm-label">Quantity <span class="pm-required">*</span></label>
+              <input type="number" [(ngModel)]="editForm().quantity" name="quantity" min="0" class="pm-input" />
+            </div>
+          </div>
+          <div class="pm-field">
+            <label class="pm-label">Image URL</label>
+            <input type="text" [value]="editForm().imagePath" (input)="updateEditImage($event)" name="imagePath" class="pm-input" />
+          </div>
+          <div class="pm-field">
+            <label class="pm-label">Description</label>
+            <textarea [(ngModel)]="editForm().description" name="description" rows="3" class="pm-input pm-textarea"></textarea>
+          </div>
+          <div class="pm-modal-actions">
+            <button type="button" (click)="closeEditModal()" class="pm-btn pm-btn-ghost">Cancel</button>
+            <button type="submit" class="pm-btn pm-btn-primary">Save Changes</button>
+          </div>
+        </form>
+
+        <!-- Preview -->
+        <div class="pm-preview-panel">
+          <p class="pm-label mb-2">Preview</p>
+          <div class="pm-preview-card">
+            @if (editImagePreview()) {
+              <img [src]="editImagePreview()" alt="preview" class="pm-preview-img" (error)="editImagePreview.set('')" />
+            } @else {
+              <div class="pm-preview-placeholder">
+                <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
               </div>
+            }
+            <div class="pm-preview-info">
+              <p class="pm-preview-name">{{ editForm().name || 'Product Name' }}</p>
+              <p class="pm-preview-price">₹{{ editForm().price || 0 }}</p>
+              <p class="pm-preview-stock">Stock: {{ editForm().quantity || 0 }}</p>
             </div>
           </div>
         </div>
@@ -126,21 +92,23 @@
 }
 
 <!-- ── Main Page ──────────────────────────────────────────────────────────── -->
-<div class="bg-white rounded-xl shadow-md p-6">
+<div class="pm-page">
 
-  <!-- Header + Tab Toggle -->
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+  <!-- Page header -->
+  <div class="pm-page-header">
     <div>
-      <h2 class="text-2xl font-bold text-gray-900">Product Management</h2>
-      <p class="text-gray-600 mt-1">
-        {{ activeView() === 'list' ? 'View and manage all products' : 'Fill in details to add a new product' }}
+      <h2 class="pm-page-title">Product Management</h2>
+      <p class="pm-page-sub">
+        @if (activeView() === 'list') { View and manage all products }
+        @else if (activeView() === 'add') { Add a new product to the catalogue }
+        @else { Bulk import products from an Excel file }
       </p>
     </div>
 
-    <div class="flex items-center gap-3">
+    <div class="pm-header-right">
       @if (isLoading()) {
-        <div class="flex items-center gap-2 text-blue-600 text-sm font-medium">
-          <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+        <div class="pm-loading-badge">
+          <svg class="pm-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
           </svg>
@@ -148,48 +116,43 @@
         </div>
       }
 
-      <div class="flex items-center gap-1 bg-gray-100 p-1 rounded-xl w-fit">
-        <button
-          (click)="switchView('list')"
-          [class]="activeView() === 'list' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
-          class="px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2">
+      <!-- View switcher -->
+      <div class="pm-switcher">
+        <button (click)="switchView('list')" [class.active]="activeView() === 'list'" class="pm-switch-btn">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
           </svg>
           All Products
         </button>
-        <button
-          (click)="switchView('add')"
-          [class]="activeView() === 'add' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
-          class="px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2">
+        <button (click)="switchView('add')" [class.active]="activeView() === 'add'" class="pm-switch-btn">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
           </svg>
           Add Product
+        </button>
+        <button (click)="switchView('bulk')" [class.active]="activeView() === 'bulk'" class="pm-switch-btn">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          Bulk Upload
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════════════════════════════════════
-       LIST VIEW
-       ════════════════════════════════════════════════════════════════════════ -->
+  <!-- ══ LIST VIEW ══════════════════════════════════════════════════════════ -->
   @if (activeView() === 'list') {
-
     <!-- Filters -->
-    <div class="flex flex-col sm:flex-row gap-4 mb-4">
-      <div class="flex-1 relative">
-        <input type="text" placeholder="Search by name, category, description..."
-          (input)="onSearchChange($event)"
-          class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-          fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    <div class="pm-filters">
+      <div class="pm-search-wrap">
+        <svg class="pm-search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
+        <input type="text" placeholder="Search by name, category, description…"
+          (input)="onSearchChange($event)" class="pm-search-input" />
       </div>
-      <select (change)="onCategoryChange($event)"
-        class="px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <select (change)="onCategoryChange($event)" class="pm-select">
         <option value="all">All Categories</option>
         @for (cat of categories$ | async; track cat.categoryId) {
           <option [value]="cat.categoryId">{{ cat.categoryName }}</option>
@@ -197,102 +160,79 @@
       </select>
     </div>
 
-    <p class="text-sm text-gray-500 mb-4">
-      Showing
-      <span class="font-semibold text-gray-700">{{ (filteredProducts$ | async)?.length ?? 0 }}</span>
-      of
-      <span class="font-semibold text-gray-700">{{ (products$ | async)?.length ?? 0 }}</span>
-      products
-      @if (hasMoreData()) {
-        <span class="text-gray-400 ml-1">(more available on server)</span>
-      }
+    <p class="pm-count-label">
+      Showing <strong>{{ (filteredProducts$ | async)?.length ?? 0 }}</strong>
+      of <strong>{{ (products$ | async)?.length ?? 0 }}</strong> products
+      @if (hasMoreData()) { <span class="pm-count-more">· more on server</span> }
     </p>
 
-    <!-- Desktop Table -->
-    <div class="hidden md:block overflow-x-auto">
-      <table class="w-full">
-        <thead class="bg-gray-50 border-b border-gray-200">
+    <!-- Desktop table -->
+    <div class="pm-table-wrap">
+      <table class="pm-table">
+        <thead>
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
-            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Rating</th>
+            <th class="text-right">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200">
+        <tbody>
           @if (isLoading() && (products$ | async)?.length === 0) {
             @for (i of [1,2,3,4,5]; track i) {
-              <tr>
-                <td colspan="6" class="px-6 py-4">
-                  <div class="h-10 bg-gray-100 rounded animate-pulse"></div>
-                </td>
-              </tr>
+              <tr><td colspan="6"><div class="pm-skeleton-row"></div></td></tr>
             }
           } @else {
             @for (product of filteredProducts$ | async; track product.productId) {
-              <tr class="hover:bg-gray-50 transition-colors">
-                <td class="px-6 py-4">
-                  <div class="flex items-center gap-3">
-                    <img [src]="product.imagePath" [alt]="product.productName"
-                      class="w-12 h-12 object-cover rounded-lg border border-gray-100 flex-shrink-0" />
+              <tr>
+                <td>
+                  <div class="pm-product-cell">
+                    <img [src]="product.imagePath" [alt]="product.productName" class="pm-product-thumb" />
                     <div>
-                      <p class="font-medium text-gray-900">{{ product.productName }}</p>
-                      <p class="text-sm text-gray-500 line-clamp-1 max-w-xs">{{ product.description }}</p>
+                      <p class="pm-product-name">{{ product.productName }}</p>
+                      <p class="pm-product-desc">{{ product.description }}</p>
                     </div>
                   </div>
                 </td>
-                <td class="px-6 py-4">
-                  <span class="px-2.5 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-                    {{ product.categoryName }}
-                  </span>
-                </td>
-                <td class="px-6 py-4 font-semibold text-gray-900">
-                  ₹{{ product.price.toLocaleString() }}
-                </td>
-                <td class="px-6 py-4">
+                <td><span class="pm-badge pm-badge-blue">{{ product.categoryName }}</span></td>
+                <td class="pm-price">₹{{ product.price.toLocaleString() }}</td>
+                <td>
                   @if (product.quantity > 0) {
-                    <span [class]="product.quantity > 20 ? 'text-green-600' : 'text-orange-500'"
-                      class="text-sm font-medium">
+                    <span [class]="product.quantity > 20 ? 'pm-stock-ok' : 'pm-stock-low'">
                       {{ product.quantity }} units
                     </span>
                   } @else {
-                    <span class="text-red-600 text-sm font-medium">Out of stock</span>
+                    <span class="pm-stock-out">Out of stock</span>
                   }
                 </td>
-                <td class="px-6 py-4">
+                <td>
                   @if (product.review?.length) {
-                    <div class="flex items-center gap-1">
-                      <svg class="w-4 h-4 text-yellow-400 fill-yellow-400" viewBox="0 0 20 20">
+                    <div class="pm-rating">
+                      <svg class="w-4 h-4 fill-yellow-400 text-yellow-400" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                       </svg>
-                      <span class="text-sm font-medium text-gray-700">{{ avgRating(product.review) }}</span>
-                      <span class="text-xs text-gray-400">({{ product.review.length }})</span>
+                      <span>{{ avgRating(product.review) }}</span>
+                      <span class="pm-rating-count">({{ product.review.length }})</span>
                     </div>
                   } @else {
-                    <span class="text-xs text-gray-400">No reviews</span>
+                    <span class="pm-no-reviews">No reviews</span>
                   }
                 </td>
-                <td class="px-6 py-4 text-right">
-                  <div class="flex items-center justify-end gap-2">
-                    <button (click)="openEditModal(product)"
-                      class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
-                      Edit
-                    </button>
-                    <button (click)="openDeleteModal(product.productId)"
-                      class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors">
-                      Delete
-                    </button>
+                <td>
+                  <div class="pm-actions">
+                    <button (click)="openEditModal(product)" class="pm-btn pm-btn-primary pm-btn-sm">Edit</button>
+                    <button (click)="openDeleteModal(product.productId)" class="pm-btn pm-btn-danger pm-btn-sm">Delete</button>
                   </div>
                 </td>
               </tr>
             } @empty {
               <tr>
-                <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                <td colspan="6" class="pm-empty">
                   <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                      d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
                   </svg>
                   No products found
                 </td>
@@ -303,229 +243,238 @@
       </table>
     </div>
 
-    <!-- Mobile Cards -->
-    <div class="md:hidden space-y-4">
+    <!-- Mobile cards -->
+    <div class="pm-cards">
       @if (isLoading() && (products$ | async)?.length === 0) {
         @for (i of [1,2,3]; track i) {
-          <div class="h-40 bg-gray-100 rounded-xl animate-pulse"></div>
+          <div class="pm-skeleton-card"></div>
         }
       } @else {
         @for (product of filteredProducts$ | async; track product.productId) {
-          <div class="bg-gray-50 rounded-xl border border-gray-200 p-4">
-            <div class="flex gap-3 mb-3">
-              <img [src]="product.imagePath" [alt]="product.productName"
-                class="w-20 h-20 object-cover rounded-lg flex-shrink-0" />
-              <div class="flex-1 min-w-0">
-                <h3 class="font-semibold text-gray-900 mb-1 truncate">{{ product.productName }}</h3>
-                <span class="inline-block px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs font-medium mb-1">
-                  {{ product.categoryName }}
-                </span>
-                <p class="text-sm text-gray-500 line-clamp-2">{{ product.description }}</p>
+          <div class="pm-card">
+            <div class="pm-card-top">
+              <img [src]="product.imagePath" [alt]="product.productName" class="pm-card-img" />
+              <div class="pm-card-info">
+                <h3 class="pm-product-name">{{ product.productName }}</h3>
+                <span class="pm-badge pm-badge-blue">{{ product.categoryName }}</span>
+                <p class="pm-product-desc mt-1">{{ product.description }}</p>
               </div>
             </div>
-            <div class="flex items-center justify-between mb-3">
-              <p class="text-lg font-bold text-gray-900">₹{{ product.price.toLocaleString() }}</p>
-              <div class="text-right">
-                @if (product.quantity > 0) {
-                  <span [class]="product.quantity > 20 ? 'text-green-600' : 'text-orange-500'"
-                    class="text-sm font-medium">
-                    {{ product.quantity }} units
-                  </span>
-                } @else {
-                  <span class="text-red-600 text-sm">Out of stock</span>
-                }
-              </div>
+            <div class="pm-card-meta">
+              <span class="pm-price">₹{{ product.price.toLocaleString() }}</span>
+              @if (product.quantity > 0) {
+                <span [class]="product.quantity > 20 ? 'pm-stock-ok' : 'pm-stock-low'">{{ product.quantity }} units</span>
+              } @else {
+                <span class="pm-stock-out">Out of stock</span>
+              }
             </div>
-            @if (product.review?.length) {
-              <div class="flex items-center gap-1 mb-3">
-                <svg class="w-4 h-4 text-yellow-400 fill-yellow-400" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                </svg>
-                <span class="text-sm font-medium text-gray-700">{{ avgRating(product.review) }}</span>
-                <span class="text-xs text-gray-400">({{ product.review.length }} reviews)</span>
-              </div>
-            }
-            <div class="flex gap-2">
-              <button (click)="openEditModal(product)"
-                class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
-                Edit
-              </button>
-              <button (click)="openDeleteModal(product.productId)"
-                class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors">
-                Delete
-              </button>
+            <div class="pm-actions">
+              <button (click)="openEditModal(product)" class="pm-btn pm-btn-primary pm-btn-full">Edit</button>
+              <button (click)="openDeleteModal(product.productId)" class="pm-btn pm-btn-danger pm-btn-full">Delete</button>
             </div>
           </div>
         } @empty {
-          <div class="text-center py-12 text-gray-500">No products found</div>
+          <p class="pm-empty">No products found</p>
         }
       }
     </div>
 
-    <!-- ── Load More ──────────────────────────────────────────────────────── -->
+    <!-- Load more -->
     @if (hasMoreData()) {
-      <div class="mt-8 flex flex-col items-center gap-2 pt-4 border-t border-gray-200">
-        <p class="text-sm text-gray-500">
-          Loaded <span class="font-semibold text-gray-700">{{ (products$ | async)?.length ?? 0 }}</span> products
-          &nbsp;·&nbsp; Page size: <span class="font-semibold text-gray-700">{{ pageSize }}</span>
+      <div class="pm-load-more">
+        <p class="pm-load-info">
+          Loaded <strong>{{ (products$ | async)?.length ?? 0 }}</strong> products · page size {{ pageSize }}
         </p>
-        <button (click)="loadNextPage()"
-          [disabled]="isLoading()"
-          class="flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium border transition-colors"
-          [class]="isLoading()
-            ? 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
-            : 'border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100'">
+        <button (click)="loadNextPage()" [disabled]="isLoading()"
+          class="pm-btn" [class]="isLoading() ? 'pm-btn-ghost pm-btn-disabled' : 'pm-btn-outline'">
           @if (isLoading()) {
-            <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+            <svg class="pm-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
             </svg>
-            Loading next {{ pageSize }} products…
+            Loading…
           } @else {
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
             Load next {{ pageSize }} products
           }
         </button>
       </div>
     } @else {
-      <div class="mt-6 pt-4 border-t border-gray-200 text-center text-sm text-gray-400">
-        ✓ All <span class="font-semibold">{{ (products$ | async)?.length ?? 0 }}</span> products loaded
-      </div>
+      <p class="pm-all-loaded">✓ All {{ (products$ | async)?.length ?? 0 }} products loaded</p>
     }
-
   }
 
-  <!-- ════════════════════════════════════════════════════════════════════════
-       ADD VIEW
-       ════════════════════════════════════════════════════════════════════════ -->
+  <!-- ══ ADD VIEW ═══════════════════════════════════════════════════════════ -->
   @if (activeView() === 'add') {
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
+    <div class="pm-add-grid">
       <!-- Form -->
-      <div class="lg:col-span-2">
-        <form (ngSubmit)="addProduct()" class="space-y-5">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Product Name <span class="text-red-500">*</span>
-            </label>
-            <input type="text" [value]="addForm().name"
-              (input)="updateAddField('name', $any($event.target).value)"
-              placeholder="Enter product name"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <form (ngSubmit)="addProduct()" class="pm-form">
+        <div class="pm-field">
+          <label class="pm-label">Product Name <span class="pm-required">*</span></label>
+          <input type="text" [value]="addForm().name"
+            (input)="updateAddField('name', $any($event.target).value)"
+            placeholder="Enter product name" class="pm-input" />
+        </div>
+        <div class="pm-field">
+          <label class="pm-label">Category <span class="pm-required">*</span></label>
+          <select [value]="addForm().categoryId"
+            (change)="updateAddField('categoryId', $any($event.target).value)" class="pm-input">
+            <option value="">Select a category</option>
+            @for (cat of categories$ | async; track cat.categoryId) {
+              <option [value]="cat.categoryId">{{ cat.categoryName }}</option>
+            }
+          </select>
+        </div>
+        <div class="pm-row">
+          <div class="pm-field">
+            <label class="pm-label">Quantity <span class="pm-required">*</span></label>
+            <input type="number" [value]="addForm().quantity"
+              (input)="updateAddField('quantity', +$any($event.target).value)"
+              placeholder="0" min="0" class="pm-input" />
           </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Category <span class="text-red-500">*</span>
-            </label>
-            <select [value]="addForm().categoryId"
-              (change)="updateAddField('categoryId', $any($event.target).value)"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">Select a category</option>
-              @for (cat of categories$ | async; track cat.categoryId) {
-                <option [value]="cat.categoryId">{{ cat.categoryName }}</option>
-              }
-            </select>
+          <div class="pm-field">
+            <label class="pm-label">Price (₹) <span class="pm-required">*</span></label>
+            <input type="number" [value]="addForm().price"
+              (input)="updateAddField('price', +$any($event.target).value)"
+              placeholder="0.00" min="0" step="0.01" class="pm-input" />
           </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Quantity <span class="text-red-500">*</span>
-              </label>
-              <input type="number" [value]="addForm().quantity"
-                (input)="updateAddField('quantity', +$any($event.target).value)"
-                placeholder="0" min="0"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Price (₹) <span class="text-red-500">*</span>
-              </label>
-              <input type="number" [value]="addForm().price"
-                (input)="updateAddField('price', +$any($event.target).value)"
-                placeholder="0.00" min="0" step="0.01"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Product Image URL <span class="text-red-500">*</span>
-            </label>
-            <input type="text" [value]="addForm().imagePath"
-              (input)="updateAddImage($event)"
-              placeholder="https://example.com/image.jpg"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            <p class="text-xs text-gray-500 mt-1">Enter a valid image URL</p>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Description <span class="text-red-500">*</span>
-            </label>
-            <textarea [value]="addForm().description"
-              (input)="updateAddField('description', $any($event.target).value)"
-              placeholder="Enter product description..." rows="4"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
-          </div>
-
-          <div class="flex flex-col sm:flex-row gap-3 pt-2">
-            <button type="submit"
-              class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors shadow-md">
-              Add Product
-            </button>
-            <button type="button" (click)="resetAddForm()"
-              class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-lg transition-colors">
-              Reset Form
-            </button>
-          </div>
-        </form>
-      </div>
+        </div>
+        <div class="pm-field">
+          <label class="pm-label">Image URL <span class="pm-required">*</span></label>
+          <input type="text" [value]="addForm().imagePath"
+            (input)="updateAddImage($event)"
+            placeholder="https://example.com/image.jpg" class="pm-input" />
+        </div>
+        <div class="pm-field">
+          <label class="pm-label">Description <span class="pm-required">*</span></label>
+          <textarea [value]="addForm().description"
+            (input)="updateAddField('description', $any($event.target).value)"
+            placeholder="Enter product description…" rows="4" class="pm-input pm-textarea"></textarea>
+        </div>
+        <div class="pm-form-actions">
+          <button type="submit" class="pm-btn pm-btn-primary pm-btn-full">Add Product</button>
+          <button type="button" (click)="resetAddForm()" class="pm-btn pm-btn-ghost pm-btn-full">Reset</button>
+        </div>
+      </form>
 
       <!-- Preview -->
-      <div class="lg:col-span-1">
-        <div class="sticky top-6">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">Product Preview</h3>
-          <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
-            @if (imagePreview()) {
-              <img [src]="imagePreview()" [alt]="addForm().name"
-                class="w-full h-48 object-cover" (error)="imagePreview.set('')" />
-            } @else {
-              <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
-                <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-            }
-            <div class="p-5 space-y-3">
-              <h4 class="font-semibold text-gray-900 text-lg">
-                {{ addForm().name || 'Product Name' }}
-              </h4>
-              <div class="flex items-center justify-between pt-3 border-t border-gray-200">
-                <div>
-                  <p class="text-xs text-gray-500">Price</p>
-                  <p class="text-2xl font-bold text-blue-600">₹{{ addForm().price || 0 }}</p>
-                </div>
-                <div class="text-right">
-                  <p class="text-xs text-gray-500">Stock</p>
-                  <p class="text-lg font-semibold text-gray-900">{{ addForm().quantity || 0 }}</p>
-                </div>
-              </div>
-              @if (addForm().description) {
-                <div class="pt-3 border-t border-gray-200">
-                  <p class="text-xs text-gray-500 mb-1">Description</p>
-                  <p class="text-sm text-gray-700 line-clamp-3">{{ addForm().description }}</p>
-                </div>
-              }
+      <div class="pm-preview-sticky">
+        <p class="pm-section-label">Live Preview</p>
+        <div class="pm-preview-card">
+          @if (imagePreview()) {
+            <img [src]="imagePreview()" [alt]="addForm().name" class="pm-preview-img" (error)="imagePreview.set('')" />
+          } @else {
+            <div class="pm-preview-placeholder">
+              <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
             </div>
+          }
+          <div class="pm-preview-info">
+            <p class="pm-preview-name">{{ addForm().name || 'Product Name' }}</p>
+            <div class="pm-preview-meta">
+              <div>
+                <p class="pm-preview-meta-label">Price</p>
+                <p class="pm-preview-price">₹{{ addForm().price || 0 }}</p>
+              </div>
+              <div class="text-right">
+                <p class="pm-preview-meta-label">Stock</p>
+                <p class="pm-preview-stock-val">{{ addForm().quantity || 0 }}</p>
+              </div>
+            </div>
+            @if (addForm().description) {
+              <p class="pm-preview-desc-text">{{ addForm().description }}</p>
+            }
           </div>
         </div>
       </div>
+    </div>
+  }
+
+  <!-- ══ BULK UPLOAD VIEW ═══════════════════════════════════════════════════ -->
+  @if (activeView() === 'bulk') {
+    <div class="pm-bulk">
+
+      <!-- Instructions -->
+      <div class="pm-info-box">
+        <p class="pm-info-title">📋 Required Excel columns</p>
+        <div class="pm-info-cols">
+          @for (col of ['categoryId','name','imagePath','description','price','quantity']; track col) {
+            <code class="pm-code">{{ col }}</code>
+          }
+        </div>
+      </div>
+
+      <!-- Drop zone -->
+      <div class="pm-dropzone" [class.pm-dropzone-active]="bulkFileName()">
+        <input #fileInput type="file" accept=".xlsx,.xls" class="hidden" (change)="onBulkFileChange($event)" />
+
+        @if (!bulkFileName()) {
+          <svg class="w-12 h-12 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+          </svg>
+          <p class="pm-dropzone-title">Drop your Excel file here</p>
+          <p class="pm-dropzone-sub">Supports .xlsx and .xls</p>
+          <button type="button" (click)="fileInput.click()" class="pm-btn pm-btn-primary mt-4">Browse File</button>
+        } @else {
+          <svg class="w-10 h-10 text-green-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <p class="pm-dropzone-title">{{ bulkFileName() }}</p>
+          <p class="pm-dropzone-sub">{{ bulkProducts().length }} row(s) parsed</p>
+          <div class="pm-dropzone-actions">
+            <button type="button" (click)="fileInput.click()" class="pm-btn pm-btn-ghost">Replace</button>
+            <button type="button" (click)="clearBulkUpload()" class="pm-btn pm-btn-danger-soft">Clear</button>
+          </div>
+        }
+      </div>
+
+      <!-- Errors -->
+      @if (bulkErrors().length) {
+        <div class="pm-error-box">
+          <p class="pm-error-title">⚠️ {{ bulkErrors().length }} validation issue(s)</p>
+          <ul class="pm-error-list">
+            @for (err of bulkErrors(); track $index) {
+              <li>{{ err }}</li>
+            }
+          </ul>
+        </div>
+      }
+
+      <!-- Preview table -->
+      @if (bulkProducts().length) {
+        <div>
+          <p class="pm-section-label mb-3">
+            Preview — {{ bulkProducts().length }} product(s)
+            <span class="pm-section-label-sub">(logged to console)</span>
+          </p>
+          <div class="pm-table-wrap">
+            <table class="pm-table">
+              <thead>
+                <tr>
+                  <th>#</th><th>Name</th><th>Category ID</th>
+                  <th>Price</th><th>Qty</th><th>Image</th><th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (p of bulkProducts(); track $index) {
+                  <tr>
+                    <td class="pm-muted">{{ $index + 1 }}</td>
+                    <td class="pm-product-name">{{ p.name || '—' }}</td>
+                    <td class="pm-mono">{{ p.categoryId || '—' }}</td>
+                    <td>₹{{ p.price }}</td>
+                    <td>{{ p.quantity }}</td>
+                    <td class="pm-truncate pm-muted">{{ p.imagePath || '—' }}</td>
+                    <td class="pm-truncate pm-muted">{{ p.description || '—' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
 
     </div>
   }

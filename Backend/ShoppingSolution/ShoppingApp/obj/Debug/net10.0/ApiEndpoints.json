@@ -116,6 +116,26 @@
     ]
   },
   {
+    "ContainingType": "ShoppingApp.Controllers.WalletController",
+    "Method": "GetWalletBalance",
+    "RelativePath": "api/Wallet/balance",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "ShoppingApp.Models.DTOs.Wallet.GetWalletAmountResponseDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "ShoppingApp.Controllers.WishListController",
     "Method": "AddToWishListAsync",
     "RelativePath": "api/wishlist/add-product",
@@ -366,6 +386,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "ShoppingApp.Controllers.LogsController",
+    "Method": "GetLogs",
+    "RelativePath": "logs/get-logs",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Logs.GetLogsRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "ShoppingApp.Controllers.OrderController",
     "Method": "CancelOrder",
     "RelativePath": "orders/cancel-order",
@@ -511,6 +547,22 @@
   },
   {
     "ContainingType": "ShoppingApp.Controllers.ProductsController",
+    "Method": "GetProductsWithFilter",
+    "RelativePath": "Products/get-products-with-filter",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Product.GetAllProductsWithFilterRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.ProductsController",
     "Method": "GetProductByName",
     "RelativePath": "Products/search-product",
     "HttpMethod": "POST",
@@ -536,6 +588,38 @@
       {
         "Name": "request",
         "Type": "ShoppingApp.Models.DTOs.Product.UpdateProductRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.PromoCodeController",
+    "Method": "AddPromoCode",
+    "RelativePath": "PromoCode/add-promocode",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Promocode.AddPromoCodeRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.PromoCodeController",
+    "Method": "VerifyPromoCode",
+    "RelativePath": "PromoCode/verify-promocode",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Promocode.VerifyPromoCodeRequestDTO",
         "IsRequired": true
       }
     ],
@@ -568,6 +652,38 @@
       {
         "Name": "request",
         "Type": "ShoppingApp.Models.DTOs.Review.DeleteReviewRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.UserController",
+    "Method": "ChangeUserRole",
+    "RelativePath": "User/change-user-role",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.User.ChangeUserRoleRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.UserController",
+    "Method": "DeactivateUser",
+    "RelativePath": "User/delete-user",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.User.DeleteUserRequestDTO",
         "IsRequired": true
       }
     ],

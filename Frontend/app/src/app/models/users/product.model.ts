@@ -1,18 +1,65 @@
-export interface ProductItem {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  image: string;
-  description?: string;
-  rating?: number;
-  stock?: number;
-  tags?: string[];
+// Mirrors backend GetAllProductsResponseDTO / ProductDetails
+export interface ReviewDTO {
+  summary: string;
+  reviewPoints: number;
 }
 
-export interface SearchResult {
-  query: string;
-  exactMatch: ProductItem | null;
-  relatedProducts: ProductItem[];
-  totalResults: number;
+export interface ProductDetails {
+  productId: string;
+  categoryId: string;
+  stockId: string;
+  productName: string;
+  categoryName: string;
+  imagePath: string;
+  description: string;
+  price: number;
+  quantity: number;
+  review: ReviewDTO[];
+}
+
+export interface GetAllProductsResponseDTO {
+  productList: ProductDetails[];
+}
+
+export interface GetAllProductsRequestDTO {
+  pagination: {
+    pageSize: number;
+    pageNumber: number;
+  };
+}
+
+export interface SearchProductByNameRequestDTO {
+  productName: string;
+}
+
+export interface SearchProductByNameResponseDTO {
+  productsList: ProductDetails[];
+}
+
+export interface SearchProductByIdRequestDTO {
+  productId: string;
+}
+
+export interface SearchProductByIdResponseDTO {
+  productId: string;
+  categoryId: string;
+  stockId: string;
+  productName: string;
+  categoryName: string;
+  imagePath: string;
+  description: string;
+  price: number;
+  quantity: number;
+  review: ReviewDTO[];
+}
+
+export interface GetProductsWithFilterRequestDTO {
+  pagination: { pageSize: number; pageNumber: number };
+  lowPrice: number;
+  highPrice: number;
+  categoryId?: string | null;
+}
+
+export interface GetProductsWithFilterResponseDTO {
+  productList: ProductDetails[];
 }

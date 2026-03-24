@@ -3,7 +3,18 @@ import { PaginationModel } from '../models/users/pagination.model';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../models/users/apiResponse.model';
-import { GetCartResponseDTO, RemoveAllFromCartResponseDTO, RemoveFromCartRequestDTO, RemoveFromCartResponseDTO } from '../models/users/cart.model';
+import {
+  AddToCartRequestDTO,
+  AddToCartResponseDTO,
+  GetCartResponseDTO,
+  OrderAllFromCartRequestDTO,
+  OrderAllFromCartResponseDTO,
+  RemoveAllFromCartResponseDTO,
+  RemoveFromCartRequestDTO,
+  RemoveFromCartResponseDTO,
+  UpdateUserCartRequestDTO,
+  UpdateUserCartResponseDTO,
+} from '../models/users/cart.model';
 
 @Injectable({
   providedIn: 'root',
@@ -11,22 +22,30 @@ import { GetCartResponseDTO, RemoveAllFromCartResponseDTO, RemoveFromCartRequest
 export class CartService {
   private baseUrl = 'https://localhost:7023/Cart';
 
-  constructor(private Http: HttpClient) {
-    console.log("Cart Service Constructorrrrrrrrrrrrrrrr")
-  }
+  constructor(private Http: HttpClient) {}
 
-  GetUserCart(pagination: PaginationModel) : Observable<ApiResponse<GetCartResponseDTO>>{
+  GetUserCart(pagination: PaginationModel): Observable<ApiResponse<GetCartResponseDTO>> {
     const body = { Pagination: pagination };
-    return this.Http.post<ApiResponse<GetCartResponseDTO>>(`${this.baseUrl}/get-user-cart`,body)
+    return this.Http.post<ApiResponse<GetCartResponseDTO>>(`${this.baseUrl}/get-user-cart`, body);
   }
 
-  removeAllFromCart() : Observable<ApiResponse<RemoveAllFromCartResponseDTO>>{
-    return this.Http.post<ApiResponse<RemoveAllFromCartResponseDTO>>(`${this.baseUrl}/remove-all-from-cart`,{})
+  addToCart(request: AddToCartRequestDTO): Observable<ApiResponse<AddToCartResponseDTO>> {
+    return this.Http.post<ApiResponse<AddToCartResponseDTO>>(`${this.baseUrl}/add-to-cart`, request);
   }
 
-  removeFromCart(request : RemoveFromCartRequestDTO) : Observable<ApiResponse<RemoveFromCartResponseDTO>>{
-    return this.Http.delete<ApiResponse<RemoveFromCartResponseDTO>>(`${this.baseUrl}/remove-from-cart`,{
-      body : request
-    });
+  updateCart(request: UpdateUserCartRequestDTO): Observable<ApiResponse<UpdateUserCartResponseDTO>> {
+    return this.Http.post<ApiResponse<UpdateUserCartResponseDTO>>(`${this.baseUrl}/update-user-cart`, request);
+  }
+
+  orderAllFromCart(request: OrderAllFromCartRequestDTO): Observable<ApiResponse<OrderAllFromCartResponseDTO>> {
+    return this.Http.post<ApiResponse<OrderAllFromCartResponseDTO>>(`${this.baseUrl}/order-all-from-cart`, request);
+  }
+
+  removeAllFromCart(): Observable<ApiResponse<RemoveAllFromCartResponseDTO>> {
+    return this.Http.post<ApiResponse<RemoveAllFromCartResponseDTO>>(`${this.baseUrl}/remove-all-from-cart`, {});
+  }
+
+  removeFromCart(request: RemoveFromCartRequestDTO): Observable<ApiResponse<RemoveFromCartResponseDTO>> {
+    return this.Http.delete<ApiResponse<RemoveFromCartResponseDTO>>(`${this.baseUrl}/remove-from-cart`, { body: request });
   }
 }

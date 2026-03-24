@@ -8,7 +8,6 @@ export class AddressDTO {
 }
 
 export class AddressModel {
-  userId: string = "";
   addressList: AddressDTO[] = [];
 }
 
