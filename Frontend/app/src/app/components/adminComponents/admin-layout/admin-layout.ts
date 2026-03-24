@@ -49,6 +49,11 @@ export class AdminLayout implements OnInit {
     return this.currentRoute().startsWith(path);
   }
 
+  currentPageLabel(): string {
+    const match = this.navItems.find(i => this.currentRoute().startsWith(i.path));
+    return match?.label ?? 'Dashboard';
+  }
+
   toggleMobileMenu(): void {
     this.mobileMenuOpen.update((v) => !v);
   }

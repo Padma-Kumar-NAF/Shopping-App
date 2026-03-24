@@ -5,14 +5,16 @@ select * from Addresses
 delete from Logs
 
 update Users
-set Role ='user'
-where UserId = '6A3AC425-EDF3-41D5-AB40-D26C1955C7FC'
+set Role ='admin'
+where UserId = '9112C08F-8198-4FC8-9BD2-D77092E1142A'
 
 delete from Addresses
 delete from Payments
 delete from Refunds
 delete from Addresses
 where AddressLine2 = 'Test line 1'
+
+select * from Logs
 
 delete from Users
 where UserId = '15C095AD-D196-49BF-B2A2-8995DC6B3E81'
@@ -22,7 +24,24 @@ select count(*) from Products
 select * from Products
 
 select * from Payments
-select * from Orders	
+select * from Orders
+
+delete from UserDetails
+delete from Addresses
+delete from users
+delete from Refunds
+delete from Payments
+delete from Addresses
+delete from orders
+delete from OrderDetails
+delete from Carts
+delete from CartItems
+delete from Reviews
+delete from Logs
+delete from Category
+delete from Products
+delete from Stock
+delete from WishListItems
 
 
 select * from Refunds
