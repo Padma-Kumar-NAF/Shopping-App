@@ -1,27 +1,34 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { Footer } from '../footer/footer';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ProductService } from '../../../services/product.service';
 import { ProductStateService } from '../../../services/product-state.service';
-import { ProductItem } from '../../../models/users/product.model';
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-}
+import { AdminCategoryService } from '../../../services/adminServices/category.service';
+import { ProductDetails } from '../../../models/users/product.model';
+import { CategoryDTO } from '../../../models/admin/categories.model';
+import { PaginationModel } from '../../../models/users/pagination.model';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [Footer, FormsModule],
+  imports: [Footer, CommonModule, FormsModule],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   private router = inject(Router);
+  private productService = inject(ProductService);
+  private categoryService = inject(AdminCategoryService);
   private productStateService = inject(ProductStateService);
+
+  searchQuery = signal<string>('');
+  products = signal<ProductDetails[]>([]);
+  categories = signal<CategoryDTO[]>([]);
+  isLoading = signal<boolean>(false);
+  error = signal<string | null>(null);
 
   carouselSlides = [
     {
@@ -56,63 +63,41 @@ export class HomeComponent {
     },
   ];
 
-  categories: string[] = [
-    'Electronics',
-    'Fashion',
-    'Shoes',
-    'Mobiles',
-    'Laptops',
-    'Beauty',
-    'Home & Kitchen',
-    'Sports',
-    'Books',
-    'Toys',
-  ];
+  ngOnInit(): void {
+    this.loadData();
+  }
 
-  products: Product[] = Array.from({ length: 12 }).map((_, i) => ({
-    id: i + 1,
-    name: `Product ${i + 1}`,
-    price: Math.floor(Math.random() * 5000) + 500,
-    image: `https://picsum.photos/300/200?random=${i}`,
-  }));
+  loadData(): void {
+    this.isLoading.set(true);
+    this.error.set(null);
 
-  selectedProduct: Product | null = null;
-  searchQuery = signal<string>('');
+    const pagination = new PaginationModel();
+    pagination.pageSize = 20;
+    pagination.pageNumber = 1;
 
-  onProductClick(product: Product): void {
-    console.log('Product clicked:', product);
-    // Convert home Product to ProductItem format
-    const productItem: ProductItem = {
-      id: product.id.toString(),
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      category: 'General',
-      description: product.name,
-      rating: 4.5,
-      stock: 10,
-    };
-    this.productStateService.setSelectedProduct(productItem);
+    forkJoin({
+      products: this.productService.getAllProducts(20, 1),
+      categories: this.categoryService.getAllCategories(pagination),
+    }).subscribe({
+      next: ({ products, categories }) => {
+        this.products.set(products);
+        this.categories.set(categories.data?.categoryList ?? []);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        this.error.set(err?.error?.message || 'Failed to load data. Please try again.');
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  onProductClick(product: ProductDetails): void {
+    this.productStateService.setSelectedProduct(product);
     this.router.navigate(['/product-detail']);
   }
 
-  clearSelection(): void {
-    this.selectedProduct = null;
-  }
-
-  navigateToCart(): void {
-    console.log('Navigating to Cart');
-    this.router.navigate(['/cart']);
-  }
-
-  navigateToProfile(): void {
-    console.log('Navigating to Profile');
-    this.router.navigate(['/profile']);
-  }
-
-  onCategoryClick(category: string): void {
-    console.log('Category clicked:', category);
-    this.router.navigate(['/products'], { queryParams: { q: category } });
+  onCategoryClick(category: CategoryDTO): void {
+    this.router.navigate(['/products'], { queryParams: { category: category.categoryName } });
   }
 
   onSearch(): void {
@@ -120,5 +105,11 @@ export class HomeComponent {
     if (query.trim()) {
       this.router.navigate(['/products'], { queryParams: { q: query } });
     }
+  }
+
+  getAverageRating(product: ProductDetails): number | null {
+    if (!product.review?.length) return null;
+    const avg = product.review.reduce((s, r) => s + r.reviewPoints, 0) / product.review.length;
+    return Math.round(avg * 10) / 10;
   }
 }

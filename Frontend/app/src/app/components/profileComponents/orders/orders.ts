@@ -7,6 +7,7 @@ import {
   OrderService,
   OrderDetailsResponseDTO,
 } from '../../../services/userServices/order.service';
+import { ReviewService } from '../../../services/review.service';
 import { PaginationModel } from '../../../models/users/pagination.model';
 import { PaginationComponent } from '../../shared/pagination/pagination.component';
 import { toast } from 'ngx-sonner';
@@ -28,6 +29,7 @@ interface ReviewData {
 })
 export class OrdersComponent implements OnInit {
   private orderService = inject(OrderService);
+  private reviewService = inject(ReviewService);
 
   orders = signal<OrderDetailsResponseDTO[]>([]);
   selectedOrder = signal<OrderDetailsResponseDTO | null>(null);
@@ -180,24 +182,26 @@ export class OrdersComponent implements OnInit {
       return;
     }
 
-    const review: ReviewData = {
-      orderId: order.orderId,
-      summary: this.reviewSummary().trim(),
-      rating: this.reviewRating(),
-    };
+    // Submit review for each product in the order
+    const firstProduct = order.items?.[0];
+    if (!firstProduct) { toast.error('No product found in order'); return; }
 
-    this.reviews.update((list) => {
-      const idx = list.findIndex((r) => r.orderId === order.orderId);
-      if (idx >= 0) {
-        const updated = [...list];
-        updated[idx] = review;
-        return updated;
-      }
-      return [...list, review];
+    const toastId = toast.loading('Submitting review...');
+    this.reviewService.addReview(firstProduct.productId, this.reviewSummary().trim(), this.reviewRating()).subscribe({
+      next: (res) => {
+        toast.dismiss(toastId);
+        if (res.data?.reviewId) {
+          toast.success('Review submitted successfully');
+          this.closeReviewModal();
+        } else {
+          toast.error(res.message || 'Failed to submit review');
+        }
+      },
+      error: (err) => {
+        toast.dismiss(toastId);
+        toast.error(err?.error?.message || 'Failed to submit review');
+      },
     });
-
-    toast.success('Review submitted successfully');
-    this.closeReviewModal();
   }
 
   setRating(value: number): void {

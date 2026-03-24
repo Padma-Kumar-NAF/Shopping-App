@@ -53,6 +53,29 @@ export interface PaymentDTO {
   paymentType: string;
 }
 
+export interface PlaceOrderItemDTO {
+  productId: string;
+  productName: string;
+  quantity: number;
+  productPrice: number;
+}
+
+export interface PlaceOrderRequestDTO {
+  addressId: string;
+  totalProductsCount: number;
+  totalAmount: number;
+  orderProductdDetails: PlaceOrderItemDTO;
+  paymentType: string;
+}
+
+export interface PlaceOrderResponseDTO {
+  isSuccess: boolean;
+  orderId: string;
+  paymentId: string;
+  deliveryDate: string;
+  orderDetailsId: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -61,12 +84,8 @@ export class OrderService {
 
   constructor(private http: HttpClient) {}
 
-  getUserOrders(
-    pagination: PaginationModel
-  ): Observable<ApiResponse<GetUserOrderDetailsResponseDTO>> {
-    const requestBody: GetUserOrderDetailsRequestDTO = {
-      Pagination: pagination,
-    };
+  getUserOrders(pagination: PaginationModel): Observable<ApiResponse<GetUserOrderDetailsResponseDTO>> {
+    const requestBody: GetUserOrderDetailsRequestDTO = { Pagination: pagination };
     return this.http.post<ApiResponse<GetUserOrderDetailsResponseDTO>>(
       `${this.baseUrl}/get-user-orders`,
       requestBody
@@ -74,9 +93,10 @@ export class OrderService {
   }
 
   cancelOrder(orderId: string): Observable<ApiResponse<any>> {
-    const requestBody = {
-      OrderId: orderId,
-    };
-    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/cancel-order`, requestBody);
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/cancel-order`, { OrderId: orderId });
+  }
+
+  placeOrder(request: PlaceOrderRequestDTO): Observable<ApiResponse<PlaceOrderResponseDTO>> {
+    return this.http.post<ApiResponse<PlaceOrderResponseDTO>>(`${this.baseUrl}/place-order`, request);
   }
 }

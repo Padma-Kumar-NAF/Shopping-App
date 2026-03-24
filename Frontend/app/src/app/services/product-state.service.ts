@@ -1,17 +1,17 @@
 import { Injectable, signal } from '@angular/core';
-import { ProductItem } from '../models/users/product.model';
+import { ProductDetails } from '../models/users/product.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductStateService {
-  private selectedProduct = signal<ProductItem | null>(null);
+  private selectedProduct = signal<ProductDetails | null>(null);
 
-  setSelectedProduct(product: ProductItem): void {
+  setSelectedProduct(product: ProductDetails): void {
     this.selectedProduct.set(product);
   }
 
-  getSelectedProduct(): ProductItem | null {
+  getSelectedProduct(): ProductDetails | null {
     return this.selectedProduct();
   }
 

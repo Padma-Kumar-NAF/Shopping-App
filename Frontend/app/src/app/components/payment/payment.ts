@@ -8,9 +8,11 @@ import { CartService } from '../../services/cart.service';
 import { AddressSelectionService } from '../../services/address-selection.service';
 import { AddressApiService } from '../../services/userServices/address.service';
 import { AuthStateService } from '../../services/auth-state.service';
+import { OrderService, PlaceOrderRequestDTO } from '../../services/userServices/order.service';
 import { AddressDTO } from '../../models/users/address.model';
 import { PaginationModel } from '../../models/users/pagination.model';
-import { ProductItem } from '../../models/users/product.model';
+import { ProductDetails, SearchProductByIdResponseDTO } from '../../models/users/product.model';
+import { OrderAllFromCartRequestDTO } from '../../models/users/cart.model';
 import { toast } from 'ngx-sonner';
 
 interface CartItem {
@@ -37,12 +39,13 @@ export class PaymentComponent implements OnInit {
   private addressSelectionService = inject(AddressSelectionService);
   private addressApiService = inject(AddressApiService);
   private authStateService = inject(AuthStateService);
+  private orderService = inject(OrderService);
 
   // Payment mode: 'single' for single product, 'cart' for cart items
   paymentMode = signal<'single' | 'cart'>('single');
 
   // Single product purchase
-  product = signal<ProductItem | null>(null);
+  product = signal<ProductDetails | SearchProductByIdResponseDTO | null>(null);
   quantity = signal<number>(1);
 
   // Cart purchase
@@ -248,7 +251,7 @@ export class PaymentComponent implements OnInit {
 
   updateQuantity(change: number): void {
     const newQty = this.quantity() + change;
-    if (newQty >= 1 && newQty <= (this.product()?.stock || 1)) {
+    if (newQty >= 1 && newQty <= (this.product()?.quantity || 1)) {
       this.quantity.set(newQty);
     }
   }
@@ -287,22 +290,88 @@ export class PaymentComponent implements OnInit {
   }
 
   processPayment(): void {
-    if (!this.validateShippingDetails() || !this.validatePaymentDetails()) {
+    if (!this.validateShippingDetails() || !this.validatePaymentDetails()) return;
+
+    const addr = this.selectedAddress();
+    if (!addr) {
+      toast.error('Please select a delivery address');
       return;
     }
 
     this.isProcessing.set(true);
     const toastId = toast.loading('Processing payment...');
 
-    // Simulate payment processing
-    setTimeout(() => {
-      this.isProcessing.set(false);
-      toast.dismiss(toastId);
-      toast.success('Payment successful! Order placed.');
-
-      // Navigate to orders page
-      this.router.navigate(['/profile/orders']);
-    }, 2000);
+    if (this.paymentMode() === 'cart') {
+      // Order all items from cart
+      const cartId = this.cartItems().length > 0 ? (this.cartItems() as any)[0]?.cartId : '';
+      // We need the cartId — reload cart to get it
+      const pagination = new PaginationModel();
+      pagination.pageSize = 1;
+      pagination.pageNumber = 1;
+      this.cartService.GetUserCart(pagination).subscribe({
+        next: (cartRes) => {
+          const request = new OrderAllFromCartRequestDTO();
+          request.cartId = cartRes.data?.cartId ?? '';
+          request.addressId = addr.addressId;
+          request.paymentType = this.selectedPaymentMethod();
+          this.cartService.orderAllFromCart(request).subscribe({
+            next: (res) => {
+              this.isProcessing.set(false);
+              toast.dismiss(toastId);
+              if (res.data?.isSuccess) {
+                toast.success('Order placed successfully!');
+                this.router.navigate(['/profile/orders']);
+              } else {
+                toast.error(res.message || 'Failed to place order');
+              }
+            },
+            error: (err) => {
+              this.isProcessing.set(false);
+              toast.dismiss(toastId);
+              toast.error(err?.error?.message || 'Failed to place order');
+            },
+          });
+        },
+        error: () => {
+          this.isProcessing.set(false);
+          toast.dismiss(toastId);
+          toast.error('Failed to retrieve cart');
+        },
+      });
+    } else {
+      // Single product order
+      const product = this.product();
+      if (!product) { this.isProcessing.set(false); toast.dismiss(toastId); return; }
+      const request: PlaceOrderRequestDTO = {
+        addressId: addr.addressId,
+        totalProductsCount: this.quantity(),
+        totalAmount: this.total,
+        paymentType: this.selectedPaymentMethod(),
+        orderProductdDetails: {
+          productId: product.productId,
+          productName: product.productName,
+          quantity: this.quantity(),
+          productPrice: product.price,
+        },
+      };
+      this.orderService.placeOrder(request).subscribe({
+        next: (res) => {
+          this.isProcessing.set(false);
+          toast.dismiss(toastId);
+          if (res.data?.isSuccess) {
+            toast.success('Order placed successfully!');
+            this.router.navigate(['/profile/orders']);
+          } else {
+            toast.error(res.message || 'Failed to place order');
+          }
+        },
+        error: (err) => {
+          this.isProcessing.set(false);
+          toast.dismiss(toastId);
+          toast.error(err?.error?.message || 'Failed to place order');
+        },
+      });
+    }
   }
 
 }

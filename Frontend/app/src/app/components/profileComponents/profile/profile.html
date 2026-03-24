@@ -1,8 +1,9 @@
 <app-navbar></app-navbar>
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-    <!-- Desktop Tabs -->
-    <div class="hidden sm:block bg-white rounded-2xl shadow-sm border border-gray-200 mb-8 overflow-hidden">
+
+    <!-- Desktop Tabs — only on sm and above -->
+    <div [style.display]="isMobile() ? 'none' : 'block'" class="bg-white rounded-2xl shadow-sm border border-gray-200 mb-8 overflow-hidden">
       <nav class="flex border-b border-gray-200 overflow-x-auto scrollbar-hide">
         @for (tab of tabs; track tab.id) {
         <button (click)="setTab(tab.id)" [class]="
@@ -13,15 +14,53 @@
           class="flex-1 min-w-max py-4 px-6 font-medium text-center transition-all duration-200 border-b-2 border-transparent whitespace-nowrap">
           <div class="flex items-center justify-center gap-2">
             <span class="text-xl">{{ tab.icon }}</span>
-            <span class="hidden sm:inline">{{ tab.label }}</span>
+            <span>{{ tab.label }}</span>
           </div>
         </button>
         }
       </nav>
     </div>
 
+    <!-- Mobile Hamburger Menu — only below sm -->
+    @if (isMobile()) {
+    <div class="relative mb-4">
+      <!-- Trigger bar -->
+      <button (click)="toggleMobileMenu()"
+        class="w-full flex items-center justify-between bg-white rounded-xl shadow-sm border border-gray-200 px-4 py-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">{{ activeTabConfig().icon }}</span>
+          <span class="font-medium text-gray-800">{{ activeTabConfig().label }}</span>
+        </div>
+        <svg [style.transform]="mobileMenuOpen() ? 'rotate(180deg)' : 'rotate(0deg)'"
+          class="w-5 h-5 text-gray-500 transition-transform duration-200"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      <!-- Dropdown -->
+      @if (mobileMenuOpen()) {
+      <div class="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-lg border border-gray-200 z-50 overflow-hidden">
+        @for (tab of tabs; track tab.id) {
+        <button (click)="setTab(tab.id); toggleMobileMenu()"
+          [class]="activeTab() === tab.id ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'"
+          class="w-full flex items-center gap-3 px-4 py-3 text-left transition-colors duration-150 border-b border-gray-100 last:border-0">
+          <span class="text-xl">{{ tab.icon }}</span>
+          <span class="font-medium">{{ tab.label }}</span>
+          @if (activeTab() === tab.id) {
+          <svg class="w-4 h-4 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+          </svg>
+          }
+        </button>
+        }
+      </div>
+      }
+    </div>
+    }
+
     <!-- Content Area -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8 animate-fade-in">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8 animate-fade-in pb-24 sm:pb-6">
       <!-- Profile Tab -->
       @if (activeTab() === 'profile') {
       <div class="space-y-8">

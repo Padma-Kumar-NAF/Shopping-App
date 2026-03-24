@@ -32,5 +32,13 @@ export const authRequiredGuard: CanActivateFn = (route, state) => {
 };
 
 export const publicGuard: CanActivateFn = () => {
+  const authState = inject(AuthStateService);
+  const router = inject(Router);
+
+  const user = authState.user();
+  if (user?.userRole?.toLowerCase() === 'admin') {
+    return router.createUrlTree(['/admin/dashboard']);
+  }
+
   return true;
 };

@@ -3,7 +3,7 @@
 } @else {
   <ngx-sonner-toaster position="top-center" richColors></ngx-sonner-toaster>
   <app-navbar></app-navbar>
-  <main class="page-content">
+  <main [class]="showNavPadding() ? 'page-content' : 'page-content--no-nav'">
     <router-outlet></router-outlet>
   </main>
 }

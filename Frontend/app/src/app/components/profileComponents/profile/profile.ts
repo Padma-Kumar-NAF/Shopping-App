@@ -1,4 +1,4 @@
-﻿import { Component, signal, OnInit, inject, WritableSignal } from '@angular/core';
+﻿import { Component, signal, OnInit, inject, WritableSignal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProfileApiService } from '../../../services/profile.service';
 import { AuthStateService } from '../../../services/auth-state.service';
@@ -44,6 +44,22 @@ export class Profile implements OnInit {
   activeTab = signal<TabType>('profile');
   user: WritableSignal<GetUserByIdResponseDTO> = signal(new GetUserByIdResponseDTO());
   isLoading = signal<boolean>(false);
+  mobileMenuOpen = signal(false);
+  isMobile = signal(window.innerWidth < 640);
+
+  @HostListener('window:resize')
+  onResize() {
+    this.isMobile.set(window.innerWidth < 640);
+    if (!this.isMobile()) this.mobileMenuOpen.set(false);
+  }
+
+  activeTabConfig(): TabConfig {
+    return this.tabs.find(t => t.id === this.activeTab()) ?? this.tabs[0];
+  }
+
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen.update(v => !v);
+  }
 
   passwordVerified = false;
   userDetailsForm: FormGroup;

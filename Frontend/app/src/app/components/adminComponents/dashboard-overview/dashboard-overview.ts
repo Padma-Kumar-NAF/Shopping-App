@@ -31,6 +31,9 @@ export class DashboardOverview implements OnInit {
   private readonly PAGE_SIZE = 10;
   pagination: PaginationModel;
 
+  isLoading = signal<boolean>(false);
+  loadingCount = 0;
+
   stats = signal<DashboardStats>({
     totalUsers: 0,
     totalOrders: 0,
@@ -51,10 +54,19 @@ export class DashboardOverview implements OnInit {
   }
 
   loadDashboardData(): void {
+    this.loadingCount = 0;
+    this.isLoading.set(true);
     this.getAllUser();
     this.getAllOrders();
     this.getAllCategories();
     this.getAllProducts();
+  }
+
+  private onRequestComplete(): void {
+    this.loadingCount++;
+    if (this.loadingCount >= 4) {
+      this.isLoading.set(false);
+    }
   }
 
   getAllProducts(): void {
@@ -64,10 +76,12 @@ export class DashboardOverview implements OnInit {
         this.store.setProducts(list);
         this.store.pageCache.products.add(1);
         this.updateStats();
+        this.onRequestComplete();
       },
       error: (err) => {
         console.error(err);
         toast.error('Failed to load products');
+        this.onRequestComplete();
       },
     });
   }
@@ -79,10 +93,12 @@ export class DashboardOverview implements OnInit {
         this.store.setUsers(list);
         this.store.pageCache.users.add(1);
         this.updateStats();
+        this.onRequestComplete();
       },
       error: (err) => {
         console.error(err);
         toast.error('Failed to load users');
+        this.onRequestComplete();
       },
     });
   }
@@ -94,10 +110,12 @@ export class DashboardOverview implements OnInit {
         this.store.setOrders(list);
         this.store.pageCache.orders.add(1);
         this.updateStats();
+        this.onRequestComplete();
       },
       error: (err) => {
         console.error(err);
         toast.error('Failed to load orders');
+        this.onRequestComplete();
       },
     });
   }
@@ -108,10 +126,12 @@ export class DashboardOverview implements OnInit {
         const list = response.data?.categoryList ?? [];
         this.store.setCategories(list);
         this.store.pageCache.categories.add(1);
+        this.onRequestComplete();
       },
       error: (err) => {
         console.error(err);
         toast.error('Failed to load categories');
+        this.onRequestComplete();
       },
     });
   }

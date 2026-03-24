@@ -9,6 +9,10 @@
   padding-top: 64px; /* matches --nav-height in navbar */
 }
 
+.page-content--no-nav {
+  padding-top: 0;
+}
+
 body {
   font-family: 'Poppins', sans-serif;
 }

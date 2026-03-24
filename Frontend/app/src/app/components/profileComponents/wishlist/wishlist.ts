@@ -1,100 +1,116 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { WishlistService, WishListDTO } from '../../../services/wishlist.service';
 import { toast } from 'ngx-sonner';
-
-interface ProductDetails {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-}
-
-interface Wishlist {
-  id: number;
-  name: string;
-  products: ProductDetails[];
-}
 
 @Component({
   selector: 'app-wishlist',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './wishlist.html',
   styleUrls: ['./wishlist.css'],
 })
+export class WishlistComponent implements OnInit {
+  private wishlistService = inject(WishlistService);
 
-export class WishlistComponent {
-  wishLists = signal<Wishlist[]>([
-    {
-      id: 1,
-      name: 'Dream Wardrobe',
-      products: [
-        {
-          id: 101,
-          name: 'Premium Leather Jacket',
-          price: 4999,
-          image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=500&fit=crop',
-        },
-        {
-          id: 102,
-          name: 'Designer High-Top Sneakers',
-          price: 2999,
-          image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop',
-        },
-        {
-          id: 103,
-          name: 'Slim Fit Chinos',
-          price: 1899,
-          image: 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400&h=500&fit=crop',
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: 'Tech Gadgets',
-      products: [
-        {
-          id: 201,
-          name: 'Wireless Noise-Cancelling Headphones',
-          price: 12999,
-          image:
-            'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop',
-        },
-      ],
-    },
-  ]);
-
-  selectedWishlistId = signal<number>(1);
+  wishLists = signal<WishListDTO[]>([]);
+  selectedWishlistId = signal<string>('');
+  isLoading = signal<boolean>(false);
+  showCreateForm = signal<boolean>(false);
+  newWishlistName = signal<string>('');
 
   selectedWishlist = computed(
-    () => this.wishLists().find((w) => w.id === this.selectedWishlistId()) || null,
+    () => this.wishLists().find((w) => w.wishListId === this.selectedWishlistId()) ?? null
   );
 
   isEmpty = computed(() => this.wishLists().length === 0);
 
-  selectWishlist(id: number) {
+  ngOnInit(): void {
+    this.loadWishlists();
+  }
+
+  loadWishlists(): void {
+    this.isLoading.set(true);
+    this.wishlistService.getUserWishlists().subscribe({
+      next: (res) => {
+        const lists = res.data?.wishList ?? [];
+        this.wishLists.set(lists);
+        if (lists.length > 0 && !this.selectedWishlistId()) {
+          this.selectedWishlistId.set(lists[0].wishListId);
+        }
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        toast.error(err?.error?.message || 'Failed to load wishlists');
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  selectWishlist(id: string): void {
     this.selectedWishlistId.set(id);
   }
 
-  removeWishlist(id: number) {
-    const wishlistName = this.wishLists().find(w => w.id == id)?.name
-    toast.success(`${wishlistName} removed`)
-    this.wishLists.update((lists) => lists.filter((w) => w.id !== id));
-
-    if (id === this.selectedWishlistId()) {
-      const remainingLists = this.wishLists();
-      this.selectedWishlistId.set(remainingLists.length > 0 ? remainingLists[0].id : 0);
-    }
+  createWishlist(): void {
+    const name = this.newWishlistName().trim();
+    if (!name) { toast.error('Please enter a wishlist name'); return; }
+    this.wishlistService.createWishlist(name).subscribe({
+      next: (res) => {
+        if (res.data?.isCreated) {
+          toast.success(`"${name}" created`);
+          this.newWishlistName.set('');
+          this.showCreateForm.set(false);
+          this.loadWishlists();
+        } else {
+          toast.error(res.message || 'Failed to create wishlist');
+        }
+      },
+      error: (err) => toast.error(err?.error?.message || 'Failed to create wishlist'),
+    });
   }
 
-  removeProduct(wishlistId: number, productId: number) {
-    const productName = this.wishLists().find(w => w.id == wishlistId)?.products.find(p => p.id == productId)?.name
-    toast.success(`${productName} removed`)
-    this.wishLists.update((lists) =>
-      lists.map((w) =>
-        w.id === wishlistId ? { ...w, products: w.products.filter((p) => p.id !== productId) } : w,
-      ),
-    );
+  removeWishlist(wishListId: string): void {
+    const name = this.wishLists().find((w) => w.wishListId === wishListId)?.wishListName;
+    this.wishlistService.deleteWishlist(wishListId).subscribe({
+      next: (res) => {
+        if (res.data?.isDeleted) {
+          toast.success(`"${name}" removed`);
+          this.wishLists.update((lists) => lists.filter((w) => w.wishListId !== wishListId));
+          if (wishListId === this.selectedWishlistId()) {
+            const remaining = this.wishLists();
+            this.selectedWishlistId.set(remaining.length > 0 ? remaining[0].wishListId : '');
+          }
+        } else {
+          toast.error(res.message || 'Failed to delete wishlist');
+        }
+      },
+      error: (err) => toast.error(err?.error?.message || 'Failed to delete wishlist'),
+    });
+  }
+
+  removeProduct(wishListId: string, productId: string): void {
+    const productName = this.wishLists()
+      .find((w) => w.wishListId === wishListId)
+      ?.wishListItems.find((p) => p.productId === productId)?.productName;
+
+    this.wishlistService.removeProduct(wishListId, productId).subscribe({
+      next: (res) => {
+        if (res.data?.isRemoved) {
+          toast.success(`"${productName}" removed`);
+          this.wishLists.update((lists) =>
+            lists.map((w) =>
+              w.wishListId === wishListId
+                ? { ...w, wishListItems: w.wishListItems.filter((p) => p.productId !== productId) }
+                : w
+            )
+          );
+        } else {
+          toast.error(res.message || 'Failed to remove product');
+        }
+      },
+      error: (err) => toast.error(err?.error?.message || 'Failed to remove product'),
+    });
   }
 }
