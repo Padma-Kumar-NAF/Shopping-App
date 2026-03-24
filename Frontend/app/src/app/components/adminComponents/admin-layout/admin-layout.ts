@@ -31,6 +31,8 @@ export class AdminLayout implements OnInit {
     { path: '/admin/orders', label: 'Orders', icon: '📦' },
     { path: '/admin/products', label: 'Products', icon: '🛍️' },
     { path: '/admin/categories', label: 'Categories', icon: '🏷️' },
+    { path: '/admin/promocodes', label: 'Promo Codes', icon: '🎟️' },
+    { path: '/admin/error-logs', label: 'Error Logs', icon: '🪲' },
   ];
 
   ngOnInit(): void {

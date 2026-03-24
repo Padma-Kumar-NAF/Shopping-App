@@ -79,7 +79,7 @@ namespace ShoppingApp.Controllers
             try
             {
                 var UserId = GetUserIdOrThrow();
-                var Result = await _userService.GetUserById(GetUserId());
+                var Result = await _userService.GetUserById(UserId);
                 return Ok(Result);
             }
             catch
@@ -97,6 +97,38 @@ namespace ShoppingApp.Controllers
             {
                 var UserId = GetUserIdOrThrow();
                 var Result = await _userService.UpdateUserDetails(UserId,request);
+                return Ok(Result);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("delete-user")]
+        [ValidateRequest]
+        public async Task<IActionResult> DeactivateUser([FromBody] DeleteUserRequestDTO request)
+        {
+            try
+            {
+                var UserId = GetUserIdOrThrow();
+                var Result = await _userService.DeactivateUser(UserId,request.UserId);
+                return Ok(Result);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("change-user-role")]
+        [ValidateRequest]
+        public async Task<IActionResult> ChangeUserRole([FromBody] ChangeUserRoleRequestDTO request)
+        {
+            try
+            {
+                var UserId = GetUserIdOrThrow();
+                var Result = await _userService.ChangeUserRole(UserId, request.UserId,request.Status);
                 return Ok(Result);
             }
             catch

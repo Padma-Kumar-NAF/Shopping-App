@@ -9,6 +9,8 @@ import { UsersManagement } from './components/adminComponents/users-management/u
 import { OrdersManagement } from './components/adminComponents/orders-management/orders-management';
 import { ProductManagement } from './components/adminComponents/product-management/product-management';
 import { CategoryManagement } from './components/adminComponents/category-management/category-management';
+import { PromocodeManagement } from './components/adminComponents/promocode-management/promocode-management';
+import { ErrorLogs } from './components/adminComponents/error-logs/error-logs';
 import { ProductListing } from './components/product-listing/product-listing';
 import { ProductDetail } from './components/product-detail/product-detail';
 import { Profile } from './components/profileComponents/profile/profile';
@@ -71,6 +73,14 @@ export const routes: Routes = [
         path: 'categories',
         component: CategoryManagement,
       },
+      {
+        path: 'promocodes',
+        component: PromocodeManagement,
+      },
+      {
+        path: 'error-logs',
+        component: ErrorLogs,
+      },
     ],
   },
   {
@@ -89,14 +99,13 @@ export const routes: Routes = [
   {
     path: 'profile',
     canActivate: [authRequiredGuard],
+    canActivateChild: [authRequiredGuard],
     component: Profile,
     children: [
       { path: 'cart', component: Cart },
       { path: 'wishlist', component: WishlistComponent },
       { path: 'orders', component: OrdersComponent },
       { path: 'address', component: Address },
-      { path: '', component: Profile },
-      { path: '**', redirectTo: '/profile' },
     ],
   },
   { path: 'auth', component: Auth },

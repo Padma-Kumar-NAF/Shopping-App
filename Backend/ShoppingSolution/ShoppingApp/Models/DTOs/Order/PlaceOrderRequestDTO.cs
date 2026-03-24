@@ -20,6 +20,8 @@ namespace ShoppingApp.Models.DTOs.Order
 
         [Required(ErrorMessage = "Payment type is required")]
         public string PaymentType { get; set; } = string.Empty;
+
+        public string PromoCode { get; set; } = string.Empty;
     }
 
     public class PlaceOrderItemDTO

@@ -88,7 +88,7 @@ namespace ShoppingApp.Controllers
         {
             try
             {
-                var UserId = GetUserIdOrThrow();
+                //var UserId = GetUserIdOrThrow();
                 var CategoriesList = await _categoryService.GetAllCategories(request.Pagination.PageSize,request.Pagination.PageNumber);
                 return Ok(CategoriesList);
             }
@@ -144,7 +144,7 @@ namespace ShoppingApp.Controllers
         {
             try
             {
-                var UserId = GetUserIdOrThrow();
+                //var UserId = GetUserIdOrThrow();
                 var result = await _categoryService.GetProductsByCategory(request);
                 return StatusCode(result.StatusCode, result);
             }

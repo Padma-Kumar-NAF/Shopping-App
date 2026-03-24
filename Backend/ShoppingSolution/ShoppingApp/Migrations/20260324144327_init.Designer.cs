@@ -12,8 +12,8 @@ using ShoppingApp.Contexts;
 namespace ShoppingApp.Migrations
 {
     [DbContext(typeof(ShoppingContext))]
-    [Migration("20260309115209_log-table-reordered")]
-    partial class logtablereordered
+    [Migration("20260324144327_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -153,63 +153,95 @@ namespace ShoppingApp.Migrations
 
             modelBuilder.Entity("ShoppingApp.Models.Log", b =>
                 {
-                    b.Property<Guid>("LogId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
                     b.Property<string>("Action")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Controller")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
+                    b.Property<string>("ExceptionType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("HttpMethod")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("InnerException")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("Path")
+                    b.Property<string>("QueryString")
                         .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("RequestBody")
+                        .IsRequired()
+                        .HasMaxLength(5000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RequestPath")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<string>("StackTrace")
                         .IsRequired()
+                        .HasMaxLength(5000)
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StatusCode")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("LogId")
+                    b.HasKey("Id")
                         .HasName("PK_Log");
 
                     b.HasIndex("CreatedAt")
                         .HasDatabaseName("IX_Log_CreatedAt");
 
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("IX_Log_UserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Logs");
                 });
@@ -232,6 +264,24 @@ namespace ShoppingApp.Migrations
                     b.Property<DateTime>("DeliveryDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DiscountAmount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<int>("DiscountPercentage")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<int>("OrderTotalAmount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<Guid>("PromoCodeId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -250,6 +300,8 @@ namespace ShoppingApp.Migrations
                         .HasName("PK_Order");
 
                     b.HasIndex("AddressId");
+
+                    b.HasIndex("PromoCodeId");
 
                     b.HasIndex("UserId");
 
@@ -377,6 +429,37 @@ namespace ShoppingApp.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("ShoppingApp.Models.PromoCode", b =>
+                {
+                    b.Property<Guid>("PromoCodeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<int>("DiscountPercentage")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FromDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PromoCodeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ToDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("PromoCodeId")
+                        .HasName("PK_PromoCode");
+
+                    b.ToTable("PromoCodes");
+                });
+
             modelBuilder.Entity("ShoppingApp.Models.Refund", b =>
                 {
                     b.Property<Guid>("RefundId")
@@ -488,6 +571,9 @@ namespace ShoppingApp.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -573,6 +659,33 @@ namespace ShoppingApp.Migrations
                         .IsUnique();
 
                     b.ToTable("UserDetails");
+                });
+
+            modelBuilder.Entity("ShoppingApp.Models.Wallet", b =>
+                {
+                    b.Property<Guid>("WalletId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("WalletAmount")
+                        .HasColumnType("int");
+
+                    b.HasKey("WalletId")
+                        .HasName("Pk_Wallet");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Wallets");
                 });
 
             modelBuilder.Entity("ShoppingApp.Models.WishList", b =>
@@ -677,13 +790,9 @@ namespace ShoppingApp.Migrations
 
             modelBuilder.Entity("ShoppingApp.Models.Log", b =>
                 {
-                    b.HasOne("ShoppingApp.Models.User", "User")
+                    b.HasOne("ShoppingApp.Models.User", null)
                         .WithMany("Logs")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("FK_Log_User");
-
-                    b.Navigation("User");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("ShoppingApp.Models.Order", b =>
@@ -695,6 +804,13 @@ namespace ShoppingApp.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Order_Address");
 
+                    b.HasOne("ShoppingApp.Models.PromoCode", "PromoCode")
+                        .WithMany("Orders")
+                        .HasForeignKey("PromoCodeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Order");
+
                     b.HasOne("ShoppingApp.Models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
@@ -703,6 +819,8 @@ namespace ShoppingApp.Migrations
                         .HasConstraintName("FK_Order_User");
 
                     b.Navigation("Address");
+
+                    b.Navigation("PromoCode");
 
                     b.Navigation("User");
                 });
@@ -835,6 +953,17 @@ namespace ShoppingApp.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ShoppingApp.Models.Wallet", b =>
+                {
+                    b.HasOne("ShoppingApp.Models.User", "User")
+                        .WithOne("Wallet")
+                        .HasForeignKey("ShoppingApp.Models.Wallet", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ShoppingApp.Models.WishList", b =>
                 {
                     b.HasOne("ShoppingApp.Models.User", "User")
@@ -910,6 +1039,11 @@ namespace ShoppingApp.Migrations
                     b.Navigation("WishListItems");
                 });
 
+            modelBuilder.Entity("ShoppingApp.Models.PromoCode", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
             modelBuilder.Entity("ShoppingApp.Models.User", b =>
                 {
                     b.Navigation("Addresses");
@@ -927,6 +1061,8 @@ namespace ShoppingApp.Migrations
                     b.Navigation("Reviews");
 
                     b.Navigation("UserDetails");
+
+                    b.Navigation("Wallet");
 
                     b.Navigation("WishLists");
                 });

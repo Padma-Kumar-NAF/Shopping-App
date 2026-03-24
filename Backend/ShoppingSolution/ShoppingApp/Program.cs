@@ -75,18 +75,19 @@ namespace ShoppingApp
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 
             builder.Services.AddScoped<IAddressService, AddressService>();
-            //builder.Services.AddScoped<ICartItemsService, CartItemsService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<ILogService, LogService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IPasswordService, PasswordService>();
+            builder.Services.AddScoped<IPromoCodeService, PromoCodeService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
-            //builder.Services.AddScoped<IUserDetailsService, UserDetailsService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IWishListService, WishListService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IWalletService, WalletService>();
 
             var app = builder.Build();
 

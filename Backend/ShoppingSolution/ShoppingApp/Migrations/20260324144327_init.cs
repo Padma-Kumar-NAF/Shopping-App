@@ -25,6 +25,22 @@ namespace ShoppingApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PromoCodes",
+                columns: table => new
+                {
+                    PromoCodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    PromoCodeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DiscountPercentage = table.Column<int>(type: "int", nullable: false),
+                    FromDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ToDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PromoCode", x => x.PromoCodeId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -34,7 +50,8 @@ namespace ShoppingApp.Migrations
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SaltValue = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    Active = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -111,23 +128,32 @@ namespace ShoppingApp.Migrations
                 name: "Logs",
                 columns: table => new
                 {
-                    LogId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
-                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ErrorNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    StackTrace = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: false),
+                    InnerException = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    ExceptionType = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Controller = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Action = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    HttpMethod = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    RequestPath = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    QueryString = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    RequestBody = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: false),
+                    StatusCode = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Log", x => x.LogId);
+                    table.PrimaryKey("PK_Log", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Log_User",
+                        name: "FK_Logs_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateTable(
@@ -151,6 +177,26 @@ namespace ShoppingApp.Migrations
                     table.PrimaryKey("PK_UserDetails", x => x.UserDetailsId);
                     table.ForeignKey(
                         name: "FK_User_UserDetails",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Wallets",
+                columns: table => new
+                {
+                    WalletId = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    WalletAmount = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("Pk_Wallet", x => x.WalletId);
+                    table.ForeignKey(
+                        name: "FK_Wallets_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -236,11 +282,21 @@ namespace ShoppingApp.Migrations
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     AddressId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DiscountPercentage = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    PromoCodeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrderTotalAmount = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    DiscountAmount = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Order", x => x.OrderId);
+                    table.ForeignKey(
+                        name: "FK_Order",
+                        column: x => x.PromoCodeId,
+                        principalTable: "PromoCodes",
+                        principalColumn: "PromoCodeId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Order_Address",
                         column: x => x.AddressId,
@@ -391,6 +447,12 @@ namespace ShoppingApp.Migrations
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Refunds_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "OrderId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -427,7 +489,7 @@ namespace ShoppingApp.Migrations
                 column: "CreatedAt");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Log_UserId",
+                name: "IX_Logs_UserId",
                 table: "Logs",
                 column: "UserId");
 
@@ -446,6 +508,11 @@ namespace ShoppingApp.Migrations
                 name: "IX_Orders_AddressId",
                 table: "Orders",
                 column: "AddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_PromoCodeId",
+                table: "Orders",
+                column: "PromoCodeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
@@ -472,6 +539,12 @@ namespace ShoppingApp.Migrations
                 name: "IX_Product_Name",
                 table: "Products",
                 column: "Name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Refunds_OrderId",
+                table: "Refunds",
+                column: "OrderId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Refunds_PaymentId",
@@ -504,6 +577,12 @@ namespace ShoppingApp.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_UserDetails_UserId",
                 table: "UserDetails",
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Wallets_UserId",
+                table: "Wallets",
                 column: "UserId",
                 unique: true);
 
@@ -548,6 +627,9 @@ namespace ShoppingApp.Migrations
                 name: "UserDetails");
 
             migrationBuilder.DropTable(
+                name: "Wallets");
+
+            migrationBuilder.DropTable(
                 name: "WishListItems");
 
             migrationBuilder.DropTable(
@@ -567,6 +649,9 @@ namespace ShoppingApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "Category");
+
+            migrationBuilder.DropTable(
+                name: "PromoCodes");
 
             migrationBuilder.DropTable(
                 name: "Addresses");

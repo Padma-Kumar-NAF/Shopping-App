@@ -66,6 +66,7 @@ export interface PlaceOrderRequestDTO {
   totalAmount: number;
   orderProductdDetails: PlaceOrderItemDTO;
   paymentType: string;
+  promoCode : string;
 }
 
 export interface PlaceOrderResponseDTO {

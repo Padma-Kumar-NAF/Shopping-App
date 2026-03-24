@@ -52,3 +52,14 @@ export interface SearchProductByIdResponseDTO {
   quantity: number;
   review: ReviewDTO[];
 }
+
+export interface GetProductsWithFilterRequestDTO {
+  pagination: { pageSize: number; pageNumber: number };
+  lowPrice: number;
+  highPrice: number;
+  categoryId?: string | null;
+}
+
+export interface GetProductsWithFilterResponseDTO {
+  productList: ProductDetails[];
+}

@@ -46,7 +46,7 @@ export class RedirectService {
     this.clearRedirectData();
 
     if (redirectUrl) {
-      this.router.navigate([redirectUrl], { queryParams: queryParams || {} });
+      this.router.navigateByUrl(redirectUrl);
     } else {
       this.router.navigate([defaultRoute]);
     }

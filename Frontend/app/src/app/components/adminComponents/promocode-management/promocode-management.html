@@ -1,0 +1,145 @@
+<div class="max-w-xl mx-auto">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900">Promo Code Management</h1>
+    <p class="text-sm text-gray-500 mt-1">Create a new promo code with a discount and validity period.</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate
+    class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8 space-y-6">
+
+    <!-- Promo Code -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">
+        Promo Code <span class="text-red-500">*</span>
+      </label>
+      <input
+        formControlName="promoCode"
+        type="text"
+        placeholder="e.g. SAVE10"
+        (input)="promoCode.setValue(promoCode.value?.toUpperCase() || '')"
+        class="w-full px-4 py-2.5 border rounded-xl text-sm uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+        [class.border-red-400]="promoCode.invalid && (promoCode.touched || submitted())"
+        [class.border-gray-300]="!(promoCode.invalid && (promoCode.touched || submitted()))"
+      />
+      @if (promoCode.invalid && (promoCode.touched || submitted())) {
+        @if (promoCode.errors?.['required']) {
+          <p class="text-xs text-red-500 mt-1">Promo code is required.</p>
+        } @else if (promoCode.errors?.['minlength']) {
+          <p class="text-xs text-red-500 mt-1">Minimum 3 characters required.</p>
+        } @else if (promoCode.errors?.['pattern']) {
+          <p class="text-xs text-red-500 mt-1">Only uppercase letters and numbers allowed (no spaces).</p>
+        }
+      }
+    </div>
+
+    <!-- Discount Percentage -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">
+        Discount Percentage <span class="text-red-500">*</span>
+      </label>
+      <div class="relative">
+        <input
+          formControlName="discountPercent"
+          type="number"
+          placeholder="e.g. 10"
+          min="1"
+          max="100"
+          class="w-full px-4 py-2.5 pr-10 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          [class.border-red-400]="discountPercent.invalid && (discountPercent.touched || submitted())"
+          [class.border-gray-300]="!(discountPercent.invalid && (discountPercent.touched || submitted()))"
+        />
+        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">%</span>
+      </div>
+      @if (discountPercent.invalid && (discountPercent.touched || submitted())) {
+        @if (discountPercent.errors?.['required']) {
+          <p class="text-xs text-red-500 mt-1">Discount percentage is required.</p>
+        } @else if (discountPercent.errors?.['min']) {
+          <p class="text-xs text-red-500 mt-1">Minimum discount is 1%.</p>
+        } @else if (discountPercent.errors?.['max']) {
+          <p class="text-xs text-red-500 mt-1">Maximum discount is 100%.</p>
+        }
+      }
+    </div>
+
+    <!-- Date Row -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <!-- From Date -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          From Date <span class="text-red-500">*</span>
+        </label>
+        <input
+          formControlName="fromDate"
+          type="date"
+          [min]="today"
+          class="w-full px-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          [class.border-red-400]="fromDate.invalid && (fromDate.touched || submitted())"
+          [class.border-gray-300]="!(fromDate.invalid && (fromDate.touched || submitted()))"
+        />
+        @if (fromDate.invalid && (fromDate.touched || submitted())) {
+          @if (fromDate.errors?.['required']) {
+            <p class="text-xs text-red-500 mt-1">From date is required.</p>
+          } @else if (fromDate.errors?.['pastDate']) {
+            <p class="text-xs text-red-500 mt-1">From date cannot be in the past.</p>
+          }
+        }
+      </div>
+
+      <!-- To Date -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          To Date <span class="text-red-500">*</span>
+        </label>
+        <input
+          formControlName="toDate"
+          type="date"
+          [min]="today"
+          class="w-full px-4 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          [class.border-red-400]="(toDate.invalid || form.errors?.['toBeforeFrom']) && (toDate.touched || submitted())"
+          [class.border-gray-300]="!((toDate.invalid || form.errors?.['toBeforeFrom']) && (toDate.touched || submitted()))"
+        />
+        @if (toDate.invalid && (toDate.touched || submitted())) {
+          @if (toDate.errors?.['required']) {
+            <p class="text-xs text-red-500 mt-1">To date is required.</p>
+          } @else if (toDate.errors?.['pastDate']) {
+            <p class="text-xs text-red-500 mt-1">To date cannot be in the past.</p>
+          }
+        }
+        @if (form.errors?.['toBeforeFrom'] && (toDate.touched || submitted())) {
+          <p class="text-xs text-red-500 mt-1">To date must be after from date.</p>
+        }
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex gap-3 pt-2">
+      <button
+        type="submit"
+        [disabled]="isLoading()"
+        class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+      >
+        @if (isLoading()) {
+          <span class="flex items-center justify-center gap-2">
+            <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            Saving...
+          </span>
+        } @else {
+          Add Promo Code
+        }
+      </button>
+      <button
+        type="button"
+        (click)="reset()"
+        [disabled]="isLoading()"
+        class="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-xl transition-colors disabled:opacity-60"
+      >
+        Reset
+      </button>
+    </div>
+
+  </form>
+</div>

@@ -58,6 +58,11 @@ export class StoreService {
     this.setState({ ...this.value, users: [...this.value.users, user] });
   }
 
+  updateUser(updated: UserDetailsDTO) {
+    const users = this.value.users.map(u => u.userId === updated.userId ? updated : u);
+    this.setState({ ...this.value, users });
+  }
+
   setCategories(categories: CategoryDTO[]) {
     this.setState({ ...this.value, categories });
   }

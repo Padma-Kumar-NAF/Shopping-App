@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PaginationModel } from '../../models/users/pagination.model';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import {
   AddCategoryRequestDTO,
   AddCategoryResponseDTO,
@@ -29,6 +30,8 @@ export class AdminCategoryService {
     return this.http.post<ApiResponse<GetAllCategoryResponseDTO>>(
       `${this.baseUrl}/get-all-categories`,
       requestBody,
+    ).pipe(
+      catchError(() => of({ data: undefined, message: '', action: '', statusCode: 0 } as ApiResponse<GetAllCategoryResponseDTO>))
     );
   }
 

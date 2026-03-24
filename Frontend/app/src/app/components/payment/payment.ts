@@ -9,6 +9,8 @@ import { AddressSelectionService } from '../../services/address-selection.servic
 import { AddressApiService } from '../../services/userServices/address.service';
 import { AuthStateService } from '../../services/auth-state.service';
 import { OrderService, PlaceOrderRequestDTO } from '../../services/userServices/order.service';
+import { PromoCodeService } from '../../services/adminServices/promocode.service';
+import { WalletService } from '../../services/userServices/wallet.service';
 import { AddressDTO } from '../../models/users/address.model';
 import { PaginationModel } from '../../models/users/pagination.model';
 import { ProductDetails, SearchProductByIdResponseDTO } from '../../models/users/product.model';
@@ -40,6 +42,12 @@ export class PaymentComponent implements OnInit {
   private addressApiService = inject(AddressApiService);
   private authStateService = inject(AuthStateService);
   private orderService = inject(OrderService);
+  private promoCodeService = inject(PromoCodeService);
+  private walletService = inject(WalletService);
+
+  // Wallet
+  walletBalance = signal<number | null>(null);
+  isLoadingWallet = signal<boolean>(false);
 
   // Payment mode: 'single' for single product, 'cart' for cart items
   paymentMode = signal<'single' | 'cart'>('single');
@@ -74,6 +82,13 @@ export class PaymentComponent implements OnInit {
   availableAddresses = signal<AddressDTO[]>([]);
   selectedAddress = signal<AddressDTO | null>(null);
   showAddressPicker = signal<boolean>(false);
+
+  // Promo code
+  promoInput = signal<string>('');
+  appliedPromo = signal<string | null>(null);
+  discountPercent = signal<number>(0);
+  promoError = signal<string | null>(null);
+  isValidatingPromo = signal<boolean>(false);
 
   ngOnInit(): void {
     const fromCart = this.route.snapshot.queryParamMap.get('fromCart');
@@ -241,12 +256,79 @@ export class PaymentComponent implements OnInit {
     return this.subtotal > 5000 ? 0 : 99;
   }
 
+  get discountAmount(): number {
+    return (this.subtotal * this.discountPercent()) / 100;
+  }
+
   get total(): number {
-    return this.subtotal + this.tax + this.shipping;
+    return this.subtotal - this.discountAmount + this.tax + this.shipping;
+  }
+
+  applyPromo(): void {
+    if (this.appliedPromo() || this.isValidatingPromo()) return;
+    const code = this.promoInput().trim().toUpperCase();
+    if (!code) {
+      this.promoError.set('Please enter a promo code.');
+      return;
+    }
+
+    this.isValidatingPromo.set(true);
+    this.promoError.set(null);
+
+    this.promoCodeService.validatePromoCode({ promoCodeName: code }).subscribe({
+      next: (res) => {
+        this.isValidatingPromo.set(false);
+        if (res.data?.isValid) {
+          this.appliedPromo.set(code);
+          this.discountPercent.set(res.data.discountPercentage);
+          toast.success(`Promo code applied! ${res.data.discountPercentage}% off`);
+        } else {
+          this.promoError.set(res.message || 'Invalid promo code. Please try again.');
+        }
+      },
+      error: (err) => {
+        this.isValidatingPromo.set(false);
+        this.promoError.set(err?.error?.message || 'Invalid promo code. Please try again.');
+      },
+    });
+  }
+
+  removePromo(): void {
+    this.appliedPromo.set(null);
+    this.discountPercent.set(0);
+    this.promoInput.set('');
+    this.promoError.set(null);
   }
 
   selectPaymentMethod(method: string): void {
     this.selectedPaymentMethod.set(method);
+    if (method === 'wallet' && this.walletBalance() === null) {
+      this.fetchWalletBalance();
+    } else if (method !== 'wallet') {
+      this.walletBalance.set(null);
+    }
+  }
+
+  private fetchWalletBalance(): void {
+    this.isLoadingWallet.set(true);
+    this.walletService.getWalletBalance().subscribe({
+      next: (res) => {
+        const balance = res.data?.walletBalance ?? 0;
+        this.walletBalance.set(balance);
+        this.isLoadingWallet.set(false);
+        if (balance < this.total) {
+          toast.error(`Insufficient wallet balance (₹${balance.toLocaleString()}). Please choose another payment method.`);
+          this.selectedPaymentMethod.set('card');
+          this.walletBalance.set(null);
+        }
+      },
+      error: (err) => {
+        toast.error(err?.error?.message || 'Wallet not found. Please choose another payment method.');
+        this.isLoadingWallet.set(false);
+        this.selectedPaymentMethod.set('card');
+        this.walletBalance.set(null);
+      },
+    });
   }
 
   updateQuantity(change: number): void {
@@ -285,7 +367,18 @@ export class PaymentComponent implements OnInit {
         toast.error('Please enter UPI ID');
         return false;
       }
+    } else if (method === 'wallet') {
+      const balance = this.walletBalance();
+      if (balance === null) {
+        toast.error('Wallet balance not loaded yet. Please wait.');
+        return false;
+      }
+      if (balance < this.total) {
+        toast.error(`Insufficient wallet balance. Available: ₹${balance.toLocaleString()}, Required: ₹${this.total.toLocaleString()}`);
+        return false;
+      }
     }
+    // cod requires no extra input
     return true;
   }
 
@@ -319,6 +412,9 @@ export class PaymentComponent implements OnInit {
               this.isProcessing.set(false);
               toast.dismiss(toastId);
               if (res.data?.isSuccess) {
+                if (this.selectedPaymentMethod() === 'wallet') {
+                  this.walletBalance.update(b => b !== null ? b - this.total : b);
+                }
                 toast.success('Order placed successfully!');
                 this.router.navigate(['/profile/orders']);
               } else {
@@ -347,6 +443,7 @@ export class PaymentComponent implements OnInit {
         totalProductsCount: this.quantity(),
         totalAmount: this.total,
         paymentType: this.selectedPaymentMethod(),
+        promoCode: this.appliedPromo() ?? '',
         orderProductdDetails: {
           productId: product.productId,
           productName: product.productName,
@@ -359,6 +456,9 @@ export class PaymentComponent implements OnInit {
           this.isProcessing.set(false);
           toast.dismiss(toastId);
           if (res.data?.isSuccess) {
+            if (this.selectedPaymentMethod() === 'wallet') {
+              this.walletBalance.update(b => b !== null ? b - this.total : b);
+            }
             toast.success('Order placed successfully!');
             this.router.navigate(['/profile/orders']);
           } else {
@@ -373,5 +473,4 @@ export class PaymentComponent implements OnInit {
       });
     }
   }
-
 }

@@ -126,7 +126,9 @@ export class OrdersComponent implements OnInit {
         toast.success(response.message || 'Order cancelled successfully');
         this.orders.update((orders) =>
           orders.map((o) =>
-            o.orderId === order.orderId ? { ...o, status: OrderStatus.CANCELLED } : o
+            o.orderId === order.orderId
+              ? { ...o, status: OrderStatus.CANCELLED, isRefunded: false }
+              : o
           )
         );
         this.closeCancelModal();

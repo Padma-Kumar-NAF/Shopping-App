@@ -35,7 +35,6 @@ namespace ShoppingApp.Controllers
         {
             try
             {
-                var UserId = GetUserIdOrThrow();
                 var Result = await _productService.GetProducts(request);
                 return Ok(Result);
             }
@@ -61,7 +60,6 @@ namespace ShoppingApp.Controllers
         {
             try
             {
-                var UserId = GetUserIdOrThrow();
                 var Result = await _productService.SearchProductByName(request);
                 return Ok(Result);
             }
@@ -139,9 +137,33 @@ namespace ShoppingApp.Controllers
         {
             try
             {
-                var UserId = GetUserIdOrThrow();
                 var Result = await _productService.SearchProductById(request);
                 return Ok(Result);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Retrieves products based on price filter and pagination.
+        /// </summary>
+        /// <remarks>
+        /// Filters products between a specified price range.
+        /// Supports pagination and returns empty result if no products found.
+        /// </remarks>
+        /// <param name="request">Contains price range and pagination details.</param>
+        /// <returns>Filtered list of products.</returns>
+        //[Authorize(Roles = "admin,user")]
+        [HttpPost("get-products-with-filter")]
+        [ValidateRequest]
+        public async Task<IActionResult> GetProductsWithFilter([FromBody] GetAllProductsWithFilterRequestDTO request)
+        {
+            try
+            {
+                var result = await _productService.GetProductsWithFilter(request);
+                return Ok(result);
             }
             catch
             {

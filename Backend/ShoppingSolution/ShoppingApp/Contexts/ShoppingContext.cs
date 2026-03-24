@@ -14,11 +14,13 @@ namespace ShoppingApp.Contexts
         public DbSet<OrderDetails> OrderDetails { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<PromoCode> PromoCodes { get; set; }
         public DbSet<Refund> Refunds { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Stock> Stock { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserDetails> UserDetails { get; set; }
+        public DbSet<Wallet> Wallets {  get; set; }
         public DbSet<WishList> WishList { get; set; }
         public DbSet<WishListItems> WishListItems { get; set; }
 
@@ -147,34 +149,43 @@ namespace ShoppingApp.Contexts
             modelBuilder.Entity<Order>(entity =>
             {
                 entity.HasKey(l => l.OrderId)
-                .HasName("PK_Order");
+                    .HasName("PK_Order");
 
                 entity.Property(o => o.OrderId)
-                .HasDefaultValueSql("NEWID()");
+                    .HasDefaultValueSql("NEWID()");
 
                 entity.Property(o => o.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()");
+                    .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.Property(o => o.TotalAmount)
-                .HasPrecision(18, 2);
+                    .HasPrecision(18, 2);
+
+                entity.Property(o => o.DiscountPercentage)
+                    .HasDefaultValue(0);
+
+                entity.Property(o => o.OrderTotalAmount)
+                    .HasDefaultValue(0);
+
+                entity.Property(o => o.DiscountAmount)
+                    .HasDefaultValue(0);
 
                 entity.HasOne(o => o.User)
-                .WithMany(u => u.Orders)
-                .HasForeignKey(o => o.UserId)
-                .HasConstraintName("FK_Order_User")
-                .OnDelete(DeleteBehavior.Restrict);
+                    .WithMany(u => u.Orders)
+                    .HasForeignKey(o => o.UserId)
+                    .HasConstraintName("FK_Order_User")
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(o => o.Address)
-                .WithMany(a => a.Orders)
-                .HasForeignKey(o => o.AddressId)
-                .HasConstraintName("FK_Order_Address")
-                .OnDelete(DeleteBehavior.Restrict);
+                    .WithMany(a => a.Orders)
+                    .HasForeignKey(o => o.AddressId)
+                    .HasConstraintName("FK_Order_Address")
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasMany(o => o.OrderDetails)
-                .WithOne(od => od.Order)
-                .HasForeignKey(od => od.OrderId)
-                .HasConstraintName("FK_OrderDetails_Order")
-                .OnDelete(DeleteBehavior.Restrict);
+                    .WithOne(od => od.Order)
+                    .HasForeignKey(od => od.OrderId)
+                    .HasConstraintName("FK_OrderDetails_Order")
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<OrderDetails>(entity =>
@@ -254,6 +265,23 @@ namespace ShoppingApp.Contexts
 
                 entity.HasIndex(p => p.CategoryId)
                 .HasDatabaseName("IX_Product_CategoryId");
+            });
+
+            modelBuilder.Entity<PromoCode>(entity =>
+            {
+                entity.HasKey(p => p.PromoCodeId)
+                .HasName("PK_PromoCode");
+
+                entity.Property(o => o.PromoCodeId)
+                .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.HasMany(p => p.Orders)
+                .WithOne(p => p.PromoCode)
+                .HasConstraintName("FK_Order")
+                .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Refund>(entity =>
@@ -353,12 +381,6 @@ namespace ShoppingApp.Contexts
                 .HasConstraintName("FK_Order_User")
                 .OnDelete(DeleteBehavior.Restrict);
 
-                //entity.HasMany(u => u.Logs)
-                //.WithOne(l => l.User)
-                //.HasForeignKey(l => l.UserId)
-                //.HasConstraintName("FK_Log_User")
-                //.OnDelete(DeleteBehavior.Restrict);
-
                 entity.HasMany(u => u.Reviews)
                 .WithOne(r => r.User)
                 .HasForeignKey(r => r.UserId)
@@ -411,6 +433,23 @@ namespace ShoppingApp.Contexts
                 .WithOne(e=>e.UserDetails)
                 .HasForeignKey<UserDetails>(e=>e.UserId)
                 .HasConstraintName("FK_User_UserDetails")
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Wallet>(entity =>
+            {
+                entity.HasKey(w => w.WalletId)
+                .HasName("Pk_Wallet");
+
+                entity.Property(w => w.WalletId)
+                .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.HasOne(w => w.User)
+                .WithOne(w => w.Wallet)
+                .HasForeignKey<Wallet>(w => w.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
             });
 
