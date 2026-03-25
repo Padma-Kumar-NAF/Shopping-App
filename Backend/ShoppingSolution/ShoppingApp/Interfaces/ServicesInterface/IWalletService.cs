@@ -1,9 +1,10 @@
-﻿using ShoppingApp.Models.DTOs.Wallet;
+﻿using ShoppingApp.Models;
+using ShoppingApp.Models.DTOs.Wallet;
 
 namespace ShoppingApp.Interfaces.ServicesInterface
 {
     public interface IWalletService
     {
-        public Task<GetWalletAmountResponseDTO> GetWalletAmount(Guid userId);
+        public Task<ApiResponse<GetWalletAmountResponseDTO>> GetWalletAmount(Guid userId);
     }
 }

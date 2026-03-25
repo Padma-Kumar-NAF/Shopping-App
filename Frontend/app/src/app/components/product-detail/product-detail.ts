@@ -1,6 +1,8 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ProductService } from '../../services/product.service';
 import { ProductStateService } from '../../services/product-state.service';
 import { AuthStateService } from '../../services/auth-state.service';
@@ -17,14 +19,17 @@ import { toast } from 'ngx-sonner';
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.css',
 })
-export class ProductDetail implements OnInit {
+export class ProductDetail implements OnInit, OnDestroy {
   private productService = inject(ProductService);
   private productStateService = inject(ProductStateService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private authState = inject(AuthStateService);
   private redirectService = inject(RedirectService);
   private cartService = inject(CartService);
   private wishlistService = inject(WishlistService);
+
+  private destroy$ = new Subject<void>();
 
   product = signal<ProductDetails | null>(null);
   isLoading = signal<boolean>(true);
@@ -37,12 +42,47 @@ export class ProductDetail implements OnInit {
   wishlists = signal<WishListDTO[]>([]);
 
   ngOnInit(): void {
-    const selectedProduct = this.productStateService.getSelectedProduct();
-    if (selectedProduct) {
-      this.loadProduct(selectedProduct);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+
+    // React to param changes so related-product navigation (same route, new param)
+    // also scrolls to top and reloads the correct product
+    this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      const productId = params.get('productId');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      this.resolveProduct(productId);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private resolveProduct(productId: string | null): void {
+    const stateProduct = this.productStateService.getSelectedProduct();
+
+    if (stateProduct && stateProduct.productId === productId) {
+      this.loadProduct(stateProduct);
+    } else if (productId) {
+      this.isLoading.set(true);
+      this.productService.getProductById(productId).subscribe({
+        next: (product) => {
+          if (product) {
+            this.productStateService.setSelectedProduct(product as any);
+            this.loadProduct(product as any);
+          } else {
+            this.error.set('Product not found');
+            this.isLoading.set(false);
+          }
+        },
+        error: () => {
+          this.error.set('Failed to load product');
+          this.isLoading.set(false);
+        },
+      });
     } else {
-      toast.error('No product selected');
-      this.router.navigate(['/products']);
+      this.error.set('No product specified');
+      this.isLoading.set(false);
     }
   }
 
@@ -83,13 +123,17 @@ export class ProductDetail implements OnInit {
     if (!product) return;
     if (!this.authState.isAuthenticated()) {
       this.productStateService.setSelectedProduct(product);
-      this.redirectService.storeIntendedRoute('/payment', { fromProduct: 'true', quantity: this.quantity() });
+      this.redirectService.storeIntendedRoute(
+        `/payment?fromProduct=true&quantity=${this.quantity()}&productId=${product.productId}`
+      );
       toast.info('Please login to continue with your purchase');
       this.router.navigate(['/auth']);
       return;
     }
     this.productStateService.setSelectedProduct(product);
-    this.router.navigate(['/payment'], { queryParams: { fromProduct: 'true', quantity: this.quantity() } });
+    this.router.navigate(['/payment'], {
+      queryParams: { fromProduct: 'true', quantity: this.quantity(), productId: product.productId },
+    });
   }
 
   addToCart(): void {
@@ -98,7 +142,7 @@ export class ProductDetail implements OnInit {
     if (!this.authState.isAuthenticated()) {
       toast.info('Please login to add items to cart');
       this.productStateService.setSelectedProduct(product);
-      this.redirectService.storeIntendedRoute('/product-detail');
+      this.redirectService.storeIntendedRoute(`/product-detail/${product.productId}`);
       this.router.navigate(['/auth']);
       return;
     }
@@ -116,7 +160,7 @@ export class ProductDetail implements OnInit {
       const product = this.product();
       if (product) this.productStateService.setSelectedProduct(product);
       toast.info('Please login to add items to wishlist');
-      this.redirectService.storeIntendedRoute('/product-detail');
+      this.redirectService.storeIntendedRoute(`/product-detail/${this.product()?.productId ?? ''}`);
       this.router.navigate(['/auth']);
       return;
     }
@@ -149,7 +193,7 @@ export class ProductDetail implements OnInit {
 
   viewRelatedProduct(product: ProductDetails): void {
     this.productStateService.setSelectedProduct(product);
-    this.router.navigate(['/product-detail']).then(() => this.loadProduct(product));
+    this.router.navigate(['/product-detail', product.productId]);
   }
 
   getAverageRating(product: ProductDetails): number | null {

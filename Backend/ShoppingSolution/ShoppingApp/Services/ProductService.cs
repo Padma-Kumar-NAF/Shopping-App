@@ -257,33 +257,94 @@ namespace ShoppingApp.Services
             }
         }
 
+        public async Task<ApiResponse<List<ProductSuggestionDTO>>> GetSuggestions(string query)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    return new ApiResponse<List<ProductSuggestionDTO>>()
+                    {
+                        Data = new List<ProductSuggestionDTO>(),
+                        StatusCode = 200,
+                        Message = "Empty query",
+                        Action = "ShowEmpty"
+                    };
+                }
+
+                query = query.Trim();
+
+                var suggestions = await _productRepository
+                    .GetQueryable()
+                    .AsNoTracking()
+                    .Where(p => EF.Functions.Like(p.Name, $"{query}%"))
+                    .OrderBy(p => p.Name)
+                    .Select(p => new ProductSuggestionDTO
+                    {
+                        Name = p.Name
+                    })
+                    .Take(10)
+                    .ToListAsync();
+
+                return new ApiResponse<List<ProductSuggestionDTO>>()
+                {
+                    Data = suggestions,
+                    StatusCode = 200,
+                    Message = suggestions.Any()
+                        ? "Suggestions fetched successfully"
+                        : "No suggestions found",
+                    Action = suggestions.Any() ? "ShowList" : "ShowEmpty"
+                };
+            }
+            catch (AppException)
+            {
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while fetching suggestions", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Error while fetching suggestions", ex, 500);
+            }
+        }
+
         public async Task<ApiResponse<SearchProductByIdResponseDTO>> SearchProductById(SearchProductByIdRequestDTO request)
         {
             try
             {
-                var product = await _productRepository
-                .GetQueryable()
-                .Where(p => p.ProductId == request.ProductId)
-                .Select(p => new SearchProductByIdResponseDTO
+                var productEntity = await _productRepository
+                    .GetQueryable()
+                    .Include(p => p.Reviews)
+                    .Include(p => p.Category)
+                    .Include(p => p.Stock)
+                    .FirstOrDefaultAsync(p => p.ProductId == request.ProductId);
+
+                if (productEntity == null)
                 {
-                    ProductId = p.ProductId,
-                    CategoryId = p.CategoryId,
-                    StockId = p.Stock!.StockId,
-                    ProductName = p.Name,
-                    ImagePath = p.ImagePath,
-                    Description = p.Description,
-                    Price = p.Price,
-                    CategoryName = p.Category!.CategoryName,
-                    Quantity = p.Stock.Quantity,
-                    Review = (p.Reviews ?? new List<Review>())
+                    throw new AppException("Product not found", 404);
+                }
+
+                var product = new SearchProductByIdResponseDTO
+                {
+                    ProductId = productEntity.ProductId,
+                    CategoryId = productEntity.CategoryId,
+                    StockId = productEntity.Stock!.StockId,
+                    ProductName = productEntity.Name,
+                    ImagePath = productEntity.ImagePath,
+                    Description = productEntity.Description,
+                    Price = productEntity.Price,
+                    CategoryName = productEntity.Category!.CategoryName,
+                    Quantity = productEntity.Stock.Quantity,
+                    Review = productEntity.Reviews?
                         .Select(r => new ReviewDTO
                         {
                             Summary = r.Summary,
                             ReviewPoints = r.ReviewPoints
                         })
-                        .ToList()
-                })
-                .FirstOrDefaultAsync();
+                        .ToList() ?? new List<ReviewDTO>()
+                };
 
                 if (product == null)
                 {
@@ -322,26 +383,39 @@ namespace ShoppingApp.Services
                     .AsNoTracking()
                     .Where(p => EF.Functions.Like(p.Name, $"%{searchText}%"))
                     .OrderBy(p => p.Name)
-                    .Select(p => new ProductDetailsDTO
+                    .Select(p => new
                     {
-                        ProductId = p.ProductId,
-                        CategoryId = p.CategoryId,
-                        StockId = p.Stock!.StockId,
-                        Name = p.Name,
-                        ImagePath = p.ImagePath,
-                        Description = p.Description,
+                        p.ProductId,
+                        p.CategoryId,
+                        p.Name,
+                        p.ImagePath,
+                        p.Description,
+                        p.Price,
                         CategoryName = p.Category!.CategoryName,
-                        Price = p.Price,
+                        StockId = p.Stock!.StockId,
                         Quantity = p.Stock.Quantity,
-                        Review = (p.Reviews ?? new List<Review>())
-                            .Select(r => new ReviewDTO
-                            {
-                                Summary = r.Summary,
-                                ReviewPoints = r.ReviewPoints
-                            })
-                            .ToList()
+                        Reviews = p.Reviews
                     })
                     .ToListAsync();
+
+                var result = products.Select(p => new ProductDetailsDTO
+                {
+                    ProductId = p.ProductId,
+                    CategoryId = p.CategoryId,
+                    StockId = p.StockId,
+                    Name = p.Name,
+                    ImagePath = p.ImagePath,
+                    Description = p.Description,
+                    CategoryName = p.CategoryName,
+                    Price = p.Price,
+                    Quantity = p.Quantity,
+                    Review = p.Reviews?
+                        .Select(r => new ReviewDTO
+                        {
+                            Summary = r.Summary,
+                            ReviewPoints = r.ReviewPoints
+                        }).ToList() ?? new List<ReviewDTO>()
+                }).ToList();
 
                 if (!products.Any())
                 {
@@ -356,7 +430,7 @@ namespace ShoppingApp.Services
 
                 var response = new SearchProductByNameResponseDTO
                 {
-                    ProductsList = products
+                    ProductsList = result
                 };
 
                 return new ApiResponse<SearchProductByNameResponseDTO>()

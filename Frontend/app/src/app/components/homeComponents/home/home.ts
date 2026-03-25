@@ -93,11 +93,20 @@ export class HomeComponent implements OnInit {
 
   onProductClick(product: ProductDetails): void {
     this.productStateService.setSelectedProduct(product);
-    this.router.navigate(['/product-detail']);
+    this.router.navigate(['/product-detail', product.productId]);
   }
 
   onCategoryClick(category: CategoryDTO): void {
     this.router.navigate(['/products'], { queryParams: { category: category.categoryName } });
+  }
+
+  onCategorySelect(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    if (value) {
+      this.router.navigate(['/products'], { queryParams: { category: value } });
+    } else {
+      this.router.navigate(['/products']);
+    }
   }
 
   onSearch(): void {

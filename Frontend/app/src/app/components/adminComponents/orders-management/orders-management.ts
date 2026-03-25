@@ -54,6 +54,10 @@ export class OrdersManagement implements OnInit {
 
   ngOnInit(): void {
     this.orders$ = this.store.state$.pipe(map((s) => s.orders));
+
+    if (this.store.value.orders.length === 0) {
+      this.fetchPage(1);
+    }
   }
 
   private applyFilters(orders: OrderDetailsResponseDTO[]): OrderDetailsResponseDTO[] {

@@ -25,14 +25,14 @@ export class UserServcie {
 
   deactivateUser(userId: string): Observable<ApiResponse<DeactivateUserResponseDTO>> {
     return this.http.post<ApiResponse<DeactivateUserResponseDTO>>(
-      `${this.baseUrl}/deactivate-user`,
+      `${this.baseUrl}/delete-user`,
       { UserId: userId },
     );
   }
 
   activateUser(userId: string): Observable<ApiResponse<DeactivateUserResponseDTO>> {
     return this.http.post<ApiResponse<DeactivateUserResponseDTO>>(
-      `${this.baseUrl}/activate-user`,
+      `${this.baseUrl}/delete-user`,
       { UserId: userId },
     );
   }

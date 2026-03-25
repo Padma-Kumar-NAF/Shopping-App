@@ -123,17 +123,7 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "ShoppingApp.Models.DTOs.Wallet.GetWalletAmountResponseDTO",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "ShoppingApp.Controllers.WishListController",
@@ -579,6 +569,22 @@
   },
   {
     "ContainingType": "ShoppingApp.Controllers.ProductsController",
+    "Method": "GetSuggestions",
+    "RelativePath": "Products/suggestions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "query",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.ProductsController",
     "Method": "UpdateProduct",
     "RelativePath": "Products/update-product",
     "HttpMethod": "POST",
@@ -604,6 +610,38 @@
       {
         "Name": "request",
         "Type": "ShoppingApp.Models.DTOs.Promocode.AddPromoCodeRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.PromoCodeController",
+    "Method": "EditPromoCodes",
+    "RelativePath": "PromoCode/edit-promocode",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Promocode.EditPromocodeRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.PromoCodeController",
+    "Method": "GetAllPromoCodes",
+    "RelativePath": "PromoCode/get-all-promocode",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Promocode.GetAllPromocodeRequestDTO",
         "IsRequired": true
       }
     ],

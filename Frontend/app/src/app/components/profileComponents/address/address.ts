@@ -152,6 +152,7 @@ export class Address implements OnInit {
               a.addressId === this.formAddress.addressId ? this.formAddress : a
             ),
           }));
+          this.addressSelectionService.setAvailableAddresses(this.addresses().addressList);
         },
         error: (err: any) => {
           toast.dismiss(toastId);
@@ -175,6 +176,9 @@ export class Address implements OnInit {
               ...data,
               addressList: [...data.addressList, this.formAddress],
             }));
+            // Sync the updated list into the shared selection service
+            // so PaymentComponent and any other consumer sees the new address immediately
+            this.addressSelectionService.setAvailableAddresses(this.addresses().addressList);
           }
           console.log('Add response', response);
           toast.dismiss(toastId);
@@ -215,6 +219,7 @@ export class Address implements OnInit {
           ...data,
           addressList: data.addressList.filter((a) => a.addressId !== addressId),
         }));
+        this.addressSelectionService.setAvailableAddresses(this.addresses().addressList);
       },
       error: (err: any) => {
         toast.dismiss(toastId);

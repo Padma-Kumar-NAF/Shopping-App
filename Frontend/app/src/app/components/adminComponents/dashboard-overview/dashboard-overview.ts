@@ -1,5 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { DashboardStats } from '../../../models/users/admin.model';
 import { StoreService } from '../../../services/adminServices/store.service';
 import { UserServcie } from '../../../services/adminServices/user.service';
@@ -21,7 +23,7 @@ import { toast } from 'ngx-sonner';
   templateUrl: './dashboard-overview.html',
   styleUrl: './dashboard-overview.css',
 })
-export class DashboardOverview implements OnInit {
+export class DashboardOverview implements OnInit, OnDestroy {
   private readonly userApiService = inject(UserServcie);
   private readonly orderApiService = inject(AdminOrderService);
   private readonly categoryApiService = inject(AdminCategoryService);
@@ -49,8 +51,19 @@ export class DashboardOverview implements OnInit {
     this.pagination.pageSize = this.PAGE_SIZE;
   }
 
+  private destroy$ = new Subject<void>();
+
   ngOnInit(): void {
     this.loadDashboardData();
+    this.store.refresh$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.store.resetCache();
+      this.loadDashboardData();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   loadDashboardData(): void {

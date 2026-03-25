@@ -37,7 +37,7 @@ export const routes: Routes = [
     component: ProductListing,
   },
   {
-    path: 'product-detail',
+    path: 'product-detail/:productId',
     canActivate: [publicGuard],
     component: ProductDetail,
   },

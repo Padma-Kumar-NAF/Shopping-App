@@ -472,11 +472,11 @@ namespace ShoppingApp.Services
 
         public async Task<ApiResponse<DeleteUserResponseDTO>> DeactivateUser(Guid UserId, Guid DeleteUserId)
         {
-            var admin = await _userRepository.GetAsync(UserId);
-            if (admin == null || admin.Role != "admin")
-            {
-                throw new AppException("Access denied",401);
-            }
+            //var admin = await _userRepository.GetAsync(UserId);
+            //if (admin == null || admin.Role != "admin")
+            //{
+            //    throw new AppException("Access denied",401);
+            //}
 
             try
             {
@@ -485,15 +485,16 @@ namespace ShoppingApp.Services
                 {
                     throw new AppException("User not found",404);
                 }
-                user.Active = false;
+                user.Active = !user.Active;
+                await _userRepository.UpdateAsync(DeleteUserId,user);
                 return new ApiResponse<DeleteUserResponseDTO>()
                 {
                     Data = new DeleteUserResponseDTO()
                     {
                         UnActivated = true
                     },
-                    Message = "User deactivated successfully",
-                    Action = "De-activateUser",
+                    Message = user.Active ? "User activated successfully" : "User deactivated successfully",
+                    Action = "ToggleStatus",
                     StatusCode = 200
                 };
             }
@@ -515,23 +516,30 @@ namespace ShoppingApp.Services
         {
             try
             {
+                var validRoles = new List<string> { "admin", "user" };
+
+                if (!validRoles.Contains(role.ToLower()))
+                {
+                    throw new AppException("Invalid role", 400);
+                }
+
+                if (adminId == userId)
+                {
+                    throw new AppException("Cannot make a self role change", 401);
+                }
+
                 var admin = await _userRepository.GetAsync(adminId);
+
                 if (admin == null || admin.Role.ToLower() != "admin")
                 {
                     throw new AppException("Access denied", 401);
                 }
 
                 var user = await _userRepository.GetAsync(userId);
+
                 if (user == null)
                 {
                     throw new AppException("User not found", 404);
-                }
-
-                var validRoles = new List<string> { "admin", "user" };
-
-                if (!validRoles.Contains(role.ToLower()))
-                {
-                    throw new AppException("Invalid role", 400);
                 }
 
                 if (user.Role.ToLower() == role.ToLower())

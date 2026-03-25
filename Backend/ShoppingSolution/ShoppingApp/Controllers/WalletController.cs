@@ -18,11 +18,11 @@ namespace ShoppingApp.Controllers
 
         [HttpGet("balance")]
         [ValidateRequest]
-        public async Task<ActionResult<GetWalletAmountResponseDTO>> GetWalletBalance()
+        public async Task<IActionResult> GetWalletBalance()
         {
             try
             {
-                var userId = GetUserId();
+                var userId = GetUserIdOrThrow();
                 var result = await _walletService.GetWalletAmount(userId);
                 return Ok(result);
             }

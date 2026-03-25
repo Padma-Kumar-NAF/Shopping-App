@@ -170,5 +170,19 @@ namespace ShoppingApp.Controllers
                 throw;
             }
         }
+
+        [HttpGet("suggestions")]
+        public async Task<IActionResult> GetSuggestions([FromQuery] string query)
+        {
+            try
+            {
+                var result = await _productService.GetSuggestions(query);
+                return Ok(result);
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

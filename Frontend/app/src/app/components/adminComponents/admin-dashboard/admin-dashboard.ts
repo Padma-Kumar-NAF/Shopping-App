@@ -1,5 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subject } from 'rxjs';
+import { takeUntil, skip } from 'rxjs/operators';
 import { UsersManagement } from '../users-management/users-management';
 import { OrdersManagement } from '../orders-management/orders-management';
 import { CategoryManagement } from '../category-management/category-management';
@@ -14,9 +16,7 @@ import { AuthStateService } from '../../../services/auth-state.service';
 import { toast } from 'ngx-sonner';
 import { Router } from '@angular/router';
 import { AdminOrderService } from '../../../services/adminServices/orders.service';
-import {
-  GetAllOrderResponseDTO,
-} from '../../../models/admin/orders.model';
+import { GetAllOrderResponseDTO } from '../../../models/admin/orders.model';
 import { GetAllCategoryResponseDTO } from '../../../models/admin/categories.model';
 import { AdminCategoryService } from '../../../services/adminServices/category.service';
 import { AdminProductService } from '../../../services/adminServices/products.service';
@@ -37,7 +37,7 @@ interface TabConfig {
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css',
 })
-export class AdminDashboard implements OnInit {
+export class AdminDashboard implements OnInit, OnDestroy {
   private readonly userApiService = inject(UserServcie);
   private readonly orderApiService = inject(AdminOrderService);
   private readonly categoryApiService = inject(AdminCategoryService);
@@ -47,7 +47,6 @@ export class AdminDashboard implements OnInit {
   activeTab = signal<AdminTab>('dashboard');
   mobileMenuOpen = signal<boolean>(false);
 
-  /** Page size used for the initial load on the dashboard — matches child components */
   private readonly PAGE_SIZE = 10;
 
   pagination: PaginationModel;
@@ -59,12 +58,34 @@ export class AdminDashboard implements OnInit {
     this.pagination.pageSize = this.PAGE_SIZE;
   }
 
+  private destroy$ = new Subject<void>();
+  isRefreshing = signal<boolean>(false);
+
   ngOnInit(): void {
-    console.log('Admin dashboard mounted');
+    this.loadAll();
+    this.store.refresh$.pipe(skip(1), takeUntil(this.destroy$)).subscribe(() => {
+      this.store.resetCache();
+      this.loadAll();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  loadAll(): void {
     this.getAllUser();
     this.getAllOrders();
     this.getAllCategories();
     this.getAllProdcuts();
+  }
+
+  refresh(): void {
+    this.isRefreshing.set(true);
+    this.store.resetCache();
+    this.loadAll();
+    setTimeout(() => this.isRefreshing.set(false), 1500);
   }
 
   getAllProdcuts(): void {
@@ -72,7 +93,6 @@ export class AdminDashboard implements OnInit {
       next: (response: ApiResponse<GetAllProductsResponseDTO>) => {
         const list = response.data?.productList ?? [];
         this.store.setProducts(list);
-        // Mark page 1 as fetched so child component won't re-fetch
         this.store.pageCache.products.add(1);
         this.updateStats();
       },
@@ -91,7 +111,6 @@ export class AdminDashboard implements OnInit {
       next: (response: ApiResponse<GetUsersResponseDTO>) => {
         const list = response.data?.usersList ?? [];
         this.store.setUsers(list);
-        // Mark page 1 as fetched so child component won't re-fetch
         this.store.pageCache.users.add(1);
         this.updateStats();
       },
@@ -110,7 +129,6 @@ export class AdminDashboard implements OnInit {
       next: (response: ApiResponse<GetAllOrderResponseDTO>) => {
         const list = response.data?.items ?? [];
         this.store.setOrders(list);
-        // Mark page 1 as fetched so child component won't re-fetch
         this.store.pageCache.orders.add(1);
         this.updateStats();
         console.log(response)

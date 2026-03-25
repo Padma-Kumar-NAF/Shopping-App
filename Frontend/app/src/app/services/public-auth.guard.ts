@@ -1,22 +1,18 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router, ActivatedRouteSnapshot } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
 import { AuthStateService } from './auth-state.service';
+import { RedirectService } from './redirect.service';
 
 export const authRequiredGuard: CanActivateFn = (route, state) => {
   const authState = inject(AuthStateService);
   const router = inject(Router);
+  const redirectService = inject(RedirectService);
 
   const user = authState.user();
 
   if (!user) {
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem('redirectUrl', state.url);
-      const queryParams = route.queryParams;
-      if (Object.keys(queryParams).length > 0) {
-        sessionStorage.setItem('redirectQueryParams', JSON.stringify(queryParams));
-      }
-    }
-
+    // state.url already contains the full path + query string, e.g. /payment?fromProduct=true&quantity=2
+    redirectService.storeIntendedRoute(state.url);
     return router.createUrlTree(['/auth']);
   }
 

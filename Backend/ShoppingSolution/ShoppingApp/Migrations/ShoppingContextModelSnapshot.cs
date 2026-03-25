@@ -276,7 +276,7 @@ namespace ShoppingApp.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
-                    b.Property<Guid>("PromoCodeId")
+                    b.Property<Guid?>("PromoCodeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
@@ -805,7 +805,6 @@ namespace ShoppingApp.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("PromoCodeId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
                         .HasConstraintName("FK_Order");
 
                     b.HasOne("ShoppingApp.Models.User", "User")

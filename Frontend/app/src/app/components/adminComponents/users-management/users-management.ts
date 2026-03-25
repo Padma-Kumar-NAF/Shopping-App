@@ -7,6 +7,7 @@ import { PaginationModel } from '../../../models/users/pagination.model';
 import { ApiResponse } from '../../../models/admin/apiResponse.model';
 import { GetUsersResponseDTO, UserDetailsDTO } from '../../../models/admin/users.model';
 import { StoreService } from '../../../services/adminServices/store.service';
+import { AuthStateService } from '../../../services/auth-state.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -20,6 +21,7 @@ import { map } from 'rxjs/operators';
 export class UsersManagement implements OnInit {
   private readonly apiService = inject(UserServcie);
   store = inject(StoreService);
+  private readonly authState = inject(AuthStateService);
 
   users$!: Observable<UserDetailsDTO[]>;
   filteredUsers$!: Observable<UserDetailsDTO[]>;
@@ -63,7 +65,8 @@ export class UsersManagement implements OnInit {
   // ── Filters ───────────────────────────────────────────────────────────────
 
   private applyFilters(users: UserDetailsDTO[]): UserDetailsDTO[] {
-    let filtered = users;
+    const currentEmail = this.authState.email();
+    let filtered = users.filter(u => u.email !== currentEmail);
     const term = this.searchTerm().toLowerCase();
     if (term) {
       filtered = filtered.filter(
@@ -77,6 +80,7 @@ export class UsersManagement implements OnInit {
   }
 
   get pagedUsers(): UserDetailsDTO[] {
+    console.log(this.store.value.users)
     const filtered = this.applyFilters(this.store.value.users);
     const start = (this.currentPage() - 1) * this.pageSize;
     return filtered.slice(start, start + this.pageSize);
@@ -137,7 +141,7 @@ export class UsersManagement implements OnInit {
           this.hasMoreData.set(false);
           toast.info('No more users to load');
         } else {
-          this.store.appendUsers(incoming);
+          this.store.setUsers(incoming);
           this.store.pageCache.users.add(page);
           this.currentPage.set(page);
           if (incoming.length < this.pageSize) this.hasMoreData.set(false);
@@ -168,6 +172,7 @@ export class UsersManagement implements OnInit {
   // ── Role change ───────────────────────────────────────────────────────────
 
   changeUserRole(userId: string, newRole: string): void {
+    const previousRole = this.store.value.users.find(u => u.userId === userId)?.role;
     this.roleChangingId.set(userId);
     this.apiService.changeUserRole(userId, newRole).subscribe({
       next: (res) => {
@@ -183,6 +188,11 @@ export class UsersManagement implements OnInit {
       },
       error: (err) => {
         this.roleChangingId.set(null);
+        const user = this.store.value.users.find(u => u.userId === userId);
+        if (user && previousRole) {
+          this.store.updateUser({ ...user, role: previousRole });
+          console.log(previousRole)
+        }
         toast.error(err?.error?.message || 'Failed to update role');
       },
     });

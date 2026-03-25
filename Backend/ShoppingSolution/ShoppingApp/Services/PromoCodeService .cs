@@ -57,10 +57,132 @@ public class PromoCodeService : IPromoCodeService
                 Message = "Promo code created successfully"
             };
         }
+        catch (AppException)
+        {
+            await _unitOfWork.RollbackAsync();
+            throw;
+        }
+        catch (DbUpdateException ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            throw new AppException("Error while creating promo code", ex, 500);
+        }
         catch (Exception ex)
         {
             await _unitOfWork.RollbackAsync();
             throw new AppException("Error while creating promo code", ex, 500);
+        }
+    }
+
+    public async Task<ApiResponse<EditPromocodeResponseDTO>> EditPromoCode(EditPromocodeRequestDTO request)
+    {
+        if (request.FromDate > request.ToDate)
+        {
+            throw new AppException("FromDate cannot be greater than ToDate", 400);
+        }
+
+        var promo = await _promoRepository.GetQueryable().FirstOrDefaultAsync(p => p.PromoCodeId == request.PromoCodeId);
+
+        if (promo == null)
+        {
+            throw new AppException("Promo code not found", 404);
+        }
+
+        var existing = await _promoRepository
+            .GetQueryable()
+            .FirstOrDefaultAsync(p =>
+                p.PromoCodeName == request.PromoCodeName.Trim().ToUpper()
+                && p.PromoCodeId != request.PromoCodeId);
+
+        if (existing != null)
+        {
+            throw new AppException("Promo code name already exists", 400);
+        }
+
+        await _unitOfWork.BeginTransactionAsync();
+
+        try
+        {
+            promo.PromoCodeName = request.PromoCodeName.Trim().ToUpper();
+            promo.DiscountPercentage = request.DiscountPercentage;
+            promo.FromDate = request.FromDate;
+            promo.ToDate = request.ToDate;
+
+            await _promoRepository.UpdateAsync(request.PromoCodeId,promo);
+            await _unitOfWork.CommitAsync();
+
+            return new ApiResponse<EditPromocodeResponseDTO>
+            {
+                StatusCode = 200,
+                Message = "Promo code updated successfully",
+                Data = new EditPromocodeResponseDTO
+                {
+                    IsSuccess = true
+                }
+            };
+        }
+        catch (AppException)
+        {
+            await _unitOfWork.RollbackAsync();
+            throw;
+        }
+        catch (DbUpdateException ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            throw new AppException("Error while updating promo code", ex, 500);
+        }
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            throw new AppException("Error while updating promo code", ex, 500);
+        }
+    }
+
+    public async Task<ApiResponse<GetAllPromocodeResponseDTO>> GetAllPromocode(GetAllPromocodeRequestDTO request)
+    {
+        try
+        {
+            var query = _promoRepository.GetQueryable();
+
+            var totalCount = await query.CountAsync();
+
+            var promos = await query
+                .OrderByDescending(p => p.CreatedAt)
+                .Skip((request.pagination.PageNumber - 1) * request.pagination.PageSize)
+                .Take(request.pagination.PageSize)
+                .ToListAsync();
+
+            var data = promos.Select(p => new PromoCodeItemDTO
+            {
+                PromoCodeId = p.PromoCodeId,
+                PromoCodeName = p.PromoCodeName,
+                DiscountPercentage = p.DiscountPercentage,
+                FromDate = p.FromDate,
+                ToDate = p.ToDate
+            }).ToList();
+
+            return new ApiResponse<GetAllPromocodeResponseDTO>
+            {
+                StatusCode = 200,
+                Message = "Promo codes fetched successfully",
+                Data = new GetAllPromocodeResponseDTO
+                {
+                    PromoCodes = data,
+                    TotalCount = totalCount
+                }
+            };
+        }
+        catch (AppException)
+        {
+            throw;
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new AppException("Error while fetching promo codes", ex, 500);
+        }
+        catch (Exception ex)
+        {
+            throw new AppException("Error while fetching promo codes", ex, 500);
         }
     }
 
@@ -69,12 +191,8 @@ public class PromoCodeService : IPromoCodeService
         try
         {
             var code = request.PromoCodeName.Trim().ToUpper();
-            Console.WriteLine("--------");
-            Console.WriteLine(code);
 
-            var promo = await _promoRepository
-                .GetQueryable()
-                .FirstOrDefaultAsync(p => p.PromoCodeName == code);
+            var promo = await _promoRepository.GetQueryable().FirstOrDefaultAsync(p => p.PromoCodeName == code);
 
             if (promo == null)
             {
@@ -128,6 +246,14 @@ public class PromoCodeService : IPromoCodeService
                     Message = "Promo code applied successfully"
                 }
             };
+        }
+        catch (AppException)
+        {
+            throw;
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new AppException("Error while verifying promo code", ex, 500);
         }
         catch (Exception ex)
         {

@@ -129,11 +129,11 @@ namespace ShoppingApp.Services
             {
                 throw new AppException("Server error occurred while creating wishlist", ex, 500);
             }
-
         }
 
         public async Task<ApiResponse<DeleteWishListResponseDTO>> DeleteWishListAsync(Guid UserId, Guid WishListId)
         {
+            await _unitOfWork.BeginTransactionAsync();
             try
             {
                 var wishList = await _wishListRepository.FirstOrDefaultAsync(x => x.WishListId == WishListId && x.UserId == UserId);
@@ -143,7 +143,22 @@ namespace ShoppingApp.Services
                     throw new AppException("Wishlist not found");
                 }
 
+                var wishListItems = await _wishListItemsRepository
+                    .GetQueryable()
+                    .Where(x => x.WishListId == WishListId)
+                    .ToListAsync();
+
+                if (wishListItems.Any())
+                {
+                    foreach (var item in wishListItems)
+                    {
+                        await _wishListItemsRepository.DeleteAsync(item.WishListItemsId);
+                    }
+                }
+
                 await _wishListRepository.DeleteAsync(WishListId);
+
+                await _unitOfWork.CommitAsync();
 
                 return new ApiResponse<DeleteWishListResponseDTO>()
                 {
@@ -158,14 +173,17 @@ namespace ShoppingApp.Services
             }
             catch (AppException)
             {
+                await _unitOfWork.RollbackAsync();
                 throw;
             }
             catch (DbUpdateException ex)
             {
+                await _unitOfWork.RollbackAsync();
                 throw new AppException("Server error occurred while deleting wishlist", ex, 500);
             }
             catch (Exception ex)
             {
+                await _unitOfWork.RollbackAsync();
                 throw new AppException("Server error occurred while deleting wishlist", ex, 500);
             }
         }

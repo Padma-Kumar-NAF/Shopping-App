@@ -253,7 +253,7 @@ export class ProductListing implements OnInit, OnDestroy {
 
   viewProductDetail(product: ProductDetails): void {
     this.productStateService.setSelectedProduct(product);
-    this.router.navigate(['/product-detail']);
+    this.router.navigate(['/product-detail', product.productId]);
   }
 
   buyNow(product: ProductDetails, event: Event): void {

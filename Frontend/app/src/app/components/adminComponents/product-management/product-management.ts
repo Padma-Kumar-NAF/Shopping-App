@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StoreService } from '../../../services/adminServices/store.service';
 import { AdminProductService } from '../../../services/adminServices/products.service';
+import { AdminCategoryService } from '../../../services/adminServices/category.service';
 import { PaginationModel } from '../../../models/admin/pagination.model';
 import { ApiResponse } from '../../../models/admin/apiResponse.model';
 import {
@@ -18,7 +19,7 @@ import {
   ReviewDTO,
   GetAllProductsResponseDTO,
 } from '../../../models/admin/products.model';
-import { CategoryDTO } from '../../../models/admin/categories.model';
+import { CategoryDTO, GetAllCategoryResponseDTO } from '../../../models/admin/categories.model';
 
 type ActiveView = 'list' | 'add' | 'bulk';
 
@@ -32,6 +33,7 @@ type ActiveView = 'list' | 'add' | 'bulk';
 export class ProductManagement implements OnInit {
   store = inject(StoreService);
   productService = inject(AdminProductService);
+  private categoryService = inject(AdminCategoryService);
 
   activeView = signal<ActiveView>('list');
 
@@ -84,10 +86,22 @@ export class ProductManagement implements OnInit {
   ngOnInit(): void {
     this.products$ = this.store.state$.pipe(map(s => s.products));
     this.categories$ = this.store.state$.pipe(map(s => s.categories));
+    this.filteredProducts$ = this.store.state$.pipe(map(s => this.applyFilters(s.products)));
 
-    this.filteredProducts$ = this.store.state$.pipe(
-      map(s => this.applyFilters(s.products))
-    );
+    if (this.store.value.products.length === 0) {
+      this.fetchPage(1);
+    }
+
+    if (this.store.value.categories.length === 0) {
+      this.categoryService.getAllCategories(this.pagination).subscribe({
+        next: (res: ApiResponse<GetAllCategoryResponseDTO>) => {
+          const list = res.data?.categoryList ?? [];
+          this.store.setCategories(list);
+          this.store.pageCache.categories.add(1);
+        },
+        error: () => {},
+      });
+    }
   }
 
   // ── Filter helpers ────────────────────────────────────────────────────────

@@ -16,22 +16,45 @@ namespace ShoppingApp.Services
             _walletRepository = walletRepository;
         }
 
-        public async Task<GetWalletAmountResponseDTO> GetWalletAmount(Guid userId)
+        public async Task<ApiResponse<GetWalletAmountResponseDTO>> GetWalletAmount(Guid userId)
         {
-            var wallet = await _walletRepository
-                .GetQueryable()
-                .AsNoTracking()
-                .FirstOrDefaultAsync(w => w.UserId == userId);
-
-            if (wallet == null)
+            try
             {
-                throw new AppException("Wallet not found for this user", 404);
+                //Console.WriteLine("----------");
+                //Console.WriteLine(userId);
+                var wallet = await _walletRepository
+                    .GetQueryable()
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(w => w.UserId == userId);
+
+                if (wallet == null)
+                {
+                    throw new AppException("Wallet not found for this user", 404);
+                }
+
+                return new ApiResponse<GetWalletAmountResponseDTO>
+                {
+                    Data = new GetWalletAmountResponseDTO
+                    {
+                        WalletBalance = wallet.WalletAmount
+                    },
+                    StatusCode = 200,
+                    Message = "Wallet fetched",
+                    Action = "ShowWallet"
+                };
             }
-
-            return new GetWalletAmountResponseDTO
+            catch (AppException)
             {
-                WalletBalance = wallet.WalletAmount
-            };
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new AppException("Error while canceling order", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                throw new AppException("Something went wrong while canceling order", ex, 500);
+            }
         }
     }
 }

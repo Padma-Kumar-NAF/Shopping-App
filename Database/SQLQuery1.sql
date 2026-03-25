@@ -6,32 +6,39 @@ update Users
 set Active = 1
 where UserId = 'DBFEC735-AEFF-484B-8A3C-EFC92247E2E0'
 
+update orders
+set Status = 'Delivered'
+
 select * from PromoCodes
 
-select * from Logs
-delete from PromoCodes 
+select * from PromoCodes	
 
-delete from Users
-where UserId = '15C095AD-D196-49BF-B2A2-8995DC6B3E81'
-select count(*) from Users
+select * from Users
+select * from Wallets
+order by CreatedAt desc
+
+delete from Addresses where UserId = 'F56106AD-FEE7-4BD2-B761-4389FC32DCB1'
+delete from UserDetails where userId = 'F56106AD-FEE7-4BD2-B761-4389FC32DCB1'
+delete from Users where UserId = 'F56106AD-FEE7-4BD2-B761-4389FC32DCB1'
+
 
 select count(*) from Products
 select * from Products
 
 select * from Payments
 select * from Orders
+select * from Wallets
 
-
-
+select * from Stock
 select * from Refunds
-delete from Refunds where OrderId = 'A22DF22F-2606-4262-A1DA-4A5DF0746EE2'
 
 select * from Logs
 order by CreatedAt desc
 
+
+
 select * from Refunds
-
-
+order by CreatedAt desc
 
 select * from Category
 select * from Users
@@ -51,6 +58,18 @@ select * from Reviews
 update orders
 set Status = 'Delivered'
 
+delete from users where UserId = '7ECF76DC-2AF8-4A32-BBF4-097C7468FDE6'
+
+delete from PromoCodes
+delete from OrderDetails
+delete from Orders
+delete from payments
+delete from Refunds
+delete from Wallets
+delete from OrderDetails
+delete from Payments
+delete from Refunds
+delete from Payments
 
 -- delete from UserDetails
 -- delete from Addresses
@@ -68,6 +87,7 @@ delete from Category
 delete from Products
 delete from Stock
 delete from WishListItems
+delete from WishList
 
 -- delete from logs
 

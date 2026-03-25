@@ -8,6 +8,9 @@ export class AddressSelectionService {
   private selectedAddress = signal<AddressDTO | null>(null);
   private availableAddresses = signal<AddressDTO[]>([]);
 
+  // Expose as readonly so consumers can bind reactively
+  readonly availableAddresses$ = this.availableAddresses.asReadonly();
+
   setSelectedAddress(address: AddressDTO): void {
     this.selectedAddress.set(address);
   }
