@@ -249,8 +249,7 @@ export class Profile implements OnInit {
   }
 
   logout(): void {
-    this.authState.clearUser();
+    this.authState.logout();
     toast.success('Logged out successfully');
-    this.router.navigate(['/auth']);
   }
 }

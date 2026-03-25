@@ -50,8 +50,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.mobileMenuOpen.set(false);
         this.closeSuggestions();
       });
-
-    // Debounced typeahead — only fires API when user pauses typing
     this.typeahead$.pipe(
       debounceTime(300),
       distinctUntilChanged(),

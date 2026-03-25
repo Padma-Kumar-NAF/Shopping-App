@@ -1136,6 +1136,38 @@
         }
       }
     },
+    "/PromoCode/delete-promocode": {
+      "delete": {
+        "tags": [
+          "PromoCode"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeletePromocodeRequestDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeletePromocodeRequestDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeletePromocodeRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/Review/add-review": {
       "post": {
         "tags": [
@@ -1842,6 +1874,18 @@
           }
         }
       },
+      "DeletePromocodeRequestDTO": {
+        "required": [
+          "promoCodeId"
+        ],
+        "type": "object",
+        "properties": {
+          "promoCodeId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
       "DeleteReviewRequestDTO": {
         "required": [
           "reviewId"
@@ -2044,7 +2088,12 @@
         }
       },
       "GetAllPromocodeRequestDTO": {
-        "type": "object"
+        "type": "object",
+        "properties": {
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
       },
       "GetCartRequestDTO": {
         "type": "object",

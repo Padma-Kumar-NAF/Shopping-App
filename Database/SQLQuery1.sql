@@ -9,6 +9,9 @@ where UserId = 'DBFEC735-AEFF-484B-8A3C-EFC92247E2E0'
 update orders
 set Status = 'Delivered'
 
+update Wallets
+set WalletAmount = 1200
+
 select * from PromoCodes
 
 select * from PromoCodes	

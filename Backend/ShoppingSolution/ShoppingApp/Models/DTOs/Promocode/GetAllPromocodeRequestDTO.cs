@@ -2,6 +2,6 @@
 {
     public class GetAllPromocodeRequestDTO
     {
-        public Pagination pagination = new Pagination();
+        public Pagination Pagination { get; set; } = new Pagination();
     }
 }

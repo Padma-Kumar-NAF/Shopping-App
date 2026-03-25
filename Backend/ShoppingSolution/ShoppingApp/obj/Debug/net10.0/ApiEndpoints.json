@@ -617,6 +617,22 @@
   },
   {
     "ContainingType": "ShoppingApp.Controllers.PromoCodeController",
+    "Method": "DeletePromoCode",
+    "RelativePath": "PromoCode/delete-promocode",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Promocode.DeletePromocodeRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.PromoCodeController",
     "Method": "EditPromoCodes",
     "RelativePath": "PromoCode/edit-promocode",
     "HttpMethod": "POST",

@@ -81,5 +81,20 @@ namespace ShoppingApp.Controllers
                 throw;
             }
         }
+
+        [HttpDelete("delete-promocode")]
+        [ValidateRequest]
+        public async Task<IActionResult> DeletePromoCode([FromBody] DeletePromocodeRequestDTO request)
+        {
+            try
+            {
+                var result = await _promoService.DeletePromoCode(request);
+                return Ok(result);
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }
