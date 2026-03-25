@@ -100,6 +100,15 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/products'], { queryParams: { category: category.categoryName } });
   }
 
+  onCategorySelect(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    if (value) {
+      this.router.navigate(['/products'], { queryParams: { category: value } });
+    } else {
+      this.router.navigate(['/products']);
+    }
+  }
+
   onSearch(): void {
     const query = this.searchQuery();
     if (query.trim()) {

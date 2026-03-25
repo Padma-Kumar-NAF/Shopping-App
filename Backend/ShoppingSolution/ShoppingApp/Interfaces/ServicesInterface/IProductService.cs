@@ -12,5 +12,6 @@ namespace ShoppingApp.Interfaces.ServicesInterface
         public Task<ApiResponse<SearchProductByIdResponseDTO>> SearchProductById(SearchProductByIdRequestDTO request);
         public Task<ApiResponse<SearchProductByNameResponseDTO>> SearchProductByName(SearchProductByNameRequestDTO request);
         public Task<ApiResponse<UpdateProductResponseDTO>> UpdateProduct(Guid userId,UpdateProductRequestDTO request);
+        public Task<ApiResponse<List<ProductSuggestionDTO>>> GetSuggestions(string query);
     }
 }

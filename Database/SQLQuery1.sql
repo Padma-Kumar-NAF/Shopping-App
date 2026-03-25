@@ -6,6 +6,9 @@ update Users
 set Active = 1
 where UserId = 'DBFEC735-AEFF-484B-8A3C-EFC92247E2E0'
 
+update orders
+set Status = 'Delivered'
+
 select * from PromoCodes
 
 select * from PromoCodes	
@@ -22,16 +25,17 @@ delete from Users where UserId = 'F56106AD-FEE7-4BD2-B761-4389FC32DCB1'
 select count(*) from Products
 select * from Products
 
-
 select * from Payments
 select * from Orders
-
+select * from Wallets
 
 select * from Stock
 select * from Refunds
 
 select * from Logs
 order by CreatedAt desc
+
+
 
 select * from Refunds
 order by CreatedAt desc

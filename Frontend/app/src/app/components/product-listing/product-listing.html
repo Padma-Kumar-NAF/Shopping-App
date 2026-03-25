@@ -195,7 +195,7 @@
                   <div class="p-4 flex flex-col sm:flex-row gap-4">
                     <div class="flex-shrink-0 relative">
                       <img [src]="product.imagePath" [alt]="product.productName"
-                        class="w-full sm:w-36 h-36 object-cover rounded-lg" />
+                        class="w-full sm:w-36 h-36 object-contain bg-gray-50 p-1 rounded-lg" />
                       @if (product.quantity > 0 && product.quantity < 20) {
                         <span class="absolute top-2 left-2 px-1.5 py-0.5 bg-red-500 text-white text-xs font-semibold rounded">Low Stock</span>
                       }

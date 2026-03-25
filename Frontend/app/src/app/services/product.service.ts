@@ -39,7 +39,10 @@ export class ProductService {
     return this.http
       .post<ApiResponse<SearchProductByNameResponseDTO>>(`${this.baseUrl}/search-product`, body)
       .pipe(
-        map((res) => res.data?.productsList ?? []),
+        map((res) => (res.data?.productsList ?? []).map((p: any) => ({
+          ...p,
+          productName: p.productName ?? p.name ?? p.Name ?? '',
+        }))),
         catchError(() => of([]))
       );
   }

@@ -987,6 +987,27 @@
         }
       }
     },
+    "/Products/suggestions": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/PromoCode/add-promocode": {
       "post": {
         "tags": [

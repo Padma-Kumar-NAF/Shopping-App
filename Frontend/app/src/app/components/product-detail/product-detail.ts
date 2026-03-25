@@ -1,6 +1,8 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ProductService } from '../../services/product.service';
 import { ProductStateService } from '../../services/product-state.service';
 import { AuthStateService } from '../../services/auth-state.service';
@@ -17,7 +19,7 @@ import { toast } from 'ngx-sonner';
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.css',
 })
-export class ProductDetail implements OnInit {
+export class ProductDetail implements OnInit, OnDestroy {
   private productService = inject(ProductService);
   private productStateService = inject(ProductStateService);
   private router = inject(Router);
@@ -26,6 +28,8 @@ export class ProductDetail implements OnInit {
   private redirectService = inject(RedirectService);
   private cartService = inject(CartService);
   private wishlistService = inject(WishlistService);
+
+  private destroy$ = new Subject<void>();
 
   product = signal<ProductDetails | null>(null);
   isLoading = signal<boolean>(true);
@@ -38,14 +42,28 @@ export class ProductDetail implements OnInit {
   wishlists = signal<WishListDTO[]>([]);
 
   ngOnInit(): void {
-    const productId = this.route.snapshot.paramMap.get('productId');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+
+    // React to param changes so related-product navigation (same route, new param)
+    // also scrolls to top and reloads the correct product
+    this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      const productId = params.get('productId');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      this.resolveProduct(productId);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private resolveProduct(productId: string | null): void {
     const stateProduct = this.productStateService.getSelectedProduct();
 
     if (stateProduct && stateProduct.productId === productId) {
-      // State matches the URL — use it directly (fast path)
       this.loadProduct(stateProduct);
     } else if (productId) {
-      // State is stale or missing — fetch from API using the URL param
       this.isLoading.set(true);
       this.productService.getProductById(productId).subscribe({
         next: (product) => {
@@ -105,6 +123,9 @@ export class ProductDetail implements OnInit {
     if (!product) return;
     if (!this.authState.isAuthenticated()) {
       this.productStateService.setSelectedProduct(product);
+      this.redirectService.storeIntendedRoute(
+        `/payment?fromProduct=true&quantity=${this.quantity()}&productId=${product.productId}`
+      );
       toast.info('Please login to continue with your purchase');
       this.router.navigate(['/auth']);
       return;
