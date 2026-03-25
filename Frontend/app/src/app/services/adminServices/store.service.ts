@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { AppState } from '../../models/admin/appState.model';
 import { UserDetailsDTO } from '../../models/admin/users.model';
 import { OrderDetailsResponseDTO } from '../../models/admin/orders.model';
@@ -27,6 +27,21 @@ export class StoreService {
   private store = new BehaviorSubject<AppState>(this.initialState);
 
   state$: Observable<AppState> = this.store.asObservable();
+
+  private refreshSubject = new BehaviorSubject<number>(0);
+  readonly refresh$ = this.refreshSubject.asObservable();
+
+  triggerRefresh(): void {
+    this.refreshSubject.next(this.refreshSubject.getValue() + 1);
+  }
+
+  resetCache(): void {
+    this.pageCache.users.clear();
+    this.pageCache.orders.clear();
+    this.pageCache.products.clear();
+    this.pageCache.categories.clear();
+    this.setState(this.initialState);
+  }
 
   readonly pageCache: PageCache = {
     users: new Set<number>(),

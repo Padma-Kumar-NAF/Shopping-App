@@ -56,6 +56,10 @@ export class CategoryManagement implements OnInit {
 
   ngOnInit(): void {
     this.categories$ = this.store.state$.pipe(map(s => s.categories));
+
+    if (this.store.value.categories.length === 0) {
+      this.fetchPage(1);
+    }
   }
 
   // ── Paged getter ──────────────────────────────────────────────────────────

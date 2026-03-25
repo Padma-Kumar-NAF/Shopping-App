@@ -7,6 +7,6 @@
         public int WalletAmount { get; set; }
         public DateTime CreatedAt { get; set; }
         // Navigation
-        public User User { get; set; } = new User();
+        public User? User { get; set; }
     }
 }

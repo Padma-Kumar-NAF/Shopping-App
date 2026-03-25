@@ -12,6 +12,9 @@ export class RedirectService {
   storeIntendedRoute(url: string, queryParams?: any): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
+    // Never store the auth page itself as a redirect target
+    if (url.startsWith('/auth')) return;
+
     sessionStorage.setItem('redirectUrl', url);
     if (queryParams && Object.keys(queryParams).length > 0) {
       sessionStorage.setItem('redirectQueryParams', JSON.stringify(queryParams));
@@ -41,11 +44,10 @@ export class RedirectService {
     if (!isPlatformBrowser(this.platformId)) return;
 
     const redirectUrl = this.getRedirectUrl();
-    const queryParams = this.getRedirectQueryParams();
-
     this.clearRedirectData();
 
     if (redirectUrl) {
+      // navigateByUrl handles the full URL including query params and fragments
       this.router.navigateByUrl(redirectUrl);
     } else {
       this.router.navigate([defaultRoute]);
@@ -56,7 +58,7 @@ export class RedirectService {
     if (!isPlatformBrowser(this.platformId)) return;
 
     sessionStorage.removeItem('redirectUrl');
-    sessionStorage.removeItem('redirectQueryParams');
+    sessionStorage.removeItem('redirectQueryParams'); // kept for backward compat cleanup
   }
 
   hasPendingRedirect(): boolean {

@@ -261,29 +261,37 @@ namespace ShoppingApp.Services
         {
             try
             {
-                var product = await _productRepository
-                .GetQueryable()
-                .Where(p => p.ProductId == request.ProductId)
-                .Select(p => new SearchProductByIdResponseDTO
+                var productEntity = await _productRepository
+                    .GetQueryable()
+                    .Include(p => p.Reviews)
+                    .Include(p => p.Category)
+                    .Include(p => p.Stock)
+                    .FirstOrDefaultAsync(p => p.ProductId == request.ProductId);
+
+                if (productEntity == null)
                 {
-                    ProductId = p.ProductId,
-                    CategoryId = p.CategoryId,
-                    StockId = p.Stock!.StockId,
-                    ProductName = p.Name,
-                    ImagePath = p.ImagePath,
-                    Description = p.Description,
-                    Price = p.Price,
-                    CategoryName = p.Category!.CategoryName,
-                    Quantity = p.Stock.Quantity,
-                    Review = (p.Reviews ?? new List<Review>())
+                    throw new AppException("Product not found", 404);
+                }
+
+                var product = new SearchProductByIdResponseDTO
+                {
+                    ProductId = productEntity.ProductId,
+                    CategoryId = productEntity.CategoryId,
+                    StockId = productEntity.Stock!.StockId,
+                    ProductName = productEntity.Name,
+                    ImagePath = productEntity.ImagePath,
+                    Description = productEntity.Description,
+                    Price = productEntity.Price,
+                    CategoryName = productEntity.Category!.CategoryName,
+                    Quantity = productEntity.Stock.Quantity,
+                    Review = productEntity.Reviews?
                         .Select(r => new ReviewDTO
                         {
                             Summary = r.Summary,
                             ReviewPoints = r.ReviewPoints
                         })
-                        .ToList()
-                })
-                .FirstOrDefaultAsync();
+                        .ToList() ?? new List<ReviewDTO>()
+                };
 
                 if (product == null)
                 {

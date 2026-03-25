@@ -43,10 +43,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: var(--nav-height);
+  flex-wrap: wrap;                  /* allows search to wrap to second row on mobile */
+  min-height: var(--nav-height);
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0.5rem 1rem 0;
   gap: 0.75rem;
 }
 
@@ -103,12 +104,17 @@
 }
 
 /* ══════════════════════════════════════════════
-   Search (desktop — hidden on mobile)
+   Search — always visible, second row on mobile
    ══════════════════════════════════════════════ */
 .navbar__search {
-  display: none;   /* hidden on mobile */
+  display: flex;
   flex: 1;
   max-width: 480px;
+  /* On mobile: break into its own row below brand/hamburger */
+  order: 10;
+  width: 100%;
+  max-width: 100%;
+  padding: 0 0 0.6rem;
 }
 
 .navbar__search-wrapper {
@@ -292,14 +298,6 @@
   padding: 1rem;
 }
 
-.navbar__mobile-search {
-  margin-bottom: 0.75rem;
-}
-
-.navbar__mobile-search .navbar__search-wrapper {
-  position: relative;
-}
-
 .navbar__mobile-greeting {
   font-size: 0.875rem;
   color: var(--text-secondary);
@@ -364,16 +362,20 @@
   }
 }
 
-/* ── Desktop (≥ 768px) — full navbar ── */
+/* ── Desktop (≥ 768px) — full single-row navbar ── */
 @media (min-width: 768px) {
   .navbar__container {
+    flex-wrap: nowrap;             /* back to single row */
+    height: var(--nav-height);
     padding: 0 2rem;
     gap: 1.25rem;
   }
 
-  /* Show desktop search + actions */
   .navbar__search {
-    display: flex;
+    order: 0;
+    width: auto;
+    max-width: 480px;
+    padding: 0;
   }
 
   .navbar__actions {

@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet, NavigationEnd } from '@angular/router';
 import { AuthStateService } from '../../../services/auth-state.service';
+import { StoreService } from '../../../services/adminServices/store.service';
 import { toast } from 'ngx-sonner';
 import { filter } from 'rxjs/operators';
 
@@ -21,6 +22,9 @@ interface NavItem {
 export class AdminLayout implements OnInit {
   private router = inject(Router);
   private authState = inject(AuthStateService);
+  private store = inject(StoreService);
+
+  isRefreshing = signal<boolean>(false);
 
   mobileMenuOpen = signal<boolean>(false);
   currentRoute = signal<string>('');
@@ -68,5 +72,12 @@ export class AdminLayout implements OnInit {
     this.authState.clearUser();
     toast.success('Logged out successfully');
     this.router.navigate(['/auth']);
+  }
+
+  refreshData(): void {
+    // this.isRefreshing.set(true);
+    // this.store.triggerRefresh();
+    // setTimeout(() => this.isRefreshing.set(false), 1500);
+    window.location.reload()
   }
 }

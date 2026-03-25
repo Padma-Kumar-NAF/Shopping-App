@@ -115,25 +115,6 @@
     [class.navbar__mobile-menu--open]="mobileMenuOpen()"
     aria-hidden="{{ !mobileMenuOpen() }}"
   >
-    <!-- Mobile Search -->
-    <div class="navbar__mobile-search">
-      <div class="navbar__search-wrapper">
-        <svg class="navbar__search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-        <input
-          id="mobile-search"
-          type="text"
-          class="navbar__search-input"
-          placeholder="Search products…"
-          [(ngModel)]="searchQuery"
-          (keyup.enter)="onSearch()"
-          aria-label="Search products (mobile)"
-        />
-      </div>
-    </div>
-
     <!-- Mobile Greeting -->
     <div class="navbar__mobile-greeting" aria-live="polite">
       @if (isAuthenticated()) {

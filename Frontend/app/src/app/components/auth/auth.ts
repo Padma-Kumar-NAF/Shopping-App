@@ -46,7 +46,9 @@ export class Auth {
 
   constructor(private router: Router) {
     if (this.authState.isAuthenticated()) {
-      if (this.authState.role() === 'admin') {
+      if (this.redirectService.hasPendingRedirect()) {
+        this.redirectService.navigateToIntendedRoute();
+      } else if (this.authState.role() === 'admin') {
         this.router.navigate(['/admin']);
       } else {
         this.router.navigate(['/']);
@@ -62,20 +64,21 @@ export class Auth {
     this.loginForm = new FormGroup({
       // email: new FormControl('admin@gmail.com', [Validators.required, Validators.email]),
       // password: new FormControl('admin123', [Validators.required, Validators.minLength(6)]),
-      email: new FormControl('padmakumar23.dev@gmail.com', [Validators.required, Validators.email]),
+      // email: new FormControl('padmakumar23.dev@gmail.com', [Validators.required, Validators.email]),
+      email: new FormControl('user@gmail.com', [Validators.required, Validators.email]),
       password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
     });
 
     this.signUpForm = new FormGroup({
-      name: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-      phoneNumber: new FormControl('', [Validators.required, Validators.minLength(10)]),
-      addressLine1: new FormControl('', [Validators.required]),
-      addressLine2: new FormControl('', [Validators.required]),
-      state: new FormControl('', [Validators.required]),
-      city: new FormControl('', [Validators.required]),
-      pincode: new FormControl('', [Validators.required]),
+      name: new FormControl('padmakumar', [Validators.required]),
+      email: new FormControl('PadmaKumar.C@Nafinc.com', [Validators.required, Validators.email]),
+      password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
+      phoneNumber: new FormControl('9876543213', [Validators.required, Validators.minLength(10)]),
+      addressLine1: new FormControl('2/102 A Chennai', [Validators.required]),
+      addressLine2: new FormControl('2/102 A Chennai', [Validators.required]),
+      state: new FormControl('State', [Validators.required]),
+      city: new FormControl('Chennai', [Validators.required]),
+      pincode: new FormControl('654321', [Validators.required]),
     });
   }
 

@@ -1051,6 +1051,70 @@
         }
       }
     },
+    "/PromoCode/get-all-promocode": {
+      "post": {
+        "tags": [
+          "PromoCode"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAllPromocodeRequestDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAllPromocodeRequestDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAllPromocodeRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/PromoCode/edit-promocode": {
+      "post": {
+        "tags": [
+          "PromoCode"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditPromocodeRequestDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditPromocodeRequestDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditPromocodeRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/Review/add-review": {
       "post": {
         "tags": [
@@ -1294,24 +1358,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetWalletAmountResponseDTO"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetWalletAmountResponseDTO"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetWalletAmountResponseDTO"
-                }
-              }
-            }
+            "description": "OK"
           }
         }
       }
@@ -1650,7 +1697,7 @@
       "ChangeUserRoleRequestDTO": {
         "required": [
           "userId",
-          "status"
+          "role"
         ],
         "type": "object",
         "properties": {
@@ -1658,7 +1705,7 @@
             "type": "string",
             "format": "uuid"
           },
-          "status": {
+          "role": {
             "type": "string"
           }
         }
@@ -1835,6 +1882,41 @@
           }
         }
       },
+      "EditPromocodeRequestDTO": {
+        "required": [
+          "promoCodeId",
+          "promoCodeName",
+          "discountPercentage",
+          "fromDate",
+          "toDate"
+        ],
+        "type": "object",
+        "properties": {
+          "promoCodeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "promoCodeName": {
+            "type": "string"
+          },
+          "discountPercentage": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "fromDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "toDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "EditUserAddressRequestDTO": {
         "type": "object",
         "properties": {
@@ -1940,6 +2022,9 @@
           }
         }
       },
+      "GetAllPromocodeRequestDTO": {
+        "type": "object"
+      },
       "GetCartRequestDTO": {
         "type": "object",
         "properties": {
@@ -1997,19 +2082,6 @@
         "properties": {
           "pagination": {
             "$ref": "#/components/schemas/Pagination"
-          }
-        }
-      },
-      "GetWalletAmountResponseDTO": {
-        "type": "object",
-        "properties": {
-          "walletBalance": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
-            "format": "double"
           }
         }
       },

@@ -93,7 +93,7 @@ export class HomeComponent implements OnInit {
 
   onProductClick(product: ProductDetails): void {
     this.productStateService.setSelectedProduct(product);
-    this.router.navigate(['/product-detail']);
+    this.router.navigate(['/product-detail', product.productId]);
   }
 
   onCategoryClick(category: CategoryDTO): void {

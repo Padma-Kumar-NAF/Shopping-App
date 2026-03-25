@@ -51,5 +51,35 @@ namespace ShoppingApp.Controllers
                 throw;
             }
         }
+
+        [HttpPost("get-all-promocode")]
+        [ValidateRequest]
+        public async Task<IActionResult> GetAllPromoCodes([FromBody] GetAllPromocodeRequestDTO request)
+        {
+            try
+            {
+                var result = await _promoService.GetAllPromocode(request);
+                return Ok(result);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("edit-promocode")]
+        [ValidateRequest]
+        public async Task<IActionResult> EditPromoCodes([FromBody] EditPromocodeRequestDTO request)
+        {
+            try
+            {
+                var result = await _promoService.EditPromoCode(request);
+                return Ok(result);
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

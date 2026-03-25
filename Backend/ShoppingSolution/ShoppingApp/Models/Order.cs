@@ -23,7 +23,6 @@ namespace ShoppingApp.Models
         //------------------------------------
         [Required]
         public int DiscountPercentage { get; set; } = 0;
-        [Required]
         public Guid? PromoCodeId {  get; set; }
         [Required]
         public int OrderTotalAmount { get; set; } = 0;

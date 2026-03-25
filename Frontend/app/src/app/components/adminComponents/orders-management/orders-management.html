@@ -183,7 +183,7 @@
           >
             {{ expandedOrderId() === order.orderId ? 'Hide' : 'View' }} Products
           </button>
-          @if (order.status == "Cancelled" && !order.isRefunded) {
+          @if (order.status == "Cancelled" && !order.isRefunded && order.payment.paymentType != "cod") {
           <button
             (click)="giveRefund(order)"
             class="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"

@@ -128,7 +128,7 @@ namespace ShoppingApp.Controllers
             try
             {
                 var UserId = GetUserIdOrThrow();
-                var Result = await _userService.ChangeUserRole(UserId, request.UserId,request.Status);
+                var Result = await _userService.ChangeUserRole(UserId, request.UserId,request.Role);
                 return Ok(Result);
             }
             catch

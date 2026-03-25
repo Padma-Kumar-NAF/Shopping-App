@@ -130,13 +130,13 @@
           </svg>
           Add Product
         </button>
-        <button (click)="switchView('bulk')" [class.active]="activeView() === 'bulk'" class="pm-switch-btn">
+        <!-- <button (click)="switchView('bulk')" [class.active]="activeView() === 'bulk'" class="pm-switch-btn">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
           </svg>
           Bulk Upload
-        </button>
+        </button> -->
       </div>
     </div>
   </div>
@@ -391,11 +391,9 @@
     </div>
   }
 
-  <!-- ══ BULK UPLOAD VIEW ═══════════════════════════════════════════════════ -->
-  @if (activeView() === 'bulk') {
+  <!-- @if (activeView() === 'bulk') {
     <div class="pm-bulk">
 
-      <!-- Instructions -->
       <div class="pm-info-box">
         <p class="pm-info-title">📋 Required Excel columns</p>
         <div class="pm-info-cols">
@@ -405,7 +403,6 @@
         </div>
       </div>
 
-      <!-- Drop zone -->
       <div class="pm-dropzone" [class.pm-dropzone-active]="bulkFileName()">
         <input #fileInput type="file" accept=".xlsx,.xls" class="hidden" (change)="onBulkFileChange($event)" />
 
@@ -431,7 +428,6 @@
         }
       </div>
 
-      <!-- Errors -->
       @if (bulkErrors().length) {
         <div class="pm-error-box">
           <p class="pm-error-title">⚠️ {{ bulkErrors().length }} validation issue(s)</p>
@@ -443,7 +439,6 @@
         </div>
       }
 
-      <!-- Preview table -->
       @if (bulkProducts().length) {
         <div>
           <p class="pm-section-label mb-3">
@@ -477,6 +472,6 @@
       }
 
     </div>
-  }
+  } -->
 
 </div>
