@@ -8,14 +8,15 @@ import {
   OrderDetailsResponseDTO,
 } from '../../../services/userServices/order.service';
 import { ReviewService } from '../../../services/review.service';
+import { InvoiceService } from '../../../services/invoice.service';
 import { PaginationModel } from '../../../models/users/pagination.model';
 import { PaginationComponent } from '../../shared/pagination/pagination.component';
 import { toast } from 'ngx-sonner';
-import { isOrderCancellable, isOrderDelivered, OrderStatus } from '../../../constants/order-status.constants';
+import { isOrderCancellable,isOrderDelivered, OrderStatus } from '../../../constants/order-status.constants';
 import { DEFAULT_PAGE_SIZE, calculateTotalPages } from '../../../constants/pagination.constants';
 
 interface ReviewData {
-  orderId: string;
+  productId: string;
   summary: string;
   rating: number;
 }
@@ -30,6 +31,7 @@ interface ReviewData {
 export class OrdersComponent implements OnInit {
   private orderService = inject(OrderService);
   private reviewService = inject(ReviewService);
+  private invoiceService = inject(InvoiceService);
 
   orders = signal<OrderDetailsResponseDTO[]>([]);
   selectedOrder = signal<OrderDetailsResponseDTO | null>(null);
@@ -46,16 +48,16 @@ export class OrdersComponent implements OnInit {
   // Cancel order modal
   showCancelModal = signal(false);
   orderToCancel = signal<OrderDetailsResponseDTO | null>(null);
-  cancelReason = signal('');
 
   // Review modal
   showReviewModal = signal(false);
   orderToReview = signal<OrderDetailsResponseDTO | null>(null);
+  selectedProductId = signal<string>('');
   reviewSummary = signal('');
   reviewRating = signal(0);
   reviewHoverRating = signal(0);
 
-  // Local reviews store (frontend only)
+  // Tracks which productIds have been reviewed this session
   reviews = signal<ReviewData[]>([]);
 
   ngOnInit(): void {
@@ -70,6 +72,7 @@ export class OrdersComponent implements OnInit {
 
     this.orderService.getUserOrders(pagination).subscribe({
       next: (response) => {
+        console.log(response)
         if (response.data?.items) {
           this.orders.set(response.data.items);
           this.totalItems.set(response.data.items.length);
@@ -99,26 +102,17 @@ export class OrdersComponent implements OnInit {
 
   openCancelModal(order: OrderDetailsResponseDTO): void {
     this.orderToCancel.set(order);
-    this.cancelReason.set('');
     this.showCancelModal.set(true);
   }
 
   closeCancelModal(): void {
     this.showCancelModal.set(false);
     this.orderToCancel.set(null);
-    this.cancelReason.set('');
   }
 
   confirmCancelOrder(): void {
     const order = this.orderToCancel();
-    if (!order) return;
-
-    if (!this.cancelReason().trim()) {
-      toast.error('Please enter a reason for cancellation');
-      return;
-    }
-
-    const toastId = toast.loading('Cancelling order...');
+    if (!order) return;    const toastId = toast.loading('Cancelling order...');
 
     this.orderService.cancelOrder(order.orderId).subscribe({
       next: (response) => {
@@ -146,19 +140,61 @@ export class OrdersComponent implements OnInit {
     return isOrderDelivered(order.status);
   }
 
-  hasReview(orderId: string): boolean {
-    return this.reviews().some((r) => r.orderId === orderId);
+  // ── Invoice ─────────────────────────────────────────────────────
+
+  canDownloadInvoice(order: OrderDetailsResponseDTO): boolean {
+    return isOrderDelivered(order.status);
   }
 
-  getReview(orderId: string): ReviewData | undefined {
-    return this.reviews().find((r) => r.orderId === orderId);
+  showInvoicePreview = signal(false);
+  invoiceOrder = signal<OrderDetailsResponseDTO | null>(null);
+  invoiceDate = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+
+  openInvoicePreview(order: OrderDetailsResponseDTO): void {
+    this.invoiceOrder.set(order);
+    this.showInvoicePreview.set(true);
   }
+
+  closeInvoicePreview(): void {
+    this.showInvoicePreview.set(false);
+    this.invoiceOrder.set(null);
+  }
+
+  downloadInvoice(order: OrderDetailsResponseDTO): void {
+    try {
+      this.invoiceService.download(order);
+      toast.success('Invoice downloaded');
+    } catch {
+      toast.error('Failed to generate invoice');
+    }
+  }
+
+  getLineTotal(price: number, qty: number): number {
+    return price * qty;
+  }
+
+  hasReview(orderId: string): boolean {
+    const order = this.orders().find(o => o.orderId === orderId);
+    if (!order) return false;
+    return order.items.every(item => this.hasProductReview(item.productId));
+  }
+
+  hasProductReview(productId: string): boolean {
+    return this.reviews().some(r => r.productId === productId);
+  }
+
 
   openReviewModal(order: OrderDetailsResponseDTO): void {
-    const existing = this.getReview(order.orderId);
+    // Don't open if all products already reviewed
+    const hasUnreviewed = order.items.some(i => !this.hasProductReview(i.productId));
+    if (!hasUnreviewed) return;
+
     this.orderToReview.set(order);
-    this.reviewSummary.set(existing?.summary ?? '');
-    this.reviewRating.set(existing?.rating ?? 0);
+    // Default to first unreviewed product
+    const firstUnreviewed = order.items.find(i => !this.hasProductReview(i.productId));
+    this.selectedProductId.set(firstUnreviewed?.productId ?? order.items[0]?.productId ?? '');
+    this.reviewSummary.set('');
+    this.reviewRating.set(0);
     this.reviewHoverRating.set(0);
     this.showReviewModal.set(true);
   }
@@ -166,6 +202,7 @@ export class OrdersComponent implements OnInit {
   closeReviewModal(): void {
     this.showReviewModal.set(false);
     this.orderToReview.set(null);
+    this.selectedProductId.set('');
     this.reviewSummary.set('');
     this.reviewRating.set(0);
     this.reviewHoverRating.set(0);
@@ -175,6 +212,10 @@ export class OrdersComponent implements OnInit {
     const order = this.orderToReview();
     if (!order) return;
 
+    if (!this.selectedProductId()) {
+      toast.error('Please select a product to review');
+      return;
+    }
     if (!this.reviewSummary().trim()) {
       toast.error('Please enter a review summary');
       return;
@@ -184,16 +225,17 @@ export class OrdersComponent implements OnInit {
       return;
     }
 
-    // Submit review for each product in the order
-    const firstProduct = order.items?.[0];
-    if (!firstProduct) { toast.error('No product found in order'); return; }
-
     const toastId = toast.loading('Submitting review...');
-    this.reviewService.addReview(firstProduct.productId, this.reviewSummary().trim(), this.reviewRating()).subscribe({
+    this.reviewService.addReview(this.selectedProductId(), this.reviewSummary().trim(), this.reviewRating()).subscribe({
       next: (res) => {
         toast.dismiss(toastId);
         if (res.data?.reviewId) {
           toast.success('Review submitted successfully');
+          this.reviews.update(r => [...r, {
+            productId: this.selectedProductId(),
+            summary: this.reviewSummary().trim(),
+            rating: this.reviewRating(),
+          }]);
           this.closeReviewModal();
         } else {
           toast.error(res.message || 'Failed to submit review');

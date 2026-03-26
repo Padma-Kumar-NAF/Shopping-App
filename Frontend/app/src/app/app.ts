@@ -8,6 +8,7 @@ import { OrdersComponent } from './components/profileComponents/orders/orders';
 import { AdminDashboard } from './components/adminComponents/admin-dashboard/admin-dashboard';
 import { HomeComponent } from './components/homeComponents/home/home';
 import { filter } from 'rxjs/operators';
+import { AuthStateService } from './services/auth-state.service';
 
 const NO_NAV_PREFIXES = ['/admin', '/auth', '/cart'];
 
@@ -29,10 +30,14 @@ export class App implements OnInit {
   protected readonly title = signal('app');
   loader = inject(LoaderService);
   private router = inject(Router);
+  private authState = inject(AuthStateService);
 
   showNavPadding = signal(true);
 
   ngOnInit(): void {
+    // Restore session and schedule auto-logout on every page load/refresh
+    this.authState.loadUserFromStorage();
+
     this.evaluate(this.router.url);
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))

@@ -169,6 +169,15 @@ namespace ShoppingApp.Contexts
                 entity.Property(o => o.DiscountAmount)
                     .HasDefaultValue(0);
 
+                entity.Property(o => o.TotalAmount)
+                    .HasPrecision(18, 2);
+
+                entity.Property(o => o.OrderTotalAmount)
+                     .HasPrecision(18, 2);
+
+                entity.Property(o => o.DiscountAmount)
+                     .HasPrecision(18, 2);
+
                 entity.HasOne(o => o.User)
                     .WithMany(u => u.Orders)
                     .HasForeignKey(o => o.UserId)
@@ -446,6 +455,10 @@ namespace ShoppingApp.Contexts
 
                 entity.Property(o => o.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.Property(w => w.WalletAmount)
+                .HasPrecision(18, 2);
+
 
                 entity.HasOne(w => w.User)
                 .WithOne(w => w.Wallet)

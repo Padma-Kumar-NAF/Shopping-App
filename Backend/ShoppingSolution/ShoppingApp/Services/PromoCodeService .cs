@@ -142,14 +142,14 @@ public class PromoCodeService : IPromoCodeService
     {
         try
         {
-            var query = _promoRepository.GetQueryable();
+            var query = _promoRepository.GetQueryable().Where(p => !p.IsDeleted);
 
             var totalCount = await query.CountAsync();
 
             var promos = await query
                 .OrderByDescending(p => p.CreatedAt)
-                .Skip((request.pagination.PageNumber - 1) * request.pagination.PageSize)
-                .Take(request.pagination.PageSize)
+                .Skip((request.Pagination.PageNumber - 1) * request.Pagination.PageSize)
+                .Take(request.Pagination.PageSize)
                 .ToListAsync();
 
             var data = promos.Select(p => new PromoCodeItemDTO
@@ -186,13 +186,57 @@ public class PromoCodeService : IPromoCodeService
         }
     }
 
+    public async Task<ApiResponse<DeletePromocodeResponseDTO>> DeletePromoCode(DeletePromocodeRequestDTO request)
+    {
+        if (request.PromoCodeId == Guid.Empty)
+            throw new AppException("Invalid PromoCode Id", 400);
+
+        await _unitOfWork.BeginTransactionAsync();
+
+        try
+        {
+            var promo = await _promoRepository.GetQueryable()
+                .FirstOrDefaultAsync(p => p.PromoCodeId == request.PromoCodeId && !p.IsDeleted);
+
+            if (promo == null)
+                throw new AppException("Promo code not found", 404);
+
+            promo.IsDeleted = true;
+            await _promoRepository.UpdateAsync(promo.PromoCodeId, promo);
+            await _unitOfWork.CommitAsync();
+
+            return new ApiResponse<DeletePromocodeResponseDTO>
+            {
+                StatusCode = 200,
+                Message = "Promo code deleted successfully",
+                Data = new DeletePromocodeResponseDTO { IsSuccess = true }
+            };
+        }
+        catch (AppException)
+        {
+            await _unitOfWork.RollbackAsync();
+            throw;
+        }
+        catch (DbUpdateException ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            throw new AppException("Error while deleting promo code", ex, 500);
+        }
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            throw new AppException("Error while deleting promo code", ex, 500);
+        }
+    }
+
     public async Task<ApiResponse<VerifyPromoCodeResponseDTO>> VerifyPromoCode(VerifyPromoCodeRequestDTO request)
     {
         try
         {
             var code = request.PromoCodeName.Trim().ToUpper();
 
-            var promo = await _promoRepository.GetQueryable().FirstOrDefaultAsync(p => p.PromoCodeName == code);
+            var promo = await _promoRepository.GetQueryable()
+                .FirstOrDefaultAsync(p => p.PromoCodeName == code && !p.IsDeleted);
 
             if (promo == null)
             {

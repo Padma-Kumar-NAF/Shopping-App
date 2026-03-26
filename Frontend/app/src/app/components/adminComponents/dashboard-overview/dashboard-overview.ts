@@ -29,7 +29,7 @@ export class DashboardOverview implements OnInit, OnDestroy {
   private readonly categoryApiService = inject(AdminCategoryService);
   private readonly productApiService = inject(AdminProductService);
   store = inject(StoreService);
-
+  
   private readonly PAGE_SIZE = 10;
   pagination: PaginationModel;
 

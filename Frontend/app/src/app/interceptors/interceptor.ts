@@ -1,34 +1,28 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-import { LoaderService } from '../services/loading.service';
+import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { finalize } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
+import { AuthStateService } from '../services/auth-state.service';
 
 export const authInterceptors: HttpInterceptorFn = (req, next) => {
-  // const loader = inject(LoaderService);
+  const authState = inject(AuthStateService);
 
-  // loader.show();
   const token =
-    // typeof window !== 'undefined' ? sessionStorage.getItem('JWT-Token') : null;
     typeof window !== 'undefined' ? localStorage.getItem('JWT-Token') : null;
 
-  if (token) {
-    // console.log("token")
-    // console.log(token)
-    const authReq = req.clone({
-      headers: req.headers.set('Authorization', `Bearer ${token}`),
-    });
-    return next(authReq)
-    // .pipe(
-    //   finalize(() => {
-    //     loader.hide();
-    //   }),
-    // );
-  }
+  const authReq = token
+    ? req.clone({ headers: req.headers.set('Authorization', `Bearer ${token}`) })
+    : req;
 
-  return next(req)
-  // .pipe(
-  //   finalize(() => {
-  //     loader.hide();
-  //   }),
-  // );
+  // Endpoints that return 401 for validation reasons (not session expiry)
+  const skipLogoutUrls = ['/edit-user-email'];
+  const shouldSkipLogout = skipLogoutUrls.some(url => req.url.includes(url));
+
+  return next(authReq).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === 401 && !shouldSkipLogout) {
+        authState.logout();
+      }
+      return throwError(() => error);
+    }),
+  );
 };

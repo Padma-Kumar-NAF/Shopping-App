@@ -8,10 +8,10 @@ export enum OrderStatus {
 export const CANCELLABLE_ORDER_STATUSES: OrderStatus[] = [
   OrderStatus.NOT_DELIVERED,
   OrderStatus.SHIPPED,
+  OrderStatus.DELIVERED,
 ];
 
 export const NON_CANCELLABLE_ORDER_STATUSES: OrderStatus[] = [
-  OrderStatus.DELIVERED,
   OrderStatus.CANCELLED,
 ];
 

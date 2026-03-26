@@ -40,9 +40,10 @@ export class AdminProductService {
     );
   }
  
-  deleteProduct(productId: string): Observable<ApiResponse<boolean>> {
-    return this.http.delete<ApiResponse<boolean>>(
-      `${this.baseUrl}/delete-product/${productId}`,
+  deleteProduct(productId: string): Observable<ApiResponse<{ isDeleted: boolean }>> {
+    return this.http.post<ApiResponse<{ isDeleted: boolean }>>(
+      `${this.baseUrl}/delete-product`,
+      { productId },
     );
   }
 }

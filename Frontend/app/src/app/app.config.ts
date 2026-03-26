@@ -14,15 +14,12 @@ import { AuthStateService } from './services/auth-state.service';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-
     provideRouter(
       routes,
       withComponentInputBinding(),
       withInMemoryScrolling({ scrollPositionRestoration: 'top' }),
     ),
-
     provideHttpClient(withInterceptors([authInterceptors])),
-
     provideAppInitializer(() => {
       const authState = inject(AuthStateService);
       authState.loadUserFromStorage();

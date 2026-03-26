@@ -13,5 +13,6 @@ namespace ShoppingApp.Interfaces.ServicesInterface
         public Task<ApiResponse<SearchProductByNameResponseDTO>> SearchProductByName(SearchProductByNameRequestDTO request);
         public Task<ApiResponse<UpdateProductResponseDTO>> UpdateProduct(Guid userId,UpdateProductRequestDTO request);
         public Task<ApiResponse<List<ProductSuggestionDTO>>> GetSuggestions(string query);
+        public Task<ApiResponse<DeleteProductResponseDTO>> DeleteProduct(Guid userId, DeleteProductRequestDTO request);
     }
 }

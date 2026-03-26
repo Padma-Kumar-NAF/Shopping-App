@@ -261,20 +261,22 @@ namespace ShoppingApp.Migrations
                     b.Property<DateTime>("DeliveryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DiscountAmount")
+                    b.Property<decimal>("DiscountAmount")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
 
                     b.Property<int>("DiscountPercentage")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
-                    b.Property<int>("OrderTotalAmount")
+                    b.Property<decimal>("OrderTotalAmount")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
 
                     b.Property<Guid?>("PromoCodeId")
                         .HasColumnType("uniqueidentifier");
@@ -365,6 +367,10 @@ namespace ShoppingApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("StripePaymentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -389,6 +395,9 @@ namespace ShoppingApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWID()");
+
+                    b.Property<bool>("ActiveStatus")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
@@ -443,6 +452,9 @@ namespace ShoppingApp.Migrations
 
                     b.Property<DateTime>("FromDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("PromoCodeName")
                         .IsRequired()
@@ -673,8 +685,9 @@ namespace ShoppingApp.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("WalletAmount")
-                        .HasColumnType("int");
+                    b.Property<decimal>("WalletAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("WalletId")
                         .HasName("Pk_Wallet");

@@ -20,6 +20,7 @@ namespace ShoppingApp.Models
         public decimal Price { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }
+        public bool ActiveStatus { get; set; }
 
         // Navigation 
         public Category? Category { get; set; } // many to one

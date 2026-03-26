@@ -55,6 +55,7 @@ namespace ShoppingApp.Services
                     ImagePath = request.ImagePath,
                     Description = request.Description,
                     Price = request.Price,
+                    ActiveStatus = true
                 };
 
                 await _productRepository.AddAsync(product);
@@ -99,7 +100,8 @@ namespace ShoppingApp.Services
         {
             try
             {
-                var query = _productRepository.GetQueryable().AsNoTracking();
+                var query = _productRepository.GetQueryable().AsNoTracking()
+                    .Where(p => p.ActiveStatus == true);
 
                 var totalCount = await query.CountAsync();
 
@@ -531,6 +533,53 @@ namespace ShoppingApp.Services
         {
             var user = await _userRepository.GetAsync(userId);
             return user == null;
+        }
+
+        public async Task<ApiResponse<DeleteProductResponseDTO>> DeleteProduct(Guid userId, DeleteProductRequestDTO request)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                if (await IsUserNotFound(userId))
+                {
+                    throw new AppException("User not found", 404);
+                }
+
+                var product = await _productRepository.GetQueryable()
+                    .FirstOrDefaultAsync(p => p.ProductId == request.ProductId);
+
+                if (product == null)
+                {
+                    throw new AppException("Product not found", 404);
+                }
+
+                product.ActiveStatus = false;
+
+                await _productRepository.UpdateAsync(product.ProductId, product);
+                await _unitOfWork.CommitAsync();
+
+                return new ApiResponse<DeleteProductResponseDTO>()
+                {
+                    Data = new DeleteProductResponseDTO { IsDeleted = true },
+                    StatusCode = 200,
+                    Message = "Product deleted successfully"
+                };
+            }
+            catch (AppException)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+            catch (DbUpdateException ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Error while deleting product", ex, 500);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new AppException("Something went wrong while deleting product", ex, 500);
+            }
         }
     }
 }

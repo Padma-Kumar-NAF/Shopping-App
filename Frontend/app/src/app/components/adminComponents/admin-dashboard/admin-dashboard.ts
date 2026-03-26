@@ -201,9 +201,7 @@ export class AdminDashboard implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    console.log('Admin logout');
-    this.authState.clearUser();
+    this.authState.logout();
     toast.success('Logged out successfully');
-    this.router.navigate(['/auth']);
   }
 }

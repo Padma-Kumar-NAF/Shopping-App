@@ -66,7 +66,9 @@ export interface PlaceOrderRequestDTO {
   totalAmount: number;
   orderProductdDetails: PlaceOrderItemDTO;
   paymentType: string;
-  promoCode : string;
+  promoCode: string;
+  useWallet: boolean;
+  stripePaymentId: string;
 }
 
 export interface PlaceOrderResponseDTO {
@@ -75,6 +77,13 @@ export interface PlaceOrderResponseDTO {
   paymentId: string;
   deliveryDate: string;
   orderDetailsId: string;
+  subtotal: number;
+  tax: number;
+  shipping: number;
+  discountPercentage: number;
+  discountAmount: number;
+  walletUsed: number;
+  finalAmount: number;
 }
 
 @Injectable({

@@ -8,6 +8,7 @@
         public decimal TotalAmount { get; set; }
         public string PaymentType { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
+        public string StripePaymentId { get; set; } = string.Empty;
 
         // Navigation
         public User? User { get; set; }

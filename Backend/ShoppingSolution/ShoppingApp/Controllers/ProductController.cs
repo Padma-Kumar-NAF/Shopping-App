@@ -184,5 +184,28 @@ namespace ShoppingApp.Controllers
                 throw;
             }
         }
+
+        /// <summary>
+        /// Soft deletes a product by setting its ActiveStatus to false.
+        /// </summary>
+        /// <remarks>This action requires the caller to be authenticated and authorized with the 'admin' role.</remarks>
+        /// <param name="request">An object containing the ProductId to soft delete.</param>
+        /// <returns>An IActionResult indicating whether the product was successfully soft deleted.</returns>
+        //[Authorize(Roles = "admin")]
+        [HttpPost("delete-product")]
+        [ValidateRequest]
+        public async Task<IActionResult> DeleteProduct([FromBody] DeleteProductRequestDTO request)
+        {
+            try
+            {
+                var UserId = GetUserIdOrThrow();
+                var Result = await _productService.DeleteProduct(UserId, request);
+                return Ok(Result);
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

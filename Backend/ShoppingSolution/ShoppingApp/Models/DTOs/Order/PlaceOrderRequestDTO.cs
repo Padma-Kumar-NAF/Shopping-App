@@ -14,14 +14,18 @@ namespace ShoppingApp.Models.DTOs.Order
         public decimal TotalAmount { get; set; }
 
         [Required(ErrorMessage = "Order Product is required")]
-        //[MinLength(1, ErrorMessage = "At least one item is required")]
-        //public ICollection<PlaceOrderItemDTO> Items { get; set; } = new List<PlaceOrderItemDTO>();
         public PlaceOrderItemDTO OrderProductdDetails { get; set; } = new PlaceOrderItemDTO();
 
         [Required(ErrorMessage = "Payment type is required")]
         public string PaymentType { get; set; } = string.Empty;
 
         public string PromoCode { get; set; } = string.Empty;
+
+        /// <summary>Whether to deduct from the user's wallet balance.</summary>
+        public bool UseWallet { get; set; } = false;
+
+        /// <summary>Stripe PaymentMethod ID returned from the frontend after successful Stripe payment.</summary>
+        public string StripePaymentId { get; set; } = string.Empty;
     }
 
     public class PlaceOrderItemDTO

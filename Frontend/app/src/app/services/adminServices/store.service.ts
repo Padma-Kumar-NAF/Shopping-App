@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { AppState } from '../../models/admin/appState.model';
 import { UserDetailsDTO } from '../../models/admin/users.model';
 import { OrderDetailsResponseDTO } from '../../models/admin/orders.model';
 import { CategoryDTO } from '../../models/admin/categories.model';
 import { ProductDetails } from '../../models/admin/products.model';
+import { PromoCodeItemDTO } from '../../models/admin/promocode.model';
 
 export interface PageCache {
   users: Set<number>;
   orders: Set<number>;
   products: Set<number>;
   categories: Set<number>;
+  promoCodes: Set<number>;
 }
 
 @Injectable({
@@ -22,6 +24,7 @@ export class StoreService {
     categories: [],
     products: [],
     orders: [],
+    promoCodes: [],
   };
 
   private store = new BehaviorSubject<AppState>(this.initialState);
@@ -40,6 +43,7 @@ export class StoreService {
     this.pageCache.orders.clear();
     this.pageCache.products.clear();
     this.pageCache.categories.clear();
+    this.pageCache.promoCodes.clear();
     this.setState(this.initialState);
   }
 
@@ -48,6 +52,7 @@ export class StoreService {
     orders: new Set<number>(),
     products: new Set<number>(),
     categories: new Set<number>(),
+    promoCodes: new Set<number>(),
   };
 
   get value(): AppState {
@@ -135,5 +140,34 @@ export class StoreService {
 
   addOrder(order: OrderDetailsResponseDTO) {
     this.setState({ ...this.value, orders: [...this.value.orders, order] });
+  }
+
+  setPromoCodes(promoCodes: PromoCodeItemDTO[]) {
+    this.setState({ ...this.value, promoCodes });
+  }
+
+  appendPromoCodes(promoCodes: PromoCodeItemDTO[]) {
+    const existing = this.value.promoCodes;
+    const existingIds = new Set(existing.map(p => p.promoCodeId));
+    const newOnes = promoCodes.filter(p => !existingIds.has(p.promoCodeId));
+    this.setState({ ...this.value, promoCodes: [...existing, ...newOnes] });
+  }
+
+  addPromoCode(promoCode: PromoCodeItemDTO) {
+    this.setState({ ...this.value, promoCodes: [promoCode, ...this.value.promoCodes] });
+  }
+
+  updatePromoCode(updated: PromoCodeItemDTO) {
+    const promoCodes = this.value.promoCodes.map(p =>
+      p.promoCodeId === updated.promoCodeId ? updated : p
+    );
+    this.setState({ ...this.value, promoCodes });
+  }
+
+  removePromoCode(promoCodeId: string) {
+    this.setState({
+      ...this.value,
+      promoCodes: this.value.promoCodes.filter(p => p.promoCodeId !== promoCodeId),
+    });
   }
 }

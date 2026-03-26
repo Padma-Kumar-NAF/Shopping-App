@@ -1,52 +1,30 @@
 <div class="min-h-screen bg-gray-50 py-4 sm:py-8">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <!-- Header -->
     <div class="mb-6">
       <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Complete Your Purchase</h1>
     </div>
 
     @if (product() || cartItems().length > 0) {
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Left Column: Shipping & Payment -->
+      <!-- Left Column -->
       <div class="lg:col-span-2 space-y-6">
-        <!-- Product Summary for Single Product -->
+
+        <!-- Single Product -->
         @if (paymentMode() === 'single' && product()) {
         <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">Product Details</h2>
           <div class="flex gap-4">
-            <img
-              [src]="product()!.imagePath"
-              [alt]="product()!.productName"
-              class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg"
-            />
+            <img [src]="product()!.imagePath" [alt]="product()!.productName" class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg" />
             <div class="flex-1">
-              <h3 class="font-semibold text-gray-900 text-sm sm:text-base">
-                {{ product()!.productName }}
-              </h3>
+              <h3 class="font-semibold text-gray-900 text-sm sm:text-base">{{ product()!.productName }}</h3>
               <p class="text-xs sm:text-sm text-gray-600 mt-1">{{ product()!.categoryName }}</p>
-              <p class="text-lg sm:text-xl font-bold text-gray-900 mt-2">
-                ₹{{ product()!.price.toLocaleString() }}
-              </p>
-
-              <!-- Quantity Selector -->
+              <p class="text-lg sm:text-xl font-bold text-gray-900 mt-2">₹{{ product()!.price.toLocaleString() }}</p>
               <div class="flex items-center gap-3 mt-3">
                 <span class="text-sm text-gray-700">Quantity:</span>
                 <div class="flex items-center border border-gray-300 rounded-lg">
-                  <button
-                    (click)="updateQuantity(-1)"
-                    [disabled]="quantity() <= 1"
-                    class="px-3 py-1 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    -
-                  </button>
+                  <button (click)="updateQuantity(-1)" [disabled]="quantity() <= 1" class="px-3 py-1 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">-</button>
                   <span class="px-4 py-1 border-x border-gray-300">{{ quantity() }}</span>
-                  <button
-                    (click)="updateQuantity(1)"
-                    [disabled]="quantity() >= (product()!.quantity || 1)"
-                    class="px-3 py-1 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    +
-                  </button>
+                  <button (click)="updateQuantity(1)" [disabled]="quantity() >= (product()!.quantity || 1)" class="px-3 py-1 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">+</button>
                 </div>
               </div>
             </div>
@@ -54,12 +32,10 @@
         </div>
         }
 
-        <!-- Cart Items Summary -->
+        <!-- Cart Items -->
         @if (paymentMode() === 'cart' && cartItems().length > 0) {
         <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">
-            Cart Items ({{ cartItems().length }})
-          </h2>
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Cart Items ({{ cartItems().length }})</h2>
           <div class="space-y-4 max-h-64 overflow-y-auto">
             @for (item of cartItems(); track item.id) {
             <div class="flex gap-3 pb-4 border-b last:border-b-0">
@@ -67,9 +43,7 @@
               <div class="flex-1">
                 <h3 class="font-semibold text-gray-900 text-sm">{{ item.name }}</h3>
                 <p class="text-xs text-gray-600 mt-1">Quantity: {{ item.quantity }}</p>
-                <p class="text-sm font-bold text-gray-900 mt-1">
-                  ₹{{ (item.price * item.quantity).toLocaleString() }}
-                </p>
+                <p class="text-sm font-bold text-gray-900 mt-1">₹{{ (item.price * item.quantity).toLocaleString() }}</p>
               </div>
             </div>
             }
@@ -82,37 +56,27 @@
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold text-gray-900">Shipping Details</h2>
             @if (availableAddresses().length > 0 && !selectedAddress()) {
-            <button
-              (click)="showAddressPicker.set(!showAddressPicker())"
-              class="text-sm text-blue-600 hover:text-blue-700 font-medium"
-            >
+            <button (click)="showAddressPicker.set(!showAddressPicker())" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
               {{ showAddressPicker() ? 'Hide' : '📍 Select Saved Address' }}
             </button>
             }
           </div>
 
-          <!-- Saved Address Picker -->
           @if (showAddressPicker() && availableAddresses().length > 0) {
           <div class="mb-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
             @for (addr of availableAddresses(); track addr.addressId) {
-            <div
-              (click)="selectAddress(addr)"
-              class="p-3 border-2 rounded-lg cursor-pointer transition-all duration-200"
+            <div (click)="selectAddress(addr)" class="p-3 border-2 rounded-lg cursor-pointer transition-all duration-200"
               [class.border-blue-500]="selectedAddress()?.addressId === addr.addressId"
               [class.bg-blue-50]="selectedAddress()?.addressId === addr.addressId"
-              [class.border-gray-200]="selectedAddress()?.addressId !== addr.addressId"
-            >
+              [class.border-gray-200]="selectedAddress()?.addressId !== addr.addressId">
               <p class="font-semibold text-gray-900 text-sm">{{ addr.addressLine1 }}</p>
-              @if (addr.addressLine2) {
-              <p class="text-gray-500 text-xs">{{ addr.addressLine2 }}</p>
-              }
+              @if (addr.addressLine2) { <p class="text-gray-500 text-xs">{{ addr.addressLine2 }}</p> }
               <p class="text-gray-600 text-xs mt-1">{{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}</p>
             </div>
             }
           </div>
           }
 
-          <!-- Selected address banner with unselect -->
           @if (selectedAddress()) {
           <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-start justify-between gap-2">
             <div class="flex items-start gap-2 text-sm text-green-800">
@@ -122,261 +86,121 @@
                 <p>{{ selectedAddress()!.city }}, {{ selectedAddress()!.state }} - {{ selectedAddress()!.pincode }}</p>
               </div>
             </div>
-            <button
-              (click)="unselectAddress()"
-              class="text-xs text-red-500 hover:text-red-700 font-medium whitespace-nowrap mt-0.5"
-            >
-              ✕ Unselect
-            </button>
+            <button (click)="unselectAddress()" class="text-xs text-red-500 hover:text-red-700 font-medium whitespace-nowrap mt-0.5">✕ Unselect</button>
           </div>
           }
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="sm:col-span-2">
               <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-              <input
-                type="text"
-                [(ngModel)]="fullName"
-                placeholder="Enter your full name"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <input type="text" [(ngModel)]="fullName" placeholder="Enter your full name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input
-                type="email"
-                [(ngModel)]="email"
-                placeholder="your@email.com"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <input type="email" [(ngModel)]="email" placeholder="your@email.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-              <input
-                type="tel"
-                [(ngModel)]="phone"
-                placeholder="10-digit mobile number"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <input type="tel" [(ngModel)]="phone" placeholder="10-digit mobile number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div class="sm:col-span-2">
               <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-              <textarea
-                [(ngModel)]="address"
-                placeholder="House No., Building Name, Street"
-                rows="2"
-                [disabled]="!!selectedAddress()"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
-              ></textarea>
+              <textarea [(ngModel)]="address" placeholder="House No., Building Name, Street" rows="2" [disabled]="!!selectedAddress()"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"></textarea>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
-              <input
-                type="text"
-                [(ngModel)]="city"
-                placeholder="City"
-                [disabled]="!!selectedAddress()"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
-              />
+              <input type="text" [(ngModel)]="city" placeholder="City" [disabled]="!!selectedAddress()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed" />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">State</label>
-              <input
-                type="text"
-                [(ngModel)]="state"
-                placeholder="State"
-                [disabled]="!!selectedAddress()"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
-              />
+              <input type="text" [(ngModel)]="state" placeholder="State" [disabled]="!!selectedAddress()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed" />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Pincode</label>
-              <input
-                type="text"
-                [(ngModel)]="pincode"
-                placeholder="6-digit pincode"
-                maxlength="6"
-                [disabled]="!!selectedAddress()"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
-              />
+              <input type="text" [(ngModel)]="pincode" placeholder="6-digit pincode" maxlength="6" [disabled]="!!selectedAddress()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed" />
             </div>
           </div>
         </div>
 
-        <!-- Payment Method -->
+        <!-- ── Payment Method ─────────────────────────────────────────────── -->
         <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">Payment Method</h2>
 
-          <!-- ── Wallet Toggle ─────────────────────────────────────────── -->
-          <div
-            class="flex items-center justify-between p-4 border-2 rounded-lg mb-4 transition-colors"
-            [class.border-purple-500]="useWallet()"
-            [class.bg-purple-50]="useWallet()"
-            [class.border-gray-200]="!useWallet()"
-          >
-            <div class="flex items-center gap-3">
-              <span class="text-2xl">👛</span>
-              <div>
-                <p class="font-medium text-gray-900">Use Wallet Balance</p>
-                @if (isLoadingWallet()) {
-                  <p class="text-xs text-gray-500 flex items-center gap-1">
-                    <svg class="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                    </svg>
-                    Loading balance...
-                  </p>
-                } @else if (useWallet() && walletBalance() !== null) {
-                  <p class="text-xs text-purple-700 font-medium">
-                    Balance: ₹{{ walletBalance()!.toLocaleString() }}
-                    @if (walletCoversAll) { · Covers full order ✅ }
-                    @else { · ₹{{ walletApplied.toLocaleString() }} will be applied }
-                  </p>
-                } @else {
-                  <p class="text-xs text-gray-500">Apply wallet balance to this order</p>
+          <div class="space-y-3">
+
+            <!-- Stripe Option -->
+            <div (click)="selectMethod('stripe')"
+              class="flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all duration-200"
+              [class.border-[#635BFF]]="selectedPaymentMethod() === 'stripe'"
+              [class.bg-indigo-50]="selectedPaymentMethod() === 'stripe'"
+              [class.border-gray-200]="selectedPaymentMethod() !== 'stripe'">
+              <div class="w-10 h-10 bg-[#635BFF] rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-white font-black text-sm">S</span>
+              </div>
+              <div class="flex-1">
+                <p class="font-semibold text-gray-900">Stripe</p>
+                <p class="text-xs text-gray-500">Pay securely via Stripe (Test Mode)</p>
+              </div>
+              <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
+                [class.border-[#635BFF]]="selectedPaymentMethod() === 'stripe'"
+                [class.border-gray-300]="selectedPaymentMethod() !== 'stripe'">
+                @if (selectedPaymentMethod() === 'stripe') {
+                  <div class="w-2.5 h-2.5 rounded-full bg-[#635BFF]"></div>
                 }
               </div>
             </div>
-            <!-- Toggle switch -->
-            <button
-              type="button"
-              (click)="toggleWallet()"
-              class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none"
-              [class.bg-purple-600]="useWallet()"
-              [class.bg-gray-300]="!useWallet()"
-              [attr.aria-checked]="useWallet()"
-              role="switch"
-            >
-              <span
-                class="inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform"
-                [class.translate-x-6]="useWallet()"
-                [class.translate-x-1]="!useWallet()"
-              ></span>
-            </button>
-          </div>
 
-          <!-- Wallet breakdown banner (partial or full) -->
-          @if (useWallet() && !isLoadingWallet() && walletBalance() !== null) {
-            @if (walletCoversAll) {
-              <!-- Full coverage -->
-              <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800 flex items-start gap-2">
-                <span class="text-base leading-none">✅</span>
-                <p>
-                  Your wallet covers the full order.
-                  <span class="font-semibold">₹{{ total.toLocaleString() }}</span> will be deducted.
-                  Remaining wallet balance: <span class="font-semibold">₹{{ (walletBalance()! - total).toLocaleString() }}</span>
-                </p>
+            <!-- Wallet Option -->
+            <div (click)="selectMethod('wallet')"
+              class="flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all duration-200"
+              [class.border-purple-500]="selectedPaymentMethod() === 'wallet'"
+              [class.bg-purple-50]="selectedPaymentMethod() === 'wallet'"
+              [class.border-gray-200]="selectedPaymentMethod() !== 'wallet'">
+              <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-xl">👛</span>
               </div>
-            } @else {
-              <!-- Partial coverage -->
-              <div class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800 flex items-start gap-2">
-                <span class="text-base leading-none">⚡</span>
-                <div>
-                  <p>
-                    <span class="font-semibold">₹{{ walletApplied.toLocaleString() }}</span> will be used from your wallet.
-                    Select a payment method below for the remaining
-                    <span class="font-semibold">₹{{ remainingAfterWallet.toLocaleString() }}</span>.
+              <div class="flex-1">
+                <p class="font-semibold text-gray-900">Wallet</p>
+                @if (isLoadingWallet()) {
+                  <p class="text-xs text-gray-500 flex items-center gap-1">
+                    <svg class="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
+                    Loading balance...
                   </p>
-                </div>
+                } @else if (selectedPaymentMethod() === 'wallet' && walletBalance() !== null) {
+                  <p class="text-xs font-medium" [class.text-green-600]="walletCoversAll" [class.text-amber-600]="!walletCoversAll">
+                    Balance: ₹{{ walletBalance()!.toLocaleString() }}
+                    @if (walletCoversAll) { · Covers full order ✅ }
+                    @else { · ₹{{ walletApplied.toLocaleString() }} applied, Razorpay for remaining ₹{{ remainingAfterWallet.toLocaleString() }} }
+                  </p>
+                } @else {
+                  <p class="text-xs text-gray-500">Use your wallet balance</p>
+                }
               </div>
-            }
-          }
-
-          <!-- ── Secondary payment options (hidden when wallet covers all) ── -->
-          @if (!walletCoversAll) {
-          <div class="space-y-3 mb-4">
-            @if (useWallet() && !isLoadingWallet() && walletBalance() !== null) {
-              <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Pay remaining ₹{{ remainingAfterWallet.toLocaleString() }} via</p>
-            }
-
-            <div
-              (click)="selectPaymentMethod('card')"
-              [class.border-blue-500]="selectedPaymentMethod() === 'card'"
-              [class.bg-blue-50]="selectedPaymentMethod() === 'card'"
-              [class.border-gray-200]="selectedPaymentMethod() !== 'card'"
-              class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer hover:border-blue-300 transition-colors"
-            >
-              <input type="radio" [checked]="selectedPaymentMethod() === 'card'" class="w-4 h-4 text-blue-600" />
-              <div class="flex-1">
-                <p class="font-medium text-gray-900">Credit/Debit Card</p>
-                <p class="text-sm text-gray-600">Pay securely with your card</p>
+              <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
+                [class.border-purple-500]="selectedPaymentMethod() === 'wallet'"
+                [class.border-gray-300]="selectedPaymentMethod() !== 'wallet'">
+                @if (selectedPaymentMethod() === 'wallet') {
+                  <div class="w-2.5 h-2.5 rounded-full bg-purple-500"></div>
+                }
               </div>
-              <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-              </svg>
             </div>
 
-            <div
-              (click)="selectPaymentMethod('upi')"
-              [class.border-blue-500]="selectedPaymentMethod() === 'upi'"
-              [class.bg-blue-50]="selectedPaymentMethod() === 'upi'"
-              [class.border-gray-200]="selectedPaymentMethod() !== 'upi'"
-              class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer hover:border-blue-300 transition-colors"
-            >
-              <input type="radio" [checked]="selectedPaymentMethod() === 'upi'" class="w-4 h-4 text-blue-600" />
-              <div class="flex-1">
-                <p class="font-medium text-gray-900">UPI</p>
-                <p class="text-sm text-gray-600">Pay using UPI ID</p>
-              </div>
-              <span class="text-2xl">📱</span>
-            </div>
-
-            <div
-              (click)="selectPaymentMethod('cod')"
-              [class.border-blue-500]="selectedPaymentMethod() === 'cod'"
-              [class.bg-blue-50]="selectedPaymentMethod() === 'cod'"
-              [class.border-gray-200]="selectedPaymentMethod() !== 'cod'"
-              class="flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer hover:border-blue-300 transition-colors"
-            >
-              <input type="radio" [checked]="selectedPaymentMethod() === 'cod'" class="w-4 h-4 text-blue-600" />
-              <div class="flex-1">
-                <p class="font-medium text-gray-900">Cash on Delivery</p>
-                <p class="text-sm text-gray-600">Pay when you receive</p>
-              </div>
-              <span class="text-2xl">💵</span>
-            </div>
           </div>
 
-          <!-- Card Details -->
-          @if (selectedPaymentMethod() === 'card') {
-          <div class="space-y-4 pt-4 border-t">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
-              <input type="text" [(ngModel)]="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Cardholder Name</label>
-              <input type="text" [(ngModel)]="cardName" placeholder="Name on card"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
-                <input type="text" [(ngModel)]="expiryDate" placeholder="MM/YY" maxlength="5"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">CVV</label>
-                <input type="text" [(ngModel)]="cvv" placeholder="123" maxlength="3"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-              </div>
-            </div>
+          <!-- Wallet + Stripe partial info banner -->
+          @if (selectedPaymentMethod() === 'wallet' && !isLoadingWallet() && walletBalance() !== null && !walletCoversAll) {
+          <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800 flex items-start gap-2">
+            <span>⚡</span>
+            <p>
+              <span class="font-semibold">₹{{ walletApplied.toLocaleString() }}</span> from wallet +
+              <span class="font-semibold">₹{{ remainingAfterWallet.toLocaleString() }}</span> via Stripe.
+              Stripe popup will open after clicking "Place Order".
+            </p>
           </div>
           }
-
-          <!-- UPI Details -->
-          @if (selectedPaymentMethod() === 'upi') {
-          <div class="pt-4 border-t">
-            <label class="block text-sm font-medium text-gray-700 mb-1">UPI ID</label>
-            <input type="text" [(ngModel)]="upiId" placeholder="yourname@upi"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          }
-          } <!-- end @if (!walletCoversAll) -->
-
         </div>
+
       </div>
 
       <!-- Right Column: Order Summary -->
@@ -388,24 +212,13 @@
           <div class="mb-4">
             @if (!appliedPromo()) {
             <div class="flex gap-2">
-              <input
-                type="text"
-                [ngModel]="promoInput()"
-                (ngModelChange)="promoInput.set($event); promoError.set(null)"
+              <input type="text" [ngModel]="promoInput()" (ngModelChange)="promoInput.set($event); promoError.set(null)"
                 placeholder="Enter promo code"
-                class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase"
-              />
-              <button
-                (click)="applyPromo()"
-                [disabled]="!promoInput().trim()"
-                class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-              >
-                Apply
-              </button>
+                class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase" />
+              <button (click)="applyPromo()" [disabled]="!promoInput().trim()"
+                class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors">Apply</button>
             </div>
-            @if (promoError()) {
-            <p class="text-xs text-red-500 mt-1">{{ promoError() }}</p>
-            }
+            @if (promoError()) { <p class="text-xs text-red-500 mt-1">{{ promoError() }}</p> }
             } @else {
             <div class="flex items-center justify-between px-3 py-2 bg-green-50 border border-green-200 rounded-lg">
               <div class="flex items-center gap-2 text-sm text-green-700">
@@ -437,10 +250,8 @@
               <span>Shipping</span>
               <span>{{ shipping === 0 ? 'FREE' : '₹' + shipping }}</span>
             </div>
-            @if (shipping === 0) {
-            <p class="text-xs text-green-600">🎉 Free shipping on orders above ₹5000</p>
-            }
-            @if (useWallet() && walletApplied > 0) {
+            @if (shipping === 0) { <p class="text-xs text-green-600">🎉 Free shipping on orders above ₹5000</p> }
+            @if (selectedPaymentMethod() === 'wallet' && walletApplied > 0) {
             <div class="flex justify-between text-purple-700 font-medium">
               <span>👛 Wallet</span>
               <span>- ₹{{ walletApplied.toLocaleString() }}</span>
@@ -453,9 +264,9 @@
               <span>Total</span>
               <span>₹{{ total.toLocaleString() }}</span>
             </div>
-            @if (useWallet() && walletApplied > 0 && !walletCoversAll) {
+            @if (selectedPaymentMethod() === 'wallet' && walletApplied > 0 && !walletCoversAll) {
             <div class="flex justify-between text-sm text-gray-600 mt-1">
-              <span>Due via {{ selectedPaymentMethod() | uppercase }}</span>
+              <span>Due via Stripe</span>
               <span>₹{{ remainingAfterWallet.toLocaleString() }}</span>
             </div>
             }
@@ -464,41 +275,92 @@
             }
           </div>
 
-          <button
-            (click)="processPayment()"
-            [disabled]="isProcessing()"
-            class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
+          <button (click)="processPayment()" [disabled]="isProcessing()"
+            class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
             @if (isProcessing()) {
             <span class="flex items-center justify-center gap-2">
               <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                <circle
-                  class="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="4"
-                ></circle>
-                <path
-                  class="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
               Processing...
             </span>
             } @else {
-            <span>Place Order</span>
+              @if (selectedPaymentMethod() === 'stripe') { Pay via Stripe }
+              @else if (walletCoversAll) { Pay via Wallet }
+              @else { Pay via Wallet + Stripe }
             }
           </button>
 
-          <p class="text-xs text-gray-500 text-center mt-4">
-            🔒 Your payment information is secure and encrypted
-          </p>
+          <p class="text-xs text-gray-500 text-center mt-4">🔒 Your payment information is secure and encrypted</p>
         </div>
       </div>
+
     </div>
     }
   </div>
 </div>
+
+<!-- ── Stripe Payment Modal ──────────────────────────────────────────────── -->
+@if (showStripeModal()) {
+<div class="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden" (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="bg-[#635BFF] px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+          <span class="text-[#635BFF] font-black text-xs">S</span>
+        </div>
+        <div>
+          <p class="text-white font-semibold text-sm">{{ 'Demo App' }}</p>
+          <p class="text-indigo-200 text-xs">₹{{ stripeAmount() | number:'1.0-0' }}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-indigo-300 bg-indigo-900 px-2 py-0.5 rounded-full">TEST MODE</span>
+        <button (click)="closeStripeModal()" class="text-indigo-300 hover:text-white transition-colors ml-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="p-6 space-y-5">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Card Details</label>
+        <!-- Stripe mounts its real hosted card input here -->
+        <div id="stripe-card-element"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white focus-within:ring-2 focus-within:ring-[#635BFF] focus-within:border-[#635BFF] transition-all min-h-[44px]">
+        </div>
+        @if (stripeError()) {
+          <p class="text-xs text-red-500 mt-1">{{ stripeError() }}</p>
+        }
+      </div>
+
+      <p class="text-xs text-gray-400">Test card: 4242 4242 4242 4242 · any future date · any CVC · any ZIP</p>
+
+      <button (click)="submitStripePayment()" [disabled]="isStripeProcessing()"
+        class="w-full py-3 bg-[#635BFF] hover:bg-indigo-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+        @if (isStripeProcessing()) {
+          <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+          </svg>
+          Processing...
+        } @else {
+          Pay ₹{{ stripeAmount() | number:'1.0-0' }}
+        }
+      </button>
+
+      <div class="flex items-center justify-center gap-1 text-xs text-gray-400">
+        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+        </svg>
+        Powered by Stripe
+      </div>
+    </div>
+  </div>
+</div>
+}
