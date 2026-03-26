@@ -1,10 +1,10 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
-declare var Razorpay: any;
-
+declare var Stripe: any;
 import { ProductService } from '../../services/product.service';
 import { ProductStateService } from '../../services/product-state.service';
 import { CartService } from '../../services/cart.service';
@@ -55,8 +55,8 @@ export class PaymentComponent implements OnInit {
   quantity = signal<number>(1);
   cartItems = signal<CartItem[]>([]);
 
-  // ── Selected top-level method: 'razorpay' | 'wallet' ─────────────────────
-  selectedPaymentMethod = signal<'razorpay' | 'wallet'>('razorpay');
+  // ── Selected top-level method: 'stripe' | 'wallet' ──────────────────────
+  selectedPaymentMethod = signal<'stripe' | 'wallet'>('stripe');
   isProcessing = signal<boolean>(false);
 
   // ── Shipping details ──────────────────────────────────────────────────────
@@ -98,17 +98,16 @@ export class PaymentComponent implements OnInit {
     return this.selectedPaymentMethod() === 'wallet' && bal !== null && bal >= this.total;
   }
 
-  // ── Razorpay mock modal ───────────────────────────────────────────────────
-  showRazorpayModal = signal<boolean>(false);
-  razorpayAmount = signal<number>(0);
-  selectedRzpMethod = signal<'card' | 'upi' | 'netbanking'>('card');
-  rzpCardNumber = signal<string>('');
-  rzpCardName = signal<string>('');
-  rzpExpiry = signal<string>('');
-  rzpCvv = signal<string>('');
-  rzpUpiId = signal<string>('');
-  rzpBank = signal<string>('HDFC');
-  isRzpProcessing = signal<boolean>(false);
+  // ── Stripe modal ──────────────────────────────────────────────────────────
+  showStripeModal = signal<boolean>(false);
+  stripeAmount = signal<number>(0);
+  isStripeProcessing = signal<boolean>(false);
+  stripeError = signal<string | null>(null);
+
+  private stripe: any = null;
+  private stripeCard: any = null;
+
+  @ViewChild('stripeCardElement') stripeCardElementRef!: ElementRef;
 
   // ── Totals ────────────────────────────────────────────────────────────────
   get subtotal(): number {
@@ -130,9 +129,9 @@ export class PaymentComponent implements OnInit {
   get resolvedPaymentType(): string {
     if (this.selectedPaymentMethod() === 'wallet') {
       if (this.walletCoversAll) return 'wallet';
-      return 'wallet+razorpay';
+      return 'wallet+stripe';
     }
-    return 'razorpay';
+    return 'stripe';
   }
 
   // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -244,10 +243,10 @@ export class PaymentComponent implements OnInit {
   removePromo(): void { this.appliedPromo.set(null); this.discountPercent.set(0); this.promoInput.set(''); this.promoError.set(null); }
 
   // ── Wallet selection ──────────────────────────────────────────────────────
-  selectMethod(method: 'razorpay' | 'wallet'): void {
+  selectMethod(method: 'stripe' | 'wallet'): void {
     this.selectedPaymentMethod.set(method);
     if (method === 'wallet' && this.walletBalance() === null) this.fetchWalletBalance();
-    if (method === 'razorpay') { this.walletBalance.set(null); }
+    if (method === 'stripe') { this.walletBalance.set(null); }
   }
 
   private fetchWalletBalance(): void {
@@ -257,11 +256,11 @@ export class PaymentComponent implements OnInit {
         const bal = res.data?.walletBalance ?? 0;
         this.walletBalance.set(bal);
         this.isLoadingWallet.set(false);
-        if (bal <= 0) { toast.error('Wallet balance is ₹0.'); this.selectedPaymentMethod.set('razorpay'); this.walletBalance.set(null); }
+        if (bal <= 0) { toast.error('Wallet balance is ₹0.'); this.selectedPaymentMethod.set('stripe'); this.walletBalance.set(null); }
         else if (bal >= this.total) toast.success(`Wallet (₹${bal.toLocaleString()}) covers the full order.`);
-        else toast.info(`₹${bal.toLocaleString()} from wallet. Razorpay will handle the remaining ₹${(this.total - bal).toLocaleString()}.`);
+        else toast.info(`₹${bal.toLocaleString()} from wallet. Stripe will handle the remaining ₹${(this.total - bal).toLocaleString()}.`);
       },
-      error: (err) => { toast.error(err?.error?.message || 'Could not fetch wallet balance.'); this.isLoadingWallet.set(false); this.selectedPaymentMethod.set('razorpay'); },
+      error: (err) => { toast.error(err?.error?.message || 'Could not fetch wallet balance.'); this.isLoadingWallet.set(false); this.selectedPaymentMethod.set('stripe'); },
     });
   }
 
@@ -279,34 +278,61 @@ export class PaymentComponent implements OnInit {
     return true;
   }
 
-  // ── Razorpay modal ────────────────────────────────────────────────────────
-  openRazorpayModal(amount: number): void {
-    this.razorpayAmount.set(amount);
-    this.rzpCardNumber.set(''); this.rzpCardName.set(''); this.rzpExpiry.set(''); this.rzpCvv.set(''); this.rzpUpiId.set('');
-    this.showRazorpayModal.set(true);
+  // ── Stripe modal ──────────────────────────────────────────────────────────
+  openStripeModal(amount: number): void {
+    // console.log('Stripe Config:', {
+    //   publishableKey: environment.stripe.publishableKey,
+    //   appName: environment.stripe.appName,
+    //   currency: environment.stripe.currency,
+    //   amount,
+    //   production: environment.production,
+    // });
+    this.stripeAmount.set(amount);
+    this.stripeError.set(null);
+    this.showStripeModal.set(true);
+    setTimeout(() => {
+      this.stripe = Stripe(environment.stripe.publishableKey);
+      const elements = this.stripe.elements();
+      this.stripeCard = elements.create('card', {
+        style: {
+          base: { fontSize: '16px', color: '#1a1a1a', fontFamily: 'Poppins, sans-serif', '::placeholder': { color: '#9ca3af' } },
+          invalid: { color: '#ef4444' },
+        },
+      });
+      this.stripeCard.mount('#stripe-card-element');
+      this.stripeCard.on('change', (event: any) => {
+        this.stripeError.set(event.error ? event.error.message : null);
+      });
+    }, 100);
   }
 
-  closeRazorpayModal(): void {
-    this.showRazorpayModal.set(false);
-    this.isRzpProcessing.set(false);
+  closeStripeModal(): void {
+    if (this.stripeCard) { this.stripeCard.destroy(); this.stripeCard = null; }
+    this.showStripeModal.set(false);
+    this.isStripeProcessing.set(false);
     this.isProcessing.set(false);
     toast.error('Payment Cancelled');
   }
 
-  submitRazorpayPayment(): void {
-    this.isRzpProcessing.set(true);
-    setTimeout(() => {
-      const rzpResponse = {
-        razorpay_payment_id: 'pay_' + Math.random().toString(36).substring(2, 12).toUpperCase(),
-        razorpay_order_id: 'order_' + Math.random().toString(36).substring(2, 12).toUpperCase(),
-        razorpay_signature: 'sig_' + Math.random().toString(36).substring(2, 20),
-      };
-      console.log('Razorpay Payment Response:', rzpResponse);
-      this.isRzpProcessing.set(false);
-      this.showRazorpayModal.set(false);
-      // Now place the order after successful Razorpay payment
-      this.placeOrder(rzpResponse);
-    }, 1500);
+  async submitStripePayment(): Promise<void> {
+    if (!this.stripe || !this.stripeCard) return;
+    this.isStripeProcessing.set(true);
+    this.stripeError.set(null);
+    const { paymentMethod, error } = await this.stripe.createPaymentMethod({
+      type: 'card',
+      card: this.stripeCard,
+      billing_details: { name: this.fullName(), email: this.email() },
+    });
+    if (error) {
+      this.stripeError.set(error.message);
+      this.isStripeProcessing.set(false);
+      return;
+    }
+    console.log('Stripe Payment Response:', paymentMethod);
+    this.isStripeProcessing.set(false);
+    if (this.stripeCard) { this.stripeCard.destroy(); this.stripeCard = null; }
+    this.showStripeModal.set(false);
+    this.placeOrder(paymentMethod);
   }
 
   // ── Main entry point ──────────────────────────────────────────────────────
@@ -321,28 +347,27 @@ export class PaymentComponent implements OnInit {
       const bal = this.walletBalance();
       if (bal === null) { toast.error('Wallet balance not loaded yet.'); return; }
       if (bal <= 0) { toast.error('Wallet balance is ₹0.'); return; }
-
       if (this.walletCoversAll) {
-        // Full wallet — place order directly
         this.placeOrder(null);
       } else {
-        // Partial wallet — open Razorpay for the remainder
-        this.openRazorpayModal(this.remainingAfterWallet);
+        // Partial wallet — open Stripe for the remainder
+        this.openStripeModal(this.remainingAfterWallet);
       }
     } else {
-      // Pure Razorpay
-      this.openRazorpayModal(this.total);
+      // Pure Stripe
+      this.openStripeModal(this.total);
     }
   }
 
   // ── Place order (called after payment is confirmed) ───────────────────────
-  private placeOrder(rzpResponse: any): void {
+  private placeOrder(stripeResponse: any): void {
     const addr = this.selectedAddress()!;
     this.isProcessing.set(true);
     const toastId = toast.loading('Placing order...');
 
-    if (rzpResponse) console.log('Razorpay Payment Response:', rzpResponse);
+    if (stripeResponse) console.log('Stripe Payment Response:', stripeResponse);
 
+    
     if (this.paymentMode() === 'cart') {
       const p = new PaginationModel(); p.pageSize = 1; p.pageNumber = 1;
       this.cartService.GetUserCart(p).subscribe({
@@ -353,6 +378,7 @@ export class PaymentComponent implements OnInit {
           req.paymentType = this.resolvedPaymentType;
           req.promoCode = this.appliedPromo() ?? '';
           req.useWallet = this.selectedPaymentMethod() === 'wallet';
+          req.stripePaymentId = stripeResponse?.id ?? '';
           this.cartService.orderAllFromCart(req).subscribe({
             next: (res) => { this.isProcessing.set(false); toast.dismiss(toastId); if (res.data?.isSuccess) { toast.success('Order placed successfully!'); this.router.navigate(['/profile/orders']); } else toast.error(res.message || 'Failed to place order'); },
             error: (err) => { this.isProcessing.set(false); toast.dismiss(toastId); toast.error(err?.error?.message || 'Failed to place order'); },
@@ -370,6 +396,7 @@ export class PaymentComponent implements OnInit {
         paymentType: this.resolvedPaymentType,
         promoCode: this.appliedPromo() ?? '',
         useWallet: this.selectedPaymentMethod() === 'wallet',
+        stripePaymentId: stripeResponse?.id ?? '',
         orderProductdDetails: { productId: product.productId, productName: product.productName, quantity: this.quantity(), productPrice: product.price },
       };
       this.orderService.placeOrder(req).subscribe({
@@ -379,30 +406,3 @@ export class PaymentComponent implements OnInit {
     }
   }
 }
-
-// openRazorpayModal(amount: number): void {
-//   const options = {
-//     key: 'rzp_test_YOUR_KEY_HERE',
-//     amount: Math.round(amount * 100), // paise
-//     currency: 'INR',
-//     name: 'Demo App',
-//     description: 'Test Payment',
-//     prefill: {
-//       name: this.fullName(),
-//       email: this.email(),
-//       contact: this.phone(),
-//     },
-//     handler: (response: any) => {
-//       console.log('Razorpay Payment Response:', response);
-//       this.placeOrder(response); // existing logic untouched
-//     },
-//     modal: {
-//       ondismiss: () => {
-//         this.isProcessing.set(false);
-//         toast.error('Payment Cancelled');
-//       },
-//     },
-//   };
-//   const rzp = new Razorpay(options);
-//   rzp.open();
-// }

@@ -68,6 +68,7 @@ export interface PlaceOrderRequestDTO {
   paymentType: string;
   promoCode: string;
   useWallet: boolean;
+  stripePaymentId: string;
 }
 
 export interface PlaceOrderResponseDTO {

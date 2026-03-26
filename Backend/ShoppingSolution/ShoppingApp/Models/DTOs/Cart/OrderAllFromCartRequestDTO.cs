@@ -16,5 +16,8 @@ namespace ShoppingApp.Models.DTOs.Cart
         public string PromoCode { get; set; } = string.Empty;
 
         public bool UseWallet { get; set; } = false;
+
+        /// <summary>Stripe PaymentMethod ID returned from the frontend after successful Stripe payment.</summary>
+        public string StripePaymentId { get; set; } = string.Empty;
     }
 }

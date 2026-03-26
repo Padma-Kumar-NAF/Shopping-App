@@ -55,6 +55,7 @@ namespace ShoppingApp.Services
                     ImagePath = request.ImagePath,
                     Description = request.Description,
                     Price = request.Price,
+                    ActiveStatus = true
                 };
 
                 await _productRepository.AddAsync(product);

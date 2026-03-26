@@ -129,24 +129,24 @@
 
           <div class="space-y-3">
 
-            <!-- Razorpay Option -->
-            <div (click)="selectMethod('razorpay')"
+            <!-- Stripe Option -->
+            <div (click)="selectMethod('stripe')"
               class="flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all duration-200"
-              [class.border-blue-500]="selectedPaymentMethod() === 'razorpay'"
-              [class.bg-blue-50]="selectedPaymentMethod() === 'razorpay'"
-              [class.border-gray-200]="selectedPaymentMethod() !== 'razorpay'">
-              <div class="w-10 h-10 bg-[#072654] rounded-full flex items-center justify-center flex-shrink-0">
-                <span class="text-white font-black text-sm">R</span>
+              [class.border-[#635BFF]]="selectedPaymentMethod() === 'stripe'"
+              [class.bg-indigo-50]="selectedPaymentMethod() === 'stripe'"
+              [class.border-gray-200]="selectedPaymentMethod() !== 'stripe'">
+              <div class="w-10 h-10 bg-[#635BFF] rounded-full flex items-center justify-center flex-shrink-0">
+                <span class="text-white font-black text-sm">S</span>
               </div>
               <div class="flex-1">
-                <p class="font-semibold text-gray-900">Razorpay</p>
-                <p class="text-xs text-gray-500">Pay via Razorpay secure checkout (Test Mode)</p>
+                <p class="font-semibold text-gray-900">Stripe</p>
+                <p class="text-xs text-gray-500">Pay securely via Stripe (Test Mode)</p>
               </div>
               <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
-                [class.border-blue-500]="selectedPaymentMethod() === 'razorpay'"
-                [class.border-gray-300]="selectedPaymentMethod() !== 'razorpay'">
-                @if (selectedPaymentMethod() === 'razorpay') {
-                  <div class="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+                [class.border-[#635BFF]]="selectedPaymentMethod() === 'stripe'"
+                [class.border-gray-300]="selectedPaymentMethod() !== 'stripe'">
+                @if (selectedPaymentMethod() === 'stripe') {
+                  <div class="w-2.5 h-2.5 rounded-full bg-[#635BFF]"></div>
                 }
               </div>
             </div>
@@ -188,14 +188,14 @@
 
           </div>
 
-          <!-- Wallet + Razorpay partial info banner -->
+          <!-- Wallet + Stripe partial info banner -->
           @if (selectedPaymentMethod() === 'wallet' && !isLoadingWallet() && walletBalance() !== null && !walletCoversAll) {
           <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800 flex items-start gap-2">
             <span>⚡</span>
             <p>
               <span class="font-semibold">₹{{ walletApplied.toLocaleString() }}</span> from wallet +
-              <span class="font-semibold">₹{{ remainingAfterWallet.toLocaleString() }}</span> via Razorpay.
-              Razorpay popup will open after clicking "Place Order".
+              <span class="font-semibold">₹{{ remainingAfterWallet.toLocaleString() }}</span> via Stripe.
+              Stripe popup will open after clicking "Place Order".
             </p>
           </div>
           }
@@ -266,7 +266,7 @@
             </div>
             @if (selectedPaymentMethod() === 'wallet' && walletApplied > 0 && !walletCoversAll) {
             <div class="flex justify-between text-sm text-gray-600 mt-1">
-              <span>Due via Razorpay</span>
+              <span>Due via Stripe</span>
               <span>₹{{ remainingAfterWallet.toLocaleString() }}</span>
             </div>
             }
@@ -286,9 +286,9 @@
               Processing...
             </span>
             } @else {
-              @if (selectedPaymentMethod() === 'razorpay') { Pay via Razorpay }
+              @if (selectedPaymentMethod() === 'stripe') { Pay via Stripe }
               @else if (walletCoversAll) { Pay via Wallet }
-              @else { Pay via Wallet + Razorpay }
+              @else { Pay via Wallet + Stripe }
             }
           </button>
 
@@ -301,25 +301,25 @@
   </div>
 </div>
 
-<!-- ── Razorpay Test Mode Modal ──────────────────────────────────────────── -->
-@if (showRazorpayModal()) {
+<!-- ── Stripe Payment Modal ──────────────────────────────────────────────── -->
+@if (showStripeModal()) {
 <div class="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
   <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden" (click)="$event.stopPropagation()">
 
     <!-- Header -->
-    <div class="bg-[#072654] px-6 py-4 flex items-center justify-between">
+    <div class="bg-[#635BFF] px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-          <span class="text-[#072654] font-black text-xs">R</span>
+          <span class="text-[#635BFF] font-black text-xs">S</span>
         </div>
         <div>
-          <p class="text-white font-semibold text-sm">Demo App</p>
-          <p class="text-blue-200 text-xs">₹{{ razorpayAmount() | number:'1.0-0' }}</p>
+          <p class="text-white font-semibold text-sm">{{ 'Demo App' }}</p>
+          <p class="text-indigo-200 text-xs">₹{{ stripeAmount() | number:'1.0-0' }}</p>
         </div>
       </div>
       <div class="flex items-center gap-2">
-        <span class="text-xs text-blue-300 bg-blue-900 px-2 py-0.5 rounded-full">TEST MODE</span>
-        <button (click)="closeRazorpayModal()" class="text-blue-300 hover:text-white transition-colors ml-2">
+        <span class="text-xs text-indigo-300 bg-indigo-900 px-2 py-0.5 rounded-full">TEST MODE</span>
+        <button (click)="closeStripeModal()" class="text-indigo-300 hover:text-white transition-colors ml-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
@@ -327,91 +327,30 @@
       </div>
     </div>
 
-    <!-- Tabs -->
-    <div class="flex border-b border-gray-200">
-      @for (tab of [['card','💳 Card'],['upi','📱 UPI'],['netbanking','🏦 Netbanking']]; track tab[0]) {
-      <button (click)="selectedRzpMethod.set($any(tab[0]))"
-        class="flex-1 py-3 text-xs font-medium transition-colors"
-        [class.text-blue-600]="selectedRzpMethod() === tab[0]"
-        [class.border-b-2]="selectedRzpMethod() === tab[0]"
-        [class.border-blue-600]="selectedRzpMethod() === tab[0]"
-        [class.text-gray-500]="selectedRzpMethod() !== tab[0]">
-        {{ tab[1] }}
-      </button>
-      }
-    </div>
-
-    <div class="p-6 space-y-4">
-
-      <!-- Card -->
-      @if (selectedRzpMethod() === 'card') {
-      <div class="space-y-3">
-        <div>
-          <label class="block text-xs font-medium text-gray-600 mb-1">Card Number</label>
-          <input type="text" [ngModel]="rzpCardNumber()" (ngModelChange)="rzpCardNumber.set($event)" placeholder="4111 1111 1111 1111" maxlength="19"
-            class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    <div class="p-6 space-y-5">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Card Details</label>
+        <!-- Stripe mounts its real hosted card input here -->
+        <div id="stripe-card-element"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white focus-within:ring-2 focus-within:ring-[#635BFF] focus-within:border-[#635BFF] transition-all min-h-[44px]">
         </div>
-        <div>
-          <label class="block text-xs font-medium text-gray-600 mb-1">Cardholder Name</label>
-          <input type="text" [ngModel]="rzpCardName()" (ngModelChange)="rzpCardName.set($event)" placeholder="Name on card"
-            class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Expiry</label>
-            <input type="text" [ngModel]="rzpExpiry()" (ngModelChange)="rzpExpiry.set($event)" placeholder="MM/YY" maxlength="5"
-              class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">CVV</label>
-            <input type="password" [ngModel]="rzpCvv()" (ngModelChange)="rzpCvv.set($event)" placeholder="•••" maxlength="3"
-              class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-        </div>
-        <p class="text-xs text-gray-400">Test: 4111 1111 1111 1111 · any future expiry · any CVV</p>
+        @if (stripeError()) {
+          <p class="text-xs text-red-500 mt-1">{{ stripeError() }}</p>
+        }
       </div>
-      }
 
-      <!-- UPI -->
-      @if (selectedRzpMethod() === 'upi') {
-      <div class="space-y-3">
-        <div>
-          <label class="block text-xs font-medium text-gray-600 mb-1">UPI ID</label>
-          <input type="text" [ngModel]="rzpUpiId()" (ngModelChange)="rzpUpiId.set($event)" placeholder="yourname&#64;upi"
-            class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <p class="text-xs text-gray-400">Test UPI: success&#64;razorpay</p>
-      </div>
-      }
+      <p class="text-xs text-gray-400">Test card: 4242 4242 4242 4242 · any future date · any CVC · any ZIP</p>
 
-      <!-- Netbanking -->
-      @if (selectedRzpMethod() === 'netbanking') {
-      <div class="space-y-3">
-        <label class="block text-xs font-medium text-gray-600">Select Bank</label>
-        <div class="grid grid-cols-3 gap-2">
-          @for (bank of ['HDFC','ICICI','SBI','Axis','Kotak','Yes Bank']; track bank) {
-          <button (click)="rzpBank.set(bank)"
-            class="py-2 px-1 text-xs border-2 rounded-lg transition-colors font-medium"
-            [class.border-blue-500]="rzpBank() === bank" [class.bg-blue-50]="rzpBank() === bank" [class.text-blue-700]="rzpBank() === bank"
-            [class.border-gray-200]="rzpBank() !== bank" [class.text-gray-600]="rzpBank() !== bank">
-            {{ bank }}
-          </button>
-          }
-        </div>
-      </div>
-      }
-
-      <!-- Pay Button -->
-      <button (click)="submitRazorpayPayment()" [disabled]="isRzpProcessing()"
-        class="w-full py-3 bg-[#528FF0] hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-        @if (isRzpProcessing()) {
+      <button (click)="submitStripePayment()" [disabled]="isStripeProcessing()"
+        class="w-full py-3 bg-[#635BFF] hover:bg-indigo-600 text-white font-semibold rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+        @if (isStripeProcessing()) {
           <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
           </svg>
           Processing...
         } @else {
-          Pay ₹{{ razorpayAmount() | number:'1.0-0' }}
+          Pay ₹{{ stripeAmount() | number:'1.0-0' }}
         }
       </button>
 
@@ -419,7 +358,7 @@
         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
         </svg>
-        Secured by Razorpay
+        Powered by Stripe
       </div>
     </div>
   </div>

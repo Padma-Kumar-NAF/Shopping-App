@@ -92,6 +92,8 @@ export class ProductManagement implements OnInit {
       this.fetchPage(1);
     }
 
+    console.log(this.store.value)
+
     if (this.store.value.categories.length === 0) {
       this.categoryService.getAllCategories(this.pagination).subscribe({
         next: (res: ApiResponse<GetAllCategoryResponseDTO>) => {
@@ -398,9 +400,22 @@ export class ProductManagement implements OnInit {
   deleteProduct(): void {
     const id = this.pendingDeleteId();
     if (!id) return;
-    this.store.setProducts(this.store.value.products.filter(p => p.productId !== id));
-    toast.success('Product deleted successfully');
-    this.cancelDelete();
+
+    this.productService.deleteProduct(id).subscribe({
+      next: (res) => {
+        if (res.data?.isDeleted) {
+          this.store.setProducts(this.store.value.products.filter(p => p.productId !== id));
+          toast.success('Product deleted successfully');
+        } else {
+          toast.error('Failed to delete product');
+        }
+        this.cancelDelete();
+      },
+      error: (err) => {
+        toast.error(err?.error?.message || 'Failed to delete product');
+        this.cancelDelete();
+      },
+    });
   }
 
   avgRating(reviews: ReviewDTO[]): string {

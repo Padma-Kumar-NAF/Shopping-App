@@ -197,7 +197,7 @@ namespace ShoppingApp.Services
             }
         }
 
-        public async Task<ApiResponse<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCart(Guid userId, Guid addressId, string paymentType, string promoCode, bool useWallet)
+        public async Task<ApiResponse<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCart(Guid userId, Guid addressId, string paymentType, string promoCode, bool useWallet, string stripePaymentId = "")
         {
             var userCart = await _repository.GetQueryable().FirstOrDefaultAsync(c => c.UserId == userId);
             if (userCart == null)
@@ -334,7 +334,8 @@ namespace ShoppingApp.Services
                     UserId = userId,
                     OrderId = order.OrderId,
                     TotalAmount = finalAmount,
-                    PaymentType = paymentType
+                    PaymentType = paymentType,
+                    StripePaymentId = stripePaymentId
                 };
 
                 await _paymentRepository.AddAsync(payment);

@@ -41,6 +41,7 @@ export class OrderAllFromCartRequestDTO {
   paymentType: string = '';
   promoCode: string = '';
   useWallet: boolean = false;
+  stripePaymentId: string = '';
 }
 
 export class OrderAllFromCartResponseDTO {

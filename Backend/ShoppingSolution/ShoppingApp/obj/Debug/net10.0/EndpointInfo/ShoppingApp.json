@@ -1008,6 +1008,38 @@
         }
       }
     },
+    "/Products/delete-product": {
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteProductRequestDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteProductRequestDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteProductRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/PromoCode/add-promocode": {
       "post": {
         "tags": [
@@ -1874,6 +1906,15 @@
           }
         }
       },
+      "DeleteProductRequestDTO": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
       "DeletePromocodeRequestDTO": {
         "required": [
           "promoCodeId"
@@ -2202,6 +2243,9 @@
           },
           "useWallet": {
             "type": "boolean"
+          },
+          "stripePaymentId": {
+            "type": "string"
           }
         }
       },
@@ -2338,6 +2382,9 @@
           },
           "useWallet": {
             "type": "boolean"
+          },
+          "stripePaymentId": {
+            "type": "string"
           }
         }
       },

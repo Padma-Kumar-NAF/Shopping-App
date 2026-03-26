@@ -505,6 +505,22 @@
   },
   {
     "ContainingType": "ShoppingApp.Controllers.ProductsController",
+    "Method": "DeleteProduct",
+    "RelativePath": "Products/delete-product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Product.DeleteProductRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.ProductsController",
     "Method": "GetProductById",
     "RelativePath": "Products/get-product-by-id",
     "HttpMethod": "POST",

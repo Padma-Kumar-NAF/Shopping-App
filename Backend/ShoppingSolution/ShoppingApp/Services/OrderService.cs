@@ -482,7 +482,7 @@ namespace ShoppingApp.Services
 
                 var orderDetails = await CreateOrderDetailsAndUpdateStock(request, stock, order);
 
-                var payment = await CreatePayment(userId, order, finalAmount, request.PaymentType);
+                var payment = await CreatePayment(userId, order, finalAmount, request.PaymentType, request.StripePaymentId);
 
                 await _unitOfWork.CommitAsync();
 
@@ -543,14 +543,15 @@ namespace ShoppingApp.Services
             };
         }
 
-        private async Task<Payment> CreatePayment(Guid userId, Order order, decimal finalAmount, string paymentType)
+        private async Task<Payment> CreatePayment(Guid userId, Order order, decimal finalAmount, string paymentType, string stripePaymentId = "")
         {
             var payment = new Payment
             {
                 UserId = userId,
                 OrderId = order.OrderId,
                 TotalAmount = finalAmount,
-                PaymentType = paymentType
+                PaymentType = paymentType,
+                StripePaymentId = stripePaymentId
             };
 
             await _paymentRepository.AddAsync(payment);

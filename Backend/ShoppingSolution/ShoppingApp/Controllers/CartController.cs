@@ -122,7 +122,7 @@ namespace ShoppingApp.Controllers
             {
                 var UserId = GetUserIdOrThrow();
 
-                var result = await _cartService.PlaceOrderAllFromCart(UserId, request.AddressId, request.PaymentType, request.PromoCode, request.UseWallet);
+                var result = await _cartService.PlaceOrderAllFromCart(UserId, request.AddressId, request.PaymentType, request.PromoCode, request.UseWallet, request.StripePaymentId);
 
                 return Ok(result);  
             }
