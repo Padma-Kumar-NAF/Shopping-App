@@ -25,7 +25,14 @@ namespace ShoppingApp.Services
                 var user = await _userRepository.GetAsync(userId);
                 if (user == null)
                 {
-                    throw new AppException("User not found",404);
+                    throw new AppException("User not found", 404);
+                }
+
+                var existingReview = await _repository.GetQueryable().FirstOrDefaultAsync(r => r.UserId == userId && r.ProductId == request.ProductId);
+
+                if (existingReview != null)
+                {
+                    throw new AppException("User has already submitted a review for this product", 409);
                 }
 
                 var review = new Review

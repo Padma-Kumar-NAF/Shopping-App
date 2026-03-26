@@ -51,6 +51,7 @@ namespace ShoppingApp.Services
 
         public async Task<ApiResponse<CancelOrderResponseDTO>> CancelOrder(Guid userId, Guid orderId)
         {
+
             
             if(await IsUserNotFound(userId))
             {
@@ -67,15 +68,21 @@ namespace ShoppingApp.Services
                 throw new AppException("Order not found.",404);
             }
 
+            // Indhu work
+            if (order.DeliveryDate == DateTime.MinValue)
+            {
+                throw new AppException("You can't cancel the order --------- ",401);
+            }
+
             if (order.Status == "Cancelled")
             {
                 throw new AppException("Order already cancelled.",400);
             }
 
-            if (order.Status == "Delivered")
-            {
-                throw new AppException("Cannot cancel delivered order.",400);
-            }
+            //if (order.Status == "Delivered")
+            //{
+            //    throw new AppException("Cannot cancel delivered order.",400);
+            //}
 
             try
             {
@@ -421,6 +428,13 @@ namespace ShoppingApp.Services
                 {
                     throw new AppException("User not found", 404);
                 }
+
+                // Indhuu work
+                // Order to Product -> Include
+                // Product to Category -> then include
+                //----------
+
+                ///-----------
 
                 var address = await _addressRepository.GetAsync(request.AddressId) ?? throw new AppException("Address not found", 404);
 
