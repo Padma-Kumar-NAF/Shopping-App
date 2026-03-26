@@ -9,6 +9,10 @@
         public string PaymentType { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
 
+        public string RazorpayOrderId { get; set; } = string.Empty;
+        public string RazorpayPaymentId { get; set; } = string.Empty;
+        public string RazorpaySignature {  get; set; } = string.Empty;
+
         // Navigation
         public User? User { get; set; }
         public Order? Order { get; set; }

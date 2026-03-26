@@ -21,6 +21,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ApiResponse } from '../../../models/users/apiResponse.model';
+import { WalletService } from '../../../services/userServices/wallet.service';
 
 type TabType = 'cart' | 'wishlist' | 'orders' | 'address' | 'profile';
 
@@ -69,6 +70,10 @@ export class Profile implements OnInit {
   private route = inject(ActivatedRoute);
   private apiService: ProfileApiService = inject(ProfileApiService);
   private authState: AuthStateService = inject(AuthStateService);
+  private walletService = inject(WalletService);
+
+  walletBalance = signal<number | null>(null);
+  isLoadingWallet = signal(false);
 
   tabs: TabConfig[] = [
     { id: 'profile', label: 'Profile', icon: '👤', color: 'blue' },
@@ -119,8 +124,7 @@ export class Profile implements OnInit {
     }
   }
 
-  GetUserProfileDetails(): void {
-    this.isLoading.set(true);
+  GetUserProfileDetails(): void {    this.isLoading.set(true);
     this.apiService.GetUserProfile().subscribe({
       next: (response: ApiResponse<GetUserByIdResponseDTO>) => {
         this.user.set(response!.data!);

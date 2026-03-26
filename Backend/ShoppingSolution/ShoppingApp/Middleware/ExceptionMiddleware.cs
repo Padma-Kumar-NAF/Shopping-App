@@ -40,6 +40,7 @@ namespace ShoppingApp.Middleware
 
                 var controller = context.Request.RouteValues["controller"]?.ToString();
                 var action = context.Request.RouteValues["action"]?.ToString();
+
                 var user = context.User;
 
                 var (username, role, userId) = ExtractUserDetails(user);
@@ -47,8 +48,11 @@ namespace ShoppingApp.Middleware
                 var requestBody = await ReadRequestBody(context.Request);
 
                 var statusCode = ex is AppException appEx ? appEx.StatusCode : 500;
+
                 var errorMessage = ex is AppException ? ex.Message : "An unexpected error occurred";
+
                 var exceptionType = ex.GetType().Name;
+
                 LogException(_logger, ex, controller, action, username, requestBody);
 
                 var log = new Log

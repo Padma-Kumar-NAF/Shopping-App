@@ -11,5 +11,6 @@ namespace ShoppingApp.Interfaces.ControllerInterface
         public Task<IActionResult> GetProductById(SearchProductByIdRequestDTO request);
         public Task<IActionResult> AddProduct(AddNewProductRequestDTO request);
         public Task<IActionResult> UpdateProduct(UpdateProductRequestDTO request);
+        public Task<IActionResult> DeleteProduct(DeleteProductRequestDTO request);
     }
 }

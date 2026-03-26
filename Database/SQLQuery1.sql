@@ -1,6 +1,36 @@
-select * from Stock
-select * from Users
+
 select * from Addresses
+
+select * from Carts
+select * from CartItems
+
+select * from Category
+
+select * from Logs
+order by CreatedAt desc
+
+
+select * from Orders
+select * from OrderDetails
+
+select * from Products
+
+select * from PromoCodes
+
+select * from Stock
+
+select * from Refunds
+
+select * from Reviews
+
+select * from Users
+select * from UserDetails
+
+select * from Wallets
+
+select * from WishList
+select * from WishListItems
+
 
 update Users 
 set Active = 1
@@ -12,50 +42,12 @@ set Status = 'Delivered'
 update Wallets
 set WalletAmount = 1200
 
-select * from PromoCodes
-
-select * from PromoCodes	
-
-select * from Users
-select * from Wallets
-order by CreatedAt desc
-
-delete from Addresses where UserId = 'F56106AD-FEE7-4BD2-B761-4389FC32DCB1'
-delete from UserDetails where userId = 'F56106AD-FEE7-4BD2-B761-4389FC32DCB1'
-delete from Users where UserId = 'F56106AD-FEE7-4BD2-B761-4389FC32DCB1'
+--delete from Addresses where UserId = 'F56106AD-FEE7-4BD2-B761-4389FC32DCB1'
+--delete from UserDetails where userId = 'F56106AD-FEE7-4BD2-B761-4389FC32DCB1'
+--delete from Users where UserId = 'F56106AD-FEE7-4BD2-B761-4389FC32DCB1'
 
 
-select count(*) from Products
-select * from Products
-
-select * from Payments
-select * from Orders
-select * from Wallets
-
-select * from Stock
-select * from Refunds
-
-select * from Logs
-order by CreatedAt desc
-
-
-select * from Refunds
-order by CreatedAt desc
-
-select * from Category
-select * from Users
-select * from UserDetails	
-
-select * from WishList
-select * from WishListItems
-
-select * from Carts
-select * from CartItems
-
-select * from Orders
-select * from OrderDetails
-
-select * from Reviews
+select * from orders where OrderId = '7BBE0D12-2007-4C88-95EA-85408C4FCB97'
 
 update orders
 set Status = 'Delivered'
@@ -73,7 +65,7 @@ delete from Payments
 delete from Refunds
 delete from Payments
 
--- delete from UserDetails
+ delete from UserDetails
 -- delete from Addresses
 delete from users
 delete from Refunds
@@ -85,9 +77,9 @@ delete from Carts
 delete from CartItems
 delete from Reviews
 delete from Logs
-delete from Category
-delete from Products
-delete from Stock
+--delete from Category
+--delete from Products
+--delete from Stock
 delete from WishListItems
 delete from WishList
 

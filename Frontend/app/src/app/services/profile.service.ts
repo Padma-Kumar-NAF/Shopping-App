@@ -25,7 +25,6 @@ export class ProfileApiService {
   }
 
   updateUserEmail(newEmailRequestDTO: newEmailRequestDTO): Observable<ApiResponse<EditMailResponseDTOModel>> {
-
     return this.Http.post<ApiResponse<EditMailResponseDTOModel>>(
       `${this.baseUrl}/edit-user-email`,
       newEmailRequestDTO,

@@ -2196,6 +2196,12 @@
           },
           "paymentType": {
             "type": "string"
+          },
+          "promoCode": {
+            "type": "string"
+          },
+          "useWallet": {
+            "type": "boolean"
           }
         }
       },
@@ -2329,6 +2335,9 @@
           },
           "promoCode": {
             "type": "string"
+          },
+          "useWallet": {
+            "type": "boolean"
           }
         }
       },

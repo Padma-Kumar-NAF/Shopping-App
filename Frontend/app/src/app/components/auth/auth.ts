@@ -70,8 +70,8 @@ export class Auth {
     });
 
     this.signUpForm = new FormGroup({
-      name: new FormControl('padmakumar', [Validators.required]),
-      email: new FormControl('PadmaKumar.C@Nafinc.com', [Validators.required, Validators.email]),
+      name: new FormControl('user', [Validators.required]),
+      email: new FormControl('user@gmail.com', [Validators.required, Validators.email]),
       password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
       phoneNumber: new FormControl('9876543213', [Validators.required, Validators.minLength(10)]),
       addressLine1: new FormControl('2/102 A Chennai', [Validators.required]),

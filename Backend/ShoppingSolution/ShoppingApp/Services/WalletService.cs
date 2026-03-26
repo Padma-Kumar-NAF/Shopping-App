@@ -29,7 +29,7 @@ namespace ShoppingApp.Services
 
                 if (wallet == null)
                 {
-                    throw new AppException("Wallet not found for this user", 404);
+                    throw new AppException("You don’t have a wallet yet.", 404);
                 }
 
                 return new ApiResponse<GetWalletAmountResponseDTO>
