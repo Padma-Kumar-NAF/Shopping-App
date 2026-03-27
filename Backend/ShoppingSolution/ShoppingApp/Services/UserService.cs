@@ -265,6 +265,11 @@ namespace ShoppingApp.Services
                     throw new AppException("User not found", 404);
                 }
 
+                if (user.UserDetails == null)
+                {
+                    throw new AppException("User details not found", 404);
+                }
+
                 var response = new GetUserByIdResponseDTO
                 {
                     UserId = user.UserId,

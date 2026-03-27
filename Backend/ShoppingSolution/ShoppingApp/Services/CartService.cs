@@ -295,13 +295,12 @@ namespace ShoppingApp.Services
                         ? "Partial Wallet"
                         : "External Payment";
 
-                // ── Create order ──────────────────────────────────────────
                 var order = new Order
                 {
                     UserId = userId,
                     Status = "Not Delivered",
                     TotalProductsCount = cartItems.Sum(x => x.Quantity),
-                    TotalAmount = orderTotal,           // subtotal + tax + shipping (before discount)
+                    TotalAmount = orderTotal,
                     OrderTotalAmount = (int)Math.Round(amountAfterDiscount, MidpointRounding.AwayFromZero),
                     DiscountPercentage = discountPercentage,
                     DiscountAmount = (int)Math.Round(discountAmount, MidpointRounding.AwayFromZero),

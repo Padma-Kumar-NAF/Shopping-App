@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="ShoppingApp/ShoppingApp.csproj" />
+  <Project Path="Testing/Testing.csproj" Id="b8d49af5-2542-4efd-937c-b32257ce7e0d" />
 </Solution>

@@ -17,8 +17,10 @@ namespace ShoppingApp.Controllers
         }
 
         /// <summary>
-        /// Add new promo code
+        /// 
         /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("add-promocode")]
         [ValidateRequest]
         public async Task<IActionResult> AddPromoCode([FromBody] AddPromoCodeRequestDTO request)
