@@ -115,15 +115,25 @@ export class PaymentComponent implements OnInit {
       return this.cartItems().reduce((s, i) => s + i.price * i.quantity, 0);
     return (this.product()?.price || 0) * this.quantity();
   }
+
   get totalItems(): number {
     if (this.paymentMode() === 'cart')
       return this.cartItems().reduce((s, i) => s + i.quantity, 0);
     return this.quantity();
   }
-  get tax(): number { return this.subtotal * 0.18; }
-  get shipping(): number { return this.subtotal > 5000 ? 0 : 99; }
-  get discountAmount(): number { return (this.subtotal * this.discountPercent()) / 100; }
-  get total(): number { return this.subtotal - this.discountAmount + this.tax + this.shipping; }
+
+  get tax(): number {
+    return Math.round(this.subtotal * 0.18 * 100) / 100;
+  }
+  get shipping(): number {
+    return this.subtotal > 5000 ? 0 : 100;
+  }
+  get discountAmount(): number {
+    return (this.subtotal * this.discountPercent()) / 100;
+  }
+  get total(): number {
+    return this.subtotal - this.discountAmount + this.tax + this.shipping;
+  }
 
   // ── resolvedPaymentType for backend ──────────────────────────────────────
   get resolvedPaymentType(): string {
@@ -240,7 +250,12 @@ export class PaymentComponent implements OnInit {
     });
   }
 
-  removePromo(): void { this.appliedPromo.set(null); this.discountPercent.set(0); this.promoInput.set(''); this.promoError.set(null); }
+  removePromo(): void {
+    this.appliedPromo.set(null);
+    this.discountPercent.set(0);
+    this.promoInput.set('');
+    this.promoError.set(null);
+  }
 
   // ── Wallet selection ──────────────────────────────────────────────────────
   selectMethod(method: 'stripe' | 'wallet'): void {
@@ -367,7 +382,7 @@ export class PaymentComponent implements OnInit {
 
     if (stripeResponse) console.log('Stripe Payment Response:', stripeResponse);
 
-    
+
     if (this.paymentMode() === 'cart') {
       const p = new PaginationModel(); p.pageSize = 1; p.pageNumber = 1;
       this.cartService.GetUserCart(p).subscribe({

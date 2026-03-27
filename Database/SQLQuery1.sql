@@ -12,7 +12,6 @@ order by CreatedAt desc
 update products
 set ActiveStatus = 1
 
-
 select * from Orders
 select * from OrderDetails
 
@@ -39,7 +38,7 @@ select * from WishListItems
 
 update Users 
 set role = 'admin'
-where UserId = '5E062161-3DAC-4596-A575-A3F76BD5FAD1'
+where UserId = 'A9D94B15-6245-4AD1-A3BE-A565363BDA4C'
 
 update orders
 set Status = 'Delivered'
@@ -52,42 +51,42 @@ set WalletAmount = 1200
 --delete from Users where UserId = 'F56106AD-FEE7-4BD2-B761-4389FC32DCB1'
 
 
-delete from Products where ProductId = '8D4F5791-5D11-4238-BDCA-F1AF347ADE6E'
-delete from Stock where ProductId = '8D4F5791-5D11-4238-BDCA-F1AF347ADE6E'
+--delete from Products where ProductId = '8D4F5791-5D11-4238-BDCA-F1AF347ADE6E'
+--delete from Stock where ProductId = '8D4F5791-5D11-4238-BDCA-F1AF347ADE6E'
 
 update orders
 set Status = 'Delivered'
 
-delete from users where UserId = '7ECF76DC-2AF8-4A32-BBF4-097C7468FDE6'
+--delete from users where UserId = '7ECF76DC-2AF8-4A32-BBF4-097C7468FDE6'
 
-delete from PromoCodes
-delete from OrderDetails
-delete from Orders
-delete from payments
-delete from Refunds
-delete from Wallets
-delete from OrderDetails
-delete from Payments
-delete from Refunds
-delete from Payments
+--delete from PromoCodes
+--delete from OrderDetails
+--delete from Orders
+--delete from payments
+--delete from Refunds
+--delete from Wallets
+--delete from OrderDetails
+--delete from Payments
+--delete from Refunds
+--delete from Payments
 
- delete from UserDetails
+ --delete from UserDetails
 -- delete from Addresses
-delete from users
-delete from Refunds
-delete from Payments
-delete from Addresses
-delete from orders
-delete from OrderDetails
-delete from Carts
-delete from CartItems
-delete from Reviews
-delete from Logs
+--delete from users
+--delete from Refunds
+--delete from Payments
+--delete from Addresses
+--delete from orders
+--delete from OrderDetails
+--delete from Carts
+--delete from CartItems
+--delete from Reviews
+--delete from Logs
 --delete from Category
 --delete from Products
 --delete from Stock
-delete from WishListItems
-delete from WishList
+--delete from WishListItems
+--delete from WishList
 
 -- delete from logs
 

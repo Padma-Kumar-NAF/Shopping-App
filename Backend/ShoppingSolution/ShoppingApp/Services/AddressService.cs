@@ -33,8 +33,7 @@ namespace ShoppingApp.Services
 
                 var normalizedRequest = request.AddressLine1.Trim().ToLower();
 
-                var isExited = await _repository.GetQueryable().FirstOrDefaultAsync(a => a.UserId == UserId &&
-                                              a.AddressLine1.Trim().ToLower() == normalizedRequest);
+                var isExited = await _repository.GetQueryable().FirstOrDefaultAsync(a => a.UserId == UserId && a.AddressLine1.Trim().ToLower() == normalizedRequest);
 
                 if (isExited != null)
                 {
@@ -200,7 +199,7 @@ namespace ShoppingApp.Services
             {
                 var query = _repository.GetQueryable().Where(a => a.UserId == UserId);
 
-                if (query == null)
+                if (!await query.AnyAsync())
                 {
                     return new ApiResponse<GetUserAddressResposneDTO>()
                     {

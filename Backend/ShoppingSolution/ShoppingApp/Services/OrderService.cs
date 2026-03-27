@@ -69,10 +69,6 @@ namespace ShoppingApp.Services
             }
 
             // Indhu work
-            if (order.DeliveryDate == DateTime.MinValue)
-            {
-                throw new AppException("You can't cancel the order --------- ",401);
-            }
 
             if (order.Status == "Cancelled")
             {
@@ -478,6 +474,7 @@ namespace ShoppingApp.Services
                 var finalAmount = amountAfterDiscount - walletUsed;
 
                 var order = CreateOrder(userId, request, discountPercentage, discountAmount, amountAfterDiscount, promoCodeId);
+
                 await _repository.AddAsync(order);
 
                 var orderDetails = await CreateOrderDetailsAndUpdateStock(request, stock, order);
@@ -639,6 +636,11 @@ namespace ShoppingApp.Services
                 if(Order.Status == "Delivered")
                 {
                     throw new AppException("Order delivered");
+                }
+
+                if(Status == "Delivered")
+                {
+                    Order.DeliveryDate = DateTime.Now;
                 }
 
                 Order.Status = Status;

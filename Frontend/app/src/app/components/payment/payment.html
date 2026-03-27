@@ -250,7 +250,10 @@
               <span>Shipping</span>
               <span>{{ shipping === 0 ? 'FREE' : '₹' + shipping }}</span>
             </div>
-            @if (shipping === 0) { <p class="text-xs text-green-600">🎉 Free shipping on orders above ₹5000</p> }
+            @if (shipping === 0) { <p class="text-xs text-green-600">🎉 Get free shipping on orders above ₹5000 (delivery charges excluded).</p> }
+            @else{
+              <p class="text-xs text-red-600">Get free shipping on orders above ₹5000 (delivery charges excluded).</p>
+            }
             @if (selectedPaymentMethod() === 'wallet' && walletApplied > 0) {
             <div class="flex justify-between text-purple-700 font-medium">
               <span>👛 Wallet</span>

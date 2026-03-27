@@ -34,7 +34,7 @@ export class Cart implements OnInit {
 
   constructor() {
     this.pagination = new PaginationModel();
-    this.pagination.pageSize = 10;
+    this.pagination.pageSize = 18;
     this.pagination.pageNumber = 1;
   }
 

@@ -20,11 +20,7 @@ namespace ShoppingApp.Models.DTOs.Order
         public string PaymentType { get; set; } = string.Empty;
 
         public string PromoCode { get; set; } = string.Empty;
-
-        /// <summary>Whether to deduct from the user's wallet balance.</summary>
         public bool UseWallet { get; set; } = false;
-
-        /// <summary>Stripe PaymentMethod ID returned from the frontend after successful Stripe payment.</summary>
         public string StripePaymentId { get; set; } = string.Empty;
     }
 
