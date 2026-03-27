@@ -129,7 +129,7 @@ export class PaymentComponent implements OnInit {
     return this.subtotal > 5000 ? 0 : 100;
   }
   get discountAmount(): number {
-    return (this.subtotal * this.discountPercent()) / 100;
+    return Math.round(((this.subtotal * this.discountPercent()) / 100) * 100) / 100;
   }
   get total(): number {
     return this.subtotal - this.discountAmount + this.tax + this.shipping;

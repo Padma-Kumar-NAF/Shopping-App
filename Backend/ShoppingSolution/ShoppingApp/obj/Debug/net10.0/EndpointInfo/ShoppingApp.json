@@ -2266,12 +2266,12 @@
             "format": "uuid"
           },
           "totalAmount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
-              "integer",
+              "number",
               "string"
             ],
-            "format": "int32"
+            "format": "double"
           }
         }
       },

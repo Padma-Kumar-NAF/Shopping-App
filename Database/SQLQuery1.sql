@@ -61,13 +61,13 @@ set Status = 'Delivered'
 
 --delete from PromoCodes
 --delete from OrderDetails
---delete from Orders
+delete from Orders
 --delete from payments
 --delete from Refunds
---delete from Wallets
---delete from OrderDetails
---delete from Payments
---delete from Refunds
+delete from Wallets
+delete from OrderDetails
+delete from Payments
+delete from Refunds
 --delete from Payments
 
  --delete from UserDetails

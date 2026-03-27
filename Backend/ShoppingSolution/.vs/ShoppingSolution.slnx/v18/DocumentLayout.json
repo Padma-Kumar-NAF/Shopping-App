@@ -36,7 +36,7 @@
               "RelativeDocumentMoniker": "ShoppingApp\\Services\\OrderService.cs",
               "ToolTip": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\Services\\OrderService.cs",
               "RelativeToolTip": "ShoppingApp\\Services\\OrderService.cs",
-              "ViewState": "AgIAAG0CAAAAAAAAAAAkwIICAAA2AAAAAAAAAA==",
+              "ViewState": "AgIAACoBAAAAAAAAAAAkwDkBAABiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-27T10:34:38.241Z",
               "EditorCaption": ""
@@ -51,8 +51,7 @@
               "RelativeToolTip": "ShoppingApp\\Services\\UserService.cs",
               "ViewState": "AgIAAEIAAAAAAAAAAAAYwCEBAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-27T09:43:44.568Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-27T09:43:44.568Z"
             },
             {
               "$type": "Document",
@@ -64,8 +63,7 @@
               "RelativeToolTip": "ShoppingApp\\Middleware\\ExceptionMiddleware.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-27T09:41:30.276Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-27T09:41:30.276Z"
             },
             {
               "$type": "Document",
@@ -77,8 +75,7 @@
               "RelativeToolTip": "ShoppingApp\\Controllers\\UserController.cs",
               "ViewState": "AgIAAD4AAAAAAAAAAAAgwFkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-27T09:39:29.544Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-27T09:39:29.544Z"
             }
           ]
         }
