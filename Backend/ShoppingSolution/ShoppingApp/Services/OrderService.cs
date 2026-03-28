@@ -485,7 +485,9 @@ namespace ShoppingApp.Services
 
                 var orderDetails = await CreateOrderDetailsAndUpdateStock(request, stock, order);
 
-                var payment = await CreatePayment(userId, order, amountAfterDiscount, request.PaymentType, request.StripePaymentId);
+                decimal finalAmount = amountAfterDiscount + tax + shipping;
+
+                var payment = await CreatePayment(userId, order, finalAmount, request.PaymentType, request.StripePaymentId);
 
                 await _unitOfWork.CommitAsync();
 

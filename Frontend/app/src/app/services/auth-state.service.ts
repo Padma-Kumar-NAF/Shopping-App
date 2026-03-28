@@ -16,12 +16,11 @@ export class AuthStateService {
   private logoutTimer: ReturnType<typeof setTimeout> | null = null;
 
   readonly user = signal<UserDetails | null>(null);
-  readonly isAuthenticated = computed(() => this.user() !== null); // If there is any changes if user then this will run
+  readonly isAuthenticated = computed(() => this.user() !== null);
   readonly username = computed(() => this.user()?.userName ?? '');
   readonly role = computed(() => this.user()?.userRole ?? '');
-  readonly email = computed(() => this.user()?.userEmail ?? ''); // these all will run if user then this will run
+  readonly email = computed(() => this.user()?.userEmail ?? '');
 
-  /** Returns ms until token expires, or null if token is missing/invalid/already expired. */
   getTokenExpiryMs(token: string): number | null {
     try {
       const decoded: any = jwtDecode(token);
@@ -57,8 +56,7 @@ export class AuthStateService {
 
     const token = localStorage.getItem('JWT-Token');
     if (!token) return;
-
-    // Reject expired tokens immediately
+    
     if (this.getTokenExpiryMs(token) === null) {
       this.clearUser();
       return;

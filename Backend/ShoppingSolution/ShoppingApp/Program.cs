@@ -9,6 +9,7 @@ using ShoppingApp.Middleware;
 using ShoppingApp.Repositories;
 using ShoppingApp.Services;
 using System.Text;
+using Serilog;
 
 namespace ShoppingApp
 {
@@ -70,6 +71,18 @@ namespace ShoppingApp
                     };
                 });
 
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .WriteTo.Console()
+                .WriteTo.File(
+                    "Logs/log-.txt",
+                    rollingInterval: RollingInterval.Day,
+                    retainedFileCountLimit: 20
+                )
+                .CreateLogger();
+
+            builder.Host.UseSerilog();
+
             builder.Services.AddAuthorization();
 
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
@@ -91,6 +104,8 @@ namespace ShoppingApp
 
             var app = builder.Build();
 
+            app.UseSerilogRequestLogging();
+
             app.UseCors("AllowAngular");
 
             if (app.Environment.IsDevelopment())
@@ -98,7 +113,7 @@ namespace ShoppingApp
                 app.MapOpenApi();
             }
 
-            app.UseExceptionHandler("/error");
+            //app.UseExceptionHandler("/error");
 
             app.UseHttpsRedirection();
 

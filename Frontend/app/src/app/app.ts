@@ -35,7 +35,6 @@ export class App implements OnInit {
   showNavPadding = signal(true);
 
   ngOnInit(): void {
-    // Restore session and schedule auto-logout on every page load/refresh
     this.authState.loadUserFromStorage();
 
     this.evaluate(this.router.url);

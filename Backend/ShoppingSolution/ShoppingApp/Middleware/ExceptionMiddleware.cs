@@ -27,6 +27,8 @@ namespace ShoppingApp.Middleware
             }
             catch (Exception ex)
             {
+                //_logger.LogError(ex, "Unhandled Exception occurred");   
+                _logger.LogError(ex, "Unhandled Exception occurred");
                 await HandleExceptionAsync(context, ex);
             }
         }

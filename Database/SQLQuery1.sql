@@ -13,6 +13,16 @@ update products
 set ActiveStatus = 1
 
 select * from Orders
+select * from Payments
+select * from Wallets
+select * from Refunds
+
+
+delete from Refunds
+delete from Payments
+delete from OrderDetails
+delete from Orders
+
 select * from OrderDetails
 
 select * from Payments
@@ -61,13 +71,16 @@ set Status = 'Delivered'
 
 --delete from PromoCodes
 --delete from OrderDetails
-delete from Orders
+
 --delete from payments
 --delete from Refunds
 delete from Wallets
-delete from OrderDetails
-delete from Payments
+
 delete from Refunds
+delete from Payments
+delete from OrderDetails
+delete from Orders
+
 --delete from Payments
 
  --delete from UserDetails
