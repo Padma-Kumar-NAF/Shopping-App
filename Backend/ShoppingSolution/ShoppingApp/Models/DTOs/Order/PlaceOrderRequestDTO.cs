@@ -24,7 +24,7 @@ namespace ShoppingApp.Models.DTOs.Order
         public string StripePaymentId { get; set; } = string.Empty;
     }
 
-    public class PlaceOrderItemDTO
+    public record PlaceOrderItemDTO
     {
         [Required(ErrorMessage = "Product Id is required")]
         public Guid ProductId { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.User
 {
-    public class ChangeUserRoleResponseDTO
+    public record ChangeUserRoleResponseDTO
     {
         public bool IsChanged { get; set; } = false;
     }

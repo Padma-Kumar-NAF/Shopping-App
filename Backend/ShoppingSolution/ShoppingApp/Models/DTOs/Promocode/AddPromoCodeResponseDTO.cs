@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Promocode
 {
-    public class AddPromoCodeResponseDTO
+    public record AddPromoCodeResponseDTO
     {
         public Guid PromoCodeId { get; set; }
     }

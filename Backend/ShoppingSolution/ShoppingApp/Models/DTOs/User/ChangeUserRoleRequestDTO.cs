@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.User
 {
-    public class ChangeUserRoleRequestDTO
+    public record ChangeUserRoleRequestDTO
     {
         [Required(ErrorMessage = "User id required")]
         public Guid UserId { get; set; }

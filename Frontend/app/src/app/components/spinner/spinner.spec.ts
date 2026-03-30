@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { Spinner } from './spinner';
 
 describe('Spinner', () => {
@@ -8,16 +7,25 @@ describe('Spinner', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Spinner]
-    })
-    .compileComponents();
+      imports: [Spinner],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(Spinner);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have default size of 50px', () => {
+    expect(component.size).toBe('50px');
+  });
+
+  it('should accept a custom size input', () => {
+    component.size = '100px';
+    fixture.detectChanges();
+    expect(component.size).toBe('100px');
   });
 });

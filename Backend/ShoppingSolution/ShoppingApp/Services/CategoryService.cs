@@ -182,7 +182,7 @@ namespace ShoppingApp.Services
                     {
                         CategoryId = c.CategoryId,
                         CategoryName = c.CategoryName,
-                        ProductsCount = c.Products.Count() == 0 ? 0 : c.Products.Count(),
+                        ProductsCount = c.Products.Count(),
                         CreatedAt = c.CreatedAt.ToString()
                     })
                     .ToListAsync();

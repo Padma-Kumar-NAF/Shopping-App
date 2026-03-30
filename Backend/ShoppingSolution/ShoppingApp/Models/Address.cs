@@ -33,7 +33,7 @@ namespace ShoppingApp.Models
 
         // Navigation
         public User? User { get; set; }
-        public ICollection<Order>? Orders { get; set; }
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
 
     }
 }

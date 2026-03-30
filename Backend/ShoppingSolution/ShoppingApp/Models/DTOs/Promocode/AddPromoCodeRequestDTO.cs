@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Promocode
 {
-    public class AddPromoCodeRequestDTO
+    public record AddPromoCodeRequestDTO
     {
         [Required(ErrorMessage = "Promo code name is required")]
         [MaxLength(50, ErrorMessage = "Promo code name cannot exceed 50 characters")]

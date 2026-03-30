@@ -1,6 +1,6 @@
 namespace ShoppingApp.Models.DTOs.Promocode
 {
-    public class DeletePromocodeResponseDTO
+    public record DeletePromocodeResponseDTO
     {
         public bool IsSuccess { get; set; }
     }

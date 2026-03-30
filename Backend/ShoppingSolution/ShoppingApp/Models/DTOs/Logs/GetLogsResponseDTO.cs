@@ -1,12 +1,12 @@
 ﻿namespace ShoppingApp.Models.DTOs.Logs
 {
-    public class GetLogsResponseDTO
+    public record GetLogsResponseDTO
     {
         public List<ErrorLogDTO> Items { get; set; } = new();
         public int TotalCount { get; set; }
     }
 
-    public class ErrorLogDTO
+    public record ErrorLogDTO
     {
         public string Message { get; set; } = string.Empty;
         public string InnerException { get; set; } = string.Empty;

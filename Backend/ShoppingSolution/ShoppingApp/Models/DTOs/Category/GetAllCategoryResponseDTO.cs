@@ -7,7 +7,7 @@ namespace ShoppingApp.Models.DTOs.Category
         public ICollection<CategoryDTO> CategoryList { get; set; } = new List<CategoryDTO>();
     }
 
-    public class CategoryDTO
+    public record CategoryDTO
     {
         public Guid CategoryId { get; set; }
         public string CategoryName { get; set; } = string.Empty;

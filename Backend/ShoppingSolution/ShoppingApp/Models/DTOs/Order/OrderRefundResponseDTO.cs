@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Order
 {
-    public class OrderRefundResponseDTO
+    public record OrderRefundResponseDTO
     {
         public bool IsRefund { get; set; }
     }

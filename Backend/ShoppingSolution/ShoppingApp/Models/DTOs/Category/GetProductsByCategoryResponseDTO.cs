@@ -1,13 +1,13 @@
 ﻿namespace ShoppingApp.Models.DTOs.Category
 {
-    public class GetProductsByCategoryResponseDTO
+    public record GetProductsByCategoryResponseDTO
     {
         public Guid CategoryId { get; set; }
         public string CategoryName { get; set; } = string.Empty;
 
         public ICollection<ProductsDTO> Products { get; set; } = new List<ProductsDTO>();
     }
-    public class ProductsDTO
+    public record ProductsDTO
     {
         public Guid ProductId { get; set; }
         public Guid CategoryId { get; set; }

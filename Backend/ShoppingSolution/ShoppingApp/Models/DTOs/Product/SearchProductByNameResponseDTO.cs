@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Product
 {
-    public class SearchProductByNameResponseDTO
+    public record SearchProductByNameResponseDTO
     {
         public ICollection<ProductDetailsDTO> ProductsList { get; set; } = new List<ProductDetailsDTO>();
     }

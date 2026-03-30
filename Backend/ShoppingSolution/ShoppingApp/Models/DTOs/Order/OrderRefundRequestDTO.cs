@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Order
 {
-    public class OrderRefundRequestDTO
+    public record OrderRefundRequestDTO
     {
         [Required(ErrorMessage = "Order Id is required")]
         public Guid OrderId { get; set; }
