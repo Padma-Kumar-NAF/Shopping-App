@@ -1,0 +1,133 @@
+<div>
+
+  <!-- ── Image Carousel (pure CSS auto-slide) ── -->
+  <section class="py-4 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="carousel-wrapper shadow-xl">
+        <div class="carousel-track">
+          @for (slide of carouselSlides; track slide.image) {
+          <div class="carousel-slide">
+            <img [src]="slide.image" [alt]="slide.title" loading="lazy" />
+            <div class="carousel-caption">
+              <h3>{{ slide.title }}</h3>
+              <p>{{ slide.subtitle }}</p>
+            </div>
+          </div>
+          }
+          @for (slide of carouselSlides; track slide.title) {
+          <div class="carousel-slide">
+            <img [src]="slide.image" [alt]="slide.title" loading="lazy" />
+            <div class="carousel-caption">
+              <h3>{{ slide.title }}</h3>
+              <p>{{ slide.subtitle }}</p>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  @if (isLoading()) {
+  <!-- ── Full page loader ── -->
+  <div class="flex justify-center items-center py-32">
+    <div class="flex flex-col items-center gap-4">
+      <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      <p class="text-gray-500 text-lg">Loading...</p>
+    </div>
+  </div>
+  } @else if (error()) {
+  <div class="flex flex-col items-center py-16 gap-4">
+    <p class="text-red-500 text-lg">{{ error() }}</p>
+    <button
+      (click)="loadData()"
+      class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+    >
+      Retry
+    </button>
+  </div>
+  } @else {
+
+  <!-- ── Categories ── -->
+  <section class="bg-gray-50 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-800">Shop by Category</h2>
+
+      <!-- Mobile: native select -->
+      <select
+        (change)="onCategorySelect($event)"
+        class="sm:hidden w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+      >
+        <option value="">All Categories</option>
+        @for (category of categories(); track category.categoryId) {
+        <option [value]="category.categoryName">{{ category.categoryName }}</option>
+        }
+      </select>
+
+      <!-- Tablet+: wrapping button pills -->
+      <div class="hidden sm:flex flex-wrap gap-3">
+        @if (categories().length) {
+          @for (category of categories(); track category.categoryId) {
+          <button
+            (click)="onCategoryClick(category)"
+            class="px-5 py-2.5 bg-white border border-gray-200 rounded-lg font-medium text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-600 transition-all duration-200 whitespace-nowrap"
+          >
+            {{ category.categoryName }}
+          </button>
+          }
+        } @else {
+          <p class="text-gray-500 text-sm">No categories found</p>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Products ── -->
+  <section class="py-8 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-semibold mb-6 text-gray-800">Featured Products</h2>
+
+      @if (products().length) {
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 sm:gap-6">
+        @for (product of products(); track product.productId) {
+        <div
+          (click)="onProductClick(product)"
+          class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer group"
+        >
+          <div class="relative overflow-hidden bg-gray-50">
+            <img
+              [src]="product.imagePath"
+              [alt]="product.productName"
+              class="w-full h-48 object-contain p-2 transition-transform duration-300 group-hover:scale-105"
+            />
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-blue-500 font-medium mb-1">{{ product.categoryName }}</p>
+            <h3 class="font-semibold text-lg text-gray-800 mb-2 line-clamp-1">
+              {{ product.productName }}
+            </h3>
+            <p class="text-blue-600 font-bold text-xl mb-1">₹{{ product.price }}</p>
+            <!-- @if (getAverageRating(product); as rating) {
+            <p class="text-yellow-500 text-sm mb-2">★ {{ rating }} ({{ product.review.length }})</p>
+            } -->
+            <button
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+            >
+              View Product
+            </button>
+          </div>
+        </div>
+        }
+      </div>
+      } @else {
+      <div class="text-center py-12">
+        <p class="text-gray-500 text-lg">No products available</p>
+      </div>
+      }
+    </div>
+  </section>
+
+  }
+
+</div>
+<app-footer></app-footer>

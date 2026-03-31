@@ -1,8 +1,4 @@
-﻿using Azure;
-using Azure.Core;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using ShoppingApp.Contexts;
+﻿using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Exceptions;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;

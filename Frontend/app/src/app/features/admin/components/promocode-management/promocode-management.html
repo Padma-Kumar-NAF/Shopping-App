@@ -1,0 +1,338 @@
+@if (promoCodes$ | async; as allCodes) {
+<div class="bg-white rounded-xl shadow-md p-6">
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+      <h2 class="text-2xl font-bold text-gray-900">Promo Code Management</h2>
+      <p class="text-gray-600 mt-1">Manage discount promo codes</p>
+    </div>
+    <div class="flex items-center gap-3">
+      @if (isLoading()) {
+        <div class="flex items-center gap-2 text-blue-600 text-sm font-medium">
+          <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+          </svg>
+          Loading…
+        </div>
+      }
+      <button (click)="toggleAddForm()"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors shadow-md">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        {{ showAddForm() ? 'Cancel' : 'Add Promo Code' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Add Form -->
+  @if (showAddForm()) {
+    <div class="mb-6 p-6 bg-blue-50 rounded-xl border border-blue-200">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Add New Promo Code</h3>
+      <form [formGroup]="addForm" (ngSubmit)="onAddSubmit()" novalidate class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Code -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Promo Code <span class="text-red-500">*</span></label>
+            <input formControlName="promoCode" type="text" placeholder="e.g. SAVE20"
+              (input)="addForm.get('promoCode')!.setValue(addForm.get('promoCode')!.value?.toUpperCase() || '')"
+              class="w-full px-4 py-2.5 border rounded-lg text-sm uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-blue-500"
+              [class.border-red-400]="addForm.get('promoCode')!.invalid && (addForm.get('promoCode')!.touched || submitted())"
+              [class.border-gray-300]="!(addForm.get('promoCode')!.invalid && (addForm.get('promoCode')!.touched || submitted()))"/>
+            @if (addForm.get('promoCode')!.invalid && (addForm.get('promoCode')!.touched || submitted())) {
+              @if (addForm.get('promoCode')!.errors?.['required']) { <p class="text-xs text-red-500 mt-1">Promo code is required.</p> }
+              @else if (addForm.get('promoCode')!.errors?.['minlength']) { <p class="text-xs text-red-500 mt-1">Minimum 3 characters.</p> }
+              @else if (addForm.get('promoCode')!.errors?.['pattern']) { <p class="text-xs text-red-500 mt-1">Only uppercase letters and numbers.</p> }
+            }
+          </div>
+          <!-- Discount -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Discount % <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input formControlName="discountPercent" type="number" placeholder="e.g. 10" min="1" max="100"
+                class="w-full px-4 py-2.5 pr-10 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                [class.border-red-400]="addForm.get('discountPercent')!.invalid && (addForm.get('discountPercent')!.touched || submitted())"
+                [class.border-gray-300]="!(addForm.get('discountPercent')!.invalid && (addForm.get('discountPercent')!.touched || submitted()))"/>
+              <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">%</span>
+            </div>
+            @if (addForm.get('discountPercent')!.invalid && (addForm.get('discountPercent')!.touched || submitted())) {
+              @if (addForm.get('discountPercent')!.errors?.['required']) { <p class="text-xs text-red-500 mt-1">Discount is required.</p> }
+              @else if (addForm.get('discountPercent')!.errors?.['min'] || addForm.get('discountPercent')!.errors?.['max']) { <p class="text-xs text-red-500 mt-1">Must be between 1–100.</p> }
+            }
+          </div>
+          <!-- From Date -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">From Date <span class="text-red-500">*</span></label>
+            <input formControlName="fromDate" type="date" [min]="today"
+              class="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              [class.border-red-400]="addForm.get('fromDate')!.invalid && (addForm.get('fromDate')!.touched || submitted())"
+              [class.border-gray-300]="!(addForm.get('fromDate')!.invalid && (addForm.get('fromDate')!.touched || submitted()))"/>
+            @if (addForm.get('fromDate')!.invalid && (addForm.get('fromDate')!.touched || submitted())) {
+              @if (addForm.get('fromDate')!.errors?.['required']) { <p class="text-xs text-red-500 mt-1">From date is required.</p> }
+              @else if (addForm.get('fromDate')!.errors?.['pastDate']) { <p class="text-xs text-red-500 mt-1">Cannot be in the past.</p> }
+            }
+          </div>
+          <!-- To Date -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">To Date <span class="text-red-500">*</span></label>
+            <input formControlName="toDate" type="date" [min]="today"
+              class="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              [class.border-red-400]="(addForm.get('toDate')!.invalid || addForm.errors?.['toBeforeFrom']) && (addForm.get('toDate')!.touched || submitted())"
+              [class.border-gray-300]="!((addForm.get('toDate')!.invalid || addForm.errors?.['toBeforeFrom']) && (addForm.get('toDate')!.touched || submitted()))"/>
+            @if (addForm.get('toDate')!.invalid && (addForm.get('toDate')!.touched || submitted())) {
+              @if (addForm.get('toDate')!.errors?.['required']) { <p class="text-xs text-red-500 mt-1">To date is required.</p> }
+              @else if (addForm.get('toDate')!.errors?.['pastDate']) { <p class="text-xs text-red-500 mt-1">Cannot be in the past.</p> }
+            }
+            @if (addForm.errors?.['toBeforeFrom'] && (addForm.get('toDate')!.touched || submitted())) {
+              <p class="text-xs text-red-500 mt-1">To date must be after from date.</p>
+            }
+          </div>
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button type="submit" [disabled]="isLoading()"
+            class="flex-1 py-2.5 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-60">
+            Add Promo Code
+          </button>
+          <button type="button" (click)="resetAddForm()" [disabled]="isLoading()"
+            class="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-lg transition-colors disabled:opacity-60">
+            Reset
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- Promo Code Table -->
+  <div class="overflow-x-auto rounded-xl border border-gray-200">
+    <table class="w-full text-sm">
+      <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+        <tr>
+          <th class="px-4 py-3 text-left">Code</th>
+          <th class="px-4 py-3 text-left">Discount</th>
+          <th class="px-4 py-3 text-left">From</th>
+          <th class="px-4 py-3 text-left">To</th>
+          <th class="px-4 py-3 text-left">Status</th>
+          <th class="px-4 py-3 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        @if (isLoading() && pagedPromoCodes.length === 0) {
+          @for (i of [1,2,3,4,5]; track i) {
+            <tr>
+              <td colspan="6" class="px-4 py-3">
+                <div class="h-5 bg-gray-100 rounded animate-pulse"></div>
+              </td>
+            </tr>
+          }
+        } @else {
+          @for (promo of pagedPromoCodes; track promo.promoCodeId) {
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-4 py-3 font-mono font-semibold text-gray-900 tracking-wider">{{ promo.promoCodeName }}</td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  {{ promo.discountPercentage }}% OFF
+                </span>
+              </td>
+              <td class="px-4 py-3 text-gray-600">{{ promo.fromDate | date:'mediumDate' }}</td>
+              <td class="px-4 py-3 text-gray-600">{{ promo.toDate | date:'mediumDate' }}</td>
+              <td class="px-4 py-3">
+                @if (isActive(promo.fromDate, promo.toDate)) {
+                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+                  </span>
+                } @else if (isExpired(promo.toDate)) {
+                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Expired
+                  </span>
+                } @else {
+                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+                    <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Upcoming
+                  </span>
+                }
+              </td>
+              <td class="px-4 py-3 text-right">
+                <div class="flex items-center justify-end gap-2">
+                  <button (click)="openEditModal(promo)" class="text-blue-500 hover:text-blue-700 transition-colors" title="Edit">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                  </button>
+                  <button (click)="openDeleteConfirm(promo.promoCodeId)" class="text-red-500 hover:text-red-700 transition-colors" title="Delete">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="px-4 py-12 text-center text-gray-500">
+                <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                </svg>
+                <p>No promo codes found</p>
+                <button (click)="toggleAddForm()" class="mt-3 text-blue-600 hover:text-blue-700 font-medium text-sm">
+                  Create your first promo code
+                </button>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-200">
+    <p class="text-sm text-gray-500">
+      @if (totalPromoCodes > 0) {
+        Showing
+        <span class="font-semibold text-gray-800">{{ (currentPage() - 1) * pageSize + 1 }}</span>
+        –
+        <span class="font-semibold text-gray-800">{{ currentPage() * pageSize > totalPromoCodes ? totalPromoCodes : currentPage() * pageSize }}</span>
+        of
+        <span class="font-semibold text-gray-800">{{ totalPromoCodes }}</span>
+        promo codes
+      }
+    </p>
+    <div class="flex items-center gap-2">
+      <button (click)="prevPage()" [disabled]="currentPage() === 1 || isLoading()"
+        class="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium border transition-colors"
+        [class]="currentPage() === 1 || isLoading() ? 'border-gray-200 bg-gray-50 text-gray-300 cursor-not-allowed' : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Prev
+      </button>
+      @for (page of getPageNumbers(); track page) {
+        <button (click)="goToPage(page)" [disabled]="isLoading()"
+          class="w-9 h-9 rounded-lg text-sm font-medium border transition-colors"
+          [class]="currentPage() === page ? 'bg-blue-600 border-blue-600 text-white shadow-sm' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'">
+          {{ page }}
+        </button>
+      }
+      <button (click)="nextPage()" [disabled]="(!hasMoreData() && currentPage() * pageSize >= totalPromoCodes) || isLoading()"
+        class="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium border transition-colors"
+        [class]="(!hasMoreData() && currentPage() * pageSize >= totalPromoCodes) || isLoading() ? 'border-gray-200 bg-gray-50 text-gray-300 cursor-not-allowed' : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'">
+        Next
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Summary Stats -->
+  @if (allCodes.length > 0) {
+    <div class="mt-6 pt-6 border-t border-gray-200 grid grid-cols-3 gap-4">
+      <div class="bg-blue-50 rounded-lg p-4 text-center">
+        <p class="text-sm text-gray-600 mb-1">Total Codes</p>
+        <p class="text-3xl font-bold text-blue-600">{{ allCodes.length }}</p>
+      </div>
+      <div class="bg-emerald-50 rounded-lg p-4 text-center">
+        <p class="text-sm text-gray-600 mb-1">Active</p>
+        <p class="text-3xl font-bold text-emerald-600">{{ activeCount(allCodes) }}</p>
+      </div>
+      <div class="bg-red-50 rounded-lg p-4 text-center">
+        <p class="text-sm text-gray-600 mb-1">Expired</p>
+        <p class="text-3xl font-bold text-red-500">{{ expiredCount(allCodes) }}</p>
+      </div>
+    </div>
+  }
+
+</div>
+}
+
+<!-- Edit Modal -->
+@if (showEditModal()) {
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl shadow-xl max-w-md w-full">
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold text-gray-900">Edit Promo Code</h3>
+          <button (click)="closeEditModal()" class="text-gray-400 hover:text-gray-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+        <form [formGroup]="editForm" (ngSubmit)="onEditSubmit()" novalidate class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Promo Code <span class="text-red-500">*</span></label>
+            <input formControlName="promoCode" type="text"
+              (input)="editForm.get('promoCode')!.setValue(editForm.get('promoCode')!.value?.toUpperCase() || '')"
+              class="w-full px-4 py-2.5 border rounded-lg text-sm uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-blue-500"
+              [class.border-red-400]="editForm.get('promoCode')!.invalid && (editForm.get('promoCode')!.touched || editSubmitted())"
+              [class.border-gray-300]="!(editForm.get('promoCode')!.invalid && (editForm.get('promoCode')!.touched || editSubmitted()))"/>
+            @if (editForm.get('promoCode')!.invalid && (editForm.get('promoCode')!.touched || editSubmitted())) {
+              @if (editForm.get('promoCode')!.errors?.['required']) { <p class="text-xs text-red-500 mt-1">Promo code is required.</p> }
+              @else if (editForm.get('promoCode')!.errors?.['pattern']) { <p class="text-xs text-red-500 mt-1">Only uppercase letters and numbers.</p> }
+            }
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Discount % <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <input formControlName="discountPercent" type="number" min="1" max="100"
+                class="w-full px-4 py-2.5 pr-10 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                [class.border-red-400]="editForm.get('discountPercent')!.invalid && (editForm.get('discountPercent')!.touched || editSubmitted())"
+                [class.border-gray-300]="!(editForm.get('discountPercent')!.invalid && (editForm.get('discountPercent')!.touched || editSubmitted()))"/>
+              <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">%</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">From Date <span class="text-red-500">*</span></label>
+              <input formControlName="fromDate" type="date"
+                class="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                [class.border-red-400]="editForm.get('fromDate')!.invalid && (editForm.get('fromDate')!.touched || editSubmitted())"
+                [class.border-gray-300]="!(editForm.get('fromDate')!.invalid && (editForm.get('fromDate')!.touched || editSubmitted()))"/>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">To Date <span class="text-red-500">*</span></label>
+              <input formControlName="toDate" type="date"
+                class="w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                [class.border-red-400]="(editForm.get('toDate')!.invalid || editForm.errors?.['toBeforeFrom']) && (editForm.get('toDate')!.touched || editSubmitted())"
+                [class.border-gray-300]="!((editForm.get('toDate')!.invalid || editForm.errors?.['toBeforeFrom']) && (editForm.get('toDate')!.touched || editSubmitted()))"/>
+              @if (editForm.errors?.['toBeforeFrom'] && (editForm.get('toDate')!.touched || editSubmitted())) {
+                <p class="text-xs text-red-500 mt-1">To date must be after from date.</p>
+              }
+            </div>
+          </div>
+          <div class="flex gap-3 pt-2">
+            <button type="submit" [disabled]="isLoading()"
+              class="flex-1 px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors disabled:opacity-60">
+              Save Changes
+            </button>
+            <button type="button" (click)="closeEditModal()" [disabled]="isLoading()"
+              class="flex-1 px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors disabled:opacity-60">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Delete Confirm Modal -->
+@if (confirmModal()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+      <h2 class="text-xl font-bold text-gray-900 mb-2">Delete Promo Code</h2>
+      <p class="text-gray-600 mb-6">Are you sure you want to delete this promo code? This action cannot be undone.</p>
+      <div class="flex gap-3">
+        <button (click)="cancelDelete()" class="flex-1 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium">No</button>
+        <button (click)="confirmDelete()" [disabled]="isLoading()"
+          class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium disabled:opacity-60">
+          Yes, Delete
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -19,7 +19,6 @@ import { Address } from './components/profileComponents/address/address';
 import { Cart } from './components/profileComponents/cart/cart';
 import { WishlistComponent } from './components/profileComponents/wishlist/wishlist';
 import { Auth } from './components/auth/auth';
-import { Game } from './game/game';
 import { CheckoutComponent } from './components/checkout/checkout';
 import { PaymentComponent } from './components/payment/payment';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized';
@@ -111,7 +110,5 @@ export const routes: Routes = [
   { path: 'auth', component: Auth },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: 'page-not-found', component: PageNotFound },
-  { path: 'game', component: Game },
-
   { path: '**', redirectTo: 'page-not-found' },
 ];

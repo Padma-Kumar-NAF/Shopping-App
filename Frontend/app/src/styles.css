@@ -6,7 +6,7 @@
 }
 
 .page-content {
-  padding-top: 64px; /* matches --nav-height in navbar */
+  padding-top: 64px;
 }
 
 .page-content--no-nav {

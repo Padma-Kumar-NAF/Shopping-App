@@ -174,3 +174,6 @@ C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\bin\Debug\net10.
 C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\bin\Debug\net10.0\Serilog.Sinks.Debug.dll
 C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\bin\Debug\net10.0\Serilog.Sinks.File.dll
 C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\bin\Debug\net10.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerUI.dll

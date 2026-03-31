@@ -4,9 +4,6 @@ import { NgxSonnerToaster } from 'ngx-sonner';
 import { NavbarComponent } from './components/shared/navbar/navbar';
 import { LoaderService } from './services/loading.service';
 import { Spinner } from './components/spinner/spinner';
-import { OrdersComponent } from './components/profileComponents/orders/orders';
-import { AdminDashboard } from './components/adminComponents/admin-dashboard/admin-dashboard';
-import { HomeComponent } from './components/homeComponents/home/home';
 import { filter } from 'rxjs/operators';
 import { AuthStateService } from './services/auth-state.service';
 
@@ -19,9 +16,6 @@ const NO_NAV_PREFIXES = ['/admin', '/auth', '/cart'];
     NgxSonnerToaster,
     NavbarComponent,
     Spinner,
-    OrdersComponent,
-    AdminDashboard,
-    HomeComponent,
   ],
   templateUrl: './app.html',
   styleUrl: './app.css',
@@ -36,12 +30,22 @@ export class App implements OnInit {
 
   ngOnInit(): void {
     this.authState.loadUserFromStorage();
-
     this.evaluate(this.router.url);
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe((e: NavigationEnd) => this.evaluate(e.urlAfterRedirects));
   }
+
+  // ngOnInit(): void {
+  //   this.authState.loadUserFromStorage();
+
+  //   this.evaluate(this.router.url);
+  //   this.router.events
+  //     // .pipe(filter(e => e instanceof NavigationEnd))
+  //     .subscribe((e: any) => {
+  //       console.log(e)
+  //       this.evaluate(e.urlAfterRedirects)});
+  // }
 
   private evaluate(url: string): void {
     const path = url.split('?')[0];

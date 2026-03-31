@@ -122,8 +122,9 @@ namespace ShoppingApp.Services
                 var pageSize = request.pagination.PageSize;
 
                 var products = await query
+                    .Where(p => p.ActiveStatus)
                     .Skip((request.pagination.PageNumber - 1) * request.pagination.PageSize)
-                    .Take(pageSize)
+                    .Take(request.pagination.PageSize)
                     .Select(p => new ProductDetails
                     {
                         ProductId = p.ProductId,
