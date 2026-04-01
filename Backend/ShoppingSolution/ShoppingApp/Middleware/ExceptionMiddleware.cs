@@ -27,6 +27,8 @@ namespace ShoppingApp.Middleware
             }
             catch (Exception ex)
             {
+                //_logger.LogError(ex, "Unhandled Exception occurred");   
+                _logger.LogError(ex, "Unhandled Exception occurred");
                 await HandleExceptionAsync(context, ex);
             }
         }
@@ -147,13 +149,7 @@ namespace ShoppingApp.Middleware
             }
         }
 
-        private void LogException(
-            ILogger<ExceptionMiddleware> logger,
-            Exception ex,
-            string controller,
-            string action,
-            string username,
-            string requestBody)
+        private void LogException(ILogger<ExceptionMiddleware> logger,Exception ex,string controller,string action,string username,string requestBody)
         {
             logger.LogError(ex,
                 "Exception occurred - User: {Username}, Controller: {Controller}, Action: {Action}, Request Body: {RequestBody}",

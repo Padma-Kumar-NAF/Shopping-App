@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Address
 {
-    public class EditUserAddressRequestDTO
+    public record EditUserAddressRequestDTO
     {
         public Guid AddressId { get; set; }
         public string AddressLine1 { get; set; } = string.Empty;

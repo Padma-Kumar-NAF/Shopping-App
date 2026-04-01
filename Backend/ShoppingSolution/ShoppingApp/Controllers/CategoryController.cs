@@ -10,9 +10,10 @@ using System.Security.Claims;
 
 namespace ShoppingApp.Controllers
 {
-    //[Authorize(Roles = "admin")]
-    [Route("category")]
     [ApiController]
+    [Route("category")]
+    [Authorize(Roles = "admin,user")]
+    [ValidateRequest]
     public class CategoryController : BaseController
     {
         private readonly ICategoryService _categoryService;
@@ -29,9 +30,8 @@ namespace ShoppingApp.Controllers
         /// an error occurs during category creation.</remarks>
         /// <param name="request">An object containing the information required to create the new category. Must not be null.</param>
         /// <returns>An IActionResult that indicates the result of the category creation operation.</returns>
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         [HttpPost("add-category")]
-        [ValidateRequest]
         public async Task<IActionResult> AddCategory([FromBody] AddCategoryRequestDTO request)
         {
             try
@@ -54,9 +54,8 @@ namespace ShoppingApp.Controllers
         /// errors.</remarks>
         /// <param name="request">An object containing the information required to identify and delete the category.</param>
         /// <returns>An IActionResult that indicates the outcome of the delete operation.</returns>
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         [HttpDelete("delete-category")]
-        [ValidateRequest]
         public async Task<IActionResult> DeleteCategory([FromBody] DeleteCategoryRequestDTO request)
         {
             try
@@ -81,9 +80,7 @@ namespace ShoppingApp.Controllers
         /// categories are returned.</param>
         /// <returns>An IActionResult containing a collection of categories that match the provided pagination parameters. The
         /// result is returned as a JSON response.</returns>
-        //[Authorize(Roles = "admin,user")]
         [HttpPost("get-all-categories")]
-        [ValidateRequest]
         public async Task<IActionResult> GetAllCategories([FromBody] GetAllCategoryRequestDTO request)
         {
             try
@@ -108,9 +105,8 @@ namespace ShoppingApp.Controllers
         /// property values.</param>
         /// <returns>An IActionResult that represents the result of the edit operation. If successful, the response includes the
         /// updated category details.</returns>
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         [HttpPost("edit-category")]
-        [ValidateRequest]
         public async Task<IActionResult> EditCategory([FromBody] EditCategoryRequestDTO request)
         {
             try
@@ -137,14 +133,11 @@ namespace ShoppingApp.Controllers
         /// <returns>An IActionResult containing the operation result. If successful, the response includes the list of products
         /// matching the specified category and filters; otherwise, it contains an error message and the appropriate
         /// status code.</returns>
-        //[Authorize(Roles = "user")]
         [HttpPost("products-by-category")]
-        [ValidateRequest]
         public async Task<IActionResult> GetProductsByCategory([FromBody] GetProductsByCategoryRequestDTO request)
         {
             try
             {
-                //var UserId = GetUserIdOrThrow();
                 var result = await _categoryService.GetProductsByCategory(request);
                 return StatusCode(result.StatusCode, result);
             }

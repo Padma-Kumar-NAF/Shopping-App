@@ -8,8 +8,8 @@ import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from 
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
-import { authInterceptors } from './interceptors/interceptor';
-import { AuthStateService } from './services/auth-state.service';
+import { authInterceptors } from './core/interceptors/interceptor';
+import { AuthStateService } from './core/state/auth-state.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [

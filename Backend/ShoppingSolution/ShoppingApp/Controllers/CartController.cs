@@ -30,9 +30,7 @@ namespace ShoppingApp.Controllers
         /// quantity. Cannot be null.</param>
         /// <returns>An IActionResult that indicates the result of the operation. If successful, the response contains the
         /// updated cart information.</returns>
-        [Authorize(Roles = "user")]
         [HttpPost("add-to-cart")]
-        [ValidateRequest]
         public async Task<IActionResult> AddToCart([FromBody] AddToCartRequestDTO request)
         {
             try
@@ -57,9 +55,7 @@ namespace ShoppingApp.Controllers
         /// items to return.</param>
         /// <returns>An <see cref="IActionResult"/> containing the user's cart items if the operation succeeds; otherwise, an
         /// error response.</returns>
-        [Authorize(Roles = "user")]
         [HttpPost("get-user-cart")]
-        [ValidateRequest]
         public async Task<IActionResult> GetCart([FromBody] GetCartRequestDTO request)
         {
             try
@@ -81,9 +77,7 @@ namespace ShoppingApp.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [Authorize(Roles = "user")]
         [HttpPost("update-user-cart")]
-        [ValidateRequest]
         public async Task<IActionResult> UpdateUserCart([FromBody] UpdateUserCartRequestDTO request)
         {
             try
@@ -113,9 +107,7 @@ namespace ShoppingApp.Controllers
         /// <returns>An IActionResult that indicates the result of the order placement operation. Returns a success response with
         /// order details if the order is placed successfully; otherwise, returns an error response describing the
         /// failure.</returns>
-        [Authorize(Roles = "user")]
         [HttpPost("order-all-from-cart")]
-        [ValidateRequest]
         public async Task<IActionResult> PlaceOrderAllFromCarts([FromBody] OrderAllFromCartRequestDTO request)
         {
             try
@@ -141,9 +133,7 @@ namespace ShoppingApp.Controllers
         /// while removing items.</remarks>
         /// <returns>An IActionResult that indicates the result of the operation. Returns a success response if all items are
         /// removed; otherwise, returns an error response.</returns>
-        [Authorize(Roles = "user")]
         [HttpPost("remove-all-from-cart")]
-        [ValidateRequest]
         public async Task<IActionResult> ClearCart()
         {
             try
@@ -169,9 +159,7 @@ namespace ShoppingApp.Controllers
         /// <param name="request">An object containing the identifiers for the cart, cart item, and product to be removed.</param>
         /// <returns>An IActionResult that indicates the result of the remove operation. Returns a success response if the item
         /// is removed; otherwise, returns an error response.</returns>
-        [Authorize(Roles = "user")]
         [HttpDelete("remove-from-cart")]
-        [ValidateRequest]
         public async Task<IActionResult> RemoveFromCart( [FromBody] RemoveFromCartRequestDTO request)
         {
             try

@@ -50,9 +50,7 @@ namespace ShoppingApp.Services
         }
 
         public async Task<ApiResponse<CancelOrderResponseDTO>> CancelOrder(Guid userId, Guid orderId)
-        {
-
-            
+        {            
             if(await IsUserNotFound(userId))
             {
                 throw new AppException("User not found",404);
@@ -60,8 +58,7 @@ namespace ShoppingApp.Services
 
             await _unitOfWork.BeginTransactionAsync();
 
-            var order = await _repository.GetQueryable().Include(o => o.OrderDetails!).Include(o => o.Address).Include(o => o.Payment)
-                    .FirstOrDefaultAsync(o => o.OrderId == orderId);
+            var order = await _repository.GetQueryable().Include(o => o.OrderDetails!).Include(o => o.Address).Include(o => o.Payment).FirstOrDefaultAsync(o => o.OrderId == orderId);
 
             if (order == null)
             {
@@ -421,23 +418,23 @@ namespace ShoppingApp.Services
             try
             {
                 if (await IsUserNotFound(userId))
+                {
                     throw new AppException("User not found", 404);
+                }
 
-                var address = await _addressRepository.GetAsync(request.AddressId)
-                    ?? throw new AppException("Address not found", 404);
+                var address = await _addressRepository.GetAsync(request.AddressId) ?? throw new AppException("Address not found", 404);
 
-                var product = await _productRepository.GetAsync(request.OrderProductdDetails.ProductId)
-                    ?? throw new AppException("Product not found", 404);
+                var product = await _productRepository.GetAsync(request.OrderProductdDetails.ProductId) ?? throw new AppException("Product not found", 404);
 
-                var stock = await _stockRepository.FirstOrDefaultAsync(s => s.ProductId == product.ProductId)
-                    ?? throw new AppException("Stock not found", 404);
+                var stock = await _stockRepository.FirstOrDefaultAsync(s => s.ProductId == product.ProductId) ?? throw new AppException("Stock not found", 404);
 
                 if (stock.Quantity < request.OrderProductdDetails.Quantity)
+                {
                     throw new AppException("Insufficient stock", 400);
+                }
 
                 decimal tax      = Math.Round(request.TotalAmount * 0.18m, 2);
-                decimal shipping = request.TotalAmount > 5000 ? 0m : 99m;
-                decimal orderTotal = request.TotalAmount + tax + shipping;
+                decimal shipping = request.TotalAmount > 5000 ? 0m : 100m;
 
                 int discountPercentage = 0;
                 decimal discountAmount = 0;
@@ -445,39 +442,47 @@ namespace ShoppingApp.Services
 
                 if (!string.IsNullOrWhiteSpace(request.PromoCode))
                 {
-                    var promo = await _promoRepository.GetQueryable()
-                        .FirstOrDefaultAsync(p => p.PromoCodeName == request.PromoCode.Trim().ToUpper() && !p.IsDeleted);
+                    var promo = await _promoRepository.GetQueryable().FirstOrDefaultAsync(p => p.PromoCodeName == request.PromoCode.Trim().ToUpper() && !p.IsDeleted);
 
                     if (promo == null)
+                    {
                         throw new AppException("Invalid promo code", 400);
-
+                    }
+                        
                     var now = DateTime.UtcNow.Date;
                     if (now < promo.FromDate.Date)
+                    {
                         throw new AppException("Promo code is not active yet", 400);
+                    }
+                        
                     if (now > promo.ToDate.Date)
+                    {
                         throw new AppException("Promo code has expired", 400);
-
+                    }
+                    
                     discountPercentage = promo.DiscountPercentage;
-                    discountAmount = Math.Round(orderTotal * discountPercentage / 100, 2);
+                    discountAmount = Math.Round(request.TotalAmount * discountPercentage / 100, 2);
                     promoCodeId = promo.PromoCodeId;
                 }
 
-                var amountAfterDiscount = orderTotal - discountAmount;
+                var amountAfterDiscount = request.TotalAmount - discountAmount;
 
                 decimal walletUsed = 0;
 
                 if (request.UseWallet)
                 {
-                    walletUsed = await HandleWalletPayment(userId, amountAfterDiscount);
+                    walletUsed = await HandleWalletPayment(userId, amountAfterDiscount+tax+shipping);
                 }
 
-                var finalAmount = amountAfterDiscount - walletUsed;
+                //var finalAmount = amountAfterDiscount - walletUsed;
 
-                var order = CreateOrder(userId, request, discountPercentage, discountAmount, amountAfterDiscount, promoCodeId);
+                var order = CreateOrder(userId, request, discountPercentage, discountAmount, amountAfterDiscount, promoCodeId, tax, shipping);
 
                 await _repository.AddAsync(order);
 
                 var orderDetails = await CreateOrderDetailsAndUpdateStock(request, stock, order);
+
+                decimal finalAmount = amountAfterDiscount + tax + shipping;
 
                 var payment = await CreatePayment(userId, order, finalAmount, request.PaymentType, request.StripePaymentId);
 
@@ -499,7 +504,7 @@ namespace ShoppingApp.Services
                         DiscountPercentage = discountPercentage,
                         DiscountAmount = discountAmount,
                         WalletUsed = walletUsed,
-                        FinalAmount = finalAmount,
+                        FinalAmount = amountAfterDiscount,
                     },
                     Message = "Order placed successfully",
                     Action = "OrderedConfirmed"
@@ -517,25 +522,21 @@ namespace ShoppingApp.Services
             }
         }
 
-        private Order CreateOrder(Guid userId, PlaceOrderRequestDTO request, int discountPercentage, decimal discountAmount, decimal amountAfterDiscount, Guid? promoCodeId)
+        private Order CreateOrder(Guid userId, PlaceOrderRequestDTO request, int discountPercentage, decimal discountAmount, decimal amountAfterDiscount, Guid? promoCodeId,decimal tax,decimal shipping)
         {
-            decimal tax      = Math.Round(request.TotalAmount * 0.18m, 2);
-
-            decimal shipping = request.TotalAmount > 5000 ? 0m : 99m;
-
             decimal orderTotal = request.TotalAmount + tax + shipping;
 
             return new Order
             {
                 UserId = userId,
                 Status = "Not Delivered",
-                TotalAmount = orderTotal,
+                TotalAmount = orderTotal, // Without discount amount
                 TotalProductsCount = request.TotalProductsCount,
                 AddressId = request.AddressId,
                 DeliveryDate = DateTime.UtcNow.AddDays(2),
                 DiscountPercentage = discountPercentage,
                 DiscountAmount = discountAmount,
-                OrderTotalAmount = amountAfterDiscount,
+                OrderTotalAmount = amountAfterDiscount + tax + shipping,// If user use promocode then
                 PromoCodeId = promoCodeId
             };
         }
@@ -557,9 +558,7 @@ namespace ShoppingApp.Services
 
         private async Task<decimal> HandleWalletPayment(Guid userId, decimal finalAmount)
         {
-            var wallet = await _walletRepository
-                .GetQueryable()
-                .FirstOrDefaultAsync(w => w.UserId == userId);
+            var wallet = await _walletRepository.GetQueryable().FirstOrDefaultAsync(w => w.UserId == userId);
 
             if (wallet == null)
             {
@@ -589,6 +588,7 @@ namespace ShoppingApp.Services
         private async Task<OrderDetails> CreateOrderDetailsAndUpdateStock(PlaceOrderRequestDTO request, Stock stock, Order order)
         {
             stock.Quantity -= request.OrderProductdDetails.Quantity;
+
             await _stockRepository.UpdateAsync(stock.StockId, stock);
 
             var orderDetails = new OrderDetails
@@ -671,7 +671,6 @@ namespace ShoppingApp.Services
                 throw new AppException("Something went wrong while updating the order", ex, 500);
             }
         }
-
         private async Task<bool > IsUserNotFound(Guid userId)
         {
             var user = await _userRepository.GetAsync(userId);

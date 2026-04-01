@@ -1,29 +1,27 @@
 import { Routes } from '@angular/router';
-import { authRequiredGuard, publicGuard } from './services/public-auth.guard';
-import { roleGuard } from './services/auth.guard';
+import { authRequiredGuard, publicGuard } from './core/guards/public-auth.guard';
+import { roleGuard } from './core/guards/auth.guard';
 
-import { HomeComponent } from './components/homeComponents/home/home';
-import { AdminLayout } from './components/adminComponents/admin-layout/admin-layout';
-import { DashboardOverview } from './components/adminComponents/dashboard-overview/dashboard-overview';
-import { UsersManagement } from './components/adminComponents/users-management/users-management';
-import { OrdersManagement } from './components/adminComponents/orders-management/orders-management';
-import { ProductManagement } from './components/adminComponents/product-management/product-management';
-import { CategoryManagement } from './components/adminComponents/category-management/category-management';
-import { PromocodeManagement } from './components/adminComponents/promocode-management/promocode-management';
-import { ErrorLogs } from './components/adminComponents/error-logs/error-logs';
-import { ProductListing } from './components/product-listing/product-listing';
-import { ProductDetail } from './components/product-detail/product-detail';
-import { Profile } from './components/profileComponents/profile/profile';
-import { OrdersComponent } from './components/profileComponents/orders/orders';
-import { Address } from './components/profileComponents/address/address';
-import { Cart } from './components/profileComponents/cart/cart';
-import { WishlistComponent } from './components/profileComponents/wishlist/wishlist';
-import { Auth } from './components/auth/auth';
-import { Game } from './game/game';
-import { CheckoutComponent } from './components/checkout/checkout';
-import { PaymentComponent } from './components/payment/payment';
-import { UnauthorizedComponent } from './components/unauthorized/unauthorized';
-import { PageNotFound } from './components/page-not-found/page-not-found';
+import { HomeComponent } from './shared/components/home/home';
+import { AdminLayout } from './features/admin/components/admin-layout/admin-layout';
+import { DashboardOverview } from './features/admin/components/dashboard-overview/dashboard-overview';
+import { UsersManagement } from './features/admin/components/users-management/users-management';
+import { OrdersManagement } from './features/admin/components/orders-management/orders-management';
+import { ProductManagement } from './features/admin/components/product-management/product-management';
+import { CategoryManagement } from './features/admin/components/category-management/category-management';
+import { PromocodeManagement } from './features/admin/components/promocode-management/promocode-management';
+import { ErrorLogs } from './features/admin/components/error-logs/error-logs';
+import { ProductListing } from './features/products/components/product-listing/product-listing';
+import { ProductDetail } from './features/products/components/product-detail/product-detail';
+import { Profile } from './features/user/components/profile/profile';
+import { OrdersComponent } from './features/user/components/orders/orders';
+import { Address } from './features/user/components/address/address';
+import { Cart } from './features/user/components/cart/cart';
+import { WishlistComponent } from './features/user/components/wishlist/wishlist';
+import { Auth } from './features/auth/auth';
+import { PaymentComponent } from './features/payment/payment';
+import { UnauthorizedComponent } from './shared/components/unauthorized/unauthorized';
+import { PageNotFound } from './shared/components/page-not-found/page-not-found';
 
 export const routes: Routes = [
   {
@@ -84,12 +82,6 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'checkout',
-    canActivate: [authRequiredGuard],
-    data: { role: 'user' },
-    component: CheckoutComponent,
-  },
-  {
     path: 'payment',
     canActivate: [authRequiredGuard],
     data: { role: 'user' },
@@ -111,7 +103,5 @@ export const routes: Routes = [
   { path: 'auth', component: Auth },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: 'page-not-found', component: PageNotFound },
-  { path: 'game', component: Game },
-
   { path: '**', redirectTo: 'page-not-found' },
 ];

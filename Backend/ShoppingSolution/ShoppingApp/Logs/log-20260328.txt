@@ -1,0 +1,137 @@
+2026-03-28 22:54:20.675 +05:30 [INF] User profile is available. Using 'C:\Users\PadmaKumar.C\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-03-28 22:54:21.818 +05:30 [INF] Now listening on: https://localhost:7023
+2026-03-28 22:54:21.822 +05:30 [INF] Now listening on: http://localhost:5256
+2026-03-28 22:54:21.935 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-03-28 22:54:21.939 +05:30 [INF] Hosting environment: Development
+2026-03-28 22:54:21.944 +05:30 [INF] Content root path: C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp
+2026-03-28 22:54:37.685 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Products/get-products - null null
+2026-03-28 22:54:37.685 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - null null
+2026-03-28 22:54:37.798 +05:30 [INF] CORS policy execution successful.
+2026-03-28 22:54:37.798 +05:30 [INF] CORS policy execution successful.
+2026-03-28 22:54:37.811 +05:30 [INF] HTTP OPTIONS /category/get-all-categories responded 204 in 34.1929 ms
+2026-03-28 22:54:37.811 +05:30 [INF] HTTP OPTIONS /Products/get-products responded 204 in 34.1745 ms
+2026-03-28 22:54:37.824 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - 204 null null 152.5571ms
+2026-03-28 22:54:37.826 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Products/get-products - 204 null null 156.3406ms
+2026-03-28 22:54:37.833 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-products - application/json 45
+2026-03-28 22:54:37.833 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/category/get-all-categories - application/json 45
+2026-03-28 22:54:37.851 +05:30 [INF] CORS policy execution successful.
+2026-03-28 22:54:37.851 +05:30 [INF] CORS policy execution successful.
+2026-03-28 22:54:38.243 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-03-28 22:54:38.244 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-03-28 22:54:38.320 +05:30 [INF] Route matched with {action = "GetAllCategories", controller = "Category"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllCategories(ShoppingApp.Models.DTOs.Category.GetAllCategoryRequestDTO) on controller ShoppingApp.Controllers.CategoryController (ShoppingApp).
+2026-03-28 22:54:38.320 +05:30 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProducts(ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-03-28 22:54:43.130 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/User/get-user-by-id - null null
+2026-03-28 22:54:43.137 +05:30 [INF] CORS policy execution successful.
+2026-03-28 22:54:43.139 +05:30 [INF] HTTP OPTIONS /User/get-user-by-id responded 204 in 2.8700 ms
+2026-03-28 22:54:43.144 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/User/get-user-by-id - 204 null null 14.7349ms
+2026-03-28 22:54:43.148 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7023/User/get-user-by-id - null null
+2026-03-28 22:54:43.162 +05:30 [INF] CORS policy execution successful.
+2026-03-28 22:54:43.172 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp)'
+2026-03-28 22:54:43.186 +05:30 [INF] Route matched with {action = "GetUserById", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetUserById() on controller ShoppingApp.Controllers.UserController (ShoppingApp).
+2026-03-28 22:54:45.902 +05:30 [INF] Executed DbCommand (92ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+2026-03-28 22:54:46.049 +05:30 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-03-28 22:54:46.174 +05:30 [INF] Executed DbCommand (72ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p0].[ProductId], [p0].[CategoryId], [p0].[Name], [p0].[ImagePath], [p0].[Description], [c].[CategoryName], [p0].[Price], [s].[StockId], [s].[Quantity], [c].[CategoryId], [r].[ReviewId], [r].[CreatedAt], [r].[ProductId], [r].[ReviewPoints], [r].[Summary], [r].[UserId], [r0].[Summary], [r0].[ReviewPoints], [r0].[ReviewId]
+FROM (
+    SELECT [p].[ProductId], [p].[CategoryId], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+    FROM [Products] AS [p]
+    WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+    ORDER BY [p].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [p0]
+INNER JOIN [Category] AS [c] ON [p0].[CategoryId] = [c].[CategoryId]
+LEFT JOIN [Stock] AS [s] ON [p0].[ProductId] = [s].[ProductId]
+LEFT JOIN [Reviews] AS [r] ON [p0].[ProductId] = [r].[ProductId]
+LEFT JOIN [Reviews] AS [r0] ON [p0].[ProductId] = [r0].[ProductId]
+ORDER BY [p0].[Name], [p0].[ProductId], [c].[CategoryId], [s].[StockId], [r].[ReviewId]
+2026-03-28 22:54:46.227 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-03-28 22:54:46.275 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp) in 7942.2087ms
+2026-03-28 22:54:46.281 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-03-28 22:54:46.287 +05:30 [INF] HTTP POST /Products/get-products responded 200 in 8436.8543 ms
+2026-03-28 22:54:46.307 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-products - 200 null application/json; charset=utf-8 8474.3688ms
+2026-03-28 22:54:46.974 +05:30 [INF] Executed DbCommand (17ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-03-28 22:54:46.978 +05:30 [INF] Executed DbCommand (21ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CategoryId], [c].[CategoryName], CASE
+    WHEN (
+        SELECT COUNT(*)
+        FROM [Products] AS [p]
+        WHERE [c].[CategoryId] = [p].[CategoryId]) = 0 THEN 0
+    ELSE (
+        SELECT COUNT(*)
+        FROM [Products] AS [p0]
+        WHERE [c].[CategoryId] = [p0].[CategoryId])
+END AS [ProductsCount], CONVERT(varchar(100), [c].[CreatedAt]) AS [CreatedAt]
+FROM [Category] AS [c]
+ORDER BY [c].[CategoryName]
+OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+2026-03-28 22:54:46.987 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Category.GetAllCategoryResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-03-28 22:54:46.988 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.User.GetUserByIdResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-03-28 22:54:46.995 +05:30 [INF] Executed action ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp) in 8670.8146ms
+2026-03-28 22:54:46.997 +05:30 [INF] Executed action ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp) in 3806.9414ms
+2026-03-28 22:54:46.998 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-03-28 22:54:46.999 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp)'
+2026-03-28 22:54:47.000 +05:30 [INF] HTTP POST /category/get-all-categories responded 200 in 9149.9291 ms
+2026-03-28 22:54:47.002 +05:30 [INF] HTTP GET /User/get-user-by-id responded 200 in 3839.8196 ms
+2026-03-28 22:54:47.004 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/category/get-all-categories - 200 null application/json; charset=utf-8 9171.5036ms
+2026-03-28 22:54:47.008 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7023/User/get-user-by-id - 200 null application/json; charset=utf-8 3859.5227ms
+2026-03-28 22:54:51.135 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/api/auth/login - null null
+2026-03-28 22:54:51.142 +05:30 [INF] CORS policy execution successful.
+2026-03-28 22:54:51.145 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 2.5302 ms
+2026-03-28 22:54:51.148 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/api/auth/login - 204 null null 13.3585ms
+2026-03-28 22:54:51.152 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/api/auth/login - application/json 46
+2026-03-28 22:54:51.161 +05:30 [INF] CORS policy execution successful.
+2026-03-28 22:54:51.163 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.AuthenticationController.Login (ShoppingApp)'
+2026-03-28 22:54:51.189 +05:30 [INF] Route matched with {action = "Login", controller = "Authentication"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[ShoppingApp.Models.DTOs.User.LoginResponseDTO]] Login(ShoppingApp.Models.DTOs.User.LoginRequestDTO) on controller ShoppingApp.Controllers.AuthenticationController (ShoppingApp).
+2026-03-28 22:54:51.230 +05:30 [INF] Executed DbCommand (4ms) [Parameters=[@email='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue]
+FROM [Users] AS [u]
+WHERE [u].[Email] = @email
+2026-03-28 22:54:51.919 +05:30 [INF] Executed action ShoppingApp.Controllers.AuthenticationController.Login (ShoppingApp) in 721.0325ms
+2026-03-28 22:54:51.922 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.AuthenticationController.Login (ShoppingApp)'
+2026-03-28 22:54:52.014 +05:30 [ERR] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Invalid Password
+   at ShoppingApp.Services.UserService.LoginUser(LoginRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 158
+   at ShoppingApp.Controllers.AuthenticationController.Login(LoginRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 64
+   at lambda_method198(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-03-28 22:54:52.075 +05:30 [ERR] Exception occurred - User: Anonymous, Controller: Authentication, Action: Login, Request Body: {"email":"user@gmail.com","password":"##pk54"}
+ShoppingApp.Exceptions.AppException: Invalid Password
+   at ShoppingApp.Services.UserService.LoginUser(LoginRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 158
+   at ShoppingApp.Controllers.AuthenticationController.Login(LoginRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 64
+   at lambda_method198(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-03-28 22:54:52.321 +05:30 [INF] Executed DbCommand (14ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 100), @p2='?' (Size = 100), @p3='?' (DbType = DateTime2), @p4='?' (Size = 100), @p5='?' (Size = 20), @p6='?' (Size = 500), @p7='?' (Size = 500), @p8='?' (Size = 500), @p9='?' (Size = 4000), @p10='?' (Size = 500), @p11='?' (Size = 50), @p12='?' (Size = 4000), @p13='?' (DbType = Int32), @p14='?' (DbType = Guid), @p15='?' (Size = 100)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Logs] ([Id], [Action], [Controller], [CreatedAt], [ExceptionType], [HttpMethod], [InnerException], [Message], [QueryString], [RequestBody], [RequestPath], [Role], [StackTrace], [StatusCode], [UserId], [UserName])
+OUTPUT INSERTED.[RowVersion]
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15);
+2026-03-28 22:54:52.376 +05:30 [INF] HTTP POST /api/auth/login responded 400 in 1215.2357 ms
+2026-03-28 22:54:52.379 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/api/auth/login - 400 null application/json; charset=utf-8 1227.6459ms

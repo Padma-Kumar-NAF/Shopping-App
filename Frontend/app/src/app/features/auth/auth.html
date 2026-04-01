@@ -1,0 +1,241 @@
+<div class="min-h-screen flex flex-col sm:flex-row bg-gray-100">
+  <div class="hidden sm:flex sm:w-1/2 bg-indigo-600 items-center justify-center p-6">
+    <div class="text-white text-center">
+      <h1 class="text-3xl font-bold mb-4">Welcome to Shopping App</h1>
+      <p class="text-lg">Manage your shopping, wishlist, and orders easily in one place.</p>
+    </div>
+  </div>
+  <div class="flex flex-1 flex-col justify-center px-6 py-12 sm:w-1/2">
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm text-center">
+      <h2 class="mt-10 text-2xl font-bold tracking-tight text-gray-800">
+        {{ isLoginMode() ? 'Sign in to your account' : 'Create your account' }}
+      </h2>
+    </div>
+
+    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      @if (isLoginMode()) {
+      <form
+        [formGroup]="loginForm"
+        (ngSubmit)="onLogin()"
+        class="space-y-6 bg-white rounded-lg p-6 shadow-md border border-gray-200"
+      >
+        <div>
+          <label for="login-email" class="block text-sm font-medium text-gray-700">
+            Email address
+          </label>
+          <div class="mt-2">
+            <input
+              id="login-email"
+              type="text"
+              name="email"
+              formControlName="email"
+              placeholder="you@example.com"
+              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between">
+            <label for="login-password" class="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <div class="text-sm">
+              <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
+                Forgot password?
+              </a>
+            </div>
+          </div>
+          <div class="mt-2">
+            <input
+              id="login-password"
+              type="password"
+              name="password"
+              formControlName="password"
+              placeholder="********"
+              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <button
+            type="submit"
+            class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-white font-semibold hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            Sign In
+          </button>
+        </div>
+      </form>
+      }
+
+      @if (!isLoginMode()) {
+      <form
+        [formGroup]="signUpForm"
+        (ngSubmit)="onSignup()"
+        class="space-y-6 bg-white rounded-lg p-6 shadow-md border border-gray-200"
+      >
+        <div>
+          <label for="signup-name" class="block text-sm font-medium text-gray-700">
+            Full Name
+          </label>
+          <div class="mt-2">
+            <input
+              id="signup-name"
+              type="text"
+              name="name"
+              formControlName="name"
+              placeholder="Your Name"
+              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="signup-email" class="block text-sm font-medium text-gray-700">
+            Email address
+          </label>
+          <div class="mt-2">
+            <input
+              id="signup-email"
+              type="email"
+              name="email"
+              formControlName="email"
+              placeholder="you@example.com"
+              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="signup-password" class="block text-sm font-medium text-gray-700">
+            Password
+          </label>
+          <div class="mt-2">
+            <input
+              id="signup-password"
+              type="password"
+              name="password"
+              formControlName="password"
+              placeholder="********"
+              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="signup-phoneNumber" class="block text-sm font-medium text-gray-700">
+            Phone Number
+          </label>
+          <div class="mt-2">
+            <input
+              id="signup-phoneNumber"
+              type="text"
+              name="phoneNumber"
+              formControlName="phoneNumber"
+              placeholder="9876543210"
+              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="addressLine1" class="block text-sm font-medium text-gray-700"
+            >Address Line 1</label
+          >
+          <div class="mt-2">
+            <input
+              id="addressLine1"
+              type="text"
+              formControlName="addressLine1"
+              placeholder="Street / House No."
+              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="addressLine2" class="block text-sm font-medium text-gray-700"
+            >Address Line 2</label
+          >
+          <div class="mt-2">
+            <input
+              id="addressLine2"
+              type="text"
+              formControlName="addressLine2"
+              placeholder="Landmark / Area"
+              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="state" class="block text-sm font-medium text-gray-700">State</label>
+          <div class="mt-2">
+            <select
+              id="state"
+              formControlName="state"
+              (change)="onStateChange($event)"
+              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+            >
+              <option value="" disabled>Select State</option>
+              @for (state of states; track state) {
+                <option [value]="state">{{ state }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="city" class="block text-sm font-medium text-gray-700">City</label>
+          <div class="mt-2">
+            <select
+              id="city"
+              formControlName="city"
+              [disabled]="availableCities().length === 0"
+              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+            >
+              <option value="" disabled>{{ availableCities().length === 0 ? 'Select a state first' : 'Select City' }}</option>
+              @for (city of availableCities(); track city) {
+                <option [value]="city">{{ city }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="pincode" class="block text-sm font-medium text-gray-700">Pincode</label>
+          <div class="mt-2">
+            <input
+              id="pincode"
+              type="text"
+              formControlName="pincode"
+              placeholder="123456"
+              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <button
+            type="submit"
+            class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-white font-semibold hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            Sign up
+          </button>
+        </div>
+      </form>
+      }
+
+      <p class="mt-6 text-center text-sm text-gray-600">
+        {{ isLoginMode() ? 'Not a member?' : 'Already have an account?' }}
+        <span
+          (click)="toggleMode()"
+          class="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer ml-1"
+        >
+          {{ isLoginMode() ? 'Create Account' : 'Sign In' }}
+        </span>
+      </p>
+    </div>
+  </div>
+</div>

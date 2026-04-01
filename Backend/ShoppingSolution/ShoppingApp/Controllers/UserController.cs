@@ -10,10 +10,11 @@ using System.Security.Claims;
 
 namespace ShoppingApp.Controllers 
 {
-    //[Authorize]
+    [Authorize(Roles = "user,admin")]
     [Route("[controller]")]
     [ApiController]
-    public class UserController : BaseController, IUserController
+    [ValidateRequest]
+    public class UserController : BaseController
     {
         private readonly IUserService _userService;
 
@@ -30,8 +31,8 @@ namespace ShoppingApp.Controllers
         /// <param name="request">An object containing the new email address and any required validation information for the update operation.</param>
         /// <returns>An IActionResult that indicates the outcome of the email update operation. If successful, the result
         /// includes the updated email information.</returns>
+        [Authorize(Roles = "user")]
         [HttpPost("edit-user-email")]
-        [ValidateRequest]
         public async Task<IActionResult> EditUserMail([FromBody] EditUserEmailRequestDTO request)
         {
             try
@@ -55,9 +56,8 @@ namespace ShoppingApp.Controllers
         /// <param name="request">An object containing filter criteria and retrieval options for users. Must not be null.</param>
         /// <returns>An IActionResult containing the list of users that match the request parameters. Returns an empty list if no
         /// users are found.</returns>
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         [HttpPost("get-all-users")]
-        [ValidateRequest]
         public async Task<IActionResult> GetAllUsers([FromBody] GetUsersRequestDTO request)
         {
             try
@@ -73,7 +73,6 @@ namespace ShoppingApp.Controllers
         }
 
         [HttpGet("get-user-by-id")]
-        [ValidateRequest]
         public async Task<IActionResult> GetUserById()
         { 
             try
@@ -88,9 +87,8 @@ namespace ShoppingApp.Controllers
             }
         }
 
-
+        [Authorize(Roles = "user")]
         [HttpPost("update-user-details")]
-        [ValidateRequest]
         public async Task<IActionResult> UpdateUserDetails([FromBody] UpdateProfileRequestDTO request)
         {
             try
@@ -105,8 +103,8 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost("delete-user")]
-        [ValidateRequest]
         public async Task<IActionResult> DeactivateUser([FromBody] DeleteUserRequestDTO request)
         {
             try
@@ -121,8 +119,8 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost("change-user-role")]
-        [ValidateRequest]
         public async Task<IActionResult> ChangeUserRole([FromBody] ChangeUserRoleRequestDTO request)
         {
             try

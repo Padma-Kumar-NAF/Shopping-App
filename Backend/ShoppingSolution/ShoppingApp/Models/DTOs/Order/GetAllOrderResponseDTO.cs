@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Order
 {
-    public class GetAllOrderResponseDTO
+    public record GetAllOrderResponseDTO
     {
         public ICollection<OrderDetailsResponseDTO> Items { get; set; } = new List<OrderDetailsResponseDTO>();
     }

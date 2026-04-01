@@ -1,12 +1,12 @@
 ﻿namespace ShoppingApp.Models.DTOs.Promocode
 {
-    public class GetAllPromocodeResponseDTO
+    public record GetAllPromocodeResponseDTO
     {
         public List<PromoCodeItemDTO> PromoCodes { get; set; } = new();
         public int TotalCount { get; set; }
     }
 
-    public class PromoCodeItemDTO
+    public record PromoCodeItemDTO
     {
         public Guid PromoCodeId { get; set; }
         public string PromoCodeName { get; set; } = string.Empty;

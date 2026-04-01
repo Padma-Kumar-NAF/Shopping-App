@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Product
 {
-    public class GetAllProductsWithFilterRequestDTO
+    public record GetAllProductsWithFilterRequestDTO
     {
         public Pagination pagination { get; set; } = new Pagination();
         [Required(ErrorMessage ="Low price is required")]

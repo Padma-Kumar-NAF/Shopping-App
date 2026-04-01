@@ -27,7 +27,6 @@ namespace ShoppingApp.Controllers
         /// <param name="request">An object containing the details of the address to be created. Must not be null.</param>
         /// <returns>An IActionResult containing the result of the address creation operation. If successful, the response
         /// includes the details of the newly created address.</returns>
-        [Authorize(Roles = "user")]
         [HttpPut("create-address")]
         [ValidateRequest]
         public async Task<IActionResult> AddAddress([FromBody] CreateNewAddressRequestDTO request)
@@ -55,7 +54,6 @@ namespace ShoppingApp.Controllers
         /// <param name="request">An object containing the details of the address to be deleted, including the address identifier.</param>
         /// <returns>An IActionResult that indicates the outcome of the delete operation. Returns a success response if the
         /// address is deleted; otherwise, returns an error response.</returns>
-        [Authorize(Roles = "user")]
         [HttpDelete("delete-address")]
         [ValidateRequest]
         public async Task<IActionResult> DeleteUserAddress([FromBody] DeleteUserAddressRequestDTO request)
@@ -83,7 +81,6 @@ namespace ShoppingApp.Controllers
         /// <param name="request">An <see cref="EditUserAddressRequestDTO"/> containing the updated address information. Must include all
         /// required fields for address validation.</param>
         /// <returns>An <see cref="IActionResult"/> containing the updated list of addresses for the authenticated user.</returns>
-        [Authorize(Roles = "user")]
         [HttpPost("edit-address")]
         [ValidateRequest]
         public async Task<IActionResult> EditUserAddress([FromBody] EditUserAddressRequestDTO request)
@@ -111,7 +108,6 @@ namespace ShoppingApp.Controllers
         /// <param name="request">An object containing the criteria used to filter or retrieve the user's addresses. Cannot be null.</param>
         /// <returns>An IActionResult containing a collection of addresses for the authenticated user. Returns an empty
         /// collection if no addresses are found.</returns>
-        [Authorize(Roles = "user")]
         [HttpPost("get-address")]
         [ValidateRequest]
         public async Task<IActionResult> GetUserAddress([FromBody] GetUserAddressRequestDTO request)

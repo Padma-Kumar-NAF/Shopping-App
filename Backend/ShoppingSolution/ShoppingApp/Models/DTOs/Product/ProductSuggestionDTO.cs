@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Product
 {
-    public class ProductSuggestionDTO
+    public record ProductSuggestionDTO
     {
         public string Name { get; set; } = string.Empty;
     }

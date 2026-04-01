@@ -163,3 +163,16 @@ C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\Mi
 C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\Microsoft.Extensions.Options.dll
 C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\Microsoft.Extensions.Primitives.dll
 C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\CoverletSourceRootsMapping_Testing
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\Microsoft.Extensions.DependencyModel.dll
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\Serilog.dll
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\Serilog.AspNetCore.dll
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\Serilog.Extensions.Hosting.dll
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\Serilog.Extensions.Logging.dll
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\Serilog.Formatting.Compact.dll
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\Serilog.Settings.Configuration.dll
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\Serilog.Sinks.Console.dll
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\Serilog.Sinks.Debug.dll
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\Serilog.Sinks.File.dll
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\PK\Project\Shopping-App\Backend\ShoppingSolution\Testing\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerUI.dll

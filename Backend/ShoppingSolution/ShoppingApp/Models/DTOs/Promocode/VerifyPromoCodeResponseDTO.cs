@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Promocode
 {
-    public class VerifyPromoCodeResponseDTO
+    public record VerifyPromoCodeResponseDTO
     {
         public bool IsValid { get; set; }
         public int DiscountPercentage { get; set; }

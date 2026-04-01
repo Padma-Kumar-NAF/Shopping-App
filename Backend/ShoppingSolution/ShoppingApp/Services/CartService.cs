@@ -1,8 +1,4 @@
-﻿using Azure;
-using Azure.Core;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using ShoppingApp.Contexts;
+﻿using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Exceptions;
 using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
@@ -197,16 +193,21 @@ namespace ShoppingApp.Services
             }
         }
 
-        public async Task<ApiResponse<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCart(Guid userId, Guid addressId, string paymentType, string promoCode, bool useWallet, string stripePaymentId = "")
+        public async Task<ApiResponse<OrderAllFromCartResponseDTO>> PlaceOrderAllFromCart(Guid userId,Guid addressId,string paymentType,string promoCode,bool useWallet,string stripePaymentId = "")
         {
             var userCart = await _repository.GetQueryable().FirstOrDefaultAsync(c => c.UserId == userId);
-            if (userCart == null)
-                throw new AppException("No cart found for this user", 404);
 
-            var addressExists = await _addressRepository.GetQueryable()
-                .FirstOrDefaultAsync(a => a.AddressId == addressId && a.UserId == userId);
+            if (userCart == null)
+            {
+                throw new AppException("No cart found for this user", 404);
+            }
+
+            var addressExists = await _addressRepository.GetQueryable().FirstOrDefaultAsync(a => a.AddressId == addressId && a.UserId == userId);
+
             if (addressExists == null)
+            {
                 throw new AppException("Address not found", 404);
+            }
 
             await _unitOfWork.BeginTransactionAsync();
 
@@ -218,8 +219,10 @@ namespace ShoppingApp.Services
                     .FirstOrDefaultAsync(c => c.CartId == userCart.CartId && c.UserId == userId);
 
                 if (cart == null || cart.CartItems == null || !cart.CartItems.Any())
+                {
                     throw new AppException("No cart items found", 404);
-
+                }
+                    
                 var cartItems = cart.CartItems.ToList();
                 var productIds = cartItems.Select(ci => ci.ProductId).ToList();
 
@@ -227,25 +230,28 @@ namespace ShoppingApp.Services
                     .Where(s => productIds.Contains(s.ProductId))
                     .ToListAsync();
 
-                // ── Stock validation ──────────────────────────────────────
                 foreach (var item in cartItems)
                 {
                     var stock = stocks.FirstOrDefault(s => s.ProductId == item.ProductId);
+
                     if (stock == null)
+                    {
                         throw new AppException($"Stock not found for {item.Product!.Name}", 404);
+                    }
+
                     if (stock.Quantity < item.Quantity)
+                    {
                         throw new AppException($"Insufficient stock for {item.Product!.Name}", 409);
+                    }
                 }
 
-                // ── Subtotal ──────────────────────────────────────────────
                 decimal subtotal = cartItems.Sum(x => x.Quantity * x.Product!.Price);
 
-                // ── Tax & shipping (backend is source of truth) ───────────
-                decimal tax      = Math.Round(subtotal * 0.18m, 2);
-                decimal shipping = subtotal > 5000 ? 0m : 99m;
+                decimal tax = Math.Round(subtotal * 0.18m, 2);
+                decimal shipping = subtotal > 5000 ? 0m : 100m;
+
                 decimal orderTotal = subtotal + tax + shipping;
 
-                // ── Promo code (applied on full order total) ──────────────
                 int discountPercentage = 0;
                 decimal discountAmount = 0;
                 Guid? promoCodeId = null;
@@ -253,66 +259,69 @@ namespace ShoppingApp.Services
                 if (!string.IsNullOrWhiteSpace(promoCode))
                 {
                     var promo = await _promoRepository.GetQueryable()
-                        .FirstOrDefaultAsync(p => p.PromoCodeName == promoCode.Trim().ToUpper() && !p.IsDeleted);
+                        .FirstOrDefaultAsync(p =>
+                            p.PromoCodeName == promoCode.Trim().ToUpper() &&
+                            !p.IsDeleted);
 
                     if (promo == null)
                         throw new AppException("Invalid promo code", 400);
 
                     var now = DateTime.UtcNow.Date;
+
                     if (now < promo.FromDate.Date)
                         throw new AppException("Promo code is not active yet", 400);
+
                     if (now > promo.ToDate.Date)
                         throw new AppException("Promo code has expired", 400);
 
                     discountPercentage = promo.DiscountPercentage;
-                    discountAmount = Math.Round(orderTotal * discountPercentage / 100, 2);
+                    discountAmount = Math.Round(subtotal * discountPercentage / 100, 2);
                     promoCodeId = promo.PromoCodeId;
                 }
 
                 decimal amountAfterDiscount = orderTotal - discountAmount;
 
-                // ── Wallet deduction ──────────────────────────────────────
+                // ── Wallet (SAME as PlaceOrder) ──────────────────
                 decimal walletUsed = 0;
 
                 if (useWallet)
                 {
-                    var wallet = await _walletRepository.GetQueryable()
-                        .FirstOrDefaultAsync(w => w.UserId == userId);
-
-                    if (wallet == null || wallet.WalletAmount <= 0)
-                        throw new AppException("Wallet balance is insufficient", 400);
-
-                    walletUsed = Math.Min(wallet.WalletAmount, amountAfterDiscount);
-                    wallet.WalletAmount -= (int)walletUsed;
-                    await _walletRepository.UpdateAsync(wallet.WalletId, wallet);
+                    walletUsed = await HandleWalletPayment(userId,amountAfterDiscount);
                 }
 
                 decimal finalAmount = amountAfterDiscount - walletUsed;
 
-                string paymentStatus = walletUsed >= amountAfterDiscount
-                    ? "Full Wallet"
-                    : walletUsed > 0
-                        ? "Partial Wallet"
-                        : "External Payment";
+                string paymentStatus =
+                    walletUsed >= amountAfterDiscount ? "Full Wallet" :
+                    walletUsed > 0 ? "Partial Wallet" :
+                    "External Payment";
 
+                // ── Create Order ────────────────────────────────
                 var order = new Order
                 {
                     UserId = userId,
                     Status = "Not Delivered",
                     TotalProductsCount = cartItems.Sum(x => x.Quantity),
+
+                    // Before discount
                     TotalAmount = orderTotal,
-                    OrderTotalAmount = (int)Math.Round(amountAfterDiscount, MidpointRounding.AwayFromZero),
+
+                    // After discount
+                    OrderTotalAmount = amountAfterDiscount,
+
                     DiscountPercentage = discountPercentage,
-                    DiscountAmount = (int)Math.Round(discountAmount, MidpointRounding.AwayFromZero),
+                    DiscountAmount = discountAmount,
                     AddressId = addressId,
                     DeliveryDate = DateTime.UtcNow.AddDays(2),
                     PromoCodeId = promoCodeId,
                     OrderDetails = new List<OrderDetails>()
                 };
 
+                // ── Order Details + Stock Update ────────────────
                 foreach (var item in cartItems)
                 {
                     var stock = stocks.First(s => s.ProductId == item.ProductId);
+
                     stock.Quantity -= item.Quantity;
                     await _stockRepository.UpdateAsync(stock.StockId, stock);
 
@@ -328,18 +337,19 @@ namespace ShoppingApp.Services
                 await _orderRepository.AddAsync(order);
                 await _unitOfWork.SaveChangesAsync();
 
+                // ── Payment ─────────────────────────────────────
                 var payment = new Payment
                 {
                     UserId = userId,
                     OrderId = order.OrderId,
-                    TotalAmount = finalAmount,
+                    TotalAmount = amountAfterDiscount,
                     PaymentType = paymentType,
                     StripePaymentId = stripePaymentId
                 };
 
                 await _paymentRepository.AddAsync(payment);
 
-                // ── Clear cart ────────────────────────────────────────────
+                // ── Clear Cart ─────────────────────────────────
                 foreach (var item in cartItems)
                     await _cartItemRepository.DeleteAsync(item.CartItemId);
 
@@ -383,6 +393,35 @@ namespace ShoppingApp.Services
                 await _unitOfWork.RollbackAsync();
                 throw new AppException("Something went wrong while placing order", ex, 500);
             }
+        }
+
+        private async Task<decimal> HandleWalletPayment(Guid userId, decimal finalAmount)
+        {
+            var wallet = await _walletRepository.GetQueryable().FirstOrDefaultAsync(w => w.UserId == userId);
+
+            if (wallet == null)
+            {
+                throw new AppException("Wallet not found", 404);
+            }
+
+            decimal walletBalance = wallet.WalletAmount;
+
+            decimal walletUsed;
+
+            if (walletBalance >= finalAmount)
+            {
+                walletUsed = finalAmount;
+                wallet.WalletAmount -= finalAmount;
+            }
+            else
+            {
+                walletUsed = walletBalance;
+                wallet.WalletAmount = 0;
+            }
+
+            await _walletRepository.UpdateAsync(wallet.WalletId, wallet);
+
+            return walletUsed;
         }
 
         public async Task<ApiResponse<RemoveAllFromCartResponseDTO>> RemoveAllFromCartByUserID(Guid userId)

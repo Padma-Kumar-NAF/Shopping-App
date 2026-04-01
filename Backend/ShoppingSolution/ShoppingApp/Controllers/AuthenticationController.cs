@@ -31,7 +31,7 @@ namespace ShoppingApp.Controllers
         /// registration is successful.</returns>
         [HttpPost("register")]
         [ValidateRequest]
-        public async Task<ActionResult<CreateUserResponseDTO>> Register([FromBody] CreateUserRequestDTO requestDTO)
+        public async Task<IActionResult> Register([FromBody] CreateUserRequestDTO requestDTO)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace ShoppingApp.Controllers
         /// successful.</returns>
         [HttpPost("login")]
         [ValidateRequest]
-        public async Task<ActionResult<LoginResponseDTO>> Login( [FromBody] LoginRequestDTO requestDTO)
+        public async Task<IActionResult> Login( [FromBody] LoginRequestDTO requestDTO)
         {
             try
             {

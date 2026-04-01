@@ -2,7 +2,7 @@
 
 namespace ShoppingApp.Models.DTOs.Promocode
 {
-    public class EditPromocodeRequestDTO
+    public record EditPromocodeRequestDTO
     {
         [Required(ErrorMessage = "Promo code Iq reuired")]
         public Guid PromoCodeId { get; set; }

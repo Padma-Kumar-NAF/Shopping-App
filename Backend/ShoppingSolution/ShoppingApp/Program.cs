@@ -1,6 +1,8 @@
 using AspNetCoreRateLimit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
+using Serilog;
 using ShoppingApp.Contexts;
 using ShoppingApp.Filters;
 using ShoppingApp.Interfaces.RepositoriesInterface;
@@ -20,6 +22,18 @@ namespace ShoppingApp
             var _configuration = builder.Configuration;
 
             builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "My API",
+                    Version = "v1",
+                    Description = "A sample ASP.NET Core Web API"
+                });
+            });
+
             builder.Services.AddOpenApi();
             builder.Services.AddCors(options =>
             {
@@ -70,6 +84,25 @@ namespace ShoppingApp
                     };
                 });
 
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .WriteTo.Console()
+                .WriteTo.File("logs/all-logs.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 20)
+                .WriteTo.File(
+                    "logs/errors.txt",
+                    rollingInterval: RollingInterval.Day,
+                     outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level}] {Message}{NewLine}{Exception}",
+                    restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error
+                )
+                //.WriteTo.File(
+                //    "Logs/log-.txt",
+                //    rollingInterval: RollingInterval.Day,
+                //    retainedFileCountLimit: 20
+                //)
+                .CreateLogger();
+
+            builder.Host.UseSerilog();
+
             builder.Services.AddAuthorization();
 
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
@@ -89,21 +122,36 @@ namespace ShoppingApp
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IWalletService, WalletService>();
 
+            builder.Services.AddScoped<MyResultFilter>();
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<MyResultFilter>();
+            });
+
+
             var app = builder.Build();
+
+            app.UseSerilogRequestLogging();
 
             app.UseCors("AllowAngular");
 
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                    c.RoutePrefix = string.Empty;
+                });
             }
 
-            app.UseExceptionHandler("/error");
+            //app.UseExceptionHandler("/error");
 
             app.UseHttpsRedirection();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            app.UseAuthentication();// Middleware
+            app.UseAuthorization();// Filter
 
             app.UseIpRateLimiting();
 

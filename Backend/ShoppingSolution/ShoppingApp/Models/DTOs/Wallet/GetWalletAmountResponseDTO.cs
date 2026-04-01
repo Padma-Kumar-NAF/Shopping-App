@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Wallet
 {
-    public class GetWalletAmountResponseDTO
+    public record GetWalletAmountResponseDTO
     {
         public decimal WalletBalance { get; set; }
     }

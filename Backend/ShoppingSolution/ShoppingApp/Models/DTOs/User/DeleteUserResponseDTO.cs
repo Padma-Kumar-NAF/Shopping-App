@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.User
 {
-    public class DeleteUserResponseDTO
+    public record DeleteUserResponseDTO
     {
         public bool UnActivated{ get; set; } = false;
     }

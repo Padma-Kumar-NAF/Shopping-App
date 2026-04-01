@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models.DTOs.Product
 {
-    public class AddNewProductResponseDTO
+    public record AddNewProductResponseDTO
     {
         public Guid ProductId { get; set; }
     }
