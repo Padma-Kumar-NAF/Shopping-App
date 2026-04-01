@@ -4,13 +4,13 @@ import {
   LoginModel,
   SignupModel,
   LoginResponseDTO,
-} from '../models/users/auth.model';
+} from '../../shared/models/users/auth.model';
 import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { jwtDecode } from 'jwt-decode';
-import { UserDetails } from '../models/users/user.model';
-import { ApiResponse } from '../models/users/apiResponse.model';
+import { UserDetails } from '../../shared/models/users/user.model';
+import { ApiResponse } from '../../shared/models/users/apiResponse.model';
 
 @Injectable({
   providedIn: 'root',
@@ -25,8 +25,8 @@ export class AuthApiService {
     return this.http.post<ApiResponse<LoginResponseDTO>>(`${this.baseUrl}api/auth/login`, loginModel);
   }
 
-  SignUpApi(user: SignupModel): Observable<CreateUserResponseDTO> {
-    return this.http.post<CreateUserResponseDTO>(`${this.baseUrl}api/auth/register`, user).pipe(
+  SignUpApi(user: SignupModel): Observable<ApiResponse<CreateUserResponseDTO>> {
+    return this.http.post<ApiResponse<CreateUserResponseDTO>>(`${this.baseUrl}api/auth/register`, user).pipe(
       catchError((error) => {
         return throwError(() => error);
       }),

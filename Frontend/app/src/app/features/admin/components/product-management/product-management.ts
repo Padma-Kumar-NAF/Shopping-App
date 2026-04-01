@@ -5,11 +5,11 @@ import { toast } from 'ngx-sonner';
 import * as XLSX from 'xlsx';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { StoreService } from '../../../services/adminServices/store.service';
-import { AdminProductService } from '../../../services/adminServices/products.service';
-import { AdminCategoryService } from '../../../services/adminServices/category.service';
-import { PaginationModel } from '../../../models/admin/pagination.model';
-import { ApiResponse } from '../../../models/admin/apiResponse.model';
+import { StoreService } from '../../services/store.service';
+import { AdminProductService } from '../../services/products.service';
+import { AdminCategoryService } from '../../services/category.service';
+import { PaginationModel } from '../../../../shared/models/admin/pagination.model';
+import { ApiResponse } from '../../../../shared/models/admin/apiResponse.model';
 import {
   ProductDetails,
   AddNewProductRequestDTO,
@@ -18,8 +18,8 @@ import {
   UpdateProductResponseDTO,
   ReviewDTO,
   GetAllProductsResponseDTO,
-} from '../../../models/admin/products.model';
-import { CategoryDTO, GetAllCategoryResponseDTO } from '../../../models/admin/categories.model';
+} from '../../../../shared/models/admin/products.model';
+import { CategoryDTO, GetAllCategoryResponseDTO } from '../../../../shared/models/admin/categories.model';
 
 type ActiveView = 'list' | 'add' | 'bulk';
 

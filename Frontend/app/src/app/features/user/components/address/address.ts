@@ -15,7 +15,7 @@ import {
   DeleteAddressRequestDTO,
   DeleteAddressResponseDTO,
   UpdateAddressResponseDTO,
-} from '../../../models/users/address.model';
+} from '../../../../shared/models/users/address.model';
 import {
   FormControl,
   FormGroup,
@@ -24,12 +24,12 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { toast } from 'ngx-sonner';
-import { AddressApiService } from '../../../services/userServices/address.service';
-import { AddressSelectionService } from '../../../services/address-selection.service';
-import { PaginationModel } from '../../../models/users/pagination.model';
-import { LoaderService } from '../../../services/loading.service';
+import { AddressApiService } from '../../services/address.service';
+import { AddressSelectionService } from '../../services/address-selection.service';
+import { PaginationModel } from '../../../../shared/models/users/pagination.model';
+import { LoaderService } from '../../../../core/services/loading.service';
 import { CommonModule } from '@angular/common';
-import { ApiResponse } from '../../../models/users/apiResponse.model';
+import { ApiResponse } from '../../../../shared/models/users/apiResponse.model';
 
 @Component({
   selector: 'app-address',

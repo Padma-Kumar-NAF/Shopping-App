@@ -1,6 +1,4 @@
 <div>
-
-  <!-- ── Image Carousel (pure CSS auto-slide) ── -->
   <section class="py-4 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="carousel-wrapper shadow-xl">
@@ -29,7 +27,6 @@
   </section>
 
   @if (isLoading()) {
-  <!-- ── Full page loader ── -->
   <div class="flex justify-center items-center py-32">
     <div class="flex flex-col items-center gap-4">
       <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
@@ -48,12 +45,10 @@
   </div>
   } @else {
 
-  <!-- ── Categories ── -->
   <section class="bg-gray-50 py-6">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-2xl font-semibold mb-4 text-gray-800">Shop by Category</h2>
 
-      <!-- Mobile: native select -->
       <select
         (change)="onCategorySelect($event)"
         class="sm:hidden w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
@@ -64,7 +59,6 @@
         }
       </select>
 
-      <!-- Tablet+: wrapping button pills -->
       <div class="hidden sm:flex flex-wrap gap-3">
         @if (categories().length) {
           @for (category of categories(); track category.categoryId) {
@@ -82,14 +76,13 @@
     </div>
   </section>
 
-  <!-- ── Products ── -->
   <section class="py-8 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-2xl font-semibold mb-6 text-gray-800">Featured Products</h2>
 
-      @if (products().length) {
+      @if (paginatedProducts.length) {
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 sm:gap-6">
-        @for (product of products(); track product.productId) {
+        @for (product of paginatedProducts; track product.productId) {
         <div
           (click)="onProductClick(product)"
           class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer group"
@@ -107,9 +100,6 @@
               {{ product.productName }}
             </h3>
             <p class="text-blue-600 font-bold text-xl mb-1">₹{{ product.price }}</p>
-            <!-- @if (getAverageRating(product); as rating) {
-            <p class="text-yellow-500 text-sm mb-2">★ {{ rating }} ({{ product.review.length }})</p>
-            } -->
             <button
               class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
             >
@@ -119,6 +109,38 @@
         </div>
         }
       </div>
+
+      @if (totalPages > 1) {
+      <div class="flex justify-center items-center gap-2 mt-10">
+        <button
+          (click)="goToPage(currentPage() - 1)"
+          [disabled]="currentPage() === 1"
+          class="px-3 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          ‹
+        </button>
+
+        @for (page of pageNumbers; track page) {
+        <button
+          (click)="goToPage(page)"
+          [class]="page === currentPage()
+            ? 'px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold border border-blue-600'
+            : 'px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors'"
+        >
+          {{ page }}
+        </button>
+        }
+
+        <button
+          (click)="goToPage(currentPage() + 1)"
+          [disabled]="currentPage() === totalPages"
+          class="px-3 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          ›
+        </button>
+      </div>
+      }
+
       } @else {
       <div class="text-center py-12">
         <p class="text-gray-500 text-lg">No products available</p>
@@ -126,8 +148,6 @@
       }
     </div>
   </section>
-
   }
-
 </div>
 <app-footer></app-footer>

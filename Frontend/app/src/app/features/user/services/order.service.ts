@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../models/users/apiResponse.model';
-import { PaginationModel } from '../../models/users/pagination.model';
+import { ApiResponse } from '../../../shared/models/users/apiResponse.model';
+import { PaginationModel } from '../../../shared/models/users/pagination.model';
 
 export interface GetUserOrderDetailsRequestDTO {
   Pagination: PaginationModel;

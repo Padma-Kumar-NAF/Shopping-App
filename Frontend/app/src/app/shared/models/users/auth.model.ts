@@ -16,10 +16,12 @@ export class SignupModel {
 }
 
 export class CreateUserResponseDTO {
-  userId: string = '';
-  name: string = '';
-  email: string = '';
-  userDetails: CreateUserDetailsDTO = new CreateUserDetailsDTO();
+  IsSuccess : boolean = false;
+  UserDetailsId : string = ''
+  // userId: string = '';
+  // name: string = '';
+  // email: string = '';
+  // userDetails: CreateUserDetailsDTO = new CreateUserDetailsDTO();
 }
 
 export class CreateUserDetailsDTO {

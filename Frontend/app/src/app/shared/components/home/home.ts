@@ -4,12 +4,12 @@ import { forkJoin } from 'rxjs';
 import { Footer } from '../footer/footer';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ProductService } from '../../../services/product.service';
-import { ProductStateService } from '../../../services/product-state.service';
-import { AdminCategoryService } from '../../../services/adminServices/category.service';
-import { ProductDetails } from '../../../models/users/product.model';
-import { CategoryDTO } from '../../../models/admin/categories.model';
-import { PaginationModel } from '../../../models/users/pagination.model';
+import { ProductService } from '../../../features/products/services/product.service';
+import { ProductStateService } from '../../../core/state/product-state.service';
+import { AdminCategoryService } from '../../../features/admin/services/category.service';
+import { ProductDetails } from '../../../shared/models/users/product.model';
+import { CategoryDTO } from '../../../shared/models/admin/categories.model';
+import { PaginationModel } from '../../../shared/models/users/pagination.model';
 
 @Component({
   selector: 'app-home',
@@ -25,10 +25,33 @@ export class HomeComponent implements OnInit {
   private productStateService = inject(ProductStateService);
 
   searchQuery = signal<string>('');
-  products = signal<ProductDetails[]>([]);
+  allProducts = signal<ProductDetails[]>([]);
   categories = signal<CategoryDTO[]>([]);
   isLoading = signal<boolean>(false);
   error = signal<string | null>(null);
+
+  currentPage = signal<number>(1);
+  readonly pageSize = 8;
+
+  get totalPages(): number {
+    return Math.ceil(this.allProducts().length / this.pageSize);
+  }
+
+  get paginatedProducts(): ProductDetails[] {
+    const start = (this.currentPage() - 1) * this.pageSize;
+    return this.allProducts().slice(start, start + this.pageSize);
+  }
+
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage.set(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
 
   carouselSlides = [
     {
@@ -72,15 +95,16 @@ export class HomeComponent implements OnInit {
     this.error.set(null);
 
     const pagination = new PaginationModel();
-    pagination.pageSize = 20;
+    pagination.pageSize = 80;
     pagination.pageNumber = 1;
 
     forkJoin({
-      products: this.productService.getAllProducts(20, 1),
+      products: this.productService.getAllProducts(pagination),
       categories: this.categoryService.getAllCategories(pagination),
     }).subscribe({
       next: ({ products, categories }) => {
-        this.products.set(products);
+        this.allProducts.set(products);
+        this.currentPage.set(1);
         this.categories.set(categories.data?.categoryList ?? []);
         this.isLoading.set(false);
       },
@@ -109,12 +133,12 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  onSearch(): void {
-    const query = this.searchQuery();
-    if (query.trim()) {
-      this.router.navigate(['/products'], { queryParams: { q: query } });
-    }
-  }
+  // onSearch(): void {
+  //   const query = this.searchQuery();
+  //   if (query.trim()) {
+  //     this.router.navigate(['/products'], { queryParams: { q: query } });
+  //   }
+  // }
 
   getAverageRating(product: ProductDetails): number | null {
     if (!product.review?.length) return null;
@@ -122,3 +146,4 @@ export class HomeComponent implements OnInit {
     return Math.round(avg * 10) / 10;
   }
 }
+

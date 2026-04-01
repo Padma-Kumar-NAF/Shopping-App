@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../models/admin/apiResponse.model';
-import { AddNewProductRequestDTO, AddNewProductResponseDTO, GetAllProductsResponseDTO, UpdateProductRequestDTO, UpdateProductResponseDTO } from '../../models/admin/products.model';
-import { PaginationModel } from '../../models/admin/pagination.model';
+import { ApiResponse } from '../../../shared/models/admin/apiResponse.model';
+import { AddNewProductRequestDTO, AddNewProductResponseDTO, GetAllProductsResponseDTO, UpdateProductRequestDTO, UpdateProductResponseDTO } from '../../../shared/models/admin/products.model';
+import { PaginationModel } from '../../../shared/models/admin/pagination.model';
 
 @Injectable({
   providedIn: 'root',

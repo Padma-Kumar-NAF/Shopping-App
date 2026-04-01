@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../models/users/apiResponse.model';
+import { ApiResponse } from '../../../shared/models/users/apiResponse.model';
 
 @Injectable({ providedIn: 'root' })
 export class ReviewService {

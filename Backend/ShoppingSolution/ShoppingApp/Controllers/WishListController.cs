@@ -12,6 +12,7 @@ namespace ShoppingApp.Controllers
     [Authorize(Roles = "user")]
     [Route("api/wishlist")]
     [ApiController]
+    [ValidateRequest]
     public class WishListController : BaseController, IWishListController
     {
         private readonly IWishListService _wishlistService;
@@ -23,7 +24,6 @@ namespace ShoppingApp.Controllers
 
         [Authorize(Roles = "user")]
         [HttpPost("add-product")]
-        [ValidateRequest]
         public async Task<IActionResult> AddToWishListAsync([FromBody] AddProductToWishListRequestDTO request)
         {
             try
@@ -42,7 +42,6 @@ namespace ShoppingApp.Controllers
 
         [Authorize(Roles = "user")]
         [HttpPost("create")]
-        [ValidateRequest]
         public async Task<IActionResult> CreateWishList([FromBody] CreateWishListRequestDTO request)
         {
             try
@@ -61,7 +60,6 @@ namespace ShoppingApp.Controllers
 
         [Authorize(Roles = "user")]
         [HttpDelete("delete")]
-        [ValidateRequest]
         public async Task<IActionResult> DeleteWishList([FromBody] DeleteWishListRequestDTO request)
         {
             try
@@ -80,7 +78,6 @@ namespace ShoppingApp.Controllers
 
         [Authorize(Roles = "user")]
         [HttpPost("user-wishlist")]
-        [ValidateRequest]
         public async Task<IActionResult> GetUserWishList([FromBody] GetUserWishListRequestDTOClass request)
         {
             try
@@ -99,7 +96,6 @@ namespace ShoppingApp.Controllers
 
         [Authorize(Roles = "user")]
         [HttpDelete("remove-product")]
-        [ValidateRequest]
         public async Task<IActionResult> RemoveFromWishList([FromBody] RemoveProductFromWishListRequestDTO request)
         {
             try

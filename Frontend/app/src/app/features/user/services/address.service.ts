@@ -8,9 +8,9 @@ import {
   DeleteAddressResponseDTO,
   NewAddressResponseDTO,
   UpdateAddressResponseDTO,
-} from '../../models/users/address.model';
-import { PaginationModel } from '../../models/users/pagination.model';
-import { ApiResponse } from '../../models/users/apiResponse.model';
+} from '../../../shared/models/users/address.model';
+import { PaginationModel } from '../../../shared/models/users/pagination.model';
+import { ApiResponse } from '../../../shared/models/users/apiResponse.model';
 
 @Injectable({
   providedIn: 'root',

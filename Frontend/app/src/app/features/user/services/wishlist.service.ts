@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../models/users/apiResponse.model';
+import { ApiResponse } from '../../../shared/models/users/apiResponse.model';
+import { PaginationModel } from '../../../shared/models/users/pagination.model';
 
 export interface WishListItemsDTO {
   wishListItemsId: string;
@@ -26,9 +27,9 @@ export class WishlistService {
 
   constructor(private http: HttpClient) {}
 
-  getUserWishlists(pageSize = 20, pageNumber = 1): Observable<ApiResponse<GetUserWishListResponseDTO>> {
+  getUserWishlists(pagination : PaginationModel): Observable<ApiResponse<GetUserWishListResponseDTO>> {
     return this.http.post<ApiResponse<GetUserWishListResponseDTO>>(`${this.baseUrl}/user-wishlist`, {
-      pagination: { pageSize, pageNumber },
+      pagination: pagination,
     });
   }
 

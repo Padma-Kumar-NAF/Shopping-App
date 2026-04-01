@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PaginationModel } from '../../models/admin/pagination.model';
+import { PaginationModel } from '../../../shared/models/admin/pagination.model';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../models/admin/apiResponse.model';
+import { ApiResponse } from '../../../shared/models/admin/apiResponse.model';
 import {
   ChangeUserRoleResponseDTO,
   DeactivateUserResponseDTO,
   GetUsersResponseDTO,
-} from '../../models/admin/users.model';
+} from '../../../shared/models/admin/users.model';
 
 @Injectable({
   providedIn: 'root',

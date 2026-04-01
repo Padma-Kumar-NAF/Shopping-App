@@ -4,13 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { ProductService } from '../../services/product.service';
-import { ProductStateService } from '../../services/product-state.service';
-import { AuthStateService } from '../../services/auth-state.service';
-import { RedirectService } from '../../services/redirect.service';
-import { AdminCategoryService } from '../../services/adminServices/category.service';
-import { ProductDetails } from '../../models/users/product.model';
-import { CategoryDTO } from '../../models/admin/categories.model';
-import { PaginationModel } from '../../models/users/pagination.model';
+import { ProductStateService } from '../../../../core/state/product-state.service';
+import { AuthStateService } from '../../../../core/state/auth-state.service';
+import { RedirectService } from '../../../../core/services/redirect.service';
+import { AdminCategoryService } from '../../../../features/admin/services/category.service';
+import { ProductDetails } from '../../../../shared/models/users/product.model';
+import { CategoryDTO } from '../../../../shared/models/admin/categories.model';
+import { PaginationModel } from '../../../../shared/models/users/pagination.model';
 import { toast } from 'ngx-sonner';
 
 @Component({
@@ -37,12 +37,10 @@ export class ProductListing implements OnInit, OnDestroy {
   error = signal<string | null>(null);
   hasSearched = signal<boolean>(false);
 
-  // Categories loaded from API (have categoryId for filter requests)
   categories = signal<CategoryDTO[]>([]);
   selectedCategoryId = signal<string | null>(null);
   selectedCategoryName = signal<string>('all');
 
-  // Price filter
   readonly PRICE_MIN = 0;
   readonly PRICE_MAX = 100000;
   priceRangeMin = signal<number>(this.PRICE_MIN);
@@ -51,22 +49,19 @@ export class ProductListing implements OnInit, OnDestroy {
   showFilters = signal<boolean>(false);
 
   priceRanges = [
-    { label: 'All Prices',        min: 0,     max: 100000 },
-    { label: 'Under ₹1,000',      min: 0,     max: 1000   },
-    { label: '₹1,000 – ₹5,000',  min: 1000,  max: 5000   },
-    { label: '₹5,000 – ₹10,000', min: 5000,  max: 10000  },
-    { label: '₹10,000 – ₹25,000',min: 10000, max: 25000  },
-    { label: '₹25,000 – ₹50,000',min: 25000, max: 50000  },
-    { label: 'Above ₹50,000',     min: 50000, max: 100000 },
+    { label: 'All Prices', min: 0, max: 100000 },
+    { label: 'Under ₹1,000', min: 0, max: 1000 },
+    { label: '₹1,000 – ₹5,000', min: 1000, max: 5000 },
+    { label: '₹5,000 – ₹10,000', min: 5000, max: 10000 },
+    { label: '₹10,000 – ₹25,000', min: 10000, max: 25000 },
+    { label: '₹25,000 – ₹50,000', min: 25000, max: 50000 },
+    { label: 'Above ₹50,000', min: 50000, max: 100000 },
   ];
 
   ngOnInit(): void {
-    // Debounce filter changes (price slider) to avoid hammering the API
     this.filterChange$
       .pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(() => this.fetchFiltered());
-
-    // Load categories first, then react to query params
     this.loadCategories();
   }
 
@@ -74,8 +69,6 @@ export class ProductListing implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
-  // ── Categories ────────────────────────────────────────────────────────────
 
   private loadCategories(): void {
     const pagination = new PaginationModel();
@@ -87,8 +80,8 @@ export class ProductListing implements OnInit, OnDestroy {
         this.categories.set(res.data?.categoryList ?? []);
         this.subscribeToQueryParams();
       },
-      error: () => {
-        // Still proceed even if categories fail
+      error: (err) => {
+        console.error(err);
         this.subscribeToQueryParams();
       },
     });
@@ -96,8 +89,8 @@ export class ProductListing implements OnInit, OnDestroy {
 
   private subscribeToQueryParams(): void {
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      const query    = params['q'] || '';
-      const catName  = params['category'] || 'all';
+      const query = params['q'] || '';
+      const catName = params['category'] || 'all';
 
       this.searchQuery.set(query);
       this.applyCategoryByName(catName);
@@ -124,8 +117,6 @@ export class ProductListing implements OnInit, OnDestroy {
     this.selectedCategoryId.set(match?.categoryId ?? null);
     this.selectedCategoryName.set(name);
   }
-
-  // ── API calls ─────────────────────────────────────────────────────────────
 
   fetchFiltered(): void {
     this.isLoading.set(true);
@@ -155,14 +146,16 @@ export class ProductListing implements OnInit, OnDestroy {
   }
 
   performSearch(query: string): void {
-    if (!query.trim()) { this.fetchFiltered(); return; }
+    if (!query.trim()) {
+      this.fetchFiltered();
+      return;
+    }
 
     this.isLoading.set(true);
     this.error.set(null);
 
     this.productService.searchProducts(query).subscribe({
       next: (products) => {
-        // Apply client-side price/category filter on search results
         let result = products.filter(
           (p) => p.price >= this.priceRangeMin() && p.price <= this.priceRangeMax()
         );
@@ -178,8 +171,6 @@ export class ProductListing implements OnInit, OnDestroy {
       },
     });
   }
-
-  // ── Filter actions ────────────────────────────────────────────────────────
 
   selectCategory(categoryId: string | null, categoryName: string): void {
     this.selectedCategoryId.set(categoryId);
@@ -199,7 +190,6 @@ export class ProductListing implements OnInit, OnDestroy {
   }
 
   onPriceSliderChange(): void {
-    // Debounced — avoids a request on every slider tick
     this.filterChange$.next();
   }
 
@@ -245,8 +235,6 @@ export class ProductListing implements OnInit, OnDestroy {
     return count;
   }
 
-  // ── Navigation ────────────────────────────────────────────────────────────
-
   onProductClick(product: ProductDetails): void {
     this.viewProductDetail(product);
   }
@@ -268,8 +256,6 @@ export class ProductListing implements OnInit, OnDestroy {
     this.productStateService.setSelectedProduct(product);
     this.router.navigate(['/payment'], { queryParams: { fromProduct: 'true', quantity: 1 } });
   }
-
-  // ── Helpers ───────────────────────────────────────────────────────────────
 
   getAverageRating(product: ProductDetails): number | null {
     if (!product.review || product.review.length === 0) return null;

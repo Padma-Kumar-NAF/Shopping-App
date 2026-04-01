@@ -6,8 +6,8 @@ import {
   newEmailRequestDTO,
   GetUserByIdResponseDTO,
   EditMailResponseDTOModel,
-} from '../../models/users/profile.model';
-import { ApiResponse } from '../../models/users/apiResponse.model';
+} from '../../../shared/models/users/profile.model';
+import { ApiResponse } from '../../../shared/models/users/apiResponse.model';
 
 @Injectable({
   providedIn: 'root',

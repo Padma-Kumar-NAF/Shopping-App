@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../models/users/apiResponse.model';
+import { ApiResponse } from '../../../shared/models/users/apiResponse.model';
 import {
   AddPromoCodeRequestDTO,
   AddPromoCodeResponseDTO,
@@ -13,7 +13,7 @@ import {
   GetAllPromocodesResponseDTO,
   ValidatePromoCodeRequestDTO,
   ValidatePromoCodeResponseDTO,
-} from '../../models/admin/promocode.model';
+} from '../../../shared/models/admin/promocode.model';
 
 @Injectable({ providedIn: 'root' })
 export class PromoCodeService {

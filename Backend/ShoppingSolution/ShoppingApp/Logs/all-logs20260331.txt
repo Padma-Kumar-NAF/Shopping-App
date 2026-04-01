@@ -10918,3 +10918,9 @@ OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
 2026-03-31 22:08:56.733 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
 2026-03-31 22:08:56.735 +05:30 [INF] HTTP POST /category/get-all-categories responded 200 in 49.9813 ms
 2026-03-31 22:08:56.739 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/category/get-all-categories - 200 null application/json; charset=utf-8 67.893ms
+2026-03-31 23:37:23.121 +05:30 [INF] User profile is available. Using 'C:\Users\PadmaKumar.C\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-03-31 23:37:23.867 +05:30 [INF] Now listening on: https://localhost:7023
+2026-03-31 23:37:23.870 +05:30 [INF] Now listening on: http://localhost:5256
+2026-03-31 23:37:23.940 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-03-31 23:37:23.942 +05:30 [INF] Hosting environment: Development
+2026-03-31 23:37:23.946 +05:30 [INF] Content root path: C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../models/users/apiResponse.model';
+import { ApiResponse } from '../../../shared/models/users/apiResponse.model';
 
 export interface GetWalletAmountResponseDTO {
   walletBalance: number;

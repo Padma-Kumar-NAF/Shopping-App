@@ -1,11 +1,11 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { NgxSonnerToaster } from 'ngx-sonner';
-import { NavbarComponent } from './components/shared/navbar/navbar';
-import { LoaderService } from './services/loading.service';
-import { Spinner } from './components/spinner/spinner';
+import { NavbarComponent } from './shared/components/navbar/navbar';
+import { LoaderService } from './core/services/loading.service';
+import { Spinner } from './shared/components/spinner/spinner';
 import { filter } from 'rxjs/operators';
-import { AuthStateService } from './services/auth-state.service';
+import { AuthStateService } from './core/state/auth-state.service';
 
 const NO_NAV_PREFIXES = ['/admin', '/auth', '/cart'];
 

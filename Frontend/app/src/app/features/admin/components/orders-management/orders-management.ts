@@ -1,18 +1,18 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { toast } from 'ngx-sonner';
-import { StoreService } from '../../../services/adminServices/store.service';
+import { StoreService } from '../../services/store.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {
   OrderDetailsResponseDTO,
   OrderRefundRequestDTO,
   OrderRefundResponseDTO,
-} from '../../../models/admin/orders.model';
-import { AdminOrderService } from '../../../services/adminServices/orders.service';
-import { ApiResponse } from '../../../models/users/apiResponse.model';
-import { GetAllOrderResponseDTO } from '../../../models/admin/orders.model';
-import { PaginationModel } from '../../../models/users/pagination.model';
+} from '../../../../shared/models/admin/orders.model';
+import { AdminOrderService } from '../../services/orders.service';
+import { ApiResponse } from '../../../../shared/models/users/apiResponse.model';
+import { GetAllOrderResponseDTO } from '../../../../shared/models/admin/orders.model';
+import { PaginationModel } from '../../../../shared/models/users/pagination.model';
 
 @Component({
   selector: 'app-orders-management',

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AppState } from '../../models/admin/appState.model';
-import { UserDetailsDTO } from '../../models/admin/users.model';
-import { OrderDetailsResponseDTO } from '../../models/admin/orders.model';
-import { CategoryDTO } from '../../models/admin/categories.model';
-import { ProductDetails } from '../../models/admin/products.model';
-import { PromoCodeItemDTO } from '../../models/admin/promocode.model';
+import { AppState } from '../../../shared/models/admin/appState.model';
+import { UserDetailsDTO } from '../../../shared/models/admin/users.model';
+import { OrderDetailsResponseDTO } from '../../../shared/models/admin/orders.model';
+import { CategoryDTO } from '../../../shared/models/admin/categories.model';
+import { ProductDetails } from '../../../shared/models/admin/products.model';
+import { PromoCodeItemDTO } from '../../../shared/models/admin/promocode.model';
 
 export interface PageCache {
   users: Set<number>;

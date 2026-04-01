@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { PaginationModel } from '../../models/users/pagination.model';
+import { PaginationModel } from '../../../shared/models/users/pagination.model';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../models/users/apiResponse.model';
+import { ApiResponse } from '../../../shared/models/users/apiResponse.model';
 import {
   AddToCartRequestDTO,
   AddToCartResponseDTO,
@@ -14,7 +14,7 @@ import {
   RemoveFromCartResponseDTO,
   UpdateUserCartRequestDTO,
   UpdateUserCartResponseDTO,
-} from '../../models/users/cart.model';
+} from '../../../shared/models/users/cart.model';
 
 @Injectable({
   providedIn: 'root',

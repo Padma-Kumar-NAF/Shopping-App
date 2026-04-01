@@ -14,12 +14,12 @@ import {
   LoginModel,
   SignupModel,
   LoginResponseDTO,
-} from '../../models/users/auth.model';
-import { AuthApiService } from '../../services/auth.service';
-import { AuthStateService } from '../../services/auth-state.service';
-import { RedirectService } from '../../services/redirect.service';
+} from '../../shared/models/users/auth.model';
+import { AuthApiService } from '../../core/services/auth.service';
+import { AuthStateService } from '../../core/state/auth-state.service';
+import { RedirectService } from '../../core/services/redirect.service';
 import { Router } from '@angular/router';
-import { ApiResponse } from '../../models/users/apiResponse.model';
+import { ApiResponse } from '../../shared/models/users/apiResponse.model';
 import { INDIA_STATES, INDIA_STATES_CITIES } from '../../data/india-states-cities';
 
 @Component({
@@ -29,21 +29,19 @@ import { INDIA_STATES, INDIA_STATES_CITIES } from '../../data/india-states-citie
   styleUrls: ['./auth.css'],
 })
 export class Auth {
-  disabledButton = signal<boolean>(true);
   private apiService: AuthApiService = inject(AuthApiService);
   private authState: AuthStateService = inject(AuthStateService);
   private redirectService: RedirectService = inject(RedirectService);
 
-  isLoginMode = signal(true);
-
-  // State / City dropdown data
   states = INDIA_STATES;
+
+  isLoginMode = signal(true);
+  disabledButton = signal<boolean>(true);
   availableCities = signal<string[]>([]);
 
   loginData: LoginModel;
   signupData: SignupModel;
 
-  userDetails: CreateUserResponseDTO;
   loginDetails: LoginResponseDTO;
 
   loginForm: FormGroup;
@@ -63,13 +61,11 @@ export class Auth {
     this.loginData = new LoginModel();
     this.signupData = new SignupModel();
 
-    this.userDetails = new CreateUserResponseDTO();
     this.loginDetails = new LoginResponseDTO();
 
     this.loginForm = new FormGroup({
       // email: new FormControl('admin@gmail.com', [Validators.required, Validators.email]),
       // password: new FormControl('admin123', [Validators.required, Validators.minLength(6)]),
-      // email: new FormControl('padmakumar23.dev@gmail.com', [Validators.required, Validators.email]),
       email: new FormControl('user@gmail.com', [Validators.required, Validators.email]),
       password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
     });
@@ -124,25 +120,20 @@ export class Auth {
     const toastId = toast.loading('Signing in...');
     this.apiService.LoginApi(this.loginData).subscribe({
       next: (response: ApiResponse<LoginResponseDTO>) => {
-        console.log('response');
+        console.log('Login response');
         console.log(response);
         if (response.data) {
           const user = this.apiService.decodeToken(response.data.token);
           if (response.data.token) {
             this.authState.setUser(user, response.data.token);
           }
-          console.log(user?.userRole === 'admin');
-
           this.loginForm.reset();
           toast.dismiss(toastId);
           toast.success('Login Successful');
 
-          // Handle post-login redirection
           if (this.redirectService.hasPendingRedirect()) {
-            // Redirect to the intended route
             this.redirectService.navigateToIntendedRoute();
           } else {
-            // Default navigation based on role
             if (user?.userRole === 'admin') {
               this.router.navigate(['/admin']);
             } else {
@@ -190,26 +181,19 @@ export class Auth {
     const toastId = toast.loading('Signing up...');
 
     this.apiService.SignUpApi(this.signupData).subscribe({
-      next: (response: CreateUserResponseDTO) => {
-        this.userDetails = response;
+      next: (response: ApiResponse<CreateUserResponseDTO>) => {
+        console.log("Signup Response")
+        console.log(response)
         toast.dismiss(toastId);
         toast.success('Signup Successfully');
         this.signUpForm.reset();
         this.isLoginMode.set(true);
       },
       error: (error: any) => {
-        if (error.status === 400 && error.error?.errors) {
-          const serverErrors = error.error.errors;
-          Object.keys(serverErrors).forEach((field) => {
-            const messages = serverErrors[field];
-            if (messages && messages.length > 0) {
-              toast.error(messages[0]);
-            }
-          });
-        } else if (error.error?.message) {
+        toast.dismiss(toastId);
+        console.error('Signup Failed:', error);
+        if (error.error?.message) {
           toast.error(error.error.message);
-        } else if (typeof error.error === 'string') {
-          toast.error(error.error);
         } else {
           toast.error('Server error occurred');
         }
@@ -222,6 +206,7 @@ export class Auth {
     this.availableCities.set(INDIA_STATES_CITIES[state] ?? []);
     this.signUpForm.get('city')?.setValue('');
   }
+  
 
   toggleMode() {
     this.isLoginMode.set(!this.isLoginMode());

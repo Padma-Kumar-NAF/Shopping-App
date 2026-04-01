@@ -17,7 +17,9 @@ namespace ShoppingApp.Repositories
         public async Task<C?> AddAsync(C entity)
         {
             if (entity == null)
+            {
                 throw new ArgumentNullException(nameof(entity));
+            }
 
             await _context.Set<C>().AddAsync(entity);
             await _context.SaveChangesAsync();

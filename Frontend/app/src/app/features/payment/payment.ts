@@ -5,21 +5,21 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { environment } from '../../../environments/environment';
 
 declare var Stripe: any;
-import { ProductService } from '../../services/product.service';
-import { ProductStateService } from '../../services/product-state.service';
-import { CartService } from '../../services/userServices/cart.service';
-import { AddressSelectionService } from '../../services/address-selection.service';
-import { AddressApiService } from '../../services/userServices/address.service';
-import { AuthStateService } from '../../services/auth-state.service';
-import { OrderService, PlaceOrderRequestDTO } from '../../services/userServices/order.service';
-import { PromoCodeService } from '../../services/adminServices/promocode.service';
-import { GetWalletAmountResponseDTO, WalletService } from '../../services/userServices/wallet.service';
-import { AddressDTO } from '../../models/users/address.model';
-import { PaginationModel } from '../../models/users/pagination.model';
-import { ProductDetails, SearchProductByIdResponseDTO } from '../../models/users/product.model';
-import { OrderAllFromCartRequestDTO } from '../../models/users/cart.model';
+import { ProductService } from '../../features/products/services/product.service';
+import { ProductStateService } from '../../core/state/product-state.service';
+import { CartService } from '../../features/user/services/cart.service';
+import { AddressSelectionService } from '../../features/user/services/address-selection.service';
+import { AddressApiService } from '../../features/user/services/address.service';
+import { AuthStateService } from '../../core/state/auth-state.service';
+import { OrderService, PlaceOrderRequestDTO } from '../../features/user/services/order.service';
+import { PromoCodeService } from '../../features/admin/services/promocode.service';
+import { GetWalletAmountResponseDTO, WalletService } from '../../features/user/services/wallet.service';
+import { AddressDTO } from '../../shared/models/users/address.model';
+import { PaginationModel } from '../../shared/models/users/pagination.model';
+import { ProductDetails, SearchProductByIdResponseDTO } from '../../shared/models/users/product.model';
+import { OrderAllFromCartRequestDTO } from '../../shared/models/users/cart.model';
 import { toast } from 'ngx-sonner';
-import { ApiResponse } from '../../models/users/apiResponse.model';
+import { ApiResponse } from '../../shared/models/users/apiResponse.model';
 
 interface CartItem {
   id: string;
@@ -49,17 +49,14 @@ export class PaymentComponent implements OnInit {
   private promoCodeService = inject(PromoCodeService);
   private walletService = inject(WalletService);
 
-  // ── Payment mode ──────────────────────────────────────────────────────────
   paymentMode = signal<'single' | 'cart'>('single');
   product = signal<ProductDetails | SearchProductByIdResponseDTO | null>(null);
   quantity = signal<number>(1);
   cartItems = signal<CartItem[]>([]);
 
-  // ── Selected top-level method: 'stripe' | 'wallet' ──────────────────────
   selectedPaymentMethod = signal<'stripe' | 'wallet'>('stripe');
   isProcessing = signal<boolean>(false);
 
-  // ── Shipping details ──────────────────────────────────────────────────────
   fullName = signal<string>('');
   email = signal<string>('');
   phone = signal<string>('');
@@ -71,17 +68,31 @@ export class PaymentComponent implements OnInit {
   availableAddresses = this.addressSelectionService.availableAddresses$;
   selectedAddress = signal<AddressDTO | null>(null);
   showAddressPicker = signal<boolean>(false);
-
-  // ── Promo code ────────────────────────────────────────────────────────────
   promoInput = signal<string>('');
   appliedPromo = signal<string | null>(null);
   discountPercent = signal<number>(0);
   promoError = signal<string | null>(null);
   isValidatingPromo = signal<boolean>(false);
 
-  // ── Wallet ────────────────────────────────────────────────────────────────
   walletBalance = signal<number | null>(null);
   isLoadingWallet = signal<boolean>(false);
+
+  showStripeModal = signal<boolean>(false);
+  stripeAmount = signal<number>(0);
+  isStripeProcessing = signal<boolean>(false);
+  stripeError = signal<string | null>(null);
+
+  private stripe: any = null;
+  private stripeCard: any = null;
+
+  pagination: PaginationModel;
+  @ViewChild('stripeCardElement') stripeCardElementRef!: ElementRef;
+
+  constructor() {
+    this.pagination = new PaginationModel();
+    this.pagination.pageSize = 10;
+    this.pagination.pageNumber = 1;
+  }
 
   get walletApplied(): number {
     const bal = this.walletBalance();
@@ -98,18 +109,6 @@ export class PaymentComponent implements OnInit {
     return this.selectedPaymentMethod() === 'wallet' && bal !== null && bal >= this.total;
   }
 
-  // ── Stripe modal ──────────────────────────────────────────────────────────
-  showStripeModal = signal<boolean>(false);
-  stripeAmount = signal<number>(0);
-  isStripeProcessing = signal<boolean>(false);
-  stripeError = signal<string | null>(null);
-
-  private stripe: any = null;
-  private stripeCard: any = null;
-
-  @ViewChild('stripeCardElement') stripeCardElementRef!: ElementRef;
-
-  // ── Totals ────────────────────────────────────────────────────────────────
   get subtotal(): number {
     if (this.paymentMode() === 'cart')
       return this.cartItems().reduce((s, i) => s + i.price * i.quantity, 0);
@@ -135,16 +134,16 @@ export class PaymentComponent implements OnInit {
     return this.subtotal - this.discountAmount + this.tax + this.shipping;
   }
 
-  // ── resolvedPaymentType for backend ──────────────────────────────────────
   get resolvedPaymentType(): string {
     if (this.selectedPaymentMethod() === 'wallet') {
-      if (this.walletCoversAll) return 'wallet';
+      if (this.walletCoversAll) {
+        return 'wallet';
+      }
       return 'wallet+stripe';
     }
     return 'stripe';
   }
 
-  // ── Lifecycle ─────────────────────────────────────────────────────────────
   ngOnInit(): void {
     const fromCart = this.route.snapshot.queryParamMap.get('fromCart');
     const fromProduct = this.route.snapshot.queryParamMap.get('fromProduct');
@@ -155,7 +154,9 @@ export class PaymentComponent implements OnInit {
       this.loadCartItems();
     } else if (fromProduct === 'true') {
       this.paymentMode.set('single');
-      if (qty) this.quantity.set(parseInt(qty));
+      if (qty) {
+        this.quantity.set(parseInt(qty));
+      }
       this.loadProductFromState();
     } else {
       const productId = this.route.snapshot.queryParamMap.get('productId');
@@ -174,19 +175,30 @@ export class PaymentComponent implements OnInit {
     this.email.set(this.authStateService.email());
   }
 
-  // ── Address ───────────────────────────────────────────────────────────────
   private loadAddresses(): void {
     const cached = this.addressSelectionService.getAvailableAddresses();
     if (cached.length === 0) {
-      const p = new PaginationModel();
-      p.pageSize = 10; p.pageNumber = 1;
-      this.addressApiService.GetUserAddresses(p).subscribe({
-        next: (r) => { if (r?.data?.addressList) this.addressSelectionService.setAvailableAddresses(r.data.addressList); },
-        error: () => { },
+
+      this.addressApiService.GetUserAddresses(this.pagination).subscribe({
+        next: (response) => {
+          if (response?.data?.addressList) {
+            this.addressSelectionService.setAvailableAddresses(response.data.addressList);
+          }
+        },
+        error: (error: any) => {
+          console.error('Address error:', error);
+          if (error.error?.message) {
+            console.error(error.error.message);
+          } else {
+            console.error('Server error occurred');
+          }
+        },
       });
     }
     const sel = this.addressSelectionService.getSelectedAddress();
-    if (sel) this.applyAddress(sel);
+    if (sel) {
+      this.applyAddress(sel);
+    }
   }
 
   selectAddress(addr: AddressDTO): void {
@@ -207,46 +219,84 @@ export class PaymentComponent implements OnInit {
     this.city.set(addr.city); this.state.set(addr.state); this.pincode.set(addr.pincode);
   }
 
-  // ── Product / cart loaders ────────────────────────────────────────────────
   private loadProductFromState(): void {
-    const p = this.productStateService.getSelectedProduct();
-    if (p) { this.product.set(p); return; }
+    const product = this.productStateService.getSelectedProduct();
+    if (product) {
+      this.product.set(product);
+      return;
+    }
     const productId = this.route.snapshot.queryParamMap.get('productId');
-    if (productId) this.loadSingleProduct(productId);
-    else { toast.error('Product not found'); this.router.navigate(['/products']); }
+    if (productId) {
+      this.loadSingleProduct(productId);
+    }
+    else {
+      toast.error('Product not found');
+      this.router.navigate(['/products']);
+    }
   }
 
   private loadSingleProduct(productId: string): void {
     this.productService.getProductById(productId).subscribe({
-      next: (p) => { if (p) this.product.set(p); else { toast.error('Product not found'); this.router.navigate(['/products']); } },
-      error: () => { toast.error('Failed to load product'); this.router.navigate(['/products']); },
+      next: (product) => {
+        if (product) {
+          this.product.set(product);
+        }
+        else {
+          toast.error('Product not found');
+          this.router.navigate(['/products']);
+        }
+      },
+      error: () => {
+        toast.error('Failed to load product');
+        this.router.navigate(['/products']);
+      },
     });
   }
 
   private loadCartItems(): void {
-    const p = new PaginationModel(); p.pageSize = 100; p.pageNumber = 1;
+    const p = new PaginationModel();
+    p.pageSize = 100;
+    p.pageNumber = 1;
     this.cartService.GetUserCart(p).subscribe({
       next: (r) => {
         if (r.data?.cartItems)
           this.cartItems.set(r.data.cartItems.map(i => ({ id: i.productId, name: i.productName, price: i.price, quantity: i.quantity, image: i.imagePath })));
       },
-      error: (err) => { toast.error('Failed to load cart items'); this.router.navigate(['/profile/cart']); },
+      error: (err) => {
+        toast.error('Failed to load cart items');
+        this.router.navigate(['/profile/cart']);
+        console.error(err)
+        console.error(err.error.message)
+      },
     });
   }
-
-  // ── Promo ─────────────────────────────────────────────────────────────────
   applyPromo(): void {
-    if (this.appliedPromo() || this.isValidatingPromo()) return;
+    if (this.appliedPromo() || this.isValidatingPromo()) {
+      return;
+    }
     const code = this.promoInput().trim().toUpperCase();
-    if (!code) { this.promoError.set('Please enter a promo code.'); return; }
-    this.isValidatingPromo.set(true); this.promoError.set(null);
+    if (!code) {
+      this.promoError.set('Please enter a promo code.');
+      return;
+    }
+    this.isValidatingPromo.set(true);
+    this.promoError.set(null);
     this.promoCodeService.validatePromoCode({ promoCodeName: code }).subscribe({
       next: (res) => {
         this.isValidatingPromo.set(false);
-        if (res.data?.isValid) { this.appliedPromo.set(code); this.discountPercent.set(res.data.discountPercentage); toast.success(`${res.data.discountPercentage}% off applied!`); }
-        else this.promoError.set(res.message || 'Invalid promo code.');
+        if (res.data?.isValid) {
+          this.appliedPromo.set(code);
+          this.discountPercent.set(res.data.discountPercentage);
+          toast.success(`${res.data.discountPercentage}% off applied!`);
+        }
+        else {
+          this.promoError.set(res.message || 'Invalid promo code.');
+        }
       },
-      error: (err) => { this.isValidatingPromo.set(false); this.promoError.set(err?.error?.message || 'Invalid promo code.'); },
+      error: (err) => {
+        this.isValidatingPromo.set(false);
+        this.promoError.set(err?.error?.message || 'Invalid promo code.');
+      },
     });
   }
 
@@ -257,11 +307,14 @@ export class PaymentComponent implements OnInit {
     this.promoError.set(null);
   }
 
-  // ── Wallet selection ──────────────────────────────────────────────────────
   selectMethod(method: 'stripe' | 'wallet'): void {
     this.selectedPaymentMethod.set(method);
-    if (method === 'wallet' && this.walletBalance() === null) this.fetchWalletBalance();
-    if (method === 'stripe') { this.walletBalance.set(null); }
+    if (method === 'wallet' && this.walletBalance() === null) {
+      this.fetchWalletBalance();
+    }
+    if (method === 'stripe') {
+      this.walletBalance.set(null);
+    }
   }
 
   private fetchWalletBalance(): void {
@@ -271,21 +324,31 @@ export class PaymentComponent implements OnInit {
         const bal = res.data?.walletBalance ?? 0;
         this.walletBalance.set(bal);
         this.isLoadingWallet.set(false);
-        if (bal <= 0) { toast.error('Wallet balance is ₹0.'); this.selectedPaymentMethod.set('stripe'); this.walletBalance.set(null); }
-        else if (bal >= this.total) toast.success(`Wallet (₹${bal.toLocaleString()}) covers the full order.`);
-        else toast.info(`₹${bal.toLocaleString()} from wallet. Stripe will handle the remaining ₹${(this.total - bal).toLocaleString()}.`);
+        if (bal <= 0) {
+          toast.error('Wallet balance is ₹0.');
+          this.selectedPaymentMethod.set('stripe');
+          this.walletBalance.set(null);
+        }
+        else if (bal >= this.total) {
+          toast.success(`Wallet (₹${bal.toLocaleString()}) covers the full order.`);
+        }
+        else {
+          toast.info(`₹${bal.toLocaleString()} from wallet. Stripe will handle the remaining ₹${(this.total - bal).toLocaleString()}.`);
+        }
       },
-      error: (err) => { toast.error(err?.error?.message || 'Could not fetch wallet balance.'); this.isLoadingWallet.set(false); this.selectedPaymentMethod.set('stripe'); },
+      error: (err) => {
+        toast.error(err?.error?.message || 'Could not fetch wallet balance.');
+        this.isLoadingWallet.set(false);
+        this.selectedPaymentMethod.set('stripe');
+      },
     });
   }
 
-  // ── Quantity ──────────────────────────────────────────────────────────────
   updateQuantity(change: number): void {
     const n = this.quantity() + change;
     if (n >= 1 && n <= (this.product()?.quantity || 1)) this.quantity.set(n);
   }
 
-  // ── Validation ────────────────────────────────────────────────────────────
   private validateShippingDetails(): boolean {
     if (!this.fullName() || !this.email() || !this.phone() || !this.address() || !this.city() || !this.state() || !this.pincode()) {
       toast.error('Please fill all shipping details'); return false;
@@ -293,7 +356,6 @@ export class PaymentComponent implements OnInit {
     return true;
   }
 
-  // ── Stripe modal ──────────────────────────────────────────────────────────
   openStripeModal(amount: number): void {
     // console.log('Stripe Config:', {
     //   publishableKey: environment.stripe.publishableKey,
@@ -330,13 +392,18 @@ export class PaymentComponent implements OnInit {
   }
 
   async submitStripePayment(): Promise<void> {
-    if (!this.stripe || !this.stripeCard) return;
+    if (!this.stripe || !this.stripeCard) {
+      return;
+    }
     this.isStripeProcessing.set(true);
     this.stripeError.set(null);
     const { paymentMethod, error } = await this.stripe.createPaymentMethod({
       type: 'card',
       card: this.stripeCard,
-      billing_details: { name: this.fullName(), email: this.email() },
+      billing_details: {
+        name: this.fullName(),
+        email: this.email()
+      },
     });
     if (error) {
       this.stripeError.set(error.message);
@@ -345,46 +412,59 @@ export class PaymentComponent implements OnInit {
     }
     console.log('Stripe Payment Response:', paymentMethod);
     this.isStripeProcessing.set(false);
-    if (this.stripeCard) { this.stripeCard.destroy(); this.stripeCard = null; }
+    if (this.stripeCard) {
+      this.stripeCard.destroy();
+      this.stripeCard = null;
+    }
     this.showStripeModal.set(false);
     this.placeOrder(paymentMethod);
   }
 
-  // ── Main entry point ──────────────────────────────────────────────────────
   processPayment(): void {
-    if (!this.validateShippingDetails()) return;
+    if (!this.validateShippingDetails()) {
+      return;
+    }
     const addr = this.selectedAddress();
-    if (!addr) { toast.error('Please select a delivery address'); return; }
+    if (!addr) {
+      toast.error('Please select a delivery address');
+      return;
+    }
 
     const method = this.selectedPaymentMethod();
 
     if (method === 'wallet') {
       const bal = this.walletBalance();
-      if (bal === null) { toast.error('Wallet balance not loaded yet.'); return; }
-      if (bal <= 0) { toast.error('Wallet balance is ₹0.'); return; }
+      if (bal === null) {
+        toast.error('Wallet balance not loaded yet.');
+        return;
+      }
+      if (bal <= 0) {
+        toast.error('Wallet balance is ₹0.');
+        return;
+      }
       if (this.walletCoversAll) {
         this.placeOrder(null);
       } else {
-        // Partial wallet — open Stripe for the remainder
         this.openStripeModal(this.remainingAfterWallet);
       }
     } else {
-      // Pure Stripe
       this.openStripeModal(this.total);
     }
   }
 
-  // ── Place order (called after payment is confirmed) ───────────────────────
   private placeOrder(stripeResponse: any): void {
     const addr = this.selectedAddress()!;
     this.isProcessing.set(true);
     const toastId = toast.loading('Placing order...');
 
-    if (stripeResponse) console.log('Stripe Payment Response:', stripeResponse);
-
+    if (stripeResponse) {
+      console.log('Stripe Payment Response:', stripeResponse);
+    }
 
     if (this.paymentMode() === 'cart') {
-      const p = new PaginationModel(); p.pageSize = 1; p.pageNumber = 1;
+      const p = new PaginationModel();
+      p.pageSize = 1;
+      p.pageNumber = 1;
       this.cartService.GetUserCart(p).subscribe({
         next: (cartRes) => {
           const req = new OrderAllFromCartRequestDTO();
@@ -395,15 +475,37 @@ export class PaymentComponent implements OnInit {
           req.useWallet = this.selectedPaymentMethod() === 'wallet';
           req.stripePaymentId = stripeResponse?.id ?? '';
           this.cartService.orderAllFromCart(req).subscribe({
-            next: (res) => { this.isProcessing.set(false); toast.dismiss(toastId); if (res.data?.isSuccess) { toast.success('Order placed successfully!'); this.router.navigate(['/profile/orders']); } else toast.error(res.message || 'Failed to place order'); },
-            error: (err) => { this.isProcessing.set(false); toast.dismiss(toastId); toast.error(err?.error?.message || 'Failed to place order'); },
+            next: (res) => {
+              this.isProcessing.set(false);
+              toast.dismiss(toastId);
+              if (res.data?.isSuccess) {
+                toast.success('Order placed successfully!');
+                this.router.navigate(['/profile/orders']);
+              } else {
+                toast.error(res.message || 'Failed to place order');
+              }
+            },
+            error: (err) => {
+              this.isProcessing.set(false);
+              toast.dismiss(toastId);
+              toast.error(err?.error?.message || 'Failed to place order');
+            },
           });
         },
-        error: () => { this.isProcessing.set(false); toast.dismiss(toastId); toast.error('Failed to retrieve cart'); },
+        error: () => {
+          this.isProcessing.set(false);
+          toast.dismiss(toastId);
+          toast.error('Failed to retrieve cart');
+        },
       });
-    } else {
+    }
+    else {
       const product = this.product();
-      if (!product) { this.isProcessing.set(false); toast.dismiss(toastId); return; }
+      if (!product) {
+        this.isProcessing.set(false);
+        toast.dismiss(toastId);
+        return;
+      }
       const req: PlaceOrderRequestDTO = {
         addressId: addr.addressId,
         totalProductsCount: this.quantity(),
@@ -412,11 +514,30 @@ export class PaymentComponent implements OnInit {
         promoCode: this.appliedPromo() ?? '',
         useWallet: this.selectedPaymentMethod() === 'wallet',
         stripePaymentId: stripeResponse?.id ?? '',
-        orderProductdDetails: { productId: product.productId, productName: product.productName, quantity: this.quantity(), productPrice: product.price },
+        orderProductdDetails: {
+          productId: product.productId,
+          productName: product.productName,
+          quantity: this.quantity(),
+          productPrice: product.price
+        },
       };
       this.orderService.placeOrder(req).subscribe({
-        next: (res) => { this.isProcessing.set(false); toast.dismiss(toastId); if (res.data?.isSuccess) { toast.success('Order placed successfully!'); this.router.navigate(['/profile/orders']); } else toast.error(res.message || 'Failed to place order'); },
-        error: (err) => { this.isProcessing.set(false); toast.dismiss(toastId); toast.error(err?.error?.message || 'Failed to place order'); },
+        next: (res) => {
+          this.isProcessing.set(false);
+          toast.dismiss(toastId);
+          if (res.data?.isSuccess) {
+            toast.success('Order placed successfully!');
+            this.router.navigate(['/profile/orders']);
+          }
+          else {
+            toast.error(res.message || 'Failed to place order');
+          }
+        },
+        error: (err) => {
+          this.isProcessing.set(false);
+          toast.dismiss(toastId);
+          toast.error(err?.error?.message || 'Failed to place order');
+        },
       });
     }
   }

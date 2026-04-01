@@ -1,9 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { CartService } from '../../../services/userServices/cart.service';
-import { PaginationModel } from '../../../models/users/pagination.model';
-import { ApiResponse } from '../../../models/users/apiResponse.model';
+import { CartService } from '../../services/cart.service';
+import { PaginationModel } from '../../../../shared/models/users/pagination.model';
+import { ApiResponse } from '../../../../shared/models/users/apiResponse.model';
 import {
   CartItemDTO,
   GetCartResponseDTO,
@@ -11,7 +11,7 @@ import {
   RemoveFromCartRequestDTO,
   RemoveFromCartResponseDTO,
   UpdateUserCartRequestDTO,
-} from '../../../models/users/cart.model';
+} from '../../../../shared/models/users/cart.model';
 import { toast } from 'ngx-sonner';
 
 @Component({

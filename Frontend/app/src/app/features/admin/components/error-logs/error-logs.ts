@@ -1,9 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ErrorLogsService, ErrorLogDTO } from '../../../services/adminServices/error-logs.service';
-import { PaginationModel } from '../../../models/users/pagination.model';
-import { PaginationComponent } from '../../shared/pagination/pagination.component';
-import { DEFAULT_PAGE_SIZE, calculateTotalPages } from '../../../constants/pagination.constants';
+import { ErrorLogsService, ErrorLogDTO } from '../../services/error-logs.service';
+import { PaginationModel } from '../../../../shared/models/users/pagination.model';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
+import { DEFAULT_PAGE_SIZE, calculateTotalPages } from '../../../../constants/pagination.constants';
 import { toast } from 'ngx-sonner';
 
 @Component({

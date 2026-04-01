@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { AddressDTO } from '../models/users/address.model';
+import { AddressDTO } from '../../../shared/models/users/address.model';
 
 @Injectable({
   providedIn: 'root',
@@ -7,8 +7,6 @@ import { AddressDTO } from '../models/users/address.model';
 export class AddressSelectionService {
   private selectedAddress = signal<AddressDTO | null>(null);
   private availableAddresses = signal<AddressDTO[]>([]);
-
-  // Expose as readonly so consumers can bind reactively
   readonly availableAddresses$ = this.availableAddresses.asReadonly();
 
   setSelectedAddress(address: AddressDTO): void {

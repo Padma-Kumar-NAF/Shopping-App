@@ -1,15 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PaginationModel } from '../../models/users/pagination.model';
+import { PaginationModel } from '../../../shared/models/users/pagination.model';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../models/users/apiResponse.model';
+import { ApiResponse } from '../../../shared/models/users/apiResponse.model';
 import {
   GetAllOrderResponseDTO,
   OrderRefundRequestDTO,
   OrderRefundResponseDTO,
   UpdateOrderRequestDTO,
   UpdateOrderResponseDTO,
-} from '../../models/admin/orders.model';
+} from '../../../shared/models/admin/orders.model';
 
 @Injectable({
   providedIn: 'root',

@@ -50,9 +50,7 @@ namespace ShoppingApp.Services
         }
 
         public async Task<ApiResponse<CancelOrderResponseDTO>> CancelOrder(Guid userId, Guid orderId)
-        {
-
-            
+        {            
             if(await IsUserNotFound(userId))
             {
                 throw new AppException("User not found",404);
@@ -60,8 +58,7 @@ namespace ShoppingApp.Services
 
             await _unitOfWork.BeginTransactionAsync();
 
-            var order = await _repository.GetQueryable().Include(o => o.OrderDetails!).Include(o => o.Address).Include(o => o.Payment)
-                    .FirstOrDefaultAsync(o => o.OrderId == orderId);
+            var order = await _repository.GetQueryable().Include(o => o.OrderDetails!).Include(o => o.Address).Include(o => o.Payment).FirstOrDefaultAsync(o => o.OrderId == orderId);
 
             if (order == null)
             {

@@ -12,8 +12,9 @@ import {
   SearchProductByIdResponseDTO,
   GetProductsWithFilterRequestDTO,
   GetProductsWithFilterResponseDTO,
-} from '../models/users/product.model';
-import { ApiResponse } from '../models/users/apiResponse.model';
+} from '../../../shared/models/users/product.model';
+import { ApiResponse } from '../../../shared/models/users/apiResponse.model';
+import { PaginationModel } from '../../../shared/models/users/pagination.model';
 
 @Injectable({
   providedIn: 'root',
@@ -22,9 +23,9 @@ export class ProductService {
   private baseUrl = 'https://localhost:7023/Products';
   private http = inject(HttpClient);
 
-  getAllProducts(pageSize = 20, pageNumber = 1): Observable<ProductDetails[]> {
+  getAllProducts(pagination : PaginationModel): Observable<ProductDetails[]> {
     const body: GetAllProductsRequestDTO = {
-      pagination: { pageSize, pageNumber },
+      pagination: pagination,
     };
     return this.http
       .post<ApiResponse<GetAllProductsResponseDTO>>(`${this.baseUrl}/get-products`, body)
@@ -57,8 +58,8 @@ export class ProductService {
       );
   }
 
-  getProductsByCategory(categoryName: string, pageSize = 20, pageNumber = 1): Observable<ProductDetails[]> {
-    return this.getAllProducts(pageSize, pageNumber).pipe(
+  getProductsByCategory(categoryName: string, pagination : PaginationModel): Observable<ProductDetails[]> {
+    return this.getAllProducts(pagination).pipe(
       map((products) =>
         products.filter(
           (p) => p.categoryName.toLowerCase() === categoryName.toLowerCase()

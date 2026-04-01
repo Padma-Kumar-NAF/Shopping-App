@@ -1,8 +1,8 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet, NavigationEnd } from '@angular/router';
-import { AuthStateService } from '../../../services/auth-state.service';
-import { StoreService } from '../../../services/adminServices/store.service';
+import { AuthStateService } from '../../../../core/state/auth-state.service';
+import { StoreService } from '../../services/store.service';
 import { toast } from 'ngx-sonner';
 import { filter } from 'rxjs/operators';
 

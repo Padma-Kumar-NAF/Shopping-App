@@ -37,18 +37,18 @@ namespace ShoppingApp.Services
 
                 if (wishList == null)
                 {
-                    throw new AppException("Wishlist not found");
+                    throw new AppException("Wishlist not found",404);
                 }
 
                 var product = await _productRepository.GetAsync(ProductId);
 
                 if (product == null)
-                    throw new Exception("Product not found");
+                    throw new AppException("Product not found",404);
 
                 var exists = await _wishListItemsRepository.FirstOrDefaultAsync(x => x.WishListId == WishListId && x.ProductId == ProductId);
 
                 if (exists != null)
-                    throw new AppException("Product already exists in wishlist");
+                    throw new AppException("Product already exists in wishlist",409);
 
                 var item = new WishListItems
                 {
@@ -96,7 +96,7 @@ namespace ShoppingApp.Services
 
                 if (isAlreadyExist != null)
                 {
-                    throw new AppException("Wishlist already exists");
+                    throw new AppException("Wishlist already exists", 409);
                 }
 
                 var wishList = new WishList
@@ -140,7 +140,7 @@ namespace ShoppingApp.Services
 
                 if (wishList == null)
                 {
-                    throw new AppException("Wishlist not found");
+                    throw new AppException("Wishlist not found", 404);
                 }
 
                 var wishListItems = await _wishListItemsRepository

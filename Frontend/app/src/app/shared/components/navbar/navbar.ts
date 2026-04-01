@@ -4,9 +4,9 @@ import { CommonModule, isPlatformBrowser, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { filter, takeUntil, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { AuthStateService } from '../../../services/auth-state.service';
-import { AuthApiService } from '../../../services/auth.service';
-import { ProductSuggestionService } from '../../../services/product-suggestion.service';
+import { AuthStateService } from '../../../core/state/auth-state.service';
+import { AuthApiService } from '../../../core/services/auth.service';
+import { ProductSuggestionService } from '../../../features/user/services/product-suggestion.service';
 
 const HIDDEN_ROUTES = ['/cart', '/auth', '/admin'];
 const NO_BACK_ROUTES = ['/'];
@@ -21,9 +21,7 @@ const NO_BACK_ROUTES = ['/'];
 export class NavbarComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private location = inject(Location);
-  private platformId = inject(PLATFORM_ID);
   private authState = inject(AuthStateService);
-  private apiService = inject(AuthApiService);
   private suggestionService = inject(ProductSuggestionService);
 
   showNavbar = signal<boolean>(true);
@@ -41,10 +39,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   ngOnInit(): void {
+    // console.log(window.history)
+    // console.log(window.history.length)
     this.evaluateRoute(this.router.url);
 
-    this.router.events
-      .pipe(filter((e) => e instanceof NavigationEnd), takeUntil(this.destroy$))
+    this.router.events.pipe(filter((e) => e instanceof NavigationEnd), takeUntil(this.destroy$))
       .subscribe((e: NavigationEnd) => {
         this.evaluateRoute(e.urlAfterRedirects);
         this.mobileMenuOpen.set(false);

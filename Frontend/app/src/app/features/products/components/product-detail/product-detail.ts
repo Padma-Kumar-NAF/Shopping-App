@@ -4,14 +4,15 @@ import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ProductService } from '../../services/product.service';
-import { ProductStateService } from '../../services/product-state.service';
-import { AuthStateService } from '../../services/auth-state.service';
-import { RedirectService } from '../../services/redirect.service';
-import { CartService } from '../../services/userServices/cart.service';
-import { WishlistService, WishListDTO } from '../../services/userServices/wishlist.service';
-import { ProductDetails } from '../../models/users/product.model';
-import { AddToCartRequestDTO } from '../../models/users/cart.model';
+import { ProductStateService } from '../../../../core/state/product-state.service';
+import { AuthStateService } from '../../../../core/state/auth-state.service';
+import { RedirectService } from '../../../../core/services/redirect.service';
+import { CartService } from '../../../../features/user/services/cart.service';
+import { WishlistService, WishListDTO } from '../../../../features/user/services/wishlist.service';
+import { ProductDetails } from '../../../../shared/models/users/product.model';
+import { AddToCartRequestDTO } from '../../../../shared/models/users/cart.model';
 import { toast } from 'ngx-sonner';
+import { PaginationModel } from '../../../../shared/models/users/pagination.model';
 
 @Component({
   selector: 'app-product-detail',
@@ -30,6 +31,18 @@ export class ProductDetail implements OnInit, OnDestroy {
   private wishlistService = inject(WishlistService);
 
   private destroy$ = new Subject<void>();
+  wishListpagination : PaginationModel;
+
+  paginaton: PaginationModel;
+  constructor() {
+    this.paginaton = new PaginationModel();
+    this.paginaton.pageNumber = 1;
+    this.paginaton.pageSize = 10;
+
+    this.wishListpagination = new PaginationModel();
+    this.wishListpagination.pageNumber = 1;
+    this.wishListpagination.pageSize = 20;
+  }
 
   product = signal<ProductDetails | null>(null);
   isLoading = signal<boolean>(true);
@@ -43,9 +56,6 @@ export class ProductDetail implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     window.scrollTo({ top: 0, behavior: 'instant' });
-
-    // React to param changes so related-product navigation (same route, new param)
-    // also scrolls to top and reloads the correct product
     this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe(params => {
       const productId = params.get('productId');
       window.scrollTo({ top: 0, behavior: 'instant' });
@@ -96,7 +106,7 @@ export class ProductDetail implements OnInit, OnDestroy {
   }
 
   loadRelatedProducts(categoryName: string): void {
-    this.productService.getProductsByCategory(categoryName).subscribe({
+    this.productService.getProductsByCategory(categoryName, this.paginaton).subscribe({
       next: (products) => {
         this.relatedProducts.set(
           products.filter((p) => p.productId !== this.product()?.productId).slice(0, 4)
@@ -150,8 +160,13 @@ export class ProductDetail implements OnInit, OnDestroy {
     request.productId = product.productId;
     request.quantity = this.quantity();
     this.cartService.addToCart(request).subscribe({
-      next: (res) => toast.success(res.message || `${product.productName} added to cart!`),
-      error: (err) => toast.error(err?.error?.message || 'Failed to add to cart'),
+      next: (res) => {
+        toast.success(res.message || `${product.productName} added to cart!`)
+      },
+      error: (err) => {
+        toast.error(err?.error?.message || 'Failed to add to cart')
+        console.error(err);
+      }
     });
   }
 
@@ -164,9 +179,14 @@ export class ProductDetail implements OnInit, OnDestroy {
       this.router.navigate(['/auth']);
       return;
     }
-    this.wishlistService.getUserWishlists().subscribe({
-      next: (res) => this.wishlists.set(res.data?.wishList ?? []),
-      error: () => this.wishlists.set([]),
+    this.wishlistService.getUserWishlists(this.wishListpagination).subscribe({
+      next: (res) => {
+        this.wishlists.set(res.data?.wishList ?? [])
+      },
+      error: (err) => {
+        console.error(err);
+        this.wishlists.set([])
+      },
     });
     this.showWishlistPopup.set(true);
   }

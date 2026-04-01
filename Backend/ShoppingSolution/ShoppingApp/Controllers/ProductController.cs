@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Filters;
 using ShoppingApp.Interfaces.ControllerInterface;
@@ -7,9 +8,10 @@ using ShoppingApp.Models.DTOs.Product;
 
 namespace ShoppingApp.Controllers
 {
-    //[Authorize(Roles = "admin,user")]
+    [Authorize(Roles = "admin,user")]
     [Route("[controller]")]
     [ApiController]
+    [ValidateRequest]
     public class ProductsController : BaseController, IProductController
     {
         private readonly IProductService _productService;
@@ -28,9 +30,7 @@ namespace ShoppingApp.Controllers
         /// <param name="request">An object containing the filtering and pagination options to apply when retrieving products. Cannot be null.</param>
         /// <returns>An IActionResult containing a list of products that satisfy the request criteria. Returns an empty list if
         /// no products are found.</returns>
-        //[Authorize(Roles = "admin,user")]
         [HttpPost("get-products")]
-        [ValidateRequest]
         public async Task<IActionResult> GetProducts([FromBody] GetAllProductsRequestDTO request)
         {
             try
@@ -53,9 +53,7 @@ namespace ShoppingApp.Controllers
         /// <param name="request">An object containing the criteria for searching products by name. Must not be null.</param>
         /// <returns>An IActionResult containing the search results. Returns a list of matching products if found; otherwise,
         /// returns an empty result or an appropriate error response.</returns>
-        //[Authorize(Roles = "admin,user")]
         [HttpPost("search-product")]
-        [ValidateRequest]
         public async Task<IActionResult> GetProductByName([FromBody] SearchProductByNameRequestDTO request)
         {
             try
@@ -79,9 +77,8 @@ namespace ShoppingApp.Controllers
         /// price, and description.</param>
         /// <returns>An IActionResult that represents the result of the operation. If successful, the response includes the
         /// details of the newly added product.</returns>
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         [HttpPost("add-product")]
-        [ValidateRequest]
         public async Task<IActionResult> AddProduct([FromBody] AddNewProductRequestDTO request)
         {
             try
@@ -105,9 +102,8 @@ namespace ShoppingApp.Controllers
         /// fields for the update operation must be provided.</param>
         /// <returns>An <see cref="IActionResult"/> that represents the result of the update operation. If successful, the
         /// response includes the updated product details.</returns>
-        //[Authorize(Roles = "admin,user")]
+        [Authorize(Roles = "admin")]
         [HttpPost("update-product")]
-        [ValidateRequest]
         public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductRequestDTO request)
         {
             try
@@ -130,9 +126,7 @@ namespace ShoppingApp.Controllers
         /// <param name="request">An object containing the product ID to search for. Must not be null.</param>
         /// <returns>An IActionResult containing the product details if found; otherwise, an error response indicating the reason
         /// for failure.</returns>
-        //[Authorize(Roles = "admin,user")]
         [HttpPost("get-product-by-id")]
-        [ValidateRequest]
         public async Task<IActionResult> GetProductById([FromBody] SearchProductByIdRequestDTO request)
         {
             try
@@ -155,9 +149,7 @@ namespace ShoppingApp.Controllers
         /// </remarks>
         /// <param name="request">Contains price range and pagination details.</param>
         /// <returns>Filtered list of products.</returns>
-        //[Authorize(Roles = "admin,user")]
         [HttpPost("get-products-with-filter")]
-        [ValidateRequest]
         public async Task<IActionResult> GetProductsWithFilter([FromBody] GetAllProductsWithFilterRequestDTO request)
         {
             try
@@ -170,6 +162,7 @@ namespace ShoppingApp.Controllers
                 throw;
             }
         }
+
 
         [HttpGet("suggestions")]
         public async Task<IActionResult> GetSuggestions([FromQuery] string query)
@@ -191,9 +184,8 @@ namespace ShoppingApp.Controllers
         /// <remarks>This action requires the caller to be authenticated and authorized with the 'admin' role.</remarks>
         /// <param name="request">An object containing the ProductId to soft delete.</param>
         /// <returns>An IActionResult indicating whether the product was successfully soft deleted.</returns>
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         [HttpPost("delete-product")]
-        [ValidateRequest]
         public async Task<IActionResult> DeleteProduct([FromBody] DeleteProductRequestDTO request)
         {
             try

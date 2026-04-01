@@ -2,12 +2,12 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { toast } from 'ngx-sonner';
-import { UserServcie } from '../../../services/adminServices/user.service';
-import { PaginationModel } from '../../../models/users/pagination.model';
-import { ApiResponse } from '../../../models/admin/apiResponse.model';
-import { GetUsersResponseDTO, UserDetailsDTO } from '../../../models/admin/users.model';
-import { StoreService } from '../../../services/adminServices/store.service';
-import { AuthStateService } from '../../../services/auth-state.service';
+import { UserServcie } from '../../services/user.service';
+import { PaginationModel } from '../../../../shared/models/users/pagination.model';
+import { ApiResponse } from '../../../../shared/models/admin/apiResponse.model';
+import { GetUsersResponseDTO, UserDetailsDTO } from '../../../../shared/models/admin/users.model';
+import { StoreService } from '../../services/store.service';
+import { AuthStateService } from '../../../../core/state/auth-state.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 

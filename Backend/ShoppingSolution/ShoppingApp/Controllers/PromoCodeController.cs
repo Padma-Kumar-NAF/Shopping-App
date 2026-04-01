@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Filters;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models.DTOs.Promocode;
 
 namespace ShoppingApp.Controllers
 {
+    [Authorize(Roles = "admin,user")]
     [Route("[controller]")]
     [ApiController]
+    [ValidateRequest]
     public class PromoCodeController : BaseController
     {
         private readonly IPromoCodeService _promoService;
@@ -21,8 +24,8 @@ namespace ShoppingApp.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
+        [Authorize(Roles = "admin")]
         [HttpPost("add-promocode")]
-        [ValidateRequest]
         public async Task<IActionResult> AddPromoCode([FromBody] AddPromoCodeRequestDTO request)
         {
             try
@@ -54,6 +57,7 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost("get-all-promocode")]
         [ValidateRequest]
         public async Task<IActionResult> GetAllPromoCodes([FromBody] GetAllPromocodeRequestDTO request)
@@ -69,6 +73,7 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost("edit-promocode")]
         [ValidateRequest]
         public async Task<IActionResult> EditPromoCodes([FromBody] EditPromocodeRequestDTO request)
@@ -84,6 +89,7 @@ namespace ShoppingApp.Controllers
             }
         }
 
+        [Authorize(Roles = "admin")]
         [HttpDelete("delete-promocode")]
         [ValidateRequest]
         public async Task<IActionResult> DeletePromoCode([FromBody] DeletePromocodeRequestDTO request)

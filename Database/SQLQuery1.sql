@@ -17,8 +17,8 @@ select * from Payments
 select * from Wallets
 select * from Refunds
 
---update Wallets 
---set WalletAmount = 7200
+update Wallets
+set WalletAmount = 6480
 
 delete from Refunds
 delete from Payments

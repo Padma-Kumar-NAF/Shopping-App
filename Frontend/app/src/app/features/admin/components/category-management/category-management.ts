@@ -2,17 +2,17 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { toast } from 'ngx-sonner';
-import { PaginationModel } from '../../../models/users/pagination.model';
-import { AdminCategoryService } from '../../../services/adminServices/category.service';
-import { ApiResponse } from '../../../models/users/apiResponse.model';
+import { PaginationModel } from '../../../../shared/models/users/pagination.model';
+import { AdminCategoryService } from '../../services/category.service';
+import { ApiResponse } from '../../../../shared/models/users/apiResponse.model';
 import {
   CategoryDTO,
   DeleteCategoryResponseDTO,
   AddCategoryResponseDTO,
   EditCategoryResponseDTO,
   GetAllCategoryResponseDTO,
-} from '../../../models/admin/categories.model';
-import { StoreService } from '../../../services/adminServices/store.service';
+} from '../../../../shared/models/admin/categories.model';
+import { StoreService } from '../../services/store.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 

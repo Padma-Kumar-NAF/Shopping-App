@@ -2,8 +2,8 @@ import { Injectable, signal, computed, PLATFORM_ID, inject } from '@angular/core
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
-import { UserDetails } from '../models/users/user.model';
-import { AuthApiService } from './auth.service';
+import { UserDetails } from '../../shared/models/users/user.model';
+import { AuthApiService } from '../services/auth.service';
 
 @Injectable({
   providedIn: 'root',

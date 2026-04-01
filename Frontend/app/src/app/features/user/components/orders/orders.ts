@@ -6,14 +6,14 @@ import { MatButtonModule } from '@angular/material/button';
 import {
   OrderService,
   OrderDetailsResponseDTO,
-} from '../../../services/userServices/order.service';
-import { ReviewService } from '../../../services/userServices/review.service';
-import { InvoiceService } from '../../../services/userServices/invoice.service';
-import { PaginationModel } from '../../../models/users/pagination.model';
-import { PaginationComponent } from '../../shared/pagination/pagination.component';
+} from '../../services/order.service';
+import { ReviewService } from '../../services/review.service';
+import { InvoiceService } from '../../services/invoice.service';
+import { PaginationModel } from '../../../../shared/models/users/pagination.model';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { toast } from 'ngx-sonner';
-import { isOrderCancellable,isOrderDelivered, OrderStatus } from '../../../constants/order-status.constants';
-import { DEFAULT_PAGE_SIZE, calculateTotalPages } from '../../../constants/pagination.constants';
+import { isOrderCancellable,isOrderDelivered, OrderStatus } from '../../../../constants/order-status.constants';
+import { DEFAULT_PAGE_SIZE, calculateTotalPages } from '../../../../constants/pagination.constants';
 
 interface ReviewData {
   productId: string;

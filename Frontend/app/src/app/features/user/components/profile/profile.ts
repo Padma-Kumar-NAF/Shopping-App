@@ -1,15 +1,15 @@
 ﻿import { Component, signal, OnInit, inject, WritableSignal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProfileApiService } from '../../../services/userServices/profile.service';
-import { AuthStateService } from '../../../services/auth-state.service';
+import { ProfileApiService } from '../../services/profile.service';
+import { AuthStateService } from '../../../../core/state/auth-state.service';
 import { ActivatedRoute } from '@angular/router';
-import { NavbarComponent } from '../../shared/navbar/navbar';
+import { NavbarComponent } from '../../../../shared/components/navbar/navbar';
 import {
   newEmailRequestDTO,
   EditMailResponseDTOModel,
   EditUserDetailsModel,
   GetUserByIdResponseDTO,
-} from '../../../models/users/profile.model';
+} from '../../../../shared/models/users/profile.model';
 import { toast } from 'ngx-sonner';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -20,8 +20,8 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { ApiResponse } from '../../../models/users/apiResponse.model';
-import { WalletService } from '../../../services/userServices/wallet.service';
+import { ApiResponse } from '../../../../shared/models/users/apiResponse.model';
+import { WalletService } from '../../services/wallet.service';
 
 type TabType = 'cart' | 'wishlist' | 'orders' | 'address' | 'profile';
 

@@ -2,8 +2,9 @@ import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { WishlistService, WishListDTO } from '../../../services/userServices/wishlist.service';
+import { WishlistService, WishListDTO } from '../../services/wishlist.service';
 import { toast } from 'ngx-sonner';
+import { PaginationModel } from '../../../../shared/models/users/pagination.model';
 
 @Component({
   selector: 'app-wishlist',
@@ -15,11 +16,19 @@ import { toast } from 'ngx-sonner';
 export class WishlistComponent implements OnInit {
   private wishlistService = inject(WishlistService);
 
+  pagination : PaginationModel;
+
   wishLists = signal<WishListDTO[]>([]);
   selectedWishlistId = signal<string>('');
   isLoading = signal<boolean>(false);
   showCreateForm = signal<boolean>(false);
   newWishlistName = signal<string>('');
+
+  constructor(){
+    this.pagination = new PaginationModel();
+    this.pagination.pageNumber = 1;
+    this.pagination.pageSize = 10;
+  }
 
   selectedWishlist = computed(
     () => this.wishLists().find((w) => w.wishListId === this.selectedWishlistId()) ?? null
@@ -33,7 +42,7 @@ export class WishlistComponent implements OnInit {
 
   loadWishlists(): void {
     this.isLoading.set(true);
-    this.wishlistService.getUserWishlists().subscribe({
+    this.wishlistService.getUserWishlists(this.pagination).subscribe({
       next: (res) => {
         const lists = res.data?.wishList ?? [];
         this.wishLists.set(lists);

@@ -1,12 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Filters;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models.DTOs.Wallet;
 
 namespace ShoppingApp.Controllers
 {
+    [Authorize(Roles = "user")]
     [Route("api/[controller]")]
     [ApiController]
+    [ValidateRequest]
+
     public class WalletController : BaseController
     {
         private readonly IWalletService _walletService;
@@ -17,7 +21,6 @@ namespace ShoppingApp.Controllers
         }
 
         [HttpGet("balance")]
-        [ValidateRequest]
         public async Task<IActionResult> GetWalletBalance()
         {
             try

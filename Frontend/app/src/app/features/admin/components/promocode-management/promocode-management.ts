@@ -4,9 +4,9 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators, AbstractContro
 import { map } from "rxjs/operators";
 import { Observable } from "rxjs";
 import { toast } from "ngx-sonner";
-import { PromoCodeService } from "../../../services/adminServices/promocode.service";
-import { StoreService } from "../../../services/adminServices/store.service";
-import { PromoCodeItemDTO, AddPromoCodeRequestDTO, EditPromoCodeRequestDTO } from "../../../models/admin/promocode.model";
+import { PromoCodeService } from "../../services/promocode.service";
+import { StoreService } from "../../services/store.service";
+import { PromoCodeItemDTO, AddPromoCodeRequestDTO, EditPromoCodeRequestDTO } from "../../../../shared/models/admin/promocode.model";
 
 function notPastDateValidator(control: AbstractControl): ValidationErrors | null {
   if (!control.value) return null;

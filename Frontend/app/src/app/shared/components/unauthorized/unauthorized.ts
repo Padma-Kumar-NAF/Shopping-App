@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthStateService } from '../../services/auth-state.service';
+import { AuthStateService } from '../../../core/state/auth-state.service';
 
 @Component({
   selector: 'app-unauthorized',

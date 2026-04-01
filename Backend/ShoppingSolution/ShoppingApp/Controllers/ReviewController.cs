@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingApp.Filters;
 using ShoppingApp.Interfaces.ControllerInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
@@ -6,10 +7,10 @@ using ShoppingApp.Models.DTOs.Review;
 
 namespace ShoppingApp.Controllers
 {
-    //[Authorize(Roles = "User")]
+    [Authorize(Roles = "user")]
     [Route("[controller]")]
     [ApiController]
-
+    [ValidateRequest]
     public class ReviewController : BaseController, IReviewController
     {
         private readonly IReviewService _reviewService;
@@ -28,7 +29,6 @@ namespace ShoppingApp.Controllers
         /// <returns>An IActionResult that represents the result of the operation. On success, the response includes the details
         /// of the added review.</returns>
         [HttpPost("add-review")]
-        [ValidateRequest]
         public async Task<IActionResult> AddReview([FromBody] AddReviewRequestDTO request)
         {
             try
@@ -51,7 +51,6 @@ namespace ShoppingApp.Controllers
         /// <param name="request">The request object containing the review ID to be deleted.</param>
         /// <returns>Returns a result indicating the success or failure of the deletion operation.</returns>
         [HttpPost("delete-review")]
-        [ValidateRequest]
         public async Task<IActionResult> DeleteReview([FromBody] DeleteReviewRequestDTO request)
         {
             try

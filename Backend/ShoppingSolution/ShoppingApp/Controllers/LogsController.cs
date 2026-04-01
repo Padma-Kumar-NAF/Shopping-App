@@ -5,7 +5,7 @@ using ShoppingApp.Models.DTOs.Logs;
 
 namespace ShoppingApp.Controllers
 {
-    //[Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin")]
     [Route("logs")]
     [ApiController]
     public class LogsController : BaseController
