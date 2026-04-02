@@ -36,6 +36,5 @@ export const publicGuard: CanActivateFn = () => {
   if (user?.userRole?.toLowerCase() === 'admin') {
     return router.createUrlTree(['/admin/dashboard']);
   }
-
   return true;
 };

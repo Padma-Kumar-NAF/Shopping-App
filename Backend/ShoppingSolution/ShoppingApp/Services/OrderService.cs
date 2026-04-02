@@ -58,24 +58,20 @@ namespace ShoppingApp.Services
 
             await _unitOfWork.BeginTransactionAsync();
 
-            var order = await _repository.GetQueryable().Include(o => o.OrderDetails!).Include(o => o.Address).Include(o => o.Payment).FirstOrDefaultAsync(o => o.OrderId == orderId);
+            var order = await _repository.GetQueryable().Include(o => o.OrderDetails!)
+                .Include(o => o.Address)
+                .Include(o => o.Payment)
+                .FirstOrDefaultAsync(o => o.OrderId == orderId && o.UserId == userId);
 
             if (order == null)
             {
-                throw new AppException("Order not found.",404);
+                throw new AppException("Order not found.", 404);
             }
-
-            // Indhu work
 
             if (order.Status == "Cancelled")
             {
                 throw new AppException("Order already cancelled.",400);
             }
-
-            //if (order.Status == "Delivered")
-            //{
-            //    throw new AppException("Cannot cancel delivered order.",400);
-            //}
 
             try
             {
@@ -112,200 +108,160 @@ namespace ShoppingApp.Services
                     Action = "DeleteOrder"
                 };
             }
-            catch (AppException)
+            catch (Exception)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Error while canceling order", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Something went wrong while canceling order", ex, 500);
             }
         }
 
         public async Task<ApiResponse<GetAllOrderResponseDTO>> GetAllOrders(GetAllOrderRequestDTO request)
         {
-            try
+            var query = _repository.GetQueryable()!
+                        .Include(o => o.User)!
+                        .Include(o => o.Address)!
+                        .Include(o => o.Payment)!
+                        .Include(o => o.Refund)!
+                        .Include(o => o.OrderDetails)!
+                            .ThenInclude(od => od.Product);
+
+            var totalOrders = await query.CountAsync();
+
+            if (totalOrders == 0)
             {
-                var query = _repository.GetQueryable()
-                            .Include(o => o.User)
-                            .Include(o => o.Address)
-                            .Include(o => o.Payment)
-                            .Include(o => o.Refund)
-                            .Include(o => o.OrderDetails)
-                             .ThenInclude(od => od.Product);
-
-                var totalOrders = await query.CountAsync();
-
-                if (totalOrders == 0)
-                {
-                    return new ApiResponse<GetAllOrderResponseDTO>
-                    {
-                        StatusCode = 404,
-                        Message = "No orders found",
-                        Data = new GetAllOrderResponseDTO(),
-                        Action = "GetAllOrders"
-                    };
-                }
-
-                var orders = await query
-                    .OrderByDescending(o => o.CreatedAt)
-                    .Skip((request.pagination.PageNumber - 1) * request.pagination.PageSize)
-                    .Take(request.pagination.PageSize)
-                    .ToListAsync();
-
-                var response = new GetAllOrderResponseDTO
-                {
-                    Items = orders.Select(o => new OrderDetailsResponseDTO
-                    {
-                        OrderId = o.OrderId,
-                        Status = o.Status,
-                        DeliveryDate = o.DeliveryDate!,
-
-                        TotalProductsCount = o.OrderDetails!.Count,
-                        TotalAmount = o.OrderTotalAmount,
-                        IsRefunded = o.Refund?.RefundId != null ? true : false,
-
-                        OrderBy = new OrderBy
-                        {
-                            UserEmail = o.User!.Email,
-                            UserName = o.User.Name,
-                        },
-
-                        Address = new AddressDTO
-                        {
-                            AddressId = o.Address!.AddressId,
-                            AddressLine1 = o.Address.AddressLine1,
-                            AddressLine2 = o.Address.AddressLine2,
-                            City = o.Address.City,
-                            State = o.Address.State,
-                            Pincode = o.Address.Pincode
-                        },
-
-                        Payment = new PaymentDTO
-                        {
-                            PaymentId = o.Payment!.PaymentId,
-                            PaymentType = o.Payment.PaymentType
-                        },
-
-                        Items = o.OrderDetails.Select(od => new OrderDetailsDTO
-                        {
-                            OrderDetailsId = od.OrderDetailsId,
-                            ProductId = od.ProductId,
-                            ProductName = od.Product!.Name,
-                            ImagePath = od.Product.ImagePath,
-                            Quantity = od.Quantity,
-                            ProductPrice = od.ProductPrice
-                        }).ToList()
-
-                    }).ToList()
-                };
-
                 return new ApiResponse<GetAllOrderResponseDTO>
                 {
-                    StatusCode = 200,
-                    Message = "Orders fetched successfully",
-                    Data = response,
+                    StatusCode = 404,
+                    Message = "No orders found",
+                    Data = new GetAllOrderResponseDTO(),
                     Action = "GetAllOrders"
                 };
             }
-            catch (AppException)
+
+            var orders = await query
+                .OrderByDescending(o => o.CreatedAt)
+                .Skip((request.pagination.PageNumber - 1) * request.pagination.PageSize)
+                .Take(request.pagination.PageSize)
+                .ToListAsync();
+
+            var response = new GetAllOrderResponseDTO
             {
-                throw;
-            }
-            catch (DbUpdateException ex)
+                Items = orders.Select(o => new OrderDetailsResponseDTO
+                {
+                    OrderId = o.OrderId,
+                    Status = o.Status,
+                    DeliveryDate = o.DeliveryDate!,
+
+                    TotalProductsCount = o.OrderDetails!.Count,
+                    TotalAmount = o.OrderTotalAmount,
+                    IsRefunded = o.Refund?.RefundId != null ? true : false,
+
+                    OrderBy = new OrderBy
+                    {
+                        UserEmail = o.User!.Email,
+                        UserName = o.User.Name,
+                    },
+
+                    Address = new AddressDTO
+                    {
+                        AddressId = o.Address!.AddressId,
+                        AddressLine1 = o.Address.AddressLine1,
+                        AddressLine2 = o.Address.AddressLine2,
+                        City = o.Address.City,
+                        State = o.Address.State,
+                        Pincode = o.Address.Pincode
+                    },
+
+                    Payment = new PaymentDTO
+                    {
+                        PaymentId = o.Payment!.PaymentId,
+                        PaymentType = o.Payment.PaymentType
+                    },
+
+                    Items = o.OrderDetails.Select(od => new OrderDetailsDTO
+                    {
+                        OrderDetailsId = od.OrderDetailsId,
+                        ProductId = od.ProductId,
+                        ProductName = od.Product!.Name,
+                        ImagePath = od.Product.ImagePath,
+                        Quantity = od.Quantity,
+                        ProductPrice = od.ProductPrice
+                    }).ToList()
+
+                }).ToList()
+            };
+
+            return new ApiResponse<GetAllOrderResponseDTO>
             {
-                throw new AppException("Error while Fetching orders", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                throw new AppException("Something went wrong while Fetching orders", ex, 500);
-            }
+                StatusCode = 200,
+                Message = "Orders fetched successfully",
+                Data = response,
+                Action = "GetAllOrders"
+            };
         }
 
         public async Task<ApiResponse<GetUserOrderDetailsResponseDTO>> GetUserOrderById(Guid userId,GetUserOrderDetailsRequestDTO request)
         {
-            try
+            if (await IsUserNotFound(userId))
             {
-                if (await IsUserNotFound(userId))
+                throw new AppException("User not found", 404);
+            }
+            var query = _repository.GetQueryable().Where(order => order.UserId == userId).OrderByDescending(o => o.CreatedAt);
+
+            var orders = await query
+                .Skip((request.pagination.PageNumber - 1) * request.pagination.PageSize)
+                .Take(request.pagination.PageSize)
+                .Select(o => new OrderDetailsResponseDTO
                 {
-                    throw new AppException("User not found", 404);
-                }
-                var query = _repository.GetQueryable().Where(order => order.UserId == userId).OrderByDescending(o => o.CreatedAt);
+                    OrderId = o.OrderId,
+                    Status = o.Status,
+                    TotalProductsCount = o.TotalProductsCount,
+                    TotalAmount = o.OrderTotalAmount,
+                    DeliveryDate = (DateTime)o.DeliveryDate!,
 
-                var orders = await query
-                    .Skip((request.pagination.PageNumber - 1) * request.pagination.PageSize)
-                    .Take(request.pagination.PageSize)
-                    .Select(o => new OrderDetailsResponseDTO
+                    IsRefunded = _refundRepository.GetQueryable().Where(r => r.OrderId == o.OrderId).FirstOrDefault() != null ? true : false,
+
+                    Address = new AddressDTO
                     {
-                        OrderId = o.OrderId,
-                        Status = o.Status,
-                        TotalProductsCount = o.TotalProductsCount,
-                        TotalAmount = o.OrderTotalAmount,
-                        DeliveryDate = (DateTime)o.DeliveryDate!,
-
-                        IsRefunded = _refundRepository.GetQueryable().Where(r => r.OrderId == o.OrderId).FirstOrDefault() != null ? true : false,
-
-                        Address = new AddressDTO
-                        {
-                            AddressId = o.Address!.AddressId,
-                            AddressLine1 = o.Address.AddressLine1,
-                            AddressLine2 = o.Address.AddressLine2,
-                            State = o.Address.State,
-                            City = o.Address.City,
-                            Pincode = o.Address.Pincode
-                        },
-
-                        Payment = new PaymentDTO
-                        {
-                            PaymentId = o.Payment!.PaymentId,
-                            PaymentType = o.Payment.PaymentType
-                        },
-
-                        Items = o.OrderDetails!
-                        .Select(od => new OrderDetailsDTO
-                        {
-                            OrderDetailsId = od.OrderDetailsId,
-                            ProductId = od.ProductId,
-                            ProductName = od.ProductName,
-                            Quantity = od.Quantity,
-                            ProductPrice = od.ProductPrice,
-                            ImagePath = od.Product!.ImagePath
-                        })
-                        .OrderBy(od => od.ProductName)
-                        .ToList()
-                    })
-                    .ToListAsync();
-
-                return new ApiResponse<GetUserOrderDetailsResponseDTO>
-                {
-                    StatusCode = 200,
-                    Message = orders.Any() ? "Orders fetched successfully" : "No orders found",
-                    Data = new GetUserOrderDetailsResponseDTO
-                    {
-                        Items = orders
+                        AddressId = o.Address!.AddressId,
+                        AddressLine1 = o.Address.AddressLine1,
+                        AddressLine2 = o.Address.AddressLine2,
+                        State = o.Address.State,
+                        City = o.Address.City,
+                        Pincode = o.Address.Pincode
                     },
-                    Action = "GetUserOrders"
-                };
-            }
-            catch (AppException)
+
+                    Payment = new PaymentDTO
+                    {
+                        PaymentId = o.Payment!.PaymentId,
+                        PaymentType = o.Payment.PaymentType
+                    },
+
+                    Items = o.OrderDetails!
+                    .Select(od => new OrderDetailsDTO
+                    {
+                        OrderDetailsId = od.OrderDetailsId,
+                        ProductId = od.ProductId,
+                        ProductName = od.ProductName,
+                        Quantity = od.Quantity,
+                        ProductPrice = od.ProductPrice,
+                        ImagePath = od.Product!.ImagePath
+                    })
+                    .OrderBy(od => od.ProductName)
+                    .ToList()
+                })
+                .ToListAsync();
+
+            return new ApiResponse<GetUserOrderDetailsResponseDTO>
             {
-                throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                throw new AppException("Error while Fetching users orders", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                throw new AppException("Something went wrong while Fetching users orders", ex, 500);
-            }
+                StatusCode = 200,
+                Message = orders.Any() ? "Orders fetched successfully" : "No orders found",
+                Data = new GetUserOrderDetailsResponseDTO
+                {
+                    Items = orders
+                },
+                Action = "GetUserOrders"
+            };
         }
 
         public async Task<ApiResponse<OrderRefundResponseDTO>> OrderRefund(Guid userId, OrderRefundRequestDTO request)
@@ -395,33 +351,23 @@ namespace ShoppingApp.Services
                     Message = "Refund successful and wallet credited"
                 };
             }
-            catch (AppException)
+            catch (Exception)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
             }
-            catch (DbUpdateException ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Error while refunding the amount", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Something went wrong while refunding", ex, 500);
-            }
         }
         public async Task<ApiResponse<PlaceOrderResponseDTO>> PlaceOrder(Guid userId, PlaceOrderRequestDTO request)
         {
+            if (await IsUserNotFound(userId))
+            {
+                throw new AppException("User not found", 404);
+            }
+
             await _unitOfWork.BeginTransactionAsync();
 
             try
             {
-                if (await IsUserNotFound(userId))
-                {
-                    throw new AppException("User not found", 404);
-                }
-
                 var address = await _addressRepository.GetAsync(request.AddressId) ?? throw new AppException("Address not found", 404);
 
                 var product = await _productRepository.GetAsync(request.OrderProductdDetails.ProductId) ?? throw new AppException("Product not found", 404);
@@ -510,15 +456,10 @@ namespace ShoppingApp.Services
                     Action = "OrderedConfirmed"
                 };
             }
-            catch (AppException)
+            catch (Exception)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Error while placing order", ex, 500);
             }
         }
 
@@ -530,13 +471,13 @@ namespace ShoppingApp.Services
             {
                 UserId = userId,
                 Status = "Not Delivered",
-                TotalAmount = orderTotal, // Without discount amount
+                TotalAmount = orderTotal, 
                 TotalProductsCount = request.TotalProductsCount,
                 AddressId = request.AddressId,
                 DeliveryDate = DateTime.UtcNow.AddDays(2),
                 DiscountPercentage = discountPercentage,
                 DiscountAmount = discountAmount,
-                OrderTotalAmount = amountAfterDiscount + tax + shipping,// If user use promocode then
+                OrderTotalAmount = amountAfterDiscount + tax + shipping,
                 PromoCodeId = promoCodeId
             };
         }
@@ -620,56 +561,41 @@ namespace ShoppingApp.Services
             {
                 throw new AppException("Admin cannot cancel the order", 401);
             }
-            try
+            var Order = await _repository.GetAsync(OrderId);
+            if (Order == null)
             {
-                var Order = await _repository.GetAsync(OrderId);
-                if (Order == null)
-                {
-                    throw new AppException($"{nameof(Order)} is null.");
-                }
-
-                if(Order.Status == "Cancelled" )
-                {
-                    throw new AppException("Order cancelled");
-                }
-
-                if(Order.Status == "Delivered")
-                {
-                    throw new AppException("Order delivered");
-                }
-
-                if(Status == "Delivered")
-                {
-                    Order.DeliveryDate = DateTime.Now;
-                }
-
-                Order.Status = Status;
-
-                await _repository.UpdateAsync(Order.OrderId, Order);
-
-                return new ApiResponse<UpdateOrderResponseDTO>()
-                {
-                    StatusCode = 200,
-                    Data = new UpdateOrderResponseDTO()
-                    {
-                        IsUpdated = true,
-                    },
-                    Message = "Order updated successfully",
-                    Action = "Update order status"
-                };
+                throw new AppException($"{nameof(Order)} is null.");
             }
-            catch (AppException)
+
+            if(Order.Status == "Cancelled" )
             {
-                throw;
+                throw new AppException("Order cancelled");
             }
-            catch (DbUpdateException ex)
+
+            if(Order.Status == "Delivered")
             {
-                throw new AppException("Error while updating order", ex, 500);
+                throw new AppException("Order delivered");
             }
-            catch (Exception ex)
+
+            if(Status == "Delivered")
             {
-                throw new AppException("Something went wrong while updating the order", ex, 500);
+                Order.DeliveryDate = DateTime.Now;
             }
+
+            Order.Status = Status;
+
+            await _repository.UpdateAsync(Order.OrderId, Order);
+
+            return new ApiResponse<UpdateOrderResponseDTO>()
+            {
+                StatusCode = 200,
+                Data = new UpdateOrderResponseDTO()
+                {
+                    IsUpdated = true,
+                },
+                Message = "Order updated successfully",
+                Action = "Update order status"
+            };
         }
         private async Task<bool > IsUserNotFound(Guid userId)
         {

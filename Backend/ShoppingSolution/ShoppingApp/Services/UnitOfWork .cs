@@ -23,7 +23,9 @@ namespace ShoppingApp.Services
         public async Task<int> CommitAsync()
         {
             if (_transaction == null)
+            {
                 throw new InvalidOperationException("Transaction has not been started.");
+            }
 
             try
             {

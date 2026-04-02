@@ -17,7 +17,6 @@ import { ApiResponse } from '../../shared/models/users/apiResponse.model';
 })
 export class AuthApiService {
   private baseUrl = 'https://localhost:7023/';
-  private platformId = inject(PLATFORM_ID);
 
   constructor(private http: HttpClient) {}
 

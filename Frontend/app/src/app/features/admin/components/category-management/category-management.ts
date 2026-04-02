@@ -41,7 +41,6 @@ export class CategoryManagement implements OnInit {
   confirmModal = signal<boolean>(false);
   deleteCategoryId = signal<string>('');
 
-  // ── Pagination ────────────────────────────────────────────────────────────
   currentPage = signal<number>(1);
   readonly pageSize = 10;
 
@@ -62,14 +61,10 @@ export class CategoryManagement implements OnInit {
     }
   }
 
-  // ── Paged getter ──────────────────────────────────────────────────────────
-
   get pagedCategories(): CategoryDTO[] {
     const start = (this.currentPage() - 1) * this.pageSize;
     return this.store.value.categories.slice(start, start + this.pageSize);
   }
-
-  // ── Pagination helpers ────────────────────────────────────────────────────
 
   get totalCategories(): number {
     return this.store.value.categories.length;
@@ -115,8 +110,6 @@ export class CategoryManagement implements OnInit {
     this.goToPage(this.currentPage() + 1);
   }
 
-  // ── API fetch ─────────────────────────────────────────────────────────────
-
   private fetchPage(page: number): void {
     this.isLoading.set(true);
     this.pagination.pageNumber = page;
@@ -148,8 +141,6 @@ export class CategoryManagement implements OnInit {
     });
   }
 
-  // ── Add ───────────────────────────────────────────────────────────────────
-
   toggleAddForm(): void {
     this.showAddForm.update(v => !v);
     if (!this.showAddForm()) this.resetForm();
@@ -161,7 +152,10 @@ export class CategoryManagement implements OnInit {
     const exists = this.store.value.categories.some(
       c => c.categoryName.toLowerCase() === name.toLowerCase()
     );
-    if (exists) { toast.error('Category already exists'); return; }
+    if (exists) {
+      toast.error('Category already exists');
+      return;
+    }
 
     this.apiService.addCategory(name).subscribe({
       next: (response: ApiResponse<AddCategoryResponseDTO>) => {
@@ -180,9 +174,9 @@ export class CategoryManagement implements OnInit {
     });
   }
 
-  resetForm(): void { this.newCategory.set(''); }
-
-  // ── Edit ──────────────────────────────────────────────────────────────────
+  resetForm(): void {
+    this.newCategory.set('');
+  }
 
   openEditModal(category: CategoryDTO): void {
     this.editingCategory.set(category);
@@ -202,7 +196,7 @@ export class CategoryManagement implements OnInit {
     if (!name) { toast.error('Category name is required'); return; }
     const exists = this.store.value.categories.some(
       c => c.categoryId !== category.categoryId &&
-           c.categoryName.toLowerCase() === name.toLowerCase()
+        c.categoryName.toLowerCase() === name.toLowerCase()
     );
     if (exists) { toast.error('Category name already exists'); return; }
 

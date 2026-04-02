@@ -71,64 +71,39 @@ namespace ShoppingApp.Services
                     Action = "AddProduct"
                 };
             }
-            catch (AppException)
+            catch (Exception)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Server error occurred while adding product in wishlist", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Server error occurred while adding product in wishlist", ex, 500);
             }
         }
 
         public async Task<ApiResponse<CreateWishListResponseDTO>> CreateWishListAsync(string WishListName, Guid UserId)
         {
-            try
-            {
-                var isAlreadyExist = await _wishListRepository.GetQueryable().FirstOrDefaultAsync(w => w.WhishListName == WishListName && w.UserId == UserId);
+            var isAlreadyExist = await _wishListRepository.GetQueryable().FirstOrDefaultAsync(w => w.WhishListName == WishListName && w.UserId == UserId);
 
-                if (isAlreadyExist != null)
-                {
-                    throw new AppException("Wishlist already exists", 409);
-                }
+            if (isAlreadyExist != null)
+            {
+                throw new AppException("Wishlist already exists", 409);
+            }
 
-                var wishList = new WishList
-                {
-                    UserId = UserId,
-                    WhishListName = WishListName
-                };
+            var wishList = new WishList
+            {
+                UserId = UserId,
+                WhishListName = WishListName
+            };
 
-                await _wishListRepository.AddAsync(wishList);
-                return new ApiResponse<CreateWishListResponseDTO>()
+            await _wishListRepository.AddAsync(wishList);
+            return new ApiResponse<CreateWishListResponseDTO>()
+            {
+                Data = new CreateWishListResponseDTO()
                 {
-                    Data = new CreateWishListResponseDTO()
-                    {
-                        IsCreated = true,
-                    },
-                    StatusCode = 200,
-                    Message = "Wish list created",
-                    Action = "AddWishList"
-                };
-            }
-            catch (AppException)
-            {
-                throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                throw new AppException("Server error occurred while creating wishlist", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                throw new AppException("Server error occurred while creating wishlist", ex, 500);
-            }
+                    IsCreated = true,
+                },
+                StatusCode = 200,
+                Message = "Wish list created",
+                Action = "AddWishList"
+            };
         }
 
         public async Task<ApiResponse<DeleteWishListResponseDTO>> DeleteWishListAsync(Guid UserId, Guid WishListId)
@@ -171,82 +146,57 @@ namespace ShoppingApp.Services
                     Action = "DeleteWishList"
                 };
             }
-            catch (AppException)
+            catch (Exception)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Server error occurred while deleting wishlist", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Server error occurred while deleting wishlist", ex, 500);
             }
         }
 
         public async Task<ApiResponse<GetUserWishListResponseDTO>> GetUserWishListAsync(int limit, int pageNumber, Guid userId)
         {
-            try
+            if (pageNumber <= 0) pageNumber = 1;
+            if (limit <= 0) limit = 10;
+
+            var wishlists = await _wishListRepository
+                .GetQueryable()
+                .Where(w => w.UserId == userId)
+                .Include(w => w.WishListItems)!
+                .ThenInclude(i => i.Products)
+                .Skip((pageNumber - 1) * limit)
+                .Take(limit)
+                .ToListAsync();
+
+            var result = new GetUserWishListResponseDTO
             {
-                if (pageNumber <= 0) pageNumber = 1;
-                if (limit <= 0) limit = 10;
-
-                var wishlists = await _wishListRepository
-                    .GetQueryable()
-                    .Where(w => w.UserId == userId)
-                    .Include(w => w.WishListItems)!
-                    .ThenInclude(i => i.Products)
-                    .Skip((pageNumber - 1) * limit)
-                    .Take(limit)
-                    .ToListAsync();
-
-                var result = new GetUserWishListResponseDTO
+                WishList = wishlists.Select(w => new WishListDTO
                 {
-                    WishList = wishlists.Select(w => new WishListDTO
-                    {
-                        WishListId = w.WishListId,
-                        WishListName = w.WhishListName,
+                    WishListId = w.WishListId,
+                    WishListName = w.WhishListName,
 
-                        WishListItems = (w.WishListItems ?? new List<WishListItems>())
-                            .Select(i => new WishListItemsDTO
-                            {
-                                WishListItemsId = i.WishListItemsId,
-                                ProductId = i.ProductId,
-                                ProductName = i.Products?.Name ?? string.Empty,
-                                ProductImage = i.Products?.ImagePath ?? string.Empty
-                            })
-                            .ToList()
-                    }).ToList()
-                };
+                    WishListItems = (w.WishListItems ?? new List<WishListItems>())
+                        .Select(i => new WishListItemsDTO
+                        {
+                            WishListItemsId = i.WishListItemsId,
+                            ProductId = i.ProductId,
+                            ProductName = i.Products?.Name ?? string.Empty,
+                            ProductImage = i.Products?.ImagePath ?? string.Empty
+                        })
+                        .ToList()
+                }).ToList()
+            };
 
-                return new ApiResponse<GetUserWishListResponseDTO>()
-                {
-                    Data = result,
-                    StatusCode = 200,
-                    Message = result.WishList.Any()
-                        ? "Wishlist fetched successfully"
-                        : "No wishlist found",
-                    Action = result.WishList.Any()
-                        ? string.Empty
-                        : "ShowEmptyPage"
-                };
-            }
-            catch (AppException)
+            return new ApiResponse<GetUserWishListResponseDTO>()
             {
-                throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                throw new AppException("Error while fetching wishlist", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                throw new AppException("Something went wrong while fetching wishlist", ex, 500);
-            }
+                Data = result,
+                StatusCode = 200,
+                Message = result.WishList.Any()
+                    ? "Wishlist fetched successfully"
+                    : "No wishlist found",
+                Action = result.WishList.Any()
+                    ? string.Empty
+                    : "ShowEmptyPage"
+            };
         }
 
         public async Task<ApiResponse<RemoveProductFromWishListResponseDTO>> RemoveFromWishListAsync(Guid UserId, Guid WishListId, Guid ProductId)
@@ -273,20 +223,10 @@ namespace ShoppingApp.Services
                     StatusCode = 200
                 };
             }
-            catch (AppException)
+            catch (Exception)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Server error occurred while removing item in wishlist", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Server error occurred while removing item in wishlist", ex, 500);
             }
         }
     }

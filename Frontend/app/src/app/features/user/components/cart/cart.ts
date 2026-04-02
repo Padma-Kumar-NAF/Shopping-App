@@ -136,7 +136,18 @@ export class Cart implements OnInit {
     return this.cartItems().slice(start, start + this.itemsPerPage);
   }
 
-  goToPage(page: number): void { this.currentPage = page; }
-  nextPage(): void { if (this.currentPage < this.totalPages) this.currentPage++; }
-  prevPage(): void { if (this.currentPage > 1) this.currentPage--; }
+  goToPage(page: number): void {
+    this.currentPage = page;
+  }
+  
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 1)
+      this.currentPage--;
+  }
 }

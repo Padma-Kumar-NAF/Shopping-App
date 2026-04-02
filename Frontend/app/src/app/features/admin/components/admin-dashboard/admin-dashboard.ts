@@ -82,10 +82,7 @@ export class AdminDashboard implements OnInit, OnDestroy {
   }
 
   refresh(): void {
-    this.isRefreshing.set(true);
-    this.store.resetCache();
-    this.loadAll();
-    setTimeout(() => this.isRefreshing.set(false), 1500);
+    window.location.reload()
   }
 
   getAllProdcuts(): void {
@@ -148,7 +145,6 @@ export class AdminDashboard implements OnInit, OnDestroy {
       next: (response: ApiResponse<GetAllCategoryResponseDTO>) => {
         const list = response.data?.categoryList ?? [];
         this.store.setCategories(list);
-        // Mark page 1 as fetched so child component won't re-fetch
         this.store.pageCache.categories.add(1);
       },
       error: (err) => {

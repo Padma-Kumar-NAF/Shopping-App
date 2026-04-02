@@ -47,6 +47,7 @@ select * from Wallets
 select * from WishList
 select * from WishListItems
 
+delete from Reviews
 
 update Users 
 set role = 'admin'

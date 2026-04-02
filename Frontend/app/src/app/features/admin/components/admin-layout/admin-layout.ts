@@ -40,14 +40,11 @@ export class AdminLayout implements OnInit {
   ];
 
   ngOnInit(): void {
-    // Track current route
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         this.currentRoute.set(event.url);
       });
-
-    // Set initial route
     this.currentRoute.set(this.router.url);
   }
 
@@ -74,9 +71,6 @@ export class AdminLayout implements OnInit {
   }
 
   refreshData(): void {
-    // this.isRefreshing.set(true);
-    // this.store.triggerRefresh();
-    // setTimeout(() => this.isRefreshing.set(false), 1500);
     window.location.reload()
   }
 }
