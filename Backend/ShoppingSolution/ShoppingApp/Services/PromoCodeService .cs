@@ -57,20 +57,10 @@ public class PromoCodeService : IPromoCodeService
                 Message = "Promo code created successfully"
             };
         }
-        catch (AppException)
+        catch (Exception)
         {
             await _unitOfWork.RollbackAsync();
             throw;
-        }
-        catch (DbUpdateException ex)
-        {
-            await _unitOfWork.RollbackAsync();
-            throw new AppException("Error while creating promo code", ex, 500);
-        }
-        catch (Exception ex)
-        {
-            await _unitOfWork.RollbackAsync();
-            throw new AppException("Error while creating promo code", ex, 500);
         }
     }
 
@@ -121,69 +111,44 @@ public class PromoCodeService : IPromoCodeService
                 }
             };
         }
-        catch (AppException)
+        catch (Exception)
         {
             await _unitOfWork.RollbackAsync();
             throw;
-        }
-        catch (DbUpdateException ex)
-        {
-            await _unitOfWork.RollbackAsync();
-            throw new AppException("Error while updating promo code", ex, 500);
-        }
-        catch (Exception ex)
-        {
-            await _unitOfWork.RollbackAsync();
-            throw new AppException("Error while updating promo code", ex, 500);
         }
     }
 
     public async Task<ApiResponse<GetAllPromocodeResponseDTO>> GetAllPromocode(GetAllPromocodeRequestDTO request)
     {
-        try
+        var query = _promoRepository.GetQueryable().Where(p => !p.IsDeleted);
+
+        var totalCount = await query.CountAsync();
+
+        var promos = await query
+            .OrderByDescending(p => p.CreatedAt)
+            .Skip((request.Pagination.PageNumber - 1) * request.Pagination.PageSize)
+            .Take(request.Pagination.PageSize)
+            .ToListAsync();
+
+        var data = promos.Select(p => new PromoCodeItemDTO
         {
-            var query = _promoRepository.GetQueryable().Where(p => !p.IsDeleted);
+            PromoCodeId = p.PromoCodeId,
+            PromoCodeName = p.PromoCodeName,
+            DiscountPercentage = p.DiscountPercentage,
+            FromDate = p.FromDate,
+            ToDate = p.ToDate
+        }).ToList();
 
-            var totalCount = await query.CountAsync();
-
-            var promos = await query
-                .OrderByDescending(p => p.CreatedAt)
-                .Skip((request.Pagination.PageNumber - 1) * request.Pagination.PageSize)
-                .Take(request.Pagination.PageSize)
-                .ToListAsync();
-
-            var data = promos.Select(p => new PromoCodeItemDTO
+        return new ApiResponse<GetAllPromocodeResponseDTO>
+        {
+            StatusCode = 200,
+            Message = "Promo codes fetched successfully",
+            Data = new GetAllPromocodeResponseDTO
             {
-                PromoCodeId = p.PromoCodeId,
-                PromoCodeName = p.PromoCodeName,
-                DiscountPercentage = p.DiscountPercentage,
-                FromDate = p.FromDate,
-                ToDate = p.ToDate
-            }).ToList();
-
-            return new ApiResponse<GetAllPromocodeResponseDTO>
-            {
-                StatusCode = 200,
-                Message = "Promo codes fetched successfully",
-                Data = new GetAllPromocodeResponseDTO
-                {
-                    PromoCodes = data,
-                    TotalCount = totalCount
-                }
-            };
-        }
-        catch (AppException)
-        {
-            throw;
-        }
-        catch (DbUpdateException ex)
-        {
-            throw new AppException("Error while fetching promo codes", ex, 500);
-        }
-        catch (Exception ex)
-        {
-            throw new AppException("Error while fetching promo codes", ex, 500);
-        }
+                PromoCodes = data,
+                TotalCount = totalCount
+            }
+        };
     }
 
     public async Task<ApiResponse<DeletePromocodeResponseDTO>> DeletePromoCode(DeletePromocodeRequestDTO request)
@@ -212,96 +177,71 @@ public class PromoCodeService : IPromoCodeService
                 Data = new DeletePromocodeResponseDTO { IsSuccess = true }
             };
         }
-        catch (AppException)
+        catch (Exception)
         {
             await _unitOfWork.RollbackAsync();
             throw;
-        }
-        catch (DbUpdateException ex)
-        {
-            await _unitOfWork.RollbackAsync();
-            throw new AppException("Error while deleting promo code", ex, 500);
-        }
-        catch (Exception ex)
-        {
-            await _unitOfWork.RollbackAsync();
-            throw new AppException("Error while deleting promo code", ex, 500);
         }
     }
 
     public async Task<ApiResponse<VerifyPromoCodeResponseDTO>> VerifyPromoCode(VerifyPromoCodeRequestDTO request)
     {
-        try
+        var code = request.PromoCodeName.Trim().ToUpper();
+
+        var promo = await _promoRepository.GetQueryable()
+            .FirstOrDefaultAsync(p => p.PromoCodeName == code && !p.IsDeleted);
+
+        if (promo == null)
         {
-            var code = request.PromoCodeName.Trim().ToUpper();
-
-            var promo = await _promoRepository.GetQueryable()
-                .FirstOrDefaultAsync(p => p.PromoCodeName == code && !p.IsDeleted);
-
-            if (promo == null)
-            {
-                return new ApiResponse<VerifyPromoCodeResponseDTO>
-                {
-                    StatusCode = 200,
-                    Data = new VerifyPromoCodeResponseDTO
-                    {
-                        IsValid = false,
-                        Message = "Invalid promo code"
-                    }
-                };
-            }
-
-            var now = DateTime.UtcNow.Date;
-
-            if (now < promo.FromDate.Date)
-            {
-                return new ApiResponse<VerifyPromoCodeResponseDTO>
-                {
-                    StatusCode = 200,
-                    Data = new VerifyPromoCodeResponseDTO
-                    {
-                        IsValid = false,
-                        Message = "Promo code not active yet"
-                    }
-                };
-            }
-
-            if (now > promo.ToDate.Date)
-            {
-                return new ApiResponse<VerifyPromoCodeResponseDTO>
-                {
-                    StatusCode = 200,
-                    Data = new VerifyPromoCodeResponseDTO
-                    {
-                        IsValid = false,
-                        Message = "Promo code expired"
-                    }
-                };
-            }
-
             return new ApiResponse<VerifyPromoCodeResponseDTO>
             {
                 StatusCode = 200,
                 Data = new VerifyPromoCodeResponseDTO
                 {
-                    IsValid = true,
-                    DiscountPercentage = promo.DiscountPercentage,
-                    PromoCodeId = promo.PromoCodeId,
-                    Message = "Promo code applied successfully"
+                    IsValid = false,
+                    Message = "Invalid promo code"
                 }
             };
         }
-        catch (AppException)
+
+        var now = DateTime.UtcNow.Date;
+
+        if (now < promo.FromDate.Date)
         {
-            throw;
+            return new ApiResponse<VerifyPromoCodeResponseDTO>
+            {
+                StatusCode = 200,
+                Data = new VerifyPromoCodeResponseDTO
+                {
+                    IsValid = false,
+                    Message = "Promo code not active yet"
+                }
+            };
         }
-        catch (DbUpdateException ex)
+
+        if (now > promo.ToDate.Date)
         {
-            throw new AppException("Error while verifying promo code", ex, 500);
+            return new ApiResponse<VerifyPromoCodeResponseDTO>
+            {
+                StatusCode = 200,
+                Data = new VerifyPromoCodeResponseDTO
+                {
+                    IsValid = false,
+                    Message = "Promo code expired"
+                }
+            };
         }
-        catch (Exception ex)
+
+        return new ApiResponse<VerifyPromoCodeResponseDTO>
         {
-            throw new AppException("Error while verifying promo code", ex, 500);
-        }
+            StatusCode = 200,
+            Data = new VerifyPromoCodeResponseDTO
+            {
+                IsValid = true,
+                DiscountPercentage = promo.DiscountPercentage,
+                PromoCodeId = promo.PromoCodeId,
+                Message = "Promo code applied successfully"
+            }
+        };
     }
 }

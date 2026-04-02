@@ -12,7 +12,6 @@ namespace ShoppingApp.Controllers
 {
     [ApiController]
     [Route("category")]
-    [Authorize(Roles = "admin,user")]
     [ValidateRequest]
     public class CategoryController : BaseController
     {

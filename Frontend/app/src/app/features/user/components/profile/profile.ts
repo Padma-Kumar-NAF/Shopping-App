@@ -4,22 +4,11 @@ import { ProfileApiService } from '../../services/profile.service';
 import { AuthStateService } from '../../../../core/state/auth-state.service';
 import { ActivatedRoute } from '@angular/router';
 import { NavbarComponent } from '../../../../shared/components/navbar/navbar';
-import {
-  newEmailRequestDTO,
-  EditMailResponseDTOModel,
-  EditUserDetailsModel,
-  GetUserByIdResponseDTO,
-} from '../../../../shared/models/users/profile.model';
+import { newEmailRequestDTO, EditMailResponseDTOModel, EditUserDetailsModel, GetUserByIdResponseDTO, } from '../../../../shared/models/users/profile.model';
 import { toast } from 'ngx-sonner';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  Validators,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, Validators, ReactiveFormsModule, } from '@angular/forms';
 import { ApiResponse } from '../../../../shared/models/users/apiResponse.model';
 import { WalletService } from '../../services/wallet.service';
 
@@ -48,20 +37,6 @@ export class Profile implements OnInit {
   mobileMenuOpen = signal(false);
   isMobile = signal(window.innerWidth < 640);
 
-  @HostListener('window:resize')
-  onResize() {
-    this.isMobile.set(window.innerWidth < 640);
-    if (!this.isMobile()) this.mobileMenuOpen.set(false);
-  }
-
-  activeTabConfig(): TabConfig {
-    return this.tabs.find(t => t.id === this.activeTab()) ?? this.tabs[0];
-  }
-
-  toggleMobileMenu(): void {
-    this.mobileMenuOpen.update(v => !v);
-  }
-
   passwordVerified = false;
   userDetailsForm: FormGroup;
   editMail: newEmailRequestDTO;
@@ -70,10 +45,6 @@ export class Profile implements OnInit {
   private route = inject(ActivatedRoute);
   private apiService: ProfileApiService = inject(ProfileApiService);
   private authState: AuthStateService = inject(AuthStateService);
-  private walletService = inject(WalletService);
-
-  walletBalance = signal<number | null>(null);
-  isLoadingWallet = signal(false);
 
   tabs: TabConfig[] = [
     { id: 'profile', label: 'Profile', icon: '👤', color: 'blue' },
@@ -99,15 +70,30 @@ export class Profile implements OnInit {
 
   ngOnInit(): void {
     this.GetUserProfileDetails();
-
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
+    this.router.events.pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         this.syncTabFromRoute();
       });
 
     this.syncTabFromRoute();
   }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.isMobile.set(window.innerWidth < 640);
+    if (!this.isMobile()) {
+      this.mobileMenuOpen.set(false);
+    }
+  }
+
+  activeTabConfig(): TabConfig {
+    return this.tabs.find(t => t.id === this.activeTab()) ?? this.tabs[0];
+  }
+
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen.update(v => !v);
+  }
+
 
   private syncTabFromRoute(): void {
     const child = this.route.firstChild;
@@ -124,7 +110,8 @@ export class Profile implements OnInit {
     }
   }
 
-  GetUserProfileDetails(): void {    this.isLoading.set(true);
+  GetUserProfileDetails(): void {
+    this.isLoading.set(true);
     this.apiService.GetUserProfile().subscribe({
       next: (response: ApiResponse<GetUserByIdResponseDTO>) => {
         this.user.set(response!.data!);
@@ -136,6 +123,9 @@ export class Profile implements OnInit {
         if (error.error?.message) {
           toast.error(error.error.message);
         }
+      },
+      complete() {
+        console.log("Fetch user details completed")
       },
     });
   }

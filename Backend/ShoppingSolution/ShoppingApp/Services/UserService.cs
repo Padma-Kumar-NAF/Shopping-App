@@ -35,10 +35,8 @@ namespace ShoppingApp.Services
             }
         public async Task<ApiResponse<CreateUserResponseDTO>> CreateUser(CreateUserRequestDTO request)
         {
-            var email = request.Email.Trim().ToLower();
 
-            var existingUser = await _userRepository.GetQueryable()
-                .AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
+            var existingUser = await _userRepository.GetQueryable().AsNoTracking().FirstOrDefaultAsync(u => u.Email == request.Email.Trim());
 
             if (existingUser != null)
             {
@@ -62,7 +60,7 @@ namespace ShoppingApp.Services
                 var user = new User
                 {
                     Name = request.Name.Trim(),
-                    Email = email,
+                    Email = request.Email.Trim(),
                     Password = Convert.ToBase64String(hash),
                     SaltValue = Convert.ToBase64String(salt),
                     Active = true,
@@ -111,233 +109,177 @@ namespace ShoppingApp.Services
                     Message = "User created successfully"
                 };
             }
-            catch (AppException)
+            catch (Exception)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Server error occurred while creating user", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Server error occurred while creating user", ex, 500);
             }
         }
 
         public async Task<ApiResponse<LoginResponseDTO>> LoginUser(LoginRequestDTO request)
         {
-            try
+            if (string.IsNullOrWhiteSpace(request.Email))
             {
-                var email = request.Email.Trim().ToLower();
-
-                if (email == null)
-                {
-                    throw new AppException("Email not found",404);
-                }
-
-                var user = await _userRepository.GetQueryable().FirstOrDefaultAsync(u => u.Email == email);
-
-                if (user == null)
-                {
-                    throw new AppException("Invalid email", 400);
-                }
-
-                if(!user.Active)
-                {
-                    throw new AppException("User is not activated");
-                }
-
-                bool isValid = await _passwordService.VerifyPasswordAsync(request.Password,user.Password,user.SaltValue);
-
-                if (!isValid)
-                {
-                    throw new AppException("Invalid Password",400);
-                }
-
-                LoginResponseDTO response = new LoginResponseDTO()
-                {
-                    Token = _tokenService.GenerateToken(user.UserId,user.Name,user.Email,user.Role)
-                };
-
-                return new ApiResponse<LoginResponseDTO>()
-                {
-                    Data = response,
-                    Message = "Logged in successfully",
-                    Action = "MoveToHome",
-                    StatusCode = 200
-                };
+                throw new AppException("Email is required", 400);
             }
-            catch (AppException)
+
+            var email = request.Email.Trim().ToLower();
+
+            var user = await _userRepository.GetQueryable().FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null)
             {
-                throw;
+                throw new AppException("Invalid email", 400);
             }
-            catch (DbUpdateException ex)
+
+            if(!user.Active)
             {
-                throw new AppException("Error while login", ex, 500);
+                throw new AppException("User is not activated");
             }
-            catch (Exception ex)
+
+            bool isValid = await _passwordService.VerifyPasswordAsync(request.Password,user.Password,user.SaltValue);
+
+            if (!isValid)
             {
-                throw new AppException("Something went wrong while login", ex, 500);
+                throw new AppException("Invalid Password",400);
             }
+
+            LoginResponseDTO response = new LoginResponseDTO()
+            {
+                Token = _tokenService.GenerateToken(user.UserId,user.Name,user.Email,user.Role)
+            };
+
+            return new ApiResponse<LoginResponseDTO>()
+            {
+                Data = response,
+                Message = "Logged in successfully",
+                Action = "MoveToHome",
+                StatusCode = 200
+            };
         }
 
         public async Task<ApiResponse<GetUsersResponseDTO>> GetAllUsers(GetUsersRequestDTO request)
         {
-            try
+            var pageNumber = request.Pagination.PageNumber <= 0 ? 1 : request.Pagination.PageNumber;
+            var pageSize = request.Pagination.PageSize <= 0 ? 10 : request.Pagination.PageSize;
+
+            var query = _userRepository.GetQueryable().AsNoTracking().Include(u => u.UserDetails);
+
+            var totalCount = await query.CountAsync();
+
+            if (totalCount == 0)
             {
-                var pageNumber = request.Pagination.PageNumber <= 0 ? 1 : request.Pagination.PageNumber;
-                var pageSize = request.Pagination.PageSize <= 0 ? 10 : request.Pagination.PageSize;
-
-                var query = _userRepository.GetQueryable().AsNoTracking().Include(u => u.UserDetails);
-
-                var totalCount = await query.CountAsync();
-
-                if (totalCount == 0)
-                {
-                    return new ApiResponse<GetUsersResponseDTO>()
-                    {
-                        Data = new GetUsersResponseDTO(),
-                        StatusCode = 200,
-                        Message = "No users found",
-                        Action = "ShowEmptyPage"
-                    };
-                }
-
-                var users = await query
-                    .OrderBy(u => u.Name)
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
-                    .Select(u => new UserDetailsDTO
-                    {
-                        UserId = u.UserId,
-                        UserDetailsId = u.UserDetails!.UserDetailsId,
-                        Name = u.Name,
-                        Email = u.Email,
-                        Role = u.Role,
-                        PhoneNumber = u.UserDetails.PhoneNumber,
-                        AddressLine1 = u.UserDetails.AddressLine1,
-                        AddressLine2 = u.UserDetails.AddressLine2,
-                        State = u.UserDetails.State,
-                        City = u.UserDetails.City,
-                        ActiveStatus = u.Active,
-                        Pincode = u.UserDetails.Pincode
-                    })
-                    .ToListAsync();
-
-                var response = new GetUsersResponseDTO
-                {
-                    UsersList = users
-                };
-
                 return new ApiResponse<GetUsersResponseDTO>()
                 {
-                    Data = response,
+                    Data = new GetUsersResponseDTO(),
                     StatusCode = 200,
-                    Message = "Users fetched successfully"
+                    Message = "No users found",
+                    Action = "ShowEmptyPage"
                 };
             }
-            catch (AppException)
+
+            var users = await query
+                .OrderBy(u => u.Name)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(u => new UserDetailsDTO
+                {
+                    UserId = u.UserId,
+                    UserDetailsId = u.UserDetails!.UserDetailsId,
+                    Name = u.Name,
+                    Email = u.Email,
+                    Role = u.Role,
+                    PhoneNumber = u.UserDetails.PhoneNumber,
+                    AddressLine1 = u.UserDetails.AddressLine1,
+                    AddressLine2 = u.UserDetails.AddressLine2,
+                    State = u.UserDetails.State,
+                    City = u.UserDetails.City,
+                    ActiveStatus = u.Active,
+                    Pincode = u.UserDetails.Pincode
+                })
+                .ToListAsync();
+
+            var response = new GetUsersResponseDTO
             {
-                throw;
-            }
-            catch (DbUpdateException ex)
+                UsersList = users
+            };
+
+            return new ApiResponse<GetUsersResponseDTO>()
             {
-                throw new AppException("Error while fetching users", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                throw new AppException("Something went wrong while fetching users", ex, 500);
-            }
+                Data = response,
+                StatusCode = 200,
+                Message = "Users fetched successfully"
+            };
         }
 
         public async Task<ApiResponse<GetUserByIdResponseDTO>> GetUserById(Guid userId)
         {
-            try
-            {
-                var user = await _userRepository.GetQueryable().AsNoTracking().Include(u => u.UserDetails).FirstOrDefaultAsync(u => u.UserId == userId);
+            var user = await _userRepository.GetQueryable().AsNoTracking().Include(u => u.UserDetails).FirstOrDefaultAsync(u => u.UserId == userId);
 
-                if (user == null)
+            if (user == null)
+            {
+                throw new AppException("User not found", 404);
+            }
+
+            if (user.UserDetails == null)
+            {
+                throw new AppException("User details not found", 404);
+            }
+
+            var response = new GetUserByIdResponseDTO
+            {
+                UserId = user.UserId,
+                Name = user.Name,
+                Email = user.Email,
+                UserDetails = new GetUserDetailsDTO
                 {
-                    throw new AppException("User not found", 404);
+                    UserDetailsId = user.UserDetails!.UserDetailsId,
+                    PhoneNumber = user.UserDetails.PhoneNumber,
+                    AddressLine1 = user.UserDetails.AddressLine1,
+                    AddressLine2 = user.UserDetails.AddressLine2,
+                    State = user.UserDetails.State,
+                    City = user.UserDetails.City,
+                    Pincode = user.UserDetails.Pincode
                 }
+            };
 
-                if (user.UserDetails == null)
-                {
-                    throw new AppException("User details not found", 404);
-                }
-
-                var response = new GetUserByIdResponseDTO
-                {
-                    UserId = user.UserId,
-                    Name = user.Name,
-                    Email = user.Email,
-                    UserDetails = new GetUserDetailsDTO
-                    {
-                        UserDetailsId = user.UserDetails!.UserDetailsId,
-                        PhoneNumber = user.UserDetails.PhoneNumber,
-                        AddressLine1 = user.UserDetails.AddressLine1,
-                        AddressLine2 = user.UserDetails.AddressLine2,
-                        State = user.UserDetails.State,
-                        City = user.UserDetails.City,
-                        Pincode = user.UserDetails.Pincode
-                    }
-                };
-
-                return new ApiResponse<GetUserByIdResponseDTO>()
-                {
-                    Data = response,
-                    StatusCode = 200,
-                    Message = "User fetched successfully",
-                    Action = "ShowUser"
-                };
-            }
-            catch (AppException)
+            return new ApiResponse<GetUserByIdResponseDTO>()
             {
-                throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                throw new AppException("Error while fetching user", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                throw new AppException("Something went wrong while fetching user", ex, 500);
-            }
+                Data = response,
+                StatusCode = 200,
+                Message = "User fetched successfully",
+                Action = "ShowUser"
+            };
         }
 
         public async Task<ApiResponse<EditUserEmailResponseDTO>> EditUserEmail(Guid userId, EditUserEmailRequestDTO request)
         {
+            var user = await _userRepository.GetQueryable().FirstOrDefaultAsync(u => u.UserId == userId && u.Email == request.OldEmail);
+
+            if (user == null)
+            {
+                throw new AppException("User not found", 404);
+            }
+
+            var existingEmail = await _userRepository.GetQueryable()
+                .FirstOrDefaultAsync(u => u.Email == request.NewEmail);
+
+            if (existingEmail != null)
+            {
+                throw new AppException("Email already exists", 400);
+            }
+
+            bool isValid = await _passwordService.VerifyPasswordAsync(request.Password,user.Password,user.SaltValue);
+
+            if (!isValid)
+            {
+                throw new AppException("Invalid password", 401);
+            }
+
+            await _unitOfWork.BeginTransactionAsync();
+
             try
             {
-                var user = await _userRepository.GetQueryable()
-                    .FirstOrDefaultAsync(u => u.UserId == userId && u.Email == request.OldEmail);
-
-                if (user == null)
-                {
-                    throw new AppException("User not found", 404);
-                }
-
-                var existingEmail = await _userRepository.GetQueryable()
-                    .FirstOrDefaultAsync(u => u.Email == request.NewEmail);
-
-                if (existingEmail != null)
-                {
-                    throw new AppException("Email already exists", 400);
-                }
-
-                bool isValid = await _passwordService.VerifyPasswordAsync(request.Password,user.Password,user.SaltValue);
-
-                if (!isValid)
-                {
-                    throw new AppException("Invalid password", 401);
-                }
-
-                await _unitOfWork.BeginTransactionAsync();
-
                 user.Email = request.NewEmail;
 
                 await _userRepository.UpdateAsync(user.UserId, user);
@@ -364,45 +306,33 @@ namespace ShoppingApp.Services
                     Message = "Email updated successfully"
                 };
             }
-            catch (AppException)
+            catch (Exception)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Error while updating email", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Something went wrong while updating email", ex, 500);
-            }
+            }                
         }
 
         public async Task<ApiResponse<UpdateProfileResponseDTO>> UpdateUserDetails(Guid userId, UpdateProfileRequestDTO request)
         {
+            var user = await _userRepository.GetQueryable().FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                throw new AppException("User not found", 404);
+            }
+
+            var userDetails = await _userDetailsRepository.GetQueryable()
+                .FirstOrDefaultAsync(ud => ud.UserId == userId);
+
+            if (userDetails == null)
+            {
+                throw new AppException("User details not found", 404);
+            }
+
+            await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var user = await _userRepository.GetQueryable()
-                    .FirstOrDefaultAsync(u => u.UserId == userId);
-
-                if (user == null)
-                {
-                    throw new AppException("User not found", 404);
-                }
-
-                var userDetails = await _userDetailsRepository.GetQueryable()
-                    .FirstOrDefaultAsync(ud => ud.UserId == userId);
-
-                if (userDetails == null)
-                {
-                    throw new AppException("User details not found", 404);
-                }
-
-                await _unitOfWork.BeginTransactionAsync();
-
                 if (user.Name != request.Details.Name)
                 {
                     user.Name = request.Details.Name;
@@ -447,7 +377,7 @@ namespace ShoppingApp.Services
                 }
 
                 await _unitOfWork.CommitAsync();
-                
+
                 return new ApiResponse<UpdateProfileResponseDTO>()
                 {
                     Data = new UpdateProfileResponseDTO
@@ -458,112 +388,80 @@ namespace ShoppingApp.Services
                     Message = "Profile updated successfully"
                 };
             }
-            catch (AppException)
+            catch (Exception)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Error while updating profile", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Something went wrong while updating profile", ex, 500);
             }
         }
 
         public async Task<ApiResponse<DeleteUserResponseDTO>> DeactivateUser(Guid UserId, Guid DeleteUserId)
         {
-            //var admin = await _userRepository.GetAsync(UserId);
-            //if (admin == null || admin.Role != "admin")
-            //{
-            //    throw new AppException("Access denied",401);
-            //}
-
-            try
+            var user = await _userRepository.GetAsync(DeleteUserId);
+            if(user  == null)
             {
-                var user = await _userRepository.GetAsync(DeleteUserId);
-                if(user  == null)
+                throw new AppException("User not found",404);
+            }
+            user.Active = !user.Active;
+            await _userRepository.UpdateAsync(DeleteUserId,user);
+            return new ApiResponse<DeleteUserResponseDTO>()
+            {
+                Data = new DeleteUserResponseDTO()
                 {
-                    throw new AppException("User not found",404);
-                }
-                user.Active = !user.Active;
-                await _userRepository.UpdateAsync(DeleteUserId,user);
-                return new ApiResponse<DeleteUserResponseDTO>()
-                {
-                    Data = new DeleteUserResponseDTO()
-                    {
-                        UnActivated = true
-                    },
-                    Message = user.Active ? "User activated successfully" : "User deactivated successfully",
-                    Action = "ToggleStatus",
-                    StatusCode = 200
-                };
-            }
-            catch (AppException)
-            {
-                throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                throw new AppException("Error while deactivating user", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                throw new AppException("Something went wrong while deactivating user", ex, 500);
-            }
+                    UnActivated = true
+                },
+                Message = user.Active ? "User activated successfully" : "User deactivated successfully",
+                Action = "ToggleStatus",
+                StatusCode = 200
+            };
         }
 
         public async Task<ApiResponse<ChangeUserRoleResponseDTO>> ChangeUserRole(Guid adminId, Guid userId, string role)
         {
+            var validRoles = new List<string> { "admin", "user" };
+
+            if (!validRoles.Contains(role.ToLower()))
+            {
+                throw new AppException("Invalid role", 400);
+            }
+
+            if (adminId == userId)
+            {
+                throw new AppException("Cannot make a self role change", 401);
+            }
+
+            var admin = await _userRepository.GetAsync(adminId);
+
+            if (admin == null || admin.Role.ToLower() != "admin")
+            {
+                throw new AppException("Access denied", 401);
+            }
+
+            var user = await _userRepository.GetAsync(userId);
+
+            if (user == null)
+            {
+                throw new AppException("User not found", 404);
+            }
+
+            if (user.Role.ToLower() == role.ToLower())
+            {
+                return new ApiResponse<ChangeUserRoleResponseDTO>()
+                {
+                    Data = new ChangeUserRoleResponseDTO
+                    {
+                        IsChanged = false
+                    },
+                    StatusCode = 200,
+                    Message = "User already has this role"
+                };
+            }
+
+            user.Role = role.ToLower();
+
+            await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var validRoles = new List<string> { "admin", "user" };
-
-                if (!validRoles.Contains(role.ToLower()))
-                {
-                    throw new AppException("Invalid role", 400);
-                }
-
-                if (adminId == userId)
-                {
-                    throw new AppException("Cannot make a self role change", 401);
-                }
-
-                var admin = await _userRepository.GetAsync(adminId);
-
-                if (admin == null || admin.Role.ToLower() != "admin")
-                {
-                    throw new AppException("Access denied", 401);
-                }
-
-                var user = await _userRepository.GetAsync(userId);
-
-                if (user == null)
-                {
-                    throw new AppException("User not found", 404);
-                }
-
-                if (user.Role.ToLower() == role.ToLower())
-                {
-                    return new ApiResponse<ChangeUserRoleResponseDTO>()
-                    {
-                        Data = new ChangeUserRoleResponseDTO
-                        {
-                            IsChanged = false
-                        },
-                        StatusCode = 200,
-                        Message = "User already has this role"
-                    };
-                }
-
-                user.Role = role.ToLower();
-
-                await _unitOfWork.BeginTransactionAsync();
-
                 await _userRepository.UpdateAsync(user.UserId, user);
 
                 await _unitOfWork.CommitAsync();
@@ -578,20 +476,10 @@ namespace ShoppingApp.Services
                     Message = "User role updated successfully"
                 };
             }
-            catch (AppException)
+            catch(Exception)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Error while changing user role", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Something went wrong while changing user role", ex, 500);
             }
         }
     }

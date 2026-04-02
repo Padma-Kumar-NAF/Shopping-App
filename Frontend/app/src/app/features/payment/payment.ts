@@ -11,7 +11,7 @@ import { CartService } from '../../features/user/services/cart.service';
 import { AddressSelectionService } from '../../features/user/services/address-selection.service';
 import { AddressApiService } from '../../features/user/services/address.service';
 import { AuthStateService } from '../../core/state/auth-state.service';
-import { OrderService, PlaceOrderRequestDTO } from '../../features/user/services/order.service';
+import { OrderService  } from '../../features/user/services/order.service';
 import { PromoCodeService } from '../../features/admin/services/promocode.service';
 import { GetWalletAmountResponseDTO, WalletService } from '../../features/user/services/wallet.service';
 import { AddressDTO } from '../../shared/models/users/address.model';
@@ -20,6 +20,7 @@ import { ProductDetails, SearchProductByIdResponseDTO } from '../../shared/model
 import { OrderAllFromCartRequestDTO } from '../../shared/models/users/cart.model';
 import { toast } from 'ngx-sonner';
 import { ApiResponse } from '../../shared/models/users/apiResponse.model';
+import { PlaceOrderRequestDTO } from '../../shared/models/users/order.model';
 
 interface CartItem {
   id: string;

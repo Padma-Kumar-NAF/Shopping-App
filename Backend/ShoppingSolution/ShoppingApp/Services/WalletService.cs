@@ -18,43 +18,28 @@ namespace ShoppingApp.Services
 
         public async Task<ApiResponse<GetWalletAmountResponseDTO>> GetWalletAmount(Guid userId)
         {
-            try
-            {
-                //Console.WriteLine("----------");
-                //Console.WriteLine(userId);
-                var wallet = await _walletRepository
-                    .GetQueryable()
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(w => w.UserId == userId);
+            //Console.WriteLine("----------");
+            //Console.WriteLine(userId);
+            var wallet = await _walletRepository
+                .GetQueryable()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(w => w.UserId == userId);
 
-                if (wallet == null)
-                {
-                    throw new AppException("You don’t have a wallet yet.", 404);
-                }
+            if (wallet == null)
+            {
+                throw new AppException("You don’t have a wallet yet.", 404);
+            }
 
-                return new ApiResponse<GetWalletAmountResponseDTO>
+            return new ApiResponse<GetWalletAmountResponseDTO>
+            {
+                Data = new GetWalletAmountResponseDTO
                 {
-                    Data = new GetWalletAmountResponseDTO
-                    {
-                        WalletBalance = wallet.WalletAmount
-                    },
-                    StatusCode = 200,
-                    Message = "Wallet fetched",
-                    Action = "ShowWallet"
-                };
-            }
-            catch (AppException)
-            {
-                throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                throw new AppException("Error while canceling order", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                throw new AppException("Something went wrong while canceling order", ex, 500);
-            }
+                    WalletBalance = wallet.WalletAmount
+                },
+                StatusCode = 200,
+                Message = "Wallet fetched",
+                Action = "ShowWallet"
+            };
         }
     }
 }

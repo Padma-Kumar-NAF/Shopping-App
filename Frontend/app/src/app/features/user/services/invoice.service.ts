@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import jsPDF from 'jspdf';
-import { OrderDetailsResponseDTO } from './order.service';
+import { OrderDetailsResponseDTO } from '../../../shared/models/admin/orders.model';
 
 @Injectable({ providedIn: 'root' })
 export class InvoiceService {
@@ -12,7 +12,6 @@ export class InvoiceService {
     const contentW = pageW - margin * 2;
     let y = 0;
 
-    // ── Helpers ──────────────────────────────────────────────────
     const line = (yPos: number) => {
       doc.setDrawColor(229, 231, 235);
       doc.line(margin, yPos, pageW - margin, yPos);
@@ -34,7 +33,6 @@ export class InvoiceService {
     const invoiceDate = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
     const deliveryDate = new Date(order.deliveryDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 
-    // ── Header band ───────────────────────────────────────────────
     doc.setFillColor(29, 78, 216);
     doc.rect(0, 0, pageW, 28, 'F');
 
@@ -47,7 +45,6 @@ export class InvoiceService {
 
     y = 36;
 
-    // ── Bill To ───────────────────────────────────────────────────
     doc.setFillColor(249, 250, 251);
     doc.roundedRect(margin, y, contentW, 32, 2, 2, 'F');
 
@@ -63,7 +60,6 @@ export class InvoiceService {
 
     y += 40;
 
-    // ── Table header ──────────────────────────────────────────────
     doc.setFillColor(29, 78, 216);
     doc.rect(margin, y, contentW, 8, 'F');
 
@@ -76,7 +72,6 @@ export class InvoiceService {
 
     y += 8;
 
-    // ── Table rows ────────────────────────────────────────────────
     order.items.forEach((item, i) => {
       const rowH = 9;
       if (i % 2 === 0) {
@@ -99,7 +94,6 @@ export class InvoiceService {
     line(y);
     y += 6;
 
-    // ── Summary ───────────────────────────────────────────────────
     const summaryX = pageW - margin - 70;
 
     text('Payment Method:', summaryX, y, { size: 9, color: [107, 114, 128] });
@@ -113,7 +107,6 @@ export class InvoiceService {
     line(y);
     y += 8;
 
-    // ── Footer note ───────────────────────────────────────────────
     text('Thank you for shopping with us!', pageW / 2, y, { size: 9, color: [107, 114, 128], align: 'center' });
     text('For support: support@shoppingapp.com', pageW / 2, y + 5, { size: 8, color: [156, 163, 175], align: 'center' });
 

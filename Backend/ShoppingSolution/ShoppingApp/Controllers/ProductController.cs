@@ -8,7 +8,6 @@ using ShoppingApp.Models.DTOs.Product;
 
 namespace ShoppingApp.Controllers
 {
-    [Authorize(Roles = "admin,user")]
     [Route("[controller]")]
     [ApiController]
     [ValidateRequest]

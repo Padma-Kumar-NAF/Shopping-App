@@ -26,7 +26,6 @@ export class UsersManagement implements OnInit {
   users$!: Observable<UserDetailsDTO[]>;
   filteredUsers$!: Observable<UserDetailsDTO[]>;
 
-  // Status toggle confirm modal
   confirmModal = signal<boolean>(false);
   pendingToggleId = signal<string | null>(null);
   pendingToggleAction = signal<'activate' | 'deactivate'>('deactivate');
@@ -34,13 +33,11 @@ export class UsersManagement implements OnInit {
   searchTerm = signal<string>('');
   filterRole = signal<string>('all');
 
-  // Pagination
   currentPage = signal<number>(1);
   readonly pageSize = 10;
   hasMoreData = signal<boolean>(true);
   isLoading = signal<boolean>(false);
 
-  // Per-row loading states
   roleChangingId = signal<string | null>(null);
   statusTogglingId = signal<string | null>(null);
 
@@ -55,14 +52,10 @@ export class UsersManagement implements OnInit {
   ngOnInit(): void {
     this.users$ = this.store.state$.pipe(map(s => s.users));
     this.filteredUsers$ = this.store.state$.pipe(map(s => this.applyFilters(s.users)));
-
-    // Load first page if store is empty (e.g. direct navigation)
     if (this.store.value.users.length === 0) {
       this.fetchPage(1);
     }
   }
-
-  // ── Filters ───────────────────────────────────────────────────────────────
 
   private applyFilters(users: UserDetailsDTO[]): UserDetailsDTO[] {
     const currentEmail = this.authState.email();
@@ -127,8 +120,6 @@ export class UsersManagement implements OnInit {
     this.goToPage(this.currentPage() + 1);
   }
 
-  // ── API fetch ─────────────────────────────────────────────────────────────
-
   private fetchPage(page: number): void {
     this.isLoading.set(true);
     this.pagination.pageNumber = page;
@@ -169,8 +160,6 @@ export class UsersManagement implements OnInit {
     this.refreshFilter();
   }
 
-  // ── Role change ───────────────────────────────────────────────────────────
-
   changeUserRole(userId: string, newRole: string): void {
     const previousRole = this.store.value.users.find(u => u.userId === userId)?.role;
     this.roleChangingId.set(userId);
@@ -197,8 +186,6 @@ export class UsersManagement implements OnInit {
       },
     });
   }
-
-  // ── Status toggle ─────────────────────────────────────────────────────────
 
   openStatusModal(userId: string, currentlyActive: boolean): void {
     this.pendingToggleId.set(userId);
@@ -238,8 +225,6 @@ export class UsersManagement implements OnInit {
       },
     });
   }
-
-  // ── UI helpers ────────────────────────────────────────────────────────────
 
   getRoleColor(role: string): string {
     return role === 'admin'

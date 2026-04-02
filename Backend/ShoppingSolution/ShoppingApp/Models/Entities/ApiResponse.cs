@@ -1,6 +1,6 @@
 ﻿namespace ShoppingApp.Models
 {
-    public class ApiResponse<T>
+    public record ApiResponse<T>
     {
         public int StatusCode { get; set; }
         public string Message { get; set; } = string.Empty;

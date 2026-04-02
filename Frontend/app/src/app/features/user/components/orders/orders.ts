@@ -3,17 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  OrderService,
-  OrderDetailsResponseDTO,
-} from '../../services/order.service';
+import { OrderService } from '../../services/order.service';
 import { ReviewService } from '../../services/review.service';
 import { InvoiceService } from '../../services/invoice.service';
 import { PaginationModel } from '../../../../shared/models/users/pagination.model';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { toast } from 'ngx-sonner';
-import { isOrderCancellable,isOrderDelivered, OrderStatus } from '../../../../constants/order-status.constants';
+import { isOrderCancellable, isOrderDelivered, OrderStatus } from '../../../../constants/order-status.constants';
 import { DEFAULT_PAGE_SIZE, calculateTotalPages } from '../../../../constants/pagination.constants';
+import { OrderDetailsResponseDTO } from '../../../../shared/models/admin/orders.model';
 
 interface ReviewData {
   productId: string;
@@ -39,17 +37,14 @@ export class OrdersComponent implements OnInit {
   showProducts = signal(false);
   isLoading = signal(false);
 
-  // Pagination
   currentPage = signal(1);
   pageSize = DEFAULT_PAGE_SIZE;
   totalItems = signal(0);
   totalPages = signal(0);
 
-  // Cancel order modal
   showCancelModal = signal(false);
   orderToCancel = signal<OrderDetailsResponseDTO | null>(null);
 
-  // Review modal
   showReviewModal = signal(false);
   orderToReview = signal<OrderDetailsResponseDTO | null>(null);
   selectedProductId = signal<string>('');
@@ -57,7 +52,6 @@ export class OrdersComponent implements OnInit {
   reviewRating = signal(0);
   reviewHoverRating = signal(0);
 
-  // Tracks which productIds have been reviewed this session
   reviews = signal<ReviewData[]>([]);
 
   ngOnInit(): void {
@@ -94,8 +88,6 @@ export class OrdersComponent implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // ── Cancel ──────────────────────────────────────────────────────
-
   canCancelOrder(order: OrderDetailsResponseDTO): boolean {
     return isOrderCancellable(order.status);
   }
@@ -112,7 +104,7 @@ export class OrdersComponent implements OnInit {
 
   confirmCancelOrder(): void {
     const order = this.orderToCancel();
-    if (!order) return;    const toastId = toast.loading('Cancelling order...');
+    if (!order) return; const toastId = toast.loading('Cancelling order...');
 
     this.orderService.cancelOrder(order.orderId).subscribe({
       next: (response) => {
@@ -134,13 +126,9 @@ export class OrdersComponent implements OnInit {
     });
   }
 
-  // ── Review ──────────────────────────────────────────────────────
-
   canReviewOrder(order: OrderDetailsResponseDTO): boolean {
     return isOrderDelivered(order.status);
   }
-
-  // ── Invoice ─────────────────────────────────────────────────────
 
   canDownloadInvoice(order: OrderDetailsResponseDTO): boolean {
     return isOrderDelivered(order.status);
@@ -185,12 +173,12 @@ export class OrdersComponent implements OnInit {
 
 
   openReviewModal(order: OrderDetailsResponseDTO): void {
-    // Don't open if all products already reviewed
     const hasUnreviewed = order.items.some(i => !this.hasProductReview(i.productId));
-    if (!hasUnreviewed) return;
+    if (!hasUnreviewed) {
+      return;
+    }
 
     this.orderToReview.set(order);
-    // Default to first unreviewed product
     const firstUnreviewed = order.items.find(i => !this.hasProductReview(i.productId));
     this.selectedProductId.set(firstUnreviewed?.productId ?? order.items[0]?.productId ?? '');
     this.reviewSummary.set('');
@@ -210,16 +198,20 @@ export class OrdersComponent implements OnInit {
 
   submitReview(): void {
     const order = this.orderToReview();
-    if (!order) return;
+    if (!order) {
+      return;
+    }
 
     if (!this.selectedProductId()) {
       toast.error('Please select a product to review');
       return;
     }
+
     if (!this.reviewSummary().trim()) {
       toast.error('Please enter a review summary');
       return;
     }
+
     if (this.reviewRating() === 0) {
       toast.error('Please select a rating');
       return;
@@ -242,8 +234,9 @@ export class OrdersComponent implements OnInit {
         }
       },
       error: (err) => {
+        console.error(err?.error?.message);
         toast.dismiss(toastId);
-        toast.error(err?.error?.message || 'Failed to submit review');
+        toast.error(err?.error?.message || err.error.errors.Summary[0] || 'Failed to submit review');
       },
     });
   }
@@ -261,15 +254,13 @@ export class OrdersComponent implements OnInit {
     return star <= active ? 'text-yellow-400' : 'text-gray-300';
   }
 
-  // ── Helpers ─────────────────────────────────────────────────────
-
   getStatusColor(status: string): string {
     switch (status.toLowerCase()) {
       case 'not delivered': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'shipped':       return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'delivered':     return 'bg-green-100 text-green-800 border-green-200';
-      case 'cancelled':     return 'bg-red-100 text-red-800 border-red-200';
-      default:              return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'shipped': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'delivered': return 'bg-green-100 text-green-800 border-green-200';
+      case 'cancelled': return 'bg-red-100 text-red-800 border-red-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   }
 

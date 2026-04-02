@@ -79,382 +79,297 @@ namespace ShoppingApp.Services
                     }
                 };
             }
-            catch (AppException)
+            catch (Exception)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Error while adding product",ex,500);
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Something went wrong while adding product",ex,500);
             }
         }
 
         public async Task<ApiResponse<GetAllProductsResponseDTO>> GetProducts(GetAllProductsRequestDTO request)
         {
-            try
+            var query = _productRepository.GetQueryable().AsNoTracking()
+                .Where(p => p.ActiveStatus == true);
+
+            var totalCount = await query.CountAsync();
+
+            if (totalCount == 0)
             {
-                var query = _productRepository.GetQueryable().AsNoTracking()
-                    .Where(p => p.ActiveStatus == true);
-
-                var totalCount = await query.CountAsync();
-
-                if (totalCount == 0)
-                {
-                    return new ApiResponse<GetAllProductsResponseDTO>()
-                    {
-                        Data = new GetAllProductsResponseDTO(),
-                        StatusCode = 200,
-                        Action = "ShowEmptyPage",
-                        Message = "No products available for this moment"
-                    };
-                }
-
-                query = query.OrderBy(p => p.Name);
-
-                var pageNumber = request.pagination.PageNumber;
-                var pageSize = request.pagination.PageSize;
-
-                var products = await query
-                    .Where(p => p.ActiveStatus)
-                    .Skip((request.pagination.PageNumber - 1) * request.pagination.PageSize)
-                    .Take(request.pagination.PageSize)
-                    .Select(p => new ProductDetails
-                    {
-                        ProductId = p.ProductId,
-                        CategoryId = p.CategoryId,
-                        ProductName = p.Name,
-                        ImagePath = p.ImagePath,
-                        Description = p.Description,
-                        CategoryName = p.Category!.CategoryName,
-                        Price = p.Price,
-                        StockId = p.Stock!.StockId,
-                        Quantity = p.Stock.Quantity,
-                        Review = p.Reviews != null
-                            ? p.Reviews.Select(r => new ReviewDTO
-                            {
-                                Summary = r.Summary,
-                                ReviewPoints = r.ReviewPoints
-                            }).ToList()
-                            : new List<ReviewDTO>()
-                    })
-                    .ToListAsync();
-
-                var response = new GetAllProductsResponseDTO
-                {
-                    ProductList = products
-                };
-
                 return new ApiResponse<GetAllProductsResponseDTO>()
                 {
-                    Data = response,
+                    Data = new GetAllProductsResponseDTO(),
                     StatusCode = 200,
-                    Message = "Products fetched successfully"
+                    Action = "ShowEmptyPage",
+                    Message = "No products available for this moment"
                 };
             }
-            catch (AppException)
+
+            query = query.OrderBy(p => p.Name);
+
+            var pageNumber = request.pagination.PageNumber;
+            var pageSize = request.pagination.PageSize;
+
+            var products = await query
+                .Where(p => p.ActiveStatus)
+                .Skip((request.pagination.PageNumber - 1) * request.pagination.PageSize)
+                .Take(request.pagination.PageSize)
+                .Select(p => new ProductDetails
+                {
+                    ProductId = p.ProductId,
+                    CategoryId = p.CategoryId,
+                    ProductName = p.Name,
+                    ImagePath = p.ImagePath,
+                    Description = p.Description,
+                    CategoryName = p.Category!.CategoryName,
+                    Price = p.Price,
+                    StockId = p.Stock!.StockId,
+                    Quantity = p.Stock.Quantity,
+                    Review = p.Reviews != null
+                        ? p.Reviews.Select(r => new ReviewDTO
+                        {
+                            Summary = r.Summary,
+                            ReviewPoints = r.ReviewPoints
+                        }).ToList()
+                        : new List<ReviewDTO>()
+                })
+                .ToListAsync();
+
+            var response = new GetAllProductsResponseDTO
             {
-                throw;
-            }
-            catch (DbUpdateException ex)
+                ProductList = products
+            };
+
+            return new ApiResponse<GetAllProductsResponseDTO>()
             {
-                throw new AppException("Error while Fetching product", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                throw new AppException("Something went wrong while Fetching product", ex, 500);
-            }
+                Data = response,
+                StatusCode = 200,
+                Message = "Products fetched successfully"
+            };
         }
 
         public async Task<ApiResponse<GetAllProductsWithFilterResponseDTO>> GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request)
         {
-            try
+            if (request.LowPrice > request.HighPrice)
             {
-                if (request.LowPrice > request.HighPrice)
-                {
-                    throw new AppException("Low price cannot be greater than high price", 400);
-                }
+                throw new AppException("Low price cannot be greater than high price", 400);
+            }
 
-                var query = _productRepository
-                    .GetQueryable()
-                    .AsNoTracking()
-                    .Where(p => p.Price >= request.LowPrice && p.Price <= request.HighPrice);
+            var query = _productRepository
+                .GetQueryable()
+                .AsNoTracking()
+                .Where(p => p.Price >= request.LowPrice && p.Price <= request.HighPrice);
 
-                if (request.CategoryId.HasValue)
-                {
-                    query = query.Where(p => p.CategoryId == request.CategoryId.Value);
-                }
+            if (request.CategoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == request.CategoryId.Value);
+            }
 
-                var totalCount = await query.CountAsync();
+            var totalCount = await query.CountAsync();
 
-                if (totalCount == 0)
-                {
-                    return new ApiResponse<GetAllProductsWithFilterResponseDTO>()
-                    {
-                        Data = new GetAllProductsWithFilterResponseDTO(),
-                        StatusCode = 200,
-                        Action = "ShowEmptyPage",
-                        Message = "No products found for the selected price range"
-                    };
-                }
-
-                query = query.OrderBy(p => p.Price);
-
-                var pageNumber = request.pagination.PageNumber;
-                var pageSize = request.pagination.PageSize;
-
-                var products = await query
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
-                    .Select(p => new ProductDetails
-                    {
-                        ProductId = p.ProductId,
-                        CategoryId = p.CategoryId,
-                        ProductName = p.Name,
-                        ImagePath = p.ImagePath,
-                        Description = p.Description,
-                        CategoryName = p.Category!.CategoryName,
-                        Price = p.Price,
-                        StockId = p.Stock!.StockId,
-                        Quantity = p.Stock.Quantity,
-                        Review = p.Reviews != null
-                            ? p.Reviews.Select(r => new ReviewDTO
-                            {
-                                Summary = r.Summary,
-                                ReviewPoints = r.ReviewPoints
-                            }).ToList()
-                            : new List<ReviewDTO>()
-                    })
-                    .ToListAsync();
-
-                var response = new GetAllProductsWithFilterResponseDTO
-                {
-                    ProductList = products
-                };
-
+            if (totalCount == 0)
+            {
                 return new ApiResponse<GetAllProductsWithFilterResponseDTO>()
                 {
-                    Data = response,
+                    Data = new GetAllProductsWithFilterResponseDTO(),
                     StatusCode = 200,
-                    Message = "Filtered products fetched successfully",
-                    Action = "ShowProducts"
+                    Action = "ShowEmptyPage",
+                    Message = "No products found for the selected price range"
                 };
             }
-            catch (AppException)
+
+            query = query.OrderBy(p => p.Price);
+
+            var pageNumber = request.pagination.PageNumber;
+            var pageSize = request.pagination.PageSize;
+
+            var products = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => new ProductDetails
+                {
+                    ProductId = p.ProductId,
+                    CategoryId = p.CategoryId,
+                    ProductName = p.Name,
+                    ImagePath = p.ImagePath,
+                    Description = p.Description,
+                    CategoryName = p.Category!.CategoryName,
+                    Price = p.Price,
+                    StockId = p.Stock!.StockId,
+                    Quantity = p.Stock.Quantity,
+                    Review = p.Reviews != null
+                        ? p.Reviews.Select(r => new ReviewDTO
+                        {
+                            Summary = r.Summary,
+                            ReviewPoints = r.ReviewPoints
+                        }).ToList()
+                        : new List<ReviewDTO>()
+                })
+                .ToListAsync();
+
+            var response = new GetAllProductsWithFilterResponseDTO
             {
-                throw;
-            }
-            catch (DbUpdateException ex)
+                ProductList = products
+            };
+
+            return new ApiResponse<GetAllProductsWithFilterResponseDTO>()
             {
-                throw new AppException("Error while filtering products", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                throw new AppException("Something went wrong while filtering products", ex, 500);
-            }
+                Data = response,
+                StatusCode = 200,
+                Message = "Filtered products fetched successfully",
+                Action = "ShowProducts"
+            };
         }
 
         public async Task<ApiResponse<List<ProductSuggestionDTO>>> GetSuggestions(string query)
         {
-            try
+            if (string.IsNullOrWhiteSpace(query))
             {
-                if (string.IsNullOrWhiteSpace(query))
-                {
-                    return new ApiResponse<List<ProductSuggestionDTO>>()
-                    {
-                        Data = new List<ProductSuggestionDTO>(),
-                        StatusCode = 200,
-                        Message = "Empty query",
-                        Action = "ShowEmpty"
-                    };
-                }
-
-                query = query.Trim();
-
-                var suggestions = await _productRepository
-                    .GetQueryable()
-                    .AsNoTracking()
-                    .Where(p => EF.Functions.Like(p.Name, $"{query}%"))
-                    .OrderBy(p => p.Name)
-                    .Select(p => new ProductSuggestionDTO
-                    {
-                        Name = p.Name
-                    })
-                    .Take(10)
-                    .ToListAsync();
-
                 return new ApiResponse<List<ProductSuggestionDTO>>()
                 {
-                    Data = suggestions,
+                    Data = new List<ProductSuggestionDTO>(),
                     StatusCode = 200,
-                    Message = suggestions.Any()
-                        ? "Suggestions fetched successfully"
-                        : "No suggestions found",
-                    Action = suggestions.Any() ? "ShowList" : "ShowEmpty"
+                    Message = "Empty query",
+                    Action = "ShowEmpty"
                 };
             }
-            catch (AppException)
+
+            query = query.Trim();
+
+            var suggestions = await _productRepository
+                .GetQueryable()
+                .AsNoTracking()
+                .Where(p => EF.Functions.Like(p.Name, $"{query}%"))
+                .OrderBy(p => p.Name)
+                .Select(p => new ProductSuggestionDTO
+                {
+                    Name = p.Name
+                })
+                .Take(10)
+                .ToListAsync();
+
+            return new ApiResponse<List<ProductSuggestionDTO>>()
             {
-                throw;
-            }
-            catch (DbUpdateException ex)
-            {
-                throw new AppException("Error while fetching suggestions", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                throw new AppException("Error while fetching suggestions", ex, 500);
-            }
+                Data = suggestions,
+                StatusCode = 200,
+                Message = suggestions.Any()
+                    ? "Suggestions fetched successfully"
+                    : "No suggestions found",
+                Action = suggestions.Any() ? "ShowList" : "ShowEmpty"
+            };
         }
 
         public async Task<ApiResponse<SearchProductByIdResponseDTO>> SearchProductById(SearchProductByIdRequestDTO request)
         {
-            try
-            {
-                var productEntity = await _productRepository
-                    .GetQueryable()
-                    .Include(p => p.Reviews)
-                    .Include(p => p.Category)
-                    .Include(p => p.Stock)
-                    .FirstOrDefaultAsync(p => p.ProductId == request.ProductId);
+            var productEntity = await _productRepository
+                .GetQueryable()
+                .Include(p => p.Reviews)
+                .Include(p => p.Category)
+                .Include(p => p.Stock)
+                .FirstOrDefaultAsync(p => p.ProductId == request.ProductId);
 
-                if (productEntity == null)
-                {
-                    throw new AppException("Product not found", 404);
-                }
-
-                var product = new SearchProductByIdResponseDTO
-                {
-                    ProductId = productEntity.ProductId,
-                    CategoryId = productEntity.CategoryId,
-                    StockId = productEntity.Stock!.StockId,
-                    ProductName = productEntity.Name,
-                    ImagePath = productEntity.ImagePath,
-                    Description = productEntity.Description,
-                    Price = productEntity.Price,
-                    CategoryName = productEntity.Category!.CategoryName,
-                    Quantity = productEntity.Stock.Quantity,
-                    Review = productEntity.Reviews?
-                        .Select(r => new ReviewDTO
-                        {
-                            Summary = r.Summary,
-                            ReviewPoints = r.ReviewPoints
-                        })
-                        .ToList() ?? new List<ReviewDTO>()
-                };
-
-                if (product == null)
-                {
-                    throw new AppException("Product not found", 404);
-                }
-
-                return new ApiResponse<SearchProductByIdResponseDTO>()
-                {
-                    Data = product,
-                    StatusCode = 200,
-                    Message = "Product fetched successfully"
-                };
-            }
-            catch (AppException)
+            if (productEntity == null)
             {
-                throw;
+                throw new AppException("Product not found", 404);
             }
-            catch (DbUpdateException ex)
+
+            var product = new SearchProductByIdResponseDTO
             {
-                throw new AppException("Error while Searching product", ex, 500);
-            }
-            catch (Exception ex)
+                ProductId = productEntity.ProductId,
+                CategoryId = productEntity.CategoryId,
+                StockId = productEntity.Stock!.StockId,
+                ProductName = productEntity.Name,
+                ImagePath = productEntity.ImagePath,
+                Description = productEntity.Description,
+                Price = productEntity.Price,
+                CategoryName = productEntity.Category!.CategoryName,
+                Quantity = productEntity.Stock.Quantity,
+                Review = productEntity.Reviews?
+                    .Select(r => new ReviewDTO
+                    {
+                        Summary = r.Summary,
+                        ReviewPoints = r.ReviewPoints
+                    })
+                    .ToList() ?? new List<ReviewDTO>()
+            };
+
+            if (product == null)
             {
-                throw new AppException("Something went wrong while Searching product", ex, 500);
+                throw new AppException("Product not found", 404);
             }
+
+            return new ApiResponse<SearchProductByIdResponseDTO>()
+            {
+                Data = product,
+                StatusCode = 200,
+                Message = "Product fetched successfully"
+            };
         }
 
         public async Task<ApiResponse<SearchProductByNameResponseDTO>> SearchProductByName(SearchProductByNameRequestDTO request)
         {
-            try
+            var searchText = request.ProductName.Trim();
+
+            var products = await _productRepository
+                .GetQueryable()
+                .AsNoTracking()
+                .Where(p => EF.Functions.Like(p.Name, $"%{searchText}%"))
+                .OrderBy(p => p.Name)
+                .Select(p => new
+                {
+                    p.ProductId,
+                    p.CategoryId,
+                    p.Name,
+                    p.ImagePath,
+                    p.Description,
+                    p.Price,
+                    CategoryName = p.Category!.CategoryName,
+                    StockId = p.Stock!.StockId,
+                    Quantity = p.Stock.Quantity,
+                    Reviews = p.Reviews
+                })
+                .ToListAsync();
+
+            var result = products.Select(p => new ProductDetailsDTO
             {
-                var searchText = request.ProductName.Trim();
-
-                var products = await _productRepository
-                    .GetQueryable()
-                    .AsNoTracking()
-                    .Where(p => EF.Functions.Like(p.Name, $"%{searchText}%"))
-                    .OrderBy(p => p.Name)
-                    .Select(p => new
+                ProductId = p.ProductId,
+                CategoryId = p.CategoryId,
+                StockId = p.StockId,
+                Name = p.Name,
+                ImagePath = p.ImagePath,
+                Description = p.Description,
+                CategoryName = p.CategoryName,
+                Price = p.Price,
+                Quantity = p.Quantity,
+                Review = p.Reviews?
+                    .Select(r => new ReviewDTO
                     {
-                        p.ProductId,
-                        p.CategoryId,
-                        p.Name,
-                        p.ImagePath,
-                        p.Description,
-                        p.Price,
-                        CategoryName = p.Category!.CategoryName,
-                        StockId = p.Stock!.StockId,
-                        Quantity = p.Stock.Quantity,
-                        Reviews = p.Reviews
-                    })
-                    .ToListAsync();
+                        Summary = r.Summary,
+                        ReviewPoints = r.ReviewPoints
+                    }).ToList() ?? new List<ReviewDTO>()
+            }).ToList();
 
-                var result = products.Select(p => new ProductDetailsDTO
-                {
-                    ProductId = p.ProductId,
-                    CategoryId = p.CategoryId,
-                    StockId = p.StockId,
-                    Name = p.Name,
-                    ImagePath = p.ImagePath,
-                    Description = p.Description,
-                    CategoryName = p.CategoryName,
-                    Price = p.Price,
-                    Quantity = p.Quantity,
-                    Review = p.Reviews?
-                        .Select(r => new ReviewDTO
-                        {
-                            Summary = r.Summary,
-                            ReviewPoints = r.ReviewPoints
-                        }).ToList() ?? new List<ReviewDTO>()
-                }).ToList();
-
-                if (!products.Any())
-                {
-                    return new ApiResponse<SearchProductByNameResponseDTO>()
-                    {
-                        Data = new SearchProductByNameResponseDTO(),
-                        StatusCode = 200,
-                        Message = "No matching products found",
-                        Action = "ShowEmptyPage"
-                    };
-                }
-
-                var response = new SearchProductByNameResponseDTO
-                {
-                    ProductsList = result
-                };
-
+            if (!products.Any())
+            {
                 return new ApiResponse<SearchProductByNameResponseDTO>()
                 {
-                    Data = response,
+                    Data = new SearchProductByNameResponseDTO(),
                     StatusCode = 200,
-                    Message = "Products fetched successfully"
+                    Message = "No matching products found",
+                    Action = "ShowEmptyPage"
                 };
             }
-            catch (AppException)
+
+            var response = new SearchProductByNameResponseDTO
             {
-                throw;
-            }
-            catch (DbUpdateException ex)
+                ProductsList = result
+            };
+
+            return new ApiResponse<SearchProductByNameResponseDTO>()
             {
-                throw new AppException("Error while Searching product", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                throw new AppException("Something went wrong while Searching product", ex, 500);
-            }
+                Data = response,
+                StatusCode = 200,
+                Message = "Products fetched successfully"
+            };
         }
 
         public async Task<ApiResponse<UpdateProductResponseDTO>> UpdateProduct(Guid userId, UpdateProductRequestDTO request)
@@ -514,26 +429,11 @@ namespace ShoppingApp.Services
                     Message = "Product updated successfully"
                 };
             }
-            catch (AppException)
+            catch (Exception)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
             }
-            catch (DbUpdateException ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Error while Searching product", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Something went wrong while Searching product", ex, 500);
-            }
-        }
-        private async Task<bool> IsUserNotFound(Guid userId)
-        {
-            var user = await _userRepository.GetAsync(userId);
-            return user == null;
         }
 
         public async Task<ApiResponse<DeleteProductResponseDTO>> DeleteProduct(Guid userId, DeleteProductRequestDTO request)
@@ -566,21 +466,16 @@ namespace ShoppingApp.Services
                     Message = "Product deleted successfully"
                 };
             }
-            catch (AppException)
+            catch (Exception)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
             }
-            catch (DbUpdateException ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Error while deleting product", ex, 500);
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackAsync();
-                throw new AppException("Something went wrong while deleting product", ex, 500);
-            }
+        }
+        private async Task<bool> IsUserNotFound(Guid userId)
+        {
+            var user = await _userRepository.GetAsync(userId);
+            return user == null;
         }
     }
 }
