@@ -317,5 +317,28 @@ namespace Testing.Services
 
             Assert.False(result.Data.IsValid);
         }
+
+        [Fact]
+        public async Task GetAllPromocode_Pagination_ReturnsCorrectPage()
+        {
+            var context = GetDbContext();
+            var service = GetService(context);
+
+            for (int i = 0; i < 5; i++)
+                await service.AddPromoCode(new AddPromoCodeRequestDTO
+                {
+                    PromoCodeName = $"CODE{i:D2}",
+                    DiscountPercentage = 5,
+                    FromDate = DateTime.UtcNow,
+                    ToDate = DateTime.UtcNow.AddDays(10)
+                });
+
+            var page1 = await service.GetAllPromocode(new GetAllPromocodeRequestDTO { Pagination = new Pagination { PageNumber = 1, PageSize = 3 } });
+            Assert.Equal(3, page1.Data.PromoCodes.Count);
+            Assert.Equal(5, page1.Data.TotalCount);
+
+            var page2 = await service.GetAllPromocode(new GetAllPromocodeRequestDTO { Pagination = new Pagination { PageNumber = 2, PageSize = 3 } });
+            Assert.Equal(2, page2.Data.PromoCodes.Count);
+        }
     }
 }

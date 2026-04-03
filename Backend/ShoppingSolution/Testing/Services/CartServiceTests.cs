@@ -327,5 +327,227 @@ namespace Testing.Services
 
             Assert.True(result.Data.WalletUsed > 0);
         }
+
+        [Fact]
+        public async Task PlaceOrderAllFromCart_WithWallet_PartialBalance_UsesAvailableOnly()
+        {
+            // Wallet has less than total — partial wallet payment
+            var context = GetDbContext();
+            var (userId, prodId, addrId) = await SeedAsync(context, stock: 10);
+            context.Wallets.Add(new Wallet { WalletId = Guid.NewGuid(), UserId = userId, WalletAmount = 10 });
+            await context.SaveChangesAsync();
+
+            var service = GetService(context);
+            await service.AddCart(userId, new AddToCartRequestDTO { ProductId = prodId, Quantity = 1 });
+            var result = await service.PlaceOrderAllFromCart(userId, addrId, "Partial", "", true);
+
+            Assert.Equal(10, result.Data.WalletUsed);
+            Assert.Equal("Partial Wallet", result.Data.PaymentStatus);
+        }
+
+        [Fact]
+        public async Task PlaceOrderAllFromCart_WithWallet_NoWallet_Throws404()
+        {
+            var context = GetDbContext();
+            var (userId, prodId, addrId) = await SeedAsync(context);
+            var service = GetService(context);
+
+            await service.AddCart(userId, new AddToCartRequestDTO { ProductId = prodId, Quantity = 1 });
+            var ex = await Assert.ThrowsAsync<AppException>(() =>
+                service.PlaceOrderAllFromCart(userId, addrId, "Wallet", "", true));
+            Assert.Equal(404, ex.StatusCode);
+        }
+
+        [Fact]
+        public async Task PlaceOrderAllFromCart_WithValidPromoCode_AppliesDiscount()
+        {
+            var context = GetDbContext();
+            var (userId, prodId, addrId) = await SeedAsync(context);
+            context.PromoCodes.Add(new PromoCode
+            {
+                PromoCodeId = Guid.NewGuid(),
+                PromoCodeName = "CART10",
+                DiscountPercentage = 10,
+                FromDate = DateTime.UtcNow.AddDays(-1),
+                ToDate = DateTime.UtcNow.AddDays(1)
+            });
+            await context.SaveChangesAsync();
+
+            var service = GetService(context);
+            await service.AddCart(userId, new AddToCartRequestDTO { ProductId = prodId, Quantity = 1 });
+            var result = await service.PlaceOrderAllFromCart(userId, addrId, "COD", "CART10", false);
+
+            Assert.True(result.Data.DiscountAmount > 0);
+        }
+
+        [Fact]
+        public async Task PlaceOrderAllFromCart_InvalidPromoCode_Throws400()
+        {
+            var context = GetDbContext();
+            var (userId, prodId, addrId) = await SeedAsync(context);
+            var service = GetService(context);
+
+            await service.AddCart(userId, new AddToCartRequestDTO { ProductId = prodId, Quantity = 1 });
+            var ex = await Assert.ThrowsAsync<AppException>(() =>
+                service.PlaceOrderAllFromCart(userId, addrId, "COD", "BADCODE", false));
+            Assert.Equal(400, ex.StatusCode);
+        }
+
+        [Fact]
+        public async Task PlaceOrderAllFromCart_ExpiredPromoCode_Throws400()
+        {
+            var context = GetDbContext();
+            var (userId, prodId, addrId) = await SeedAsync(context);
+            context.PromoCodes.Add(new PromoCode
+            {
+                PromoCodeId = Guid.NewGuid(),
+                PromoCodeName = "EXPIRED",
+                DiscountPercentage = 10,
+                FromDate = DateTime.UtcNow.AddDays(-10),
+                ToDate = DateTime.UtcNow.AddDays(-1)
+            });
+            await context.SaveChangesAsync();
+
+            var service = GetService(context);
+            await service.AddCart(userId, new AddToCartRequestDTO { ProductId = prodId, Quantity = 1 });
+            var ex = await Assert.ThrowsAsync<AppException>(() =>
+                service.PlaceOrderAllFromCart(userId, addrId, "COD", "EXPIRED", false));
+            Assert.Equal(400, ex.StatusCode);
+        }
+
+        [Fact]
+        public async Task PlaceOrderAllFromCart_FuturePromoCode_Throws400()
+        {
+            var context = GetDbContext();
+            var (userId, prodId, addrId) = await SeedAsync(context);
+            context.PromoCodes.Add(new PromoCode
+            {
+                PromoCodeId = Guid.NewGuid(),
+                PromoCodeName = "FUTURE",
+                DiscountPercentage = 10,
+                FromDate = DateTime.UtcNow.AddDays(5),
+                ToDate = DateTime.UtcNow.AddDays(10)
+            });
+            await context.SaveChangesAsync();
+
+            var service = GetService(context);
+            await service.AddCart(userId, new AddToCartRequestDTO { ProductId = prodId, Quantity = 1 });
+            var ex = await Assert.ThrowsAsync<AppException>(() =>
+                service.PlaceOrderAllFromCart(userId, addrId, "COD", "FUTURE", false));
+            Assert.Equal(400, ex.StatusCode);
+        }
+
+        [Fact]
+        public async Task PlaceOrderAllFromCart_FreeShipping_WhenSubtotalOver5000()
+        {
+            // Price=6000, qty=1 → subtotal > 5000 → shipping = 0
+            var context = GetDbContext();
+            var userId = Guid.NewGuid();
+            var catId = Guid.NewGuid();
+            var prodId = Guid.NewGuid();
+            var addrId = Guid.NewGuid();
+
+            context.Users.Add(new User { UserId = userId, Name = "U", Email = "u@u.com", Password = "x", SaltValue = "s", Role = "user", Active = true });
+            context.Categories.Add(new Category { CategoryId = catId, CategoryName = "Cat" });
+            context.Products.Add(new Product { ProductId = prodId, CategoryId = catId, Name = "Expensive", ImagePath = "img", Description = "desc", Price = 6000, ActiveStatus = true });
+            context.Stock.Add(new Stock { StockId = Guid.NewGuid(), ProductId = prodId, Quantity = 10 });
+            context.Addresses.Add(new Address { AddressId = addrId, UserId = userId, AddressLine1 = "A", AddressLine2 = "B", State = "S", City = "C", Pincode = "123456" });
+            await context.SaveChangesAsync();
+
+            var service = GetService(context);
+            await service.AddCart(userId, new AddToCartRequestDTO { ProductId = prodId, Quantity = 1 });
+            var result = await service.PlaceOrderAllFromCart(userId, addrId, "COD", "", false);
+
+            Assert.Equal(0, result.Data.Shipping);
+        }
+
+        [Fact]
+        public async Task PlaceOrderAllFromCart_StockNotFound_Throws404()
+        {
+            // Product exists but no stock record
+            var context = GetDbContext();
+            var userId = Guid.NewGuid();
+            var catId = Guid.NewGuid();
+            var prodId = Guid.NewGuid();
+            var addrId = Guid.NewGuid();
+
+            context.Users.Add(new User { UserId = userId, Name = "U", Email = "u@u.com", Password = "x", SaltValue = "s", Role = "user", Active = true });
+            context.Categories.Add(new Category { CategoryId = catId, CategoryName = "Cat" });
+            context.Products.Add(new Product { ProductId = prodId, CategoryId = catId, Name = "NoStock", ImagePath = "img", Description = "desc", Price = 100, ActiveStatus = true });
+            // No stock added
+            context.Addresses.Add(new Address { AddressId = addrId, UserId = userId, AddressLine1 = "A", AddressLine2 = "B", State = "S", City = "C", Pincode = "123456" });
+            await context.SaveChangesAsync();
+
+            var service = GetService(context);
+            await service.AddCart(userId, new AddToCartRequestDTO { ProductId = prodId, Quantity = 1 });
+            var ex = await Assert.ThrowsAsync<AppException>(() =>
+                service.PlaceOrderAllFromCart(userId, addrId, "COD", "", false));
+            Assert.Equal(404, ex.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetUserCarts_EmptyCart_ReturnsEmptyCartMessage()
+        {
+            var context = GetDbContext();
+            var (userId, prodId, _) = await SeedAsync(context);
+            var service = GetService(context);
+
+            // Create cart but no items
+            await service.AddCart(userId, new AddToCartRequestDTO { ProductId = prodId, Quantity = 1 });
+            var cartId = context.Carts.First(c => c.UserId == userId).CartId;
+            // Remove the item directly
+            context.CartItems.RemoveRange(context.CartItems.Where(ci => ci.CartId == cartId));
+            await context.SaveChangesAsync();
+
+            var result = await service.GetUserCarts(userId, 1, 10);
+            Assert.Equal("Cart is empty", result.Message);
+        }
+
+        [Fact]
+        public async Task RemoveAllFromCart_NoItems_Throws404()
+        {
+            var context = GetDbContext();
+            var (userId, prodId, _) = await SeedAsync(context);
+            var service = GetService(context);
+
+            // Create cart but no items
+            context.Carts.Add(new Cart { CartId = Guid.NewGuid(), UserId = userId });
+            await context.SaveChangesAsync();
+
+            var ex = await Assert.ThrowsAsync<AppException>(() =>
+                service.RemoveAllFromCartByUserID(userId));
+            Assert.Equal(404, ex.StatusCode);
+        }
+
+        [Fact]
+        public async Task UpdateCart_CartItemNotFound_Throws404()
+        {
+            var context = GetDbContext();
+            var (userId, prodId, _) = await SeedAsync(context);
+            var service = GetService(context);
+
+            var addResult = await service.AddCart(userId, new AddToCartRequestDTO { ProductId = prodId, Quantity = 1 });
+            var cartId = addResult.Data.CartId;
+
+            var ex = await Assert.ThrowsAsync<AppException>(() =>
+                service.UpdateCart(userId, cartId, Guid.NewGuid(), prodId, 5));
+            Assert.Equal(404, ex.StatusCode);
+        }
+
+        [Fact]
+        public async Task UpdateCart_ProductMismatch_Throws400()
+        {
+            var context = GetDbContext();
+            var (userId, prodId, _) = await SeedAsync(context);
+            var service = GetService(context);
+
+            var addResult = await service.AddCart(userId, new AddToCartRequestDTO { ProductId = prodId, Quantity = 1 });
+            var cartId = addResult.Data.CartId;
+            var cartItemId = addResult.Data.CartItemId;
+
+            var ex = await Assert.ThrowsAsync<AppException>(() =>
+                service.UpdateCart(userId, cartId, cartItemId, Guid.NewGuid(), 5));
+            Assert.Equal(400, ex.StatusCode);
+        }
     }
 }

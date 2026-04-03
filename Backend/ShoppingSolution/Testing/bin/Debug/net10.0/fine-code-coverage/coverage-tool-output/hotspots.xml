@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Hotspots>
+  <Hotspot>
+    <Assembly>ShoppingApp</Assembly>
+    <Class>ShoppingApp.Migrations.ShoppingContextModelSnapshot</Class>
+    <MethodName>BuildModel(...)</MethodName>
+    <ShortName />
+    <Line>17</Line>
+    <FileIndex>0</FileIndex>
+    <Metrics>
+      <Metric>
+        <Name>Cyclomatic complexity</Name>
+        <Exceeded>true</Exceeded>
+        <Value>84</Value>
+      </Metric>
+    </Metrics>
+  </Hotspot>
+  <Hotspot>
+    <Assembly>ShoppingApp</Assembly>
+    <Class>ShoppingApp.Services.CartService</Class>
+    <MethodName>MoveNext()</MethodName>
+    <ShortName />
+    <Line>172</Line>
+    <FileIndex>0</FileIndex>
+    <Metrics>
+      <Metric>
+        <Name>Cyclomatic complexity</Name>
+        <Exceeded>true</Exceeded>
+        <Value>44</Value>
+      </Metric>
+    </Metrics>
+  </Hotspot>
+  <Hotspot>
+    <Assembly>ShoppingApp</Assembly>
+    <Class>ShoppingApp.Contexts.ShoppingContext</Class>
+    <MethodName>OnModelCreating(...)</MethodName>
+    <ShortName />
+    <Line>34</Line>
+    <FileIndex>0</FileIndex>
+    <Metrics>
+      <Metric>
+        <Name>Cyclomatic complexity</Name>
+        <Exceeded>true</Exceeded>
+        <Value>36</Value>
+      </Metric>
+    </Metrics>
+  </Hotspot>
+</Hotspots>

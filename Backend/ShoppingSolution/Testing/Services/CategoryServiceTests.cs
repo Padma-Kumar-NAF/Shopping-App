@@ -62,7 +62,7 @@ namespace Testing.Services
         }
 
         [Fact]
-        public async Task AddCategory_GenericException_Throws500()
+        public async Task AddCategory_GenericException_BubblesUp()
         {
             var mockCatRepo = new Mock<IRepository<Guid, Category>>();
             var mockProdRepo = new Mock<IRepository<Guid, Product>>();
@@ -71,12 +71,11 @@ namespace Testing.Services
                 .ThrowsAsync(new Exception("Unexpected"));
 
             var service = new CategoryService(mockCatRepo.Object, mockProdRepo.Object);
-            var ex = await Assert.ThrowsAsync<AppException>(() => service.AddCategory("Test"));
-            Assert.Equal(500, ex.StatusCode);
+            await Assert.ThrowsAsync<Exception>(() => service.AddCategory("Test"));
         }
 
         [Fact]
-        public async Task AddCategory_DbUpdateException_Throws500()
+        public async Task AddCategory_DbUpdateException_BubblesUp()
         {
             var mockCatRepo = new Mock<IRepository<Guid, Category>>();
             var mockProdRepo = new Mock<IRepository<Guid, Product>>();
@@ -85,8 +84,7 @@ namespace Testing.Services
                 .ThrowsAsync(new DbUpdateException());
 
             var service = new CategoryService(mockCatRepo.Object, mockProdRepo.Object);
-            var ex = await Assert.ThrowsAsync<AppException>(() => service.AddCategory("Test"));
-            Assert.Equal(500, ex.StatusCode);
+            await Assert.ThrowsAsync<DbUpdateException>(() => service.AddCategory("Test"));
         }
 
         // ── GetAllCategories ─────────────────────────────────────────────────────
@@ -112,7 +110,7 @@ namespace Testing.Services
         }
 
         [Fact]
-        public async Task GetAllCategories_GenericException_Throws500()
+        public async Task GetAllCategories_GenericException_BubblesUp()
         {
             var mockCatRepo = new Mock<IRepository<Guid, Category>>();
             var mockProdRepo = new Mock<IRepository<Guid, Product>>();
@@ -120,8 +118,7 @@ namespace Testing.Services
             mockCatRepo.Setup(x => x.GetQueryable()).Throws(new Exception("Unexpected"));
 
             var service = new CategoryService(mockCatRepo.Object, mockProdRepo.Object);
-            var ex = await Assert.ThrowsAsync<AppException>(() => service.GetAllCategories(10, 1));
-            Assert.Equal(500, ex.StatusCode);
+            await Assert.ThrowsAsync<Exception>(() => service.GetAllCategories(10, 1));
         }
 
         // ── EditCategory ─────────────────────────────────────────────────────────
@@ -182,7 +179,7 @@ namespace Testing.Services
         }
 
         [Fact]
-        public async Task EditCategory_DbUpdateException_Throws500()
+        public async Task EditCategory_DbUpdateException_BubblesUp()
         {
             var mockCatRepo = new Mock<IRepository<Guid, Category>>();
             var mockProdRepo = new Mock<IRepository<Guid, Product>>();
@@ -196,9 +193,8 @@ namespace Testing.Services
                 .ThrowsAsync(new DbUpdateException());
 
             var service = new CategoryService(mockCatRepo.Object, mockProdRepo.Object);
-            var ex = await Assert.ThrowsAsync<AppException>(() =>
+            await Assert.ThrowsAsync<DbUpdateException>(() =>
                 service.EditCategory(new EditCategoryRequestDTO { CategoryId = catId, CategoryName = "New" }));
-            Assert.Equal(500, ex.StatusCode);
         }
 
         // ── DeleteCategory ───────────────────────────────────────────────────────
@@ -259,7 +255,7 @@ namespace Testing.Services
         }
 
         [Fact]
-        public async Task DeleteCategory_GenericException_Throws500()
+        public async Task DeleteCategory_GenericException_BubblesUp()
         {
             var mockCatRepo = new Mock<IRepository<Guid, Category>>();
             var mockProdRepo = new Mock<IRepository<Guid, Product>>();
@@ -268,9 +264,8 @@ namespace Testing.Services
             mockCatRepo.Setup(x => x.GetAsync(catId)).ThrowsAsync(new Exception("Unexpected"));
 
             var service = new CategoryService(mockCatRepo.Object, mockProdRepo.Object);
-            var ex = await Assert.ThrowsAsync<AppException>(() =>
+            await Assert.ThrowsAsync<Exception>(() =>
                 service.DeleteCategory(new DeleteCategoryRequestDTO { CategoryId = catId }));
-            Assert.Equal(500, ex.StatusCode);
         }
 
         // ── GetProductsByCategory ────────────────────────────────────────────────
@@ -332,7 +327,7 @@ namespace Testing.Services
         }
 
         [Fact]
-        public async Task GetProductsByCategory_GenericException_Throws500()
+        public async Task GetProductsByCategory_GenericException_BubblesUp()
         {
             var mockCatRepo = new Mock<IRepository<Guid, Category>>();
             var mockProdRepo = new Mock<IRepository<Guid, Product>>();
@@ -341,9 +336,8 @@ namespace Testing.Services
             mockCatRepo.Setup(x => x.GetAsync(catId)).ThrowsAsync(new Exception("Unexpected"));
 
             var service = new CategoryService(mockCatRepo.Object, mockProdRepo.Object);
-            var ex = await Assert.ThrowsAsync<AppException>(() =>
+            await Assert.ThrowsAsync<Exception>(() =>
                 service.GetProductsByCategory(new GetProductsByCategoryRequestDTO { CategoryId = catId }));
-            Assert.Equal(500, ex.StatusCode);
         }
     }
 }
