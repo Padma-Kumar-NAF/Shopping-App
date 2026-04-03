@@ -614,5 +614,142 @@ namespace Testing.Services
             Assert.True(result.Data.IsSuccess);
             Assert.Single(context.Addresses.Where(a => a.UserId == userId));
         }
+
+        [Fact]
+        public async Task UpdateUserDetails_UserDetailsNotFound_Throws404()
+        {
+            var context = GetDbContext();
+            var userId = Guid.NewGuid();
+            context.Users.Add(new User { UserId = userId, Name = "U", Email = "u@u.com", Password = "x", SaltValue = "s", Role = "user", Active = true });
+            await context.SaveChangesAsync();
+
+            var service = GetService(context);
+            var ex = await Assert.ThrowsAsync<AppException>(() =>
+                service.UpdateUserDetails(userId, new UpdateProfileRequestDTO
+                {
+                    Details = new UpdateUserDetailsDTO { Name = "X", PhoneNumber = "1234567890", AddressLine1 = "A", AddressLine2 = "B", State = "S", City = "C", Pincode = "123456" }
+                }));
+            Assert.Equal(404, ex.StatusCode);
+        }
+
+        [Fact]
+        public async Task UpdateUserDetails_NameUnchanged_SkipsUserUpdate()
+        {
+            // When name is the same, the user.Name update branch is skipped
+            var context = GetDbContext();
+            var userId = Guid.NewGuid();
+            context.Users.Add(new User { UserId = userId, Name = "SameName", Email = "u@u.com", Password = "x", SaltValue = "s", Role = "user", Active = true });
+            context.UserDetails.Add(new UserDetails
+            {
+                UserDetailsId = Guid.NewGuid(),
+                UserId = userId,
+                Name = "SameName",
+                Email = "u@u.com",
+                PhoneNumber = "1234567890",
+                AddressLine1 = "A",
+                AddressLine2 = "B",
+                State = "S",
+                City = "C",
+                Pincode = "123456"
+            });
+            await context.SaveChangesAsync();
+
+            var service = GetService(context);
+            var result = await service.UpdateUserDetails(userId, new UpdateProfileRequestDTO
+            {
+                Details = new UpdateUserDetailsDTO
+                {
+                    Name = "SameName",   // same — skips user update
+                    PhoneNumber = "9999999999",
+                    AddressLine1 = "New A",
+                    AddressLine2 = "New B",
+                    State = "NY",
+                    City = "NYC",
+                    Pincode = "654321"
+                }
+            });
+            Assert.True(result.Data.IsSuccess);
+        }
+
+        [Fact]
+        public async Task UpdateUserDetails_ExistingAddress_UpdatesIt()
+        {
+            var context = GetDbContext();
+            var userId = Guid.NewGuid();
+            var addrId = Guid.NewGuid();
+            context.Users.Add(new User { UserId = userId, Name = "U", Email = "u@u.com", Password = "x", SaltValue = "s", Role = "user", Active = true });
+            context.UserDetails.Add(new UserDetails
+            {
+                UserDetailsId = Guid.NewGuid(),
+                UserId = userId,
+                Name = "U",
+                Email = "u@u.com",
+                PhoneNumber = "1234567890",
+                AddressLine1 = "Old A",
+                AddressLine2 = "Old B",
+                State = "CA",
+                City = "LA",
+                Pincode = "123456"
+            });
+            context.Addresses.Add(new Address
+            {
+                AddressId = addrId,
+                UserId = userId,
+                AddressLine1 = "Old A",
+                AddressLine2 = "Old B",
+                State = "CA",
+                City = "LA",
+                Pincode = "123456"
+            });
+            await context.SaveChangesAsync();
+
+            var service = GetService(context);
+            var result = await service.UpdateUserDetails(userId, new UpdateProfileRequestDTO
+            {
+                Details = new UpdateUserDetailsDTO
+                {
+                    Name = "U",
+                    PhoneNumber = "9876543210",
+                    AddressLine1 = "New A",
+                    AddressLine2 = "New B",
+                    State = "NY",
+                    City = "NYC",
+                    Pincode = "654321"
+                }
+            });
+            Assert.True(result.Data.IsSuccess);
+            var addr = context.Addresses.First(a => a.UserId == userId);
+            Assert.Equal("New A", addr.AddressLine1);
+        }
+
+        [Fact]
+        public async Task LoginUser_EmptyEmail_Throws400()
+        {
+            var context = GetDbContext();
+            var service = GetService(context);
+            var ex = await Assert.ThrowsAsync<AppException>(() =>
+                service.LoginUser(new LoginRequestDTO { Email = "   ", Password = "pass" }));
+            Assert.Equal(400, ex.StatusCode);
+        }
+
+        [Fact]
+        public async Task EditUserEmail_UserDetailsNotFound_Throws404()
+        {
+            var context = GetDbContext();
+            var userId = Guid.NewGuid();
+            // User exists but no UserDetails
+            context.Users.Add(new User { UserId = userId, Name = "U", Email = "old@test.com", Password = "hash", SaltValue = "salt", Role = "user", Active = true });
+            await context.SaveChangesAsync();
+
+            var service = GetService(context);
+            var ex = await Assert.ThrowsAsync<AppException>(() =>
+                service.EditUserEmail(userId, new EditUserEmailRequestDTO
+                {
+                    OldEmail = "old@test.com",
+                    NewEmail = "new@test.com",
+                    Password = "password"
+                }));
+            Assert.Equal(404, ex.StatusCode);
+        }
     }
 }

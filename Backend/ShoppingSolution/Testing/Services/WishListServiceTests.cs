@@ -206,5 +206,50 @@ namespace Testing.Services
             var result = await service.GetUserWishListAsync(-1, -1, Guid.NewGuid());
             Assert.Equal(200, result.StatusCode);
         }
+
+        [Fact]
+        public async Task AddToWishList_ProductNotFound_ThrowsAppException()
+        {
+            var context = GetDbContext();
+            var (userId, _) = await SeedAsync(context);
+            var service = GetService(context);
+
+            await service.CreateWishListAsync("MyList", userId);
+            var wishListId = context.WishList.First(w => w.UserId == userId).WishListId;
+
+            var ex = await Assert.ThrowsAsync<AppException>(() =>
+                service.AddToWishListAsync(userId, Guid.NewGuid(), wishListId));
+            Assert.Equal(404, ex.StatusCode);
+        }
+
+        [Fact]
+        public async Task DeleteWishList_WithNoItems_DeletesSuccessfully()
+        {
+            // Covers the branch where wishListItems.Any() is false
+            var context = GetDbContext();
+            var (userId, _) = await SeedAsync(context);
+            var service = GetService(context);
+
+            await service.CreateWishListAsync("EmptyList", userId);
+            var wishListId = context.WishList.First(w => w.UserId == userId).WishListId;
+
+            var result = await service.DeleteWishListAsync(userId, wishListId);
+            Assert.True(result.Data.IsDeleted);
+        }
+
+        [Fact]
+        public async Task GetUserWishList_WithItems_ReturnsItemDetails()
+        {
+            var context = GetDbContext();
+            var (userId, prodId) = await SeedAsync(context);
+            var service = GetService(context);
+
+            await service.CreateWishListAsync("MyList", userId);
+            var wishListId = context.WishList.First(w => w.UserId == userId).WishListId;
+            await service.AddToWishListAsync(userId, prodId, wishListId);
+
+            var result = await service.GetUserWishListAsync(10, 1, userId);
+            Assert.Single(result.Data.WishList.First().WishListItems);
+        }
     }
 }

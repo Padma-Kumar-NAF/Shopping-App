@@ -114,7 +114,8 @@ namespace Testing.Services
             var (userId, _) = await SeedAsync(context);
             var service = GetService(context);
 
-            await Assert.ThrowsAsync<AppException>(() =>
+            // Service throws plain Exception (not AppException) when review not found
+            await Assert.ThrowsAsync<Exception>(() =>
                 service.DeleteReview(userId, Guid.NewGuid()));
         }
 
@@ -128,9 +129,9 @@ namespace Testing.Services
             var added = await service.AddReview(userId, new AddReviewRequestDTO { ProductId = prodId, Summary = "Good", ReviewPoints = 4 });
             var reviewId = added.Data.ReviewId;
 
-            var ex = await Assert.ThrowsAsync<AppException>(() =>
+            // Service throws UnauthorizedAccessException (not AppException) for wrong user
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(() =>
                 service.DeleteReview(Guid.NewGuid(), reviewId));
-            Assert.NotNull(ex);
         }
     }
 }

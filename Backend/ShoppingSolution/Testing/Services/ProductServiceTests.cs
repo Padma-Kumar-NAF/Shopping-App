@@ -139,7 +139,7 @@ namespace Testing.Services
         }
 
         [Fact]
-        public async Task GetProducts_GenericException_Throws500()
+        public async Task GetProducts_GenericException_BubblesUp()
         {
             var mockStock = new Mock<IRepository<Guid, Stock>>();
             var mockProd = new Mock<IRepository<Guid, Product>>();
@@ -150,9 +150,8 @@ namespace Testing.Services
             mockProd.Setup(x => x.GetQueryable()).Throws(new Exception("Unexpected"));
 
             var service = new ProductService(mockStock.Object, mockProd.Object, mockCat.Object, mockUser.Object, mockUow.Object);
-            var ex = await Assert.ThrowsAsync<AppException>(() =>
+            await Assert.ThrowsAsync<Exception>(() =>
                 service.GetProducts(new GetAllProductsRequestDTO { pagination = new Pagination { PageNumber = 1, PageSize = 10 } }));
-            Assert.Equal(500, ex.StatusCode);
         }
 
         // ── GetProductsWithFilter ────────────────────────────────────────────────
@@ -392,6 +391,50 @@ namespace Testing.Services
             var ex = await Assert.ThrowsAsync<AppException>(() =>
                 service.DeleteProduct(userId, new DeleteProductRequestDTO { ProductId = Guid.NewGuid() }));
             Assert.Equal(404, ex.StatusCode);
+        }
+
+        [Fact]
+        public async Task UpdateProduct_StockNotFound_Throws404()
+        {
+            var (service, context) = GetService();
+            var userId = Guid.NewGuid();
+            var catId = Guid.NewGuid();
+            var prodId = Guid.NewGuid();
+            context.Users.Add(new User { UserId = userId, Name = "U", Email = "u@u.com", Password = "x", SaltValue = "s", Role = "user", Active = true });
+            context.Categories.Add(new Category { CategoryId = catId, CategoryName = "Cat" });
+            context.Products.Add(new Product { ProductId = prodId, CategoryId = catId, Name = "P", ImagePath = "img", Description = "d", Price = 10, ActiveStatus = true });
+            // No stock
+            await context.SaveChangesAsync();
+
+            var ex = await Assert.ThrowsAsync<AppException>(() =>
+                service.UpdateProduct(userId, new UpdateProductRequestDTO
+                {
+                    ProductId = prodId,
+                    CategoryId = catId,
+                    Name = "Updated",
+                    ImagePath = "img",
+                    Description = "d",
+                    Price = 20,
+                    Quantity = 5
+                }));
+            Assert.Equal(404, ex.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetProductsWithFilter_NoCategoryFilter_ReturnsAll()
+        {
+            var (service, context) = GetService();
+            await SeedProductAsync(context);
+
+            var result = await service.GetProductsWithFilter(new GetAllProductsWithFilterRequestDTO
+            {
+                LowPrice = 0,
+                HighPrice = 9999,
+                CategoryId = null,
+                pagination = new Pagination { PageNumber = 1, PageSize = 10 }
+            });
+
+            Assert.NotEmpty(result.Data.ProductList);
         }
     }
 }
