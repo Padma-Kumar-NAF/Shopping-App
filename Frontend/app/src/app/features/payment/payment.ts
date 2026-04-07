@@ -21,6 +21,7 @@ import { OrderAllFromCartRequestDTO } from '../../shared/models/users/cart.model
 import { toast } from 'ngx-sonner';
 import { ApiResponse } from '../../shared/models/users/apiResponse.model';
 import { PlaceOrderRequestDTO } from '../../shared/models/users/order.model';
+import { INDIA_STATES, INDIA_STATES_CITIES } from '../../data/india-states-cities';
 
 interface CartItem {
   id: string;
@@ -69,6 +70,9 @@ export class PaymentComponent implements OnInit {
   availableAddresses = this.addressSelectionService.availableAddresses$;
   selectedAddress = signal<AddressDTO | null>(null);
   showAddressPicker = signal<boolean>(false);
+
+  states = INDIA_STATES;
+  availableCities = signal<string[]>([]);
   promoInput = signal<string>('');
   appliedPromo = signal<string | null>(null);
   discountPercent = signal<number>(0);
@@ -212,12 +216,20 @@ export class PaymentComponent implements OnInit {
     this.selectedAddress.set(null);
     this.addressSelectionService.clearSelectedAddress();
     this.address.set(''); this.city.set(''); this.state.set(''); this.pincode.set('');
+    this.availableCities.set([]);
+  }
+
+  onStateChange(event: Event): void {
+    const state = (event.target as HTMLSelectElement).value;
+    this.availableCities.set(INDIA_STATES_CITIES[state] ?? []);
+    this.city.set('');
   }
 
   private applyAddress(addr: AddressDTO): void {
     this.selectedAddress.set(addr);
     this.address.set(`${addr.addressLine1}${addr.addressLine2 ? ', ' + addr.addressLine2 : ''}`);
     this.city.set(addr.city); this.state.set(addr.state); this.pincode.set(addr.pincode);
+    this.availableCities.set(INDIA_STATES_CITIES[addr.state] ?? []);
   }
 
   private loadProductFromState(): void {

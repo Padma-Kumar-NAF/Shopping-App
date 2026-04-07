@@ -157,7 +157,7 @@ namespace ShoppingApp.Services
             var query = _productRepository
                 .GetQueryable()
                 .AsNoTracking()
-                .Where(p => p.Price >= request.LowPrice && p.Price <= request.HighPrice);
+                .Where(p => p.ActiveStatus && p.Price >= request.LowPrice && p.Price <= request.HighPrice);
 
             if (request.CategoryId.HasValue)
             {
@@ -238,7 +238,7 @@ namespace ShoppingApp.Services
             var suggestions = await _productRepository
                 .GetQueryable()
                 .AsNoTracking()
-                .Where(p => EF.Functions.Like(p.Name, $"{query}%"))
+                .Where(p => p.ActiveStatus && EF.Functions.Like(p.Name, $"{query}%"))
                 .OrderBy(p => p.Name)
                 .Select(p => new ProductSuggestionDTO
                 {
@@ -265,7 +265,7 @@ namespace ShoppingApp.Services
                 .Include(p => p.Reviews)
                 .Include(p => p.Category)
                 .Include(p => p.Stock)
-                .FirstOrDefaultAsync(p => p.ProductId == request.ProductId);
+                .FirstOrDefaultAsync(p => p.ActiveStatus && p.ProductId == request.ProductId);
 
             if (productEntity == null)
             {
@@ -312,7 +312,7 @@ namespace ShoppingApp.Services
             var products = await _productRepository
                 .GetQueryable()
                 .AsNoTracking()
-                .Where(p => EF.Functions.Like(p.Name, $"%{searchText}%"))
+                .Where(p => p.ActiveStatus && EF.Functions.Like(p.Name, $"%{searchText}%"))
                 .OrderBy(p => p.Name)
                 .Select(p => new
                 {

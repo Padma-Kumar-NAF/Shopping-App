@@ -1353,6 +1353,130 @@
         }
       }
     },
+    "/UserMonthlyProductLimit/add-limit": {
+      "put": {
+        "tags": [
+          "UserMonthlyProductLimit"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddUserMonthlyProductLimitRequestDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddUserMonthlyProductLimitRequestDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddUserMonthlyProductLimitRequestDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/UserMonthlyProductLimit/edit-limit": {
+      "post": {
+        "tags": [
+          "UserMonthlyProductLimit"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditUserMonthlyProductLimitRequestDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditUserMonthlyProductLimitRequestDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditUserMonthlyProductLimitRequestDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/UserMonthlyProductLimit/delete-limit": {
+      "delete": {
+        "tags": [
+          "UserMonthlyProductLimit"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteUserMonthlyProductLimitRequestDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteUserMonthlyProductLimitRequestDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteUserMonthlyProductLimitRequestDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/UserMonthlyProductLimit/get-limits": {
+      "post": {
+        "tags": [
+          "UserMonthlyProductLimit"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAllUserMonthlyProductLimitRequestDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAllUserMonthlyProductLimitRequestDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAllUserMonthlyProductLimitRequestDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Wallet/balance": {
       "get": {
         "tags": [
@@ -1669,6 +1793,26 @@
         },
         "additionalProperties": false
       },
+      "AddUserMonthlyProductLimitRequestDTO": {
+        "required": [
+          "monthlyLimit",
+          "productId"
+        ],
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "monthlyLimit": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "CancelOrderRequestDTO": {
         "required": [
           "orderId"
@@ -1866,6 +2010,19 @@
         },
         "additionalProperties": false
       },
+      "DeleteUserMonthlyProductLimitRequestDTO": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
       "DeleteUserRequestDTO": {
         "type": "object",
         "properties": {
@@ -1995,6 +2152,26 @@
         },
         "additionalProperties": false
       },
+      "EditUserMonthlyProductLimitRequestDTO": {
+        "required": [
+          "id",
+          "monthlyLimit"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "monthlyLimit": {
+            "maximum": 2147483647,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "GetAllCategoryRequestDTO": {
         "required": [
           "pagination"
@@ -2052,6 +2229,15 @@
         "additionalProperties": false
       },
       "GetAllPromocodeRequestDTO": {
+        "type": "object",
+        "properties": {
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetAllUserMonthlyProductLimitRequestDTO": {
         "type": "object",
         "properties": {
           "pagination": {
@@ -2563,6 +2749,9 @@
     },
     {
       "name": "User"
+    },
+    {
+      "name": "UserMonthlyProductLimit"
     },
     {
       "name": "Wallet"

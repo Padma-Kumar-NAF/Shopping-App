@@ -30,6 +30,7 @@ import { PaginationModel } from '../../../../shared/models/users/pagination.mode
 import { LoaderService } from '../../../../core/services/loading.service';
 import { CommonModule } from '@angular/common';
 import { ApiResponse } from '../../../../shared/models/users/apiResponse.model';
+import { INDIA_STATES, INDIA_STATES_CITIES } from '../../../../data/india-states-cities';
 
 @Component({
   selector: 'app-address',
@@ -48,6 +49,9 @@ export class Address implements OnInit {
   addresses: WritableSignal<AddressModel> = signal<AddressModel>(new AddressModel());
   editingId = signal<string | null>(null);
   pagination: PaginationModel;
+
+  states = INDIA_STATES;
+  availableCities = signal<string[]>([]);
 
   newAddress: AddressDTO;
   addressForm: FormGroup;
@@ -252,6 +256,7 @@ export class Address implements OnInit {
 
   openAddModal() {
     this.editMode.set(false);
+    this.availableCities.set([]);
     this.addressForm.reset();
     this.addressForm.markAsPristine();
     this.addressForm.markAsUntouched();
@@ -269,6 +274,7 @@ export class Address implements OnInit {
   openEditModal(address: AddressDTO) {
     this.editMode.set(true);
     this.formAddress = { ...address };
+    this.availableCities.set(INDIA_STATES_CITIES[address.state] ?? []);
     this.addressForm.patchValue({
       addressLine1: address.addressLine1,
       addressLine2: address.addressLine2,
@@ -282,8 +288,15 @@ export class Address implements OnInit {
   closeModal() {
     this.showModal.set(true);
     this.addressForm.reset();
+    this.availableCities.set([]);
     this.editMode.set(false);
     this.isSaveButtonDisabled.set(false);
     this.isCancelButtonDisabled.set(false);
+  }
+
+  onStateChange(event: Event): void {
+    const state = (event.target as HTMLSelectElement).value;
+    this.availableCities.set(INDIA_STATES_CITIES[state] ?? []);
+    this.addressForm.get('city')?.setValue('');
   }
 }

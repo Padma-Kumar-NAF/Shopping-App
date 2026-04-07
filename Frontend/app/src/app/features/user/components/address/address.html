@@ -145,143 +145,146 @@
   <!-- Add / Edit Modal -->
   <div
     [hidden]="showModal()"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-opacity duration-300"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
     (click)="closeModal()"
   >
     <div
-      class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-300"
+      class="bg-white w-full max-w-lg rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto mt-16"
       (click)="$event.stopPropagation()"
     >
-      <div class="flex justify-between items-center p-6 border-b border-gray-200">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between p-6 border-b border-gray-200">
         <div>
-          <h2 class="text-2xl font-bold text-gray-900">
+          <h2 class="text-xl font-bold text-gray-900">
             {{ editMode() ? '✏️ Edit Address' : '📍 Add New Address' }}
           </h2>
-          <p class="text-sm text-gray-600 mt-1">
+          <p class="text-sm text-gray-500 mt-0.5">
             {{ editMode() ? 'Update your delivery address' : 'Add a new delivery address' }}
           </p>
         </div>
-
         <button
           (click)="closeModal()"
-          class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-lg transition-colors"
+          class="p-2 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-gray-600 transition-colors"
         >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"></path>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
         </button>
       </div>
 
-      <form [formGroup]="addressForm" (ngSubmit)="submitAddress()" class="p-6 space-y-5">
-
-        <div>
-          <label class="block text-sm font-semibold text-gray-900 mb-2">
-            Street Address <span class="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            formControlName="addressLine1"
-            placeholder="Enter street address"
-            class="w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200"
-            [class.border-gray-300]="!addressForm.get('addressLine1')?.invalid || !addressForm.get('addressLine1')?.touched"
-            [class.focus:ring-2]="true"
-            [class.border-red-400]="addressForm.get('addressLine1')?.invalid && addressForm.get('addressLine1')?.touched"
-          />
-          @if (addressForm.get('addressLine1')?.invalid && addressForm.get('addressLine1')?.touched) {
-            <p class="text-red-500 text-sm mt-1 flex items-center gap-1">
-              <span>⚠️</span> Street address is required
-            </p>
-          }
-        </div>
-
-        <div>
-          <label class="block text-sm font-semibold text-gray-900 mb-2">
-            Additional Address <span class="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            formControlName="addressLine2"
-            placeholder="Apartment, suite, etc."
-            class="w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200"
-            [class.border-gray-300]="!addressForm.get('addressLine2')?.invalid || !addressForm.get('addressLine2')?.touched"
-            [class.border-red-400]="addressForm.get('addressLine2')?.invalid && addressForm.get('addressLine2')?.touched"
-          />
-          @if (addressForm.get('addressLine2')?.invalid && addressForm.get('addressLine2')?.touched) {
-            <p class="text-red-500 text-sm mt-1 flex items-center gap-1">
-              <span>⚠️</span> This field is required
-            </p>
-          }
-        </div>
-
+      <!-- Modal Form -->
+      <form [formGroup]="addressForm" (ngSubmit)="submitAddress()" class="p-6 space-y-4">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-semibold text-gray-900 mb-2">
-              City <span class="text-red-500">*</span>
+
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Street Address <span class="text-red-500">*</span>
             </label>
             <input
               type="text"
-              formControlName="city"
-              placeholder="City"
-              class="w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200"
-              [class.border-gray-300]="!addressForm.get('city')?.invalid || !addressForm.get('city')?.touched"
-              [class.border-red-400]="addressForm.get('city')?.invalid && addressForm.get('city')?.touched"
+              formControlName="addressLine1"
+              placeholder="Street address"
+              class="w-full px-4 py-2.5 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-800"
+              [class.border-red-400]="addressForm.get('addressLine1')?.invalid && addressForm.get('addressLine1')?.touched"
+              [class.border-gray-300]="!(addressForm.get('addressLine1')?.invalid && addressForm.get('addressLine1')?.touched)"
             />
-            @if (addressForm.get('city')?.invalid && addressForm.get('city')?.touched) {
-              <p class="text-red-500 text-sm mt-1">City is required</p>
+            @if (addressForm.get('addressLine1')?.invalid && addressForm.get('addressLine1')?.touched) {
+              <p class="text-red-500 text-xs mt-1">Street address is required</p>
+            }
+          </div>
+
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Additional Address <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              formControlName="addressLine2"
+              placeholder="Apartment, suite, etc."
+              class="w-full px-4 py-2.5 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-800"
+              [class.border-red-400]="addressForm.get('addressLine2')?.invalid && addressForm.get('addressLine2')?.touched"
+              [class.border-gray-300]="!(addressForm.get('addressLine2')?.invalid && addressForm.get('addressLine2')?.touched)"
+            />
+            @if (addressForm.get('addressLine2')?.invalid && addressForm.get('addressLine2')?.touched) {
+              <p class="text-red-500 text-xs mt-1">This field is required</p>
             }
           </div>
 
           <div>
-            <label class="block text-sm font-semibold text-gray-900 mb-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
               State <span class="text-red-500">*</span>
             </label>
-            <input
-              type="text"
+            <select
               formControlName="state"
-              placeholder="State"
-              class="w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200"
-              [class.border-gray-300]="!addressForm.get('state')?.invalid || !addressForm.get('state')?.touched"
+              (change)="onStateChange($event)"
+              class="w-full px-4 py-2.5 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white text-gray-800"
               [class.border-red-400]="addressForm.get('state')?.invalid && addressForm.get('state')?.touched"
-            />
+              [class.border-gray-300]="!(addressForm.get('state')?.invalid && addressForm.get('state')?.touched)"
+            >
+              <option value="" disabled>Select State</option>
+              @for (state of states; track state) {
+                <option [value]="state">{{ state }}</option>
+              }
+            </select>
             @if (addressForm.get('state')?.invalid && addressForm.get('state')?.touched) {
-              <p class="text-red-500 text-sm mt-1">State is required</p>
+              <p class="text-red-500 text-xs mt-1">State is required</p>
             }
           </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              City <span class="text-red-500">*</span>
+            </label>
+            <select
+              formControlName="city"
+              [disabled]="availableCities().length === 0"
+              class="w-full px-4 py-2.5 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white text-gray-800 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+              [class.border-red-400]="addressForm.get('city')?.invalid && addressForm.get('city')?.touched"
+              [class.border-gray-300]="!(addressForm.get('city')?.invalid && addressForm.get('city')?.touched)"
+            >
+              <option value="" disabled>{{ availableCities().length === 0 ? 'Select a state first' : 'Select City' }}</option>
+              @for (city of availableCities(); track city) {
+                <option [value]="city">{{ city }}</option>
+              }
+            </select>
+            @if (addressForm.get('city')?.invalid && addressForm.get('city')?.touched) {
+              <p class="text-red-500 text-xs mt-1">City is required</p>
+            }
+          </div>
+
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Postal Code <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              formControlName="pincode"
+              placeholder="6-digit pincode"
+              maxlength="6"
+              class="w-full px-4 py-2.5 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-800"
+              [class.border-red-400]="addressForm.get('pincode')?.invalid && addressForm.get('pincode')?.touched"
+              [class.border-gray-300]="!(addressForm.get('pincode')?.invalid && addressForm.get('pincode')?.touched)"
+            />
+            @if (addressForm.get('pincode')?.invalid && addressForm.get('pincode')?.touched) {
+              <p class="text-red-500 text-xs mt-1">Postal code is required</p>
+            }
+          </div>
+
         </div>
 
-        <div>
-          <label class="block text-sm font-semibold text-gray-900 mb-2">
-            Postal Code <span class="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            formControlName="pincode"
-            placeholder="6-digit pincode"
-            maxlength="6"
-            class="w-full px-4 py-3 border rounded-xl outline-none transition-all duration-200"
-            [class.border-gray-300]="!addressForm.get('pincode')?.invalid || !addressForm.get('pincode')?.touched"
-            [class.border-red-400]="addressForm.get('pincode')?.invalid && addressForm.get('pincode')?.touched"
-          />
-          @if (addressForm.get('pincode')?.invalid && addressForm.get('pincode')?.touched) {
-            <p class="text-red-500 text-sm mt-1">Postal code is required</p>
-          }
-        </div>
-
-        <div class="flex gap-3 pt-6 border-t border-gray-200">
+        <div class="flex gap-3 pt-2">
           <button
             type="submit"
             [disabled]="addressForm.invalid || isSaveButtonDisabled()"
-            class="flex-1 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+            class="flex-1 py-2.5 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {{ editMode() ? '✅ Update Address' : '➕ Add Address' }}
+            {{ editMode() ? '✅ Save Changes' : '➕ Add Address' }}
           </button>
-
           <button
             type="button"
             [disabled]="isCancelButtonDisabled()"
             (click)="closeModal()"
-            class="flex-1 px-6 py-3 bg-gray-100 text-gray-900 font-semibold rounded-xl hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            class="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>

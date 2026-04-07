@@ -48,6 +48,10 @@ export class ProductListing implements OnInit, OnDestroy {
 
   showFilters = signal<boolean>(false);
 
+  readonly PAGE_SIZE = 10;
+  currentPage = signal<number>(1);
+  hasNextPage = signal<boolean>(false);
+
   priceRanges = [
     { label: 'All Prices', min: 0, max: 100000 },
     { label: 'Under ₹1,000', min: 0, max: 1000 },
@@ -61,7 +65,10 @@ export class ProductListing implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.filterChange$
       .pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(() => this.fetchFiltered());
+      .subscribe(() => {
+        this.currentPage.set(1);
+        this.fetchFiltered();
+      });
     this.loadCategories();
   }
 
@@ -123,7 +130,7 @@ export class ProductListing implements OnInit, OnDestroy {
     this.error.set(null);
 
     const request = {
-      pagination: { pageSize: 50, pageNumber: 1 },
+      pagination: { pageSize: this.PAGE_SIZE, pageNumber: this.currentPage() },
       lowPrice: this.priceRangeMin(),
       highPrice: this.priceRangeMax(),
       categoryId: this.selectedCategoryId() ?? null,
@@ -131,11 +138,9 @@ export class ProductListing implements OnInit, OnDestroy {
 
     this.productService.getProductsWithFilter(request).subscribe({
       next: (res) => {
-        if (res.action === 'ShowEmptyPage') {
-          this.filteredProducts.set([]);
-        } else {
-          this.filteredProducts.set(res.data?.productList ?? []);
-        }
+        const products = res.action === 'ShowEmptyPage' ? [] : (res.data?.productList ?? []);
+        this.filteredProducts.set(products);
+        this.hasNextPage.set(products.length === this.PAGE_SIZE);
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -175,6 +180,7 @@ export class ProductListing implements OnInit, OnDestroy {
   selectCategory(categoryId: string | null, categoryName: string): void {
     this.selectedCategoryId.set(categoryId);
     this.selectedCategoryName.set(categoryName);
+    this.currentPage.set(1);
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { category: categoryName === 'all' ? null : categoryName },
@@ -186,6 +192,7 @@ export class ProductListing implements OnInit, OnDestroy {
   setPriceRange(min: number, max: number): void {
     this.priceRangeMin.set(min);
     this.priceRangeMax.set(max);
+    this.currentPage.set(1);
     this.fetchFiltered();
   }
 
@@ -198,7 +205,13 @@ export class ProductListing implements OnInit, OnDestroy {
     this.selectedCategoryName.set('all');
     this.priceRangeMin.set(this.PRICE_MIN);
     this.priceRangeMax.set(this.PRICE_MAX);
+    this.currentPage.set(1);
     this.router.navigate([], { relativeTo: this.route, queryParams: {} });
+    this.fetchFiltered();
+  }
+
+  goToPage(page: number): void {
+    this.currentPage.set(page);
     this.fetchFiltered();
   }
 
@@ -220,6 +233,7 @@ export class ProductListing implements OnInit, OnDestroy {
   clearSearch(): void {
     this.searchQuery.set('');
     this.hasSearched.set(false);
+    this.currentPage.set(1);
     this.router.navigate([], { relativeTo: this.route, queryParams: {} });
     this.fetchFiltered();
   }

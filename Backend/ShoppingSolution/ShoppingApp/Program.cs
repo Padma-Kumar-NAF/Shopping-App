@@ -6,6 +6,7 @@ using Serilog;
 using ShoppingApp.Contexts;
 using ShoppingApp.Filters;
 using ShoppingApp.Interfaces.RepositoriesInterface;
+using ShoppingApp.Interfaces.Services;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Middleware;
 using ShoppingApp.Repositories;
@@ -121,6 +122,7 @@ namespace ShoppingApp
             builder.Services.AddScoped<IWishListService, WishListService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IWalletService, WalletService>();
+            builder.Services.AddScoped<IUserMonthlyProductLimit, UserMonthlyProductLimitService>();
 
             builder.Services.AddScoped<MyResultFilter>();
             builder.Services.AddControllers(options =>

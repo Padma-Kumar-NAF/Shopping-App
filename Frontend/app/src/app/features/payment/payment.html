@@ -109,12 +109,38 @@
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"></textarea>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
-              <input type="text" [(ngModel)]="city" placeholder="City" [disabled]="!!selectedAddress()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed" />
+              <label class="block text-sm font-medium text-gray-700 mb-1">State</label>
+              @if (selectedAddress()) {
+                <input type="text" [ngModel]="state()" disabled
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed" />
+              } @else {
+                <select
+                  [ngModel]="state()" (ngModelChange)="state.set($event)"
+                  (change)="onStateChange($event)"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-800">
+                  <option value="" disabled>Select State</option>
+                  @for (s of states; track s) {
+                    <option [value]="s">{{ s }}</option>
+                  }
+                </select>
+              }
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">State</label>
-              <input type="text" [(ngModel)]="state" placeholder="State" [disabled]="!!selectedAddress()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed" />
+              <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+              @if (selectedAddress()) {
+                <input type="text" [ngModel]="city()" disabled
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed" />
+              } @else {
+                <select
+                  [ngModel]="city()" (ngModelChange)="city.set($event)"
+                  [disabled]="availableCities().length === 0"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-800 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
+                  <option value="" disabled>{{ availableCities().length === 0 ? 'Select a state first' : 'Select City' }}</option>
+                  @for (c of availableCities(); track c) {
+                    <option [value]="c">{{ c }}</option>
+                  }
+                </select>
+              }
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Pincode</label>

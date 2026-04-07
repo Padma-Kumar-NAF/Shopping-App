@@ -1,0 +1,4 @@
+/* Spinner keyframe used by inline Tailwind animate-spin */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

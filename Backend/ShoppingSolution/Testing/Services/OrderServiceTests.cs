@@ -4,6 +4,7 @@ using ShoppingApp.Exceptions;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs;
 using ShoppingApp.Models.DTOs.Order;
+using ShoppingApp.Models.Entities;
 using ShoppingApp.Repositories;
 using ShoppingApp.Services;
 using Xunit;
@@ -33,6 +34,7 @@ namespace Testing.Services
                 new Repository<Guid, OrderDetails>(context),
                 new Repository<Guid, PromoCode>(context),
                 new Repository<Guid, Wallet>(context),
+                new Repository<Guid, UserMonthlyProductLimit>(context),
                 new UnitOfWork(context)
             );
         }

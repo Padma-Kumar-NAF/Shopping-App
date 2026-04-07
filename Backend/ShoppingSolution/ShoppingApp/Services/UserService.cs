@@ -4,6 +4,7 @@ using ShoppingApp.Interfaces.RepositoriesInterface;
 using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.User;
+using System.Text.RegularExpressions;
 
 namespace ShoppingApp.Services
 {
@@ -35,6 +36,10 @@ namespace ShoppingApp.Services
             }
         public async Task<ApiResponse<CreateUserResponseDTO>> CreateUser(CreateUserRequestDTO request)
         {
+            if (!IsValidEmail(request.Email))
+            {
+                throw new AppException("Email must be valid and end with .com", 400);
+            }
 
             var existingUser = await _userRepository.GetQueryable().AsNoTracking().FirstOrDefaultAsync(u => u.Email == request.Email.Trim());
 
@@ -114,6 +119,15 @@ namespace ShoppingApp.Services
                 await _unitOfWork.RollbackAsync();
                 throw;
             }
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$";
+            return Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase);
         }
 
         public async Task<ApiResponse<LoginResponseDTO>> LoginUser(LoginRequestDTO request)

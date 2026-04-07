@@ -796,5 +796,69 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.UserMonthlyProductLimitController",
+    "Method": "AddLimit",
+    "RelativePath": "UserMonthlyProductLimit/add-limit",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.UserMonthlyProductLimit.AddUserMonthlyProductLimitRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.UserMonthlyProductLimitController",
+    "Method": "DeleteLimit",
+    "RelativePath": "UserMonthlyProductLimit/delete-limit",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.UserMonthlyProductLimit.DeleteUserMonthlyProductLimitRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.UserMonthlyProductLimitController",
+    "Method": "EditLimit",
+    "RelativePath": "UserMonthlyProductLimit/edit-limit",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.UserMonthlyProductLimit.EditUserMonthlyProductLimitRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.UserMonthlyProductLimitController",
+    "Method": "GetAllLimits",
+    "RelativePath": "UserMonthlyProductLimit/get-limits",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.UserMonthlyProductLimit.GetAllUserMonthlyProductLimitRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]

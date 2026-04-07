@@ -133,7 +133,7 @@ namespace ShoppingApp.Services
                 {
                     CategoryId = c.CategoryId,
                     CategoryName = c.CategoryName,
-                    ProductsCount = c.Products.Count(),
+                    ProductsCount = c.Products.Count(c => c.ActiveStatus),
                     CreatedAt = c.CreatedAt.ToString()
                 })
                 .ToListAsync();
@@ -173,7 +173,7 @@ namespace ShoppingApp.Services
 
             var products = await _productRepository
                 .GetQueryable()
-                .Where(p => p.CategoryId == request.CategoryId)
+                .Where(p => p.ActiveStatus && p.CategoryId == request.CategoryId)
                 .Select(p => new ProductsDTO
                 {
                     ProductId = p.ProductId,

@@ -11,6 +11,7 @@ import { ProductManagement } from './features/admin/components/product-managemen
 import { CategoryManagement } from './features/admin/components/category-management/category-management';
 import { PromocodeManagement } from './features/admin/components/promocode-management/promocode-management';
 import { ErrorLogs } from './features/admin/components/error-logs/error-logs';
+import { ProductLimit } from './features/admin/components/product-limit/product-limit';
 import { ProductListing } from './features/products/components/product-listing/product-listing';
 import { ProductDetail } from './features/products/components/product-detail/product-detail';
 import { Profile } from './features/user/components/profile/profile';
@@ -78,6 +79,10 @@ export const routes: Routes = [
       {
         path: 'error-logs',
         component: ErrorLogs,
+      },
+      {
+        path: 'product-limit',
+        component: ProductLimit,
       },
     ],
   },
