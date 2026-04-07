@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ShoppingApp.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShoppingApp.Models
 {
@@ -22,9 +23,10 @@ namespace ShoppingApp.Models
         public DateTime CreatedAt { get; set; }
         public bool ActiveStatus { get; set; }
 
-        // Navigation 
+        // Navigation
         public Category? Category { get; set; } // many to one
         public Stock? Stock { get; set; } // one to one
+        public UserMonthlyProductLimit? UserMonthlyProductLimit { get; set; } // one to one
 
         public ICollection<OrderDetails>? OrderDetails { get; set; } // one to many
         public ICollection<Review>? Reviews { get; set; } // one to many

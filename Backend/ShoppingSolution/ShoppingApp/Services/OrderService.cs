@@ -5,6 +5,7 @@ using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs.Order;
 using ShoppingApp.Models.DTOs.Promocode;
+using ShoppingApp.Models.Entities;
 
 namespace ShoppingApp.Services
 {
@@ -20,6 +21,7 @@ namespace ShoppingApp.Services
         private readonly IRepository<Guid, OrderDetails> _orderDetailsRepository;
         private readonly IRepository<Guid, PromoCode> _promoRepository;
         private readonly IRepository<Guid, Wallet> _walletRepository;
+        private readonly IRepository<Guid, UserMonthlyProductLimit> _userMonthlyProductLimit;
 
         private readonly IUnitOfWork _unitOfWork;
 
@@ -34,6 +36,7 @@ namespace ShoppingApp.Services
             IRepository<Guid, OrderDetails> orderDetailsRepository,
             IRepository<Guid, PromoCode> promoRepository,
             IRepository<Guid, Wallet> walletRepository,
+            IRepository<Guid, UserMonthlyProductLimit> userMonthlyProductLimit,
             IUnitOfWork unitOfWork)
         {
             _repository = repository;
@@ -47,6 +50,7 @@ namespace ShoppingApp.Services
             _orderDetailsRepository = orderDetailsRepository;
             _promoRepository = promoRepository;
             _walletRepository = walletRepository;
+            _userMonthlyProductLimit = userMonthlyProductLimit;
         }
 
         public async Task<ApiResponse<CancelOrderResponseDTO>> CancelOrder(Guid userId, Guid orderId)
@@ -71,6 +75,18 @@ namespace ShoppingApp.Services
             if (order.Status == "Cancelled")
             {
                 throw new AppException("Order already cancelled.",400);
+            }
+
+            if (order.Status == "Delivered")
+            {
+                DateTime now = DateTime.Now;
+                TimeSpan diff = now - order.DeliveryDate;
+                int daysRemaining = diff.Days;
+
+                if (daysRemaining > 5)
+                {
+                    throw new AppException("Cancellation window expired (5 days after delivery).", 400);
+                }
             }
 
             try
@@ -357,6 +373,7 @@ namespace ShoppingApp.Services
                 throw;
             }
         }
+
         public async Task<ApiResponse<PlaceOrderResponseDTO>> PlaceOrder(Guid userId, PlaceOrderRequestDTO request)
         {
             if (await IsUserNotFound(userId))
@@ -368,18 +385,23 @@ namespace ShoppingApp.Services
 
             try
             {
-                var address = await _addressRepository.GetAsync(request.AddressId) ?? throw new AppException("Address not found", 404);
+                var address = await _addressRepository.GetAsync(request.AddressId)
+                    ?? throw new AppException("Address not found", 404);
 
-                var product = await _productRepository.GetAsync(request.OrderProductdDetails.ProductId) ?? throw new AppException("Product not found", 404);
+                var product = await _productRepository.GetAsync(request.OrderProductdDetails.ProductId)
+                    ?? throw new AppException("Product not found", 404);
 
-                var stock = await _stockRepository.FirstOrDefaultAsync(s => s.ProductId == product.ProductId) ?? throw new AppException("Stock not found", 404);
+                await ValidateMonthlyLimit(userId, product.ProductId, request.OrderProductdDetails.Quantity);
+
+                var stock = await _stockRepository.FirstOrDefaultAsync(s => s.ProductId == product.ProductId)
+                    ?? throw new AppException("Stock not found", 404);
 
                 if (stock.Quantity < request.OrderProductdDetails.Quantity)
                 {
                     throw new AppException("Insufficient stock", 400);
                 }
 
-                decimal tax      = Math.Round(request.TotalAmount * 0.18m, 2);
+                decimal tax = Math.Round(request.TotalAmount * 0.18m, 2);
                 decimal shipping = request.TotalAmount > 5000 ? 0m : 100m;
 
                 int discountPercentage = 0;
@@ -388,24 +410,20 @@ namespace ShoppingApp.Services
 
                 if (!string.IsNullOrWhiteSpace(request.PromoCode))
                 {
-                    var promo = await _promoRepository.GetQueryable().FirstOrDefaultAsync(p => p.PromoCodeName == request.PromoCode.Trim().ToUpper() && !p.IsDeleted);
+                    var promo = await _promoRepository.GetQueryable()
+                        .FirstOrDefaultAsync(p => p.PromoCodeName == request.PromoCode.Trim().ToUpper() && !p.IsDeleted);
 
                     if (promo == null)
-                    {
                         throw new AppException("Invalid promo code", 400);
-                    }
-                        
+
                     var now = DateTime.UtcNow.Date;
+
                     if (now < promo.FromDate.Date)
-                    {
                         throw new AppException("Promo code is not active yet", 400);
-                    }
-                        
+
                     if (now > promo.ToDate.Date)
-                    {
                         throw new AppException("Promo code has expired", 400);
-                    }
-                    
+
                     discountPercentage = promo.DiscountPercentage;
                     discountAmount = Math.Round(request.TotalAmount * discountPercentage / 100, 2);
                     promoCodeId = promo.PromoCodeId;
@@ -417,10 +435,8 @@ namespace ShoppingApp.Services
 
                 if (request.UseWallet)
                 {
-                    walletUsed = await HandleWalletPayment(userId, amountAfterDiscount+tax+shipping);
+                    walletUsed = await HandleWalletPayment(userId, amountAfterDiscount + tax + shipping);
                 }
-
-                //var finalAmount = amountAfterDiscount - walletUsed;
 
                 var order = CreateOrder(userId, request, discountPercentage, discountAmount, amountAfterDiscount, promoCodeId, tax, shipping);
 
@@ -450,7 +466,7 @@ namespace ShoppingApp.Services
                         DiscountPercentage = discountPercentage,
                         DiscountAmount = discountAmount,
                         WalletUsed = walletUsed,
-                        FinalAmount = amountAfterDiscount,
+                        FinalAmount = finalAmount
                     },
                     Message = "Order placed successfully",
                     Action = "OrderedConfirmed"
@@ -460,6 +476,40 @@ namespace ShoppingApp.Services
             {
                 await _unitOfWork.RollbackAsync();
                 throw;
+            }
+        }
+
+        private async Task ValidateMonthlyLimit(Guid userId, Guid productId, int requestedQty)
+        {
+            var limit = await _userMonthlyProductLimit.FirstOrDefaultAsync(x => x.ProductId == productId);
+
+            if (limit == null)
+                return;
+
+            var startOfMonth = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
+            var endOfMonth = startOfMonth.AddMonths(1);
+
+            var totalOrdered = await _repository
+            .GetQueryable()
+            .Where(o =>
+                o.UserId == userId &&
+                o.CreatedAt >= startOfMonth &&
+                o.CreatedAt < endOfMonth &&
+                o.Status != "Cancelled"
+            )
+            .SelectMany(o => o.OrderDetails)
+            .Where(od => od.ProductId == productId)
+            .Select(od => (int?)od.Quantity)
+            .SumAsync() ?? 0;
+
+            var totalAfterRequest = totalOrdered + requestedQty;
+
+            if (totalAfterRequest > limit.MonthlyLimit)
+            {
+                throw new AppException(
+                    $"Monthly limit exceeded. Limit: {limit.MonthlyLimit}, Already used: {totalOrdered}",
+                    400
+                );
             }
         }
 
