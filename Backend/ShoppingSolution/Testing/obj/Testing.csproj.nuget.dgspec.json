@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\Testing\\Testing.csproj": {}
+    "C:\\shopping\\Shopping-App\\Backend\\ShoppingSolution\\Testing\\Testing.csproj": {}
   },
   "projects": {
-    "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\ShoppingApp.csproj": {
+    "C:\\shopping\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\ShoppingApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\ShoppingApp.csproj",
+        "projectUniqueName": "C:\\shopping\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\ShoppingApp.csproj",
         "projectName": "ShoppingApp",
-        "projectPath": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\ShoppingApp.csproj",
-        "packagesPath": "C:\\Users\\PadmaKumar.C\\.nuget\\packages\\",
-        "outputPath": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\obj\\",
+        "projectPath": "C:\\shopping\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\ShoppingApp.csproj",
+        "packagesPath": "C:\\Users\\Indhu.V\\.nuget\\packages\\",
+        "outputPath": "C:\\shopping\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\PadmaKumar.C\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Indhu.V\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -122,7 +122,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
@@ -540,20 +540,20 @@
         }
       }
     },
-    "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\Testing\\Testing.csproj": {
+    "C:\\shopping\\Shopping-App\\Backend\\ShoppingSolution\\Testing\\Testing.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\Testing\\Testing.csproj",
+        "projectUniqueName": "C:\\shopping\\Shopping-App\\Backend\\ShoppingSolution\\Testing\\Testing.csproj",
         "projectName": "Testing",
-        "projectPath": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\Testing\\Testing.csproj",
-        "packagesPath": "C:\\Users\\PadmaKumar.C\\.nuget\\packages\\",
-        "outputPath": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\Testing\\obj\\",
+        "projectPath": "C:\\shopping\\Shopping-App\\Backend\\ShoppingSolution\\Testing\\Testing.csproj",
+        "packagesPath": "C:\\Users\\Indhu.V\\.nuget\\packages\\",
+        "outputPath": "C:\\shopping\\Shopping-App\\Backend\\ShoppingSolution\\Testing\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\PadmaKumar.C\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Indhu.V\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -568,8 +568,8 @@
           "net10.0": {
             "targetAlias": "net10.0",
             "projectReferences": {
-              "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\ShoppingApp.csproj": {
-                "projectPath": "C:\\PK\\Project\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\ShoppingApp.csproj"
+              "C:\\shopping\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\ShoppingApp.csproj": {
+                "projectPath": "C:\\shopping\\Shopping-App\\Backend\\ShoppingSolution\\ShoppingApp\\ShoppingApp.csproj"
               }
             }
           }
@@ -635,7 +635,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",

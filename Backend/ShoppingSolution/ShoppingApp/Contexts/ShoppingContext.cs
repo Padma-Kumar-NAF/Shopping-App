@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Models;
+using ShoppingApp.Models.Entities;
 
 namespace ShoppingApp.Contexts
 {
@@ -23,6 +24,7 @@ namespace ShoppingApp.Contexts
         public DbSet<Wallet> Wallets {  get; set; }
         public DbSet<WishList> WishList { get; set; }
         public DbSet<WishListItems> WishListItems { get; set; }
+        public DbSet<UserMonthlyProductLimit> UserMonthlyProductLimit { get; set; }
 
         // Store procedure
         public DbSet<Category> categoriesSP { get; set; }
@@ -407,7 +409,7 @@ namespace ShoppingApp.Contexts
                 .HasForeignKey<UserDetails>(ud => ud.UserId)
                 .HasConstraintName("FK_UserDetails_User")
                 .OnDelete(DeleteBehavior.Restrict);
-                
+               
                 entity.HasMany(u => u.Payments)
                 .WithOne(l => l.User)
                 .HasForeignKey(l => l.UserId)
@@ -445,6 +447,22 @@ namespace ShoppingApp.Contexts
                 .OnDelete(DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<UserMonthlyProductLimit>(entity => {
+                entity.HasKey(w => w.Id)
+                .HasName("Pk_UserMonthlyProductLimit");
+
+                entity.Property(w => w.Id)
+                .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.HasOne(w => w.Product)
+                .WithOne(p => p.UserMonthlyProductLimit)
+                .HasForeignKey<UserMonthlyProductLimit>(w => w.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
             modelBuilder.Entity<Wallet>(entity =>
             {
                 entity.HasKey(w => w.WalletId)
@@ -470,7 +488,7 @@ namespace ShoppingApp.Contexts
             {
                 entity.HasKey(w => w.WishListId)
                 .HasName("Pk_WishList");
-                
+               
                 entity.Property(w => w.WishListId)
                 .HasDefaultValueSql("NEWID()");
 
