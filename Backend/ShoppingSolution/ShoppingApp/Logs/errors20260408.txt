@@ -1,0 +1,540 @@
+2026-04-08 10:07:27 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: User has already submitted a review for this product
+   at ShoppingApp.Services.ReviewService.AddReview(Guid userId, AddReviewRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ReviewService.cs:line 33
+   at ShoppingApp.Controllers.ReviewController.AddReview(AddReviewRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ReviewController.cs:line 37
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 10:07:28 [Error] Exception occurred - User: "user", Controller: "Review", Action: "AddReview", Request Body: "{\"productId\":\"843273c4-5067-414b-a993-e587219ded36\",\"summary\":\"THis is testing\",\"reviewPoints\":4}"
+ShoppingApp.Exceptions.AppException: User has already submitted a review for this product
+   at ShoppingApp.Services.ReviewService.AddReview(Guid userId, AddReviewRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ReviewService.cs:line 33
+   at ShoppingApp.Controllers.ReviewController.AddReview(AddReviewRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ReviewController.cs:line 37
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:05 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:05 [Error] Exception occurred - User: "user", Controller: "Products", Action: "GetProductsWithFilter", Request Body: "{\"pagination\":{\"pageSize\":10,\"pageNumber\":1},\"lowPrice\":45642,\"highPrice\":5000,\"categoryId\":null}"
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:08 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:08 [Error] Exception occurred - User: "user", Controller: "Products", Action: "GetProductsWithFilter", Request Body: "{\"pagination\":{\"pageSize\":10,\"pageNumber\":1},\"lowPrice\":45642,\"highPrice\":5000,\"categoryId\":null}"
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:09 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:09 [Error] Exception occurred - User: "user", Controller: "Products", Action: "GetProductsWithFilter", Request Body: "{\"pagination\":{\"pageSize\":10,\"pageNumber\":1},\"lowPrice\":45642,\"highPrice\":5000,\"categoryId\":null}"
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:10 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:10 [Error] Exception occurred - User: "user", Controller: "Products", Action: "GetProductsWithFilter", Request Body: "{\"pagination\":{\"pageSize\":10,\"pageNumber\":1},\"lowPrice\":45642,\"highPrice\":5000,\"categoryId\":null}"
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:11 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:11 [Error] Exception occurred - User: "user", Controller: "Products", Action: "GetProductsWithFilter", Request Body: "{\"pagination\":{\"pageSize\":10,\"pageNumber\":1},\"lowPrice\":45642,\"highPrice\":5000,\"categoryId\":null}"
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:21 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:21 [Error] Exception occurred - User: "user", Controller: "Products", Action: "GetProductsWithFilter", Request Body: "{\"pagination\":{\"pageSize\":10,\"pageNumber\":1},\"lowPrice\":45642,\"highPrice\":5000,\"categoryId\":null}"
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:29 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:29 [Error] Exception occurred - User: "user", Controller: "Products", Action: "GetProductsWithFilter", Request Body: "{\"pagination\":{\"pageSize\":10,\"pageNumber\":1},\"lowPrice\":45642,\"highPrice\":5000,\"categoryId\":\"289162b6-c993-49c4-a0dc-3da95538ff18\"}"
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:30 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:31 [Error] Exception occurred - User: "user", Controller: "Products", Action: "GetProductsWithFilter", Request Body: "{\"pagination\":{\"pageSize\":10,\"pageNumber\":1},\"lowPrice\":45642,\"highPrice\":5000,\"categoryId\":null}"
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:31 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 11:57:31 [Error] Exception occurred - User: "user", Controller: "Products", Action: "GetProductsWithFilter", Request Body: "{\"pagination\":{\"pageSize\":10,\"pageNumber\":1},\"lowPrice\":45642,\"highPrice\":5000,\"categoryId\":\"63a0ba65-65c5-4538-8f6f-53840e58d3ab\"}"
+ShoppingApp.Exceptions.AppException: Low price cannot be greater than high price
+   at ShoppingApp.Services.ProductService.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 154
+   at ShoppingApp.Controllers.ProductsController.GetProductsWithFilter(GetAllProductsWithFilterRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 156
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 12:08:14 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Invalid email
+   at ShoppingApp.Services.UserService.LoginUser(LoginRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 146
+   at ShoppingApp.Controllers.AuthenticationController.Login(LoginRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 64
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 12:08:14 [Error] Exception occurred - User: "Anonymous", Controller: "Authentication", Action: "Login", Request Body: "{\"email\":\"user@g7mail.com\",\"password\":\"##pk545A\"}"
+ShoppingApp.Exceptions.AppException: Invalid email
+   at ShoppingApp.Services.UserService.LoginUser(LoginRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 146
+   at ShoppingApp.Controllers.AuthenticationController.Login(LoginRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 64
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 12:10:07 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Invalid email
+   at ShoppingApp.Services.UserService.LoginUser(LoginRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 146
+   at ShoppingApp.Controllers.AuthenticationController.Login(LoginRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 64
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 12:10:07 [Error] Exception occurred - User: "Anonymous", Controller: "Authentication", Action: "Login", Request Body: "{\"email\":\"usezxr@gmail.com\",\"password\":\"##pk545A\"}"
+ShoppingApp.Exceptions.AppException: Invalid email
+   at ShoppingApp.Services.UserService.LoginUser(LoginRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 146
+   at ShoppingApp.Controllers.AuthenticationController.Login(LoginRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 64
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 14:56:06 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Email already exists
+   at ShoppingApp.Services.UserService.CreateUser(CreateUserRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 48
+   at ShoppingApp.Controllers.AuthenticationController.Register(CreateUserRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 38
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 14:56:06 [Error] Exception occurred - User: "Anonymous", Controller: "Authentication", Action: "Register", Request Body: "{\"name\":\"test\",\"email\":\"user@gmail.com\",\"password\":\"##pk545A\",\"phoneNumber\":\"9876543213\",\"addressLine1\":\"2/102 A Chennai\",\"addressLine2\":\"2/102 A Chennai\",\"state\":\"Tamil Nadu\",\"city\":\"Coimbatore\",\"pincode\":\"654321\"}"
+ShoppingApp.Exceptions.AppException: Email already exists
+   at ShoppingApp.Services.UserService.CreateUser(CreateUserRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 48
+   at ShoppingApp.Controllers.AuthenticationController.Register(CreateUserRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 38
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 14:56:14 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Phone number already exists
+   at ShoppingApp.Services.UserService.CreateUser(CreateUserRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 56
+   at ShoppingApp.Controllers.AuthenticationController.Register(CreateUserRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 38
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 14:56:14 [Error] Exception occurred - User: "Anonymous", Controller: "Authentication", Action: "Register", Request Body: "{\"name\":\"test\",\"email\":\"test@gmail.com\",\"password\":\"##pk545A\",\"phoneNumber\":\"9876543213\",\"addressLine1\":\"2/102 A Chennai\",\"addressLine2\":\"2/102 A Chennai\",\"state\":\"Tamil Nadu\",\"city\":\"Coimbatore\",\"pincode\":\"654321\"}"
+ShoppingApp.Exceptions.AppException: Phone number already exists
+   at ShoppingApp.Services.UserService.CreateUser(CreateUserRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 56
+   at ShoppingApp.Controllers.AuthenticationController.Register(CreateUserRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 38
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 15:05:47 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Email already exists
+   at ShoppingApp.Services.UserService.CreateUser(CreateUserRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 48
+   at ShoppingApp.Controllers.AuthenticationController.Register(CreateUserRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 38
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 15:05:47 [Error] Exception occurred - User: "Anonymous", Controller: "Authentication", Action: "Register", Request Body: "{\"name\":\"user\",\"email\":\"user@gmail.com\",\"password\":\"##pk545A\",\"phoneNumber\":\"9876543213\",\"addressLine1\":\"2/102 A Chennai\",\"addressLine2\":\"2/102 A Chennai\",\"state\":\"Rajasthan\",\"city\":\"Jaipur\",\"pincode\":\"654321\"}"
+ShoppingApp.Exceptions.AppException: Email already exists
+   at ShoppingApp.Services.UserService.CreateUser(CreateUserRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 48
+   at ShoppingApp.Controllers.AuthenticationController.Register(CreateUserRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 38
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 15:20:36 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Email must be valid and end with .com
+   at ShoppingApp.Services.UserService.CreateUser(CreateUserRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 41
+   at ShoppingApp.Controllers.AuthenticationController.Register(CreateUserRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 38
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 15:20:36 [Error] Exception occurred - User: "Anonymous", Controller: "Authentication", Action: "Register", Request Body: "{\"name\":\"user\",\"email\":\"user@gmail\",\"password\":\"##pk545A\",\"phoneNumber\":\"9876543213\",\"addressLine1\":\"2/102 A Chennai\",\"addressLine2\":\"2/102 A Chennai\",\"state\":\"Tamil Nadu\",\"city\":\"Coimbatore\",\"pincode\":\"654321\"}"
+ShoppingApp.Exceptions.AppException: Email must be valid and end with .com
+   at ShoppingApp.Services.UserService.CreateUser(CreateUserRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 41
+   at ShoppingApp.Controllers.AuthenticationController.Register(CreateUserRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 38
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 15:20:45 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Email must be valid and end with .com
+   at ShoppingApp.Services.UserService.CreateUser(CreateUserRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 41
+   at ShoppingApp.Controllers.AuthenticationController.Register(CreateUserRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 38
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 15:20:45 [Error] Exception occurred - User: "Anonymous", Controller: "Authentication", Action: "Register", Request Body: "{\"name\":\"user\",\"email\":\"user@gmail\",\"password\":\"##pk545A\",\"phoneNumber\":\"9876543213\",\"addressLine1\":\"2/102 A Chennai\",\"addressLine2\":\"2/102 A Chennai\",\"state\":\"Rajasthan\",\"city\":\"Jaipur\",\"pincode\":\"654321\"}"
+ShoppingApp.Exceptions.AppException: Email must be valid and end with .com
+   at ShoppingApp.Services.UserService.CreateUser(CreateUserRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 41
+   at ShoppingApp.Controllers.AuthenticationController.Register(CreateUserRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 38
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 15:53:33 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: User has already submitted a review for this product
+   at ShoppingApp.Services.ReviewService.AddReview(Guid userId, AddReviewRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ReviewService.cs:line 33
+   at ShoppingApp.Controllers.ReviewController.AddReview(AddReviewRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ReviewController.cs:line 37
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-08 15:53:33 [Error] Exception occurred - User: "user", Controller: "Review", Action: "AddReview", Request Body: "{\"productId\":\"843273c4-5067-414b-a993-e587219ded36\",\"summary\":\"nice super\",\"reviewPoints\":4}"
+ShoppingApp.Exceptions.AppException: User has already submitted a review for this product
+   at ShoppingApp.Services.ReviewService.AddReview(Guid userId, AddReviewRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ReviewService.cs:line 33
+   at ShoppingApp.Controllers.ReviewController.AddReview(AddReviewRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ReviewController.cs:line 37
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26

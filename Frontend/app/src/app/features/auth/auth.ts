@@ -18,13 +18,13 @@ import {
 import { AuthApiService } from '../../core/services/auth.service';
 import { AuthStateService } from '../../core/state/auth-state.service';
 import { RedirectService } from '../../core/services/redirect.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ApiResponse } from '../../shared/models/users/apiResponse.model';
 import { INDIA_STATES, INDIA_STATES_CITIES } from '../../data/india-states-cities';
 
 @Component({
   selector: 'app-auth',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
   templateUrl: './auth.html',
   styleUrls: ['./auth.css'],
 })
@@ -38,6 +38,9 @@ export class Auth {
   isLoginMode = signal(true);
   disabledButton = signal<boolean>(true);
   availableCities = signal<string[]>([]);
+  showLoginPassword = signal(false);
+  showRegisterPassword = signal(false);
+  registerStep = signal<1 | 2>(1);
 
   loginData: LoginModel;
   signupData: SignupModel;
@@ -208,7 +211,21 @@ export class Auth {
   }
   
 
+  nextStep(): void {
+    const { name, email, password, phoneNumber } = this.signUpForm.controls;
+    if (name.invalid) { toast.error('Full name is required'); return; }
+    if (email.invalid) { toast.error(email.errors?.['email'] ? 'Invalid email format' : 'Email is required'); return; }
+    if (password.invalid) { toast.error(password.errors?.['minlength'] ? 'Password must be at least 6 characters' : 'Password is required'); return; }
+    if (phoneNumber.invalid) { toast.error('Valid phone number is required'); return; }
+    this.registerStep.set(2);
+  }
+
+  prevStep(): void {
+    this.registerStep.set(1);
+  }
+
   toggleMode() {
     this.isLoginMode.set(!this.isLoginMode());
+    this.registerStep.set(1);
   }
 }

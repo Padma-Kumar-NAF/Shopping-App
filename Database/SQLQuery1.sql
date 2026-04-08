@@ -20,16 +20,22 @@ select * from Refunds
 update Wallets
 set WalletAmount = 6480
 
-delete from Refunds
-delete from Payments
-delete from OrderDetails
-delete from Orders
+update orders 
+set DeliveryDate = '2026-03-08 09:55:48.1612008'
 
+--delete from Refunds
+--delete from Payments
+--delete from OrderDetails
+--delete from Orders
+
+select * from orders
 select * from OrderDetails
 
 select * from Payments
 
 select * from Products
+update Products
+set ActiveStatus = 1
 
 select * from PromoCodes
 
@@ -49,17 +55,23 @@ select * from Wallets
 select * from WishList
 select * from WishListItems
 
-delete from Reviews
+insert into wallets (userId,WalletAmount)
+values ('02E91748-23E7-467C-95EB-ED14A25E7ED9',3000);
 
 update Users 
 set role = 'admin'
-where UserId = 'A9D94B15-6245-4AD1-A3BE-A565363BDA4C'
+where UserId = '602B14B5-E095-4418-B46F-EEDA8889D6B2'
 
 update orders
 set Status = 'Delivered'
 
 update Wallets
 set WalletAmount = 1200
+
+delete from UserDetails
+delete from Addresses 
+delete from UserDetails
+delete from users
 
 --delete from Addresses where UserId = 'F56106AD-FEE7-4BD2-B761-4389FC32DCB1'
 --delete from UserDetails where userId = 'F56106AD-FEE7-4BD2-B761-4389FC32DCB1'
@@ -68,9 +80,6 @@ set WalletAmount = 1200
 
 --delete from Products where ProductId = '8D4F5791-5D11-4238-BDCA-F1AF347ADE6E'
 --delete from Stock where ProductId = '8D4F5791-5D11-4238-BDCA-F1AF347ADE6E'
-
-update orders
-set Status = 'Delivered'
 
 --delete from users where UserId = '7ECF76DC-2AF8-4A32-BBF4-097C7468FDE6'
 

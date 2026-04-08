@@ -36,17 +36,6 @@ export class App implements OnInit {
       .subscribe((e: NavigationEnd) => this.evaluate(e.urlAfterRedirects));
   }
 
-  // ngOnInit(): void {
-  //   this.authState.loadUserFromStorage();
-
-  //   this.evaluate(this.router.url);
-  //   this.router.events
-  //     // .pipe(filter(e => e instanceof NavigationEnd))
-  //     .subscribe((e: any) => {
-  //       console.log(e)
-  //       this.evaluate(e.urlAfterRedirects)});
-  // }
-
   private evaluate(url: string): void {
     const path = url.split('?')[0];
     const hidden = NO_NAV_PREFIXES.some(p => path === p || path.startsWith(p + '/'));

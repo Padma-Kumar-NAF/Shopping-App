@@ -22,7 +22,7 @@ interface ReviewData {
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, MatButtonModule, PaginationComponent],
+  imports: [CommonModule, FormsModule, MatIconModule, MatButtonModule],
   templateUrl: './orders.html',
   styleUrls: ['./orders.css'],
 })
@@ -38,7 +38,7 @@ export class OrdersComponent implements OnInit {
   isLoading = signal(false);
 
   currentPage = signal(1);
-  pageSize = DEFAULT_PAGE_SIZE;
+  pageSize = 100;
   totalItems = signal(0);
   totalPages = signal(0);
 
@@ -69,8 +69,9 @@ export class OrdersComponent implements OnInit {
         console.log(response)
         if (response.data?.items) {
           this.orders.set(response.data.items);
-          this.totalItems.set(response.data.items.length);
-          this.totalPages.set(calculateTotalPages(this.totalItems(), this.pageSize));
+          const total = response.data.totalCount != null ? response.data.totalCount : response.data.items.length;
+          this.totalItems.set(total);
+          this.totalPages.set(calculateTotalPages(total, this.pageSize));
         }
         this.isLoading.set(false);
       },
@@ -80,6 +81,20 @@ export class OrdersComponent implements OnInit {
         this.isLoading.set(false);
       },
     });
+  }
+
+  isWithinFiveDays(dateString: string): boolean {
+    const inputDate = new Date(dateString);
+    const today = new Date();
+
+    inputDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    const diffDays = Math.floor(
+      (today.getTime() - inputDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    return diffDays <= 5;
   }
 
   onPageChange(page: number): void {
@@ -173,11 +188,6 @@ export class OrdersComponent implements OnInit {
 
 
   openReviewModal(order: OrderDetailsResponseDTO): void {
-    const hasUnreviewed = order.items.some(i => !this.hasProductReview(i.productId));
-    if (!hasUnreviewed) {
-      return;
-    }
-
     this.orderToReview.set(order);
     const firstUnreviewed = order.items.find(i => !this.hasProductReview(i.productId));
     this.selectedProductId.set(firstUnreviewed?.productId ?? order.items[0]?.productId ?? '');

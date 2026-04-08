@@ -6,12 +6,11 @@
     @if (totalItems > 0) { Showing
     <span class="font-semibold text-gray-800">{{ startItem }}</span> –
     <span class="font-semibold text-gray-800">{{ endItem }}</span> of
-    <span class="font-semibold text-gray-800">{{ totalItems }}</span> items } @else { No items to
-    display }
+    <span class="font-semibold text-gray-800">{{ totalItems }}</span> items } @else { No items to display }
   </p>
 
   <!-- Pagination Controls -->
-  @if (totalPages > 1) {
+  @if (totalPages >= 1) {
   <div class="flex items-center gap-2">
     <!-- First Page -->
     <button

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { UserDetails } from '../../shared/models/users/user.model';
 import { AuthApiService } from '../services/auth.service';
+import { toast } from 'ngx-sonner';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,11 @@ export class AuthStateService {
   getTokenExpiryMs(token: string): number | null {
     try {
       const decoded: any = jwtDecode(token);
-      if (!decoded?.exp) return null;
+      // console.log("decoded")
+      // console.log(decoded)
+      if (!decoded?.exp) {
+        return null;
+      }
       const msLeft = decoded.exp * 1000 - Date.now();
       // console.log("msLeft");
       // console.log(msLeft);
@@ -41,7 +46,7 @@ export class AuthStateService {
       this.logout();
       return;
     }
-    this.logoutTimer = setTimeout(() => this.logout(), msLeft);
+    this.logoutTimer = setTimeout(() => this.logout(true), msLeft);
   }
 
   cancelAutoLogout(): void {
@@ -52,11 +57,14 @@ export class AuthStateService {
   }
 
   loadUserFromStorage(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
 
     const token = localStorage.getItem('JWT-Token');
-    if (!token) return;
-    
+    if (!token) {
+      return;
+    }
     if (this.getTokenExpiryMs(token) === null) {
       this.clearUser();
       return;
@@ -91,8 +99,11 @@ export class AuthStateService {
     this.user.set(null);
   }
 
-  logout(): void {
+  logout(showToast = false): void {
     this.clearUser();
+    if (showToast) {
+      toast.warning('Your session has expired. Please log in again.');
+    }
     this.router.navigate(['/auth']);
   }
 }

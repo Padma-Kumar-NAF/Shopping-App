@@ -16,6 +16,7 @@ import { toast } from 'ngx-sonner';
 export class ErrorLogs implements OnInit {
   private logsService = inject(ErrorLogsService);
 
+  private allLogs = signal<ErrorLogDTO[]>([]);
   logs = signal<ErrorLogDTO[]>([]);
   isLoading = signal(false);
   currentPage = signal(1);
@@ -25,6 +26,20 @@ export class ErrorLogs implements OnInit {
 
   // Sort: latest first by default
   sortAsc = signal(false);
+
+  // Filter: 'all' | '5xx' | '4xx'
+  activeFilter = signal<'all' | '5xx' | '4xx'>('all');
+
+  // Detail popup
+  selectedLog = signal<ErrorLogDTO | null>(null);
+
+  openLog(log: ErrorLogDTO): void {
+    this.selectedLog.set(log);
+  }
+
+  closeLog(): void {
+    this.selectedLog.set(null);
+  }
 
   ngOnInit(): void {
     this.loadLogs();
@@ -39,7 +54,13 @@ export class ErrorLogs implements OnInit {
     this.logsService.getErrorLogs(pagination).subscribe({
       next: (res) => {
         const items = res.data?.items ?? [];
-        this.logs.set(this.sortAsc() ? items : [...items].reverse());
+        const sorted = [...items].sort((a, b) =>
+          this.sortAsc()
+            ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        this.allLogs.set(sorted);
+        this.applyFilter();
         this.totalItems.set(res.data?.totalCount ?? items.length);
         this.totalPages.set(calculateTotalPages(this.totalItems(), this.pageSize));
         this.isLoading.set(false);
@@ -59,7 +80,31 @@ export class ErrorLogs implements OnInit {
 
   toggleSort(): void {
     this.sortAsc.update(v => !v);
-    this.logs.update(items => [...items].reverse());
+    this.allLogs.update(items =>
+      [...items].sort((a, b) =>
+        this.sortAsc()
+          ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )
+    );
+    this.applyFilter();
+  }
+
+  setFilter(filter: 'all' | '5xx' | '4xx'): void {
+    this.activeFilter.set(filter);
+    this.applyFilter();
+  }
+
+  private applyFilter(): void {
+    const f = this.activeFilter();
+    const all = this.allLogs();
+    if (f === '5xx') {
+      this.logs.set(all.filter(l => l.statusCode >= 500));
+    } else if (f === '4xx') {
+      this.logs.set(all.filter(l => l.statusCode >= 400 && l.statusCode < 500));
+    } else {
+      this.logs.set(all);
+    }
   }
 
   statusRowClass(code: number): string {

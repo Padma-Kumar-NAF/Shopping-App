@@ -55,17 +55,14 @@
         <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold text-gray-900">Shipping Details</h2>
-            @if (availableAddresses().length > 0 && !selectedAddress()) {
-            <button (click)="showAddressPicker.set(!showAddressPicker())" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
-              {{ showAddressPicker() ? 'Hide' : '📍 Select Saved Address' }}
-            </button>
-            }
+            <button (click)="openAddAddressModal()" class="text-sm text-blue-600 hover:text-blue-700 font-medium">+ Add Address</button>
           </div>
 
-          @if (showAddressPicker() && availableAddresses().length > 0) {
-          <div class="mb-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- Address list for selection -->
+          @if (!selectedAddress() && availableAddresses().length > 0) {
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
             @for (addr of availableAddresses(); track addr.addressId) {
-            <div (click)="selectAddress(addr)" class="p-3 border-2 rounded-lg cursor-pointer transition-all duration-200"
+            <div (click)="selectAddress(addr)" class="p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:border-blue-400"
               [class.border-blue-500]="selectedAddress()?.addressId === addr.addressId"
               [class.bg-blue-50]="selectedAddress()?.addressId === addr.addressId"
               [class.border-gray-200]="selectedAddress()?.addressId !== addr.addressId">
@@ -75,10 +72,12 @@
             </div>
             }
           </div>
+          <p class="text-sm text-gray-500">Select a delivery address above to continue.</p>
           }
 
+          <!-- Selected address display -->
           @if (selectedAddress()) {
-          <div class="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-start justify-between gap-2">
+          <div class="p-4 bg-green-50 border border-green-200 rounded-lg flex items-start justify-between gap-2 mb-4">
             <div class="flex items-start gap-2 text-sm text-green-800">
               <span class="text-green-600 mt-0.5">✓</span>
               <div>
@@ -86,65 +85,19 @@
                 <p>{{ selectedAddress()!.city }}, {{ selectedAddress()!.state }} - {{ selectedAddress()!.pincode }}</p>
               </div>
             </div>
-            <button (click)="unselectAddress()" class="text-xs text-red-500 hover:text-red-700 font-medium whitespace-nowrap mt-0.5">✕ Unselect</button>
+            <button (click)="unselectAddress()" class="text-xs text-red-500 hover:text-red-700 font-medium whitespace-nowrap mt-0.5">✕ Change</button>
           </div>
           }
 
+          <!-- Name & Email (always shown) -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="sm:col-span-2">
               <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
               <input type="text" [(ngModel)]="fullName" placeholder="Enter your full name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
-            <div>
+            <div class="sm:col-span-2">
               <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <input type="email" [(ngModel)]="email" placeholder="your@email.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-              <input type="tel" [(ngModel)]="phone" placeholder="10-digit mobile number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div class="sm:col-span-2">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-              <textarea [(ngModel)]="address" placeholder="House No., Building Name, Street" rows="2" [disabled]="!!selectedAddress()"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"></textarea>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">State</label>
-              @if (selectedAddress()) {
-                <input type="text" [ngModel]="state()" disabled
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed" />
-              } @else {
-                <select
-                  [ngModel]="state()" (ngModelChange)="state.set($event)"
-                  (change)="onStateChange($event)"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-800">
-                  <option value="" disabled>Select State</option>
-                  @for (s of states; track s) {
-                    <option [value]="s">{{ s }}</option>
-                  }
-                </select>
-              }
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
-              @if (selectedAddress()) {
-                <input type="text" [ngModel]="city()" disabled
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed" />
-              } @else {
-                <select
-                  [ngModel]="city()" (ngModelChange)="city.set($event)"
-                  [disabled]="availableCities().length === 0"
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-800 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
-                  <option value="" disabled>{{ availableCities().length === 0 ? 'Select a state first' : 'Select City' }}</option>
-                  @for (c of availableCities(); track c) {
-                    <option [value]="c">{{ c }}</option>
-                  }
-                </select>
-              }
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Pincode</label>
-              <input type="text" [(ngModel)]="pincode" placeholder="6-digit pincode" maxlength="6" [disabled]="!!selectedAddress()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed" />
             </div>
           </div>
         </div>
@@ -330,7 +283,75 @@
   </div>
 </div>
 
-<!-- ── Stripe Payment Modal ──────────────────────────────────────────────── -->
+<!-- ── Add Address Modal ──────────────────────────────────────────────── -->
+@if (showAddAddressModal()) {
+<div class="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden" (click)="$event.stopPropagation()">
+    <div class="px-6 py-4 border-b flex items-center justify-between">
+      <h3 class="text-lg font-semibold text-gray-900">Add Delivery Address</h3>
+      @if (availableAddresses().length > 0) {
+        <button (click)="closeAddAddressModal()" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      }
+    </div>
+    <form [formGroup]="addAddressForm" (ngSubmit)="submitNewAddress()" class="p-6 space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Address Line 1 <span class="text-red-500">*</span></label>
+        <input type="text" formControlName="addressLine1" placeholder="House No., Building, Street"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          [class.border-red-400]="addAddressForm.get('addressLine1')?.invalid && addAddressForm.get('addressLine1')?.touched" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Address Line 2</label>
+        <input type="text" formControlName="addressLine2" placeholder="Landmark, Area (optional)"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">State <span class="text-red-500">*</span></label>
+          <select formControlName="state" (change)="onModalStateChange($event)"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            [class.border-red-400]="addAddressForm.get('state')?.invalid && addAddressForm.get('state')?.touched">
+            <option value="" disabled>Select State</option>
+            @for (s of states; track s) { <option [value]="s">{{ s }}</option> }
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">City <span class="text-red-500">*</span></label>
+          <select formControlName="city"
+            [attr.disabled]="modalAvailableCities().length === 0 ? true : null"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white disabled:bg-gray-100 disabled:text-gray-400"
+            [class.border-red-400]="addAddressForm.get('city')?.invalid && addAddressForm.get('city')?.touched">
+            <option value="" disabled>{{ modalAvailableCities().length === 0 ? 'Select state first' : 'Select City' }}</option>
+            @for (c of modalAvailableCities(); track c) { <option [value]="c">{{ c }}</option> }
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Pincode <span class="text-red-500">*</span></label>
+        <input type="text" formControlName="pincode" placeholder="6-digit pincode" maxlength="6"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          [class.border-red-400]="addAddressForm.get('pincode')?.invalid && addAddressForm.get('pincode')?.touched" />
+      </div>
+      <button type="submit" [disabled]="isAddingAddress()"
+        class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+        @if (isAddingAddress()) {
+          <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+          </svg>
+          Saving...
+        } @else { Save Address }
+      </button>
+    </form>
+  </div>
+</div>
+}
+
+
 @if (showStripeModal()) {
 <div class="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
   <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden" (click)="$event.stopPropagation()">

@@ -6183,3 +6183,707 @@ ORDER BY [s0].[ProductId], [s0].[CategoryId0], [s0].[StockId]
 2026-04-07 18:22:16.780 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProductById (ShoppingApp)'
 2026-04-07 18:22:16.786 +05:30 [INF] HTTP POST /Products/get-product-by-id responded 200 in 50.4839 ms
 2026-04-07 18:22:16.788 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-product-by-id - 200 null application/json; charset=utf-8 66.2814ms
+2026-04-07 18:25:13.069 +05:30 [INF] User profile is available. Using 'C:\Users\PadmaKumar.C\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-07 18:25:14.898 +05:30 [INF] Now listening on: https://localhost:7023
+2026-04-07 18:25:14.907 +05:30 [INF] Now listening on: http://localhost:5256
+2026-04-07 18:25:15.034 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-07 18:25:15.037 +05:30 [INF] Hosting environment: Development
+2026-04-07 18:25:15.040 +05:30 [INF] Content root path: C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp
+2026-04-07 18:27:55.163 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Address/get-address - null null
+2026-04-07 18:27:55.163 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Products/get-product-by-id - null null
+2026-04-07 18:27:55.260 +05:30 [INF] CORS policy execution successful.
+2026-04-07 18:27:55.260 +05:30 [INF] CORS policy execution successful.
+2026-04-07 18:27:55.268 +05:30 [INF] HTTP OPTIONS /Products/get-product-by-id responded 204 in 27.1644 ms
+2026-04-07 18:27:55.268 +05:30 [INF] HTTP OPTIONS /Address/get-address responded 204 in 27.1569 ms
+2026-04-07 18:27:55.281 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Address/get-address - 204 null null 128.1272ms
+2026-04-07 18:27:55.281 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Products/get-product-by-id - 204 null null 128.1288ms
+2026-04-07 18:27:55.292 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-product-by-id - application/json 52
+2026-04-07 18:27:55.292 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Address/get-address - application/json 45
+2026-04-07 18:27:55.305 +05:30 [INF] CORS policy execution successful.
+2026-04-07 18:27:55.305 +05:30 [INF] CORS policy execution successful.
+2026-04-07 18:27:55.658 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProductById (ShoppingApp)'
+2026-04-07 18:27:55.658 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.AddressController.GetUserAddress (ShoppingApp)'
+2026-04-07 18:27:55.701 +05:30 [INF] Route matched with {action = "GetUserAddress", controller = "Address"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetUserAddress(ShoppingApp.Models.DTOs.Address.GetUserAddressRequestDTO) on controller ShoppingApp.Controllers.AddressController (ShoppingApp).
+2026-04-07 18:27:55.701 +05:30 [INF] Route matched with {action = "GetProductById", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProductById(ShoppingApp.Models.DTOs.Product.SearchProductByIdRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-07 18:27:59.032 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Products/get-products - null null
+2026-04-07 18:27:59.032 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - null null
+2026-04-07 18:27:59.037 +05:30 [INF] CORS policy execution successful.
+2026-04-07 18:27:59.043 +05:30 [INF] CORS policy execution successful.
+2026-04-07 18:27:59.043 +05:30 [INF] HTTP OPTIONS /Products/get-products responded 204 in 6.6562 ms
+2026-04-07 18:27:59.045 +05:30 [INF] HTTP OPTIONS /category/get-all-categories responded 204 in 1.9620 ms
+2026-04-07 18:27:59.047 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Products/get-products - 204 null null 15.0416ms
+2026-04-07 18:27:59.049 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - 204 null null 16.6814ms
+2026-04-07 18:27:59.053 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-products - application/json 45
+2026-04-07 18:27:59.054 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/category/get-all-categories - application/json 45
+2026-04-07 18:27:59.060 +05:30 [INF] CORS policy execution successful.
+2026-04-07 18:27:59.064 +05:30 [INF] CORS policy execution successful.
+2026-04-07 18:27:59.070 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-07 18:27:59.070 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 18:27:59.084 +05:30 [INF] Route matched with {action = "GetAllCategories", controller = "Category"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllCategories(ShoppingApp.Models.DTOs.Category.GetAllCategoryRequestDTO) on controller ShoppingApp.Controllers.CategoryController (ShoppingApp).
+2026-04-07 18:27:59.084 +05:30 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProducts(ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-07 18:28:00.354 +05:30 [INF] Executed DbCommand (112ms) [Parameters=[@UserId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Addresses] AS [a]
+        WHERE [a].[UserId] = @UserId) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-04-07 18:28:00.354 +05:30 [INF] Executed DbCommand (30ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CategoryId], [c].[CategoryName], (
+    SELECT COUNT(*)
+    FROM [Products] AS [p]
+    WHERE [c].[CategoryId] = [p].[CategoryId] AND [p].[ActiveStatus] = CAST(1 AS bit)) AS [ProductsCount], CONVERT(varchar(100), [c].[CreatedAt]) AS [CreatedAt]
+FROM [Category] AS [c]
+ORDER BY [c].[CategoryName]
+OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+2026-04-07 18:28:00.354 +05:30 [INF] Executed DbCommand (82ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+2026-04-07 18:28:00.354 +05:30 [INF] Executed DbCommand (126ms) [Parameters=[@request_ProductId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [s0].[ProductId], [s0].[ActiveStatus], [s0].[CategoryId], [s0].[CreatedAt], [s0].[Description], [s0].[ImagePath], [s0].[Name], [s0].[Price], [s0].[CategoryId0], [s0].[StockId], [r].[ReviewId], [r].[CreatedAt], [r].[ProductId], [r].[ReviewPoints], [r].[Summary], [r].[UserId], [s0].[CategoryName], [s0].[CreatedAt0], [s0].[CreatedAt1], [s0].[ProductId0], [s0].[Quantity]
+FROM (
+    SELECT TOP(1) [p].[ProductId], [p].[ActiveStatus], [p].[CategoryId], [p].[CreatedAt], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price], [c].[CategoryId] AS [CategoryId0], [c].[CategoryName], [c].[CreatedAt] AS [CreatedAt0], [s].[StockId], [s].[CreatedAt] AS [CreatedAt1], [s].[ProductId] AS [ProductId0], [s].[Quantity]
+    FROM [Products] AS [p]
+    INNER JOIN [Category] AS [c] ON [p].[CategoryId] = [c].[CategoryId]
+    LEFT JOIN [Stock] AS [s] ON [p].[ProductId] = [s].[ProductId]
+    WHERE [p].[ActiveStatus] = CAST(1 AS bit) AND [p].[ProductId] = @request_ProductId
+) AS [s0]
+LEFT JOIN [Reviews] AS [r] ON [s0].[ProductId] = [r].[ProductId]
+ORDER BY [s0].[ProductId], [s0].[CategoryId0], [s0].[StockId]
+2026-04-07 18:28:00.460 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Address.GetUserAddressResposneDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 18:28:00.460 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Category.GetAllCategoryResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 18:28:00.488 +05:30 [INF] Executed action ShoppingApp.Controllers.AddressController.GetUserAddress (ShoppingApp) in 4777.6099ms
+2026-04-07 18:28:00.488 +05:30 [INF] Executed action ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp) in 1393.2304ms
+2026-04-07 18:28:00.493 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.AddressController.GetUserAddress (ShoppingApp)'
+2026-04-07 18:28:00.494 +05:30 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-04-07 18:28:00.494 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-07 18:28:00.501 +05:30 [INF] HTTP POST /Address/get-address responded 200 in 5196.2244 ms
+2026-04-07 18:28:00.501 +05:30 [INF] HTTP POST /category/get-all-categories responded 200 in 1437.0039 ms
+2026-04-07 18:28:00.520 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/category/get-all-categories - 200 null application/json; charset=utf-8 1465.6726ms
+2026-04-07 18:28:00.520 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Address/get-address - 200 null application/json; charset=utf-8 5228.0972ms
+2026-04-07 18:28:00.563 +05:30 [INF] Executed DbCommand (21ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p0].[ProductId], [p0].[CategoryId], [p0].[Name], [p0].[ImagePath], [p0].[Description], [c].[CategoryName], [p0].[Price], [s].[StockId], [s].[Quantity], [c].[CategoryId], [r].[ReviewId], [r].[CreatedAt], [r].[ProductId], [r].[ReviewPoints], [r].[Summary], [r].[UserId], [r0].[Summary], [r0].[ReviewPoints], [r0].[ReviewId]
+FROM (
+    SELECT [p].[ProductId], [p].[CategoryId], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+    FROM [Products] AS [p]
+    WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+    ORDER BY [p].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [p0]
+INNER JOIN [Category] AS [c] ON [p0].[CategoryId] = [c].[CategoryId]
+LEFT JOIN [Stock] AS [s] ON [p0].[ProductId] = [s].[ProductId]
+LEFT JOIN [Reviews] AS [r] ON [p0].[ProductId] = [r].[ProductId]
+LEFT JOIN [Reviews] AS [r0] ON [p0].[ProductId] = [r0].[ProductId]
+ORDER BY [p0].[Name], [p0].[ProductId], [c].[CategoryId], [s].[StockId], [r].[ReviewId]
+2026-04-07 18:28:00.583 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 18:28:00.630 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp) in 1537.1163ms
+2026-04-07 18:28:00.633 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 18:28:00.635 +05:30 [INF] HTTP POST /Products/get-products responded 200 in 1574.7338 ms
+2026-04-07 18:28:00.637 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-products - 200 null application/json; charset=utf-8 1584.5984ms
+2026-04-07 18:28:00.669 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Product.SearchProductByIdResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 18:28:00.683 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProductById (ShoppingApp) in 4975.2027ms
+2026-04-07 18:28:00.686 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProductById (ShoppingApp)'
+2026-04-07 18:28:00.688 +05:30 [INF] HTTP POST /Products/get-product-by-id responded 200 in 5382.9344 ms
+2026-04-07 18:28:00.692 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-product-by-id - 200 null application/json; charset=utf-8 5400.1613ms
+2026-04-07 18:28:04.598 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Products/get-products - null null
+2026-04-07 18:28:04.601 +05:30 [INF] CORS policy execution successful.
+2026-04-07 18:28:04.602 +05:30 [INF] HTTP OPTIONS /Products/get-products responded 204 in 1.2027 ms
+2026-04-07 18:28:04.605 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Products/get-products - 204 null null 7.484ms
+2026-04-07 18:28:04.614 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-products - application/json 45
+2026-04-07 18:28:04.617 +05:30 [INF] CORS policy execution successful.
+2026-04-07 18:28:04.620 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 18:28:04.622 +05:30 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProducts(ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-07 18:28:04.656 +05:30 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+2026-04-07 18:28:04.681 +05:30 [INF] Executed DbCommand (14ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p0].[ProductId], [p0].[CategoryId], [p0].[Name], [p0].[ImagePath], [p0].[Description], [c].[CategoryName], [p0].[Price], [s].[StockId], [s].[Quantity], [c].[CategoryId], [r].[ReviewId], [r].[CreatedAt], [r].[ProductId], [r].[ReviewPoints], [r].[Summary], [r].[UserId], [r0].[Summary], [r0].[ReviewPoints], [r0].[ReviewId]
+FROM (
+    SELECT [p].[ProductId], [p].[CategoryId], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+    FROM [Products] AS [p]
+    WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+    ORDER BY [p].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [p0]
+INNER JOIN [Category] AS [c] ON [p0].[CategoryId] = [c].[CategoryId]
+LEFT JOIN [Stock] AS [s] ON [p0].[ProductId] = [s].[ProductId]
+LEFT JOIN [Reviews] AS [r] ON [p0].[ProductId] = [r].[ProductId]
+LEFT JOIN [Reviews] AS [r0] ON [p0].[ProductId] = [r0].[ProductId]
+ORDER BY [p0].[Name], [p0].[ProductId], [c].[CategoryId], [s].[StockId], [r].[ReviewId]
+2026-04-07 18:28:04.687 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 18:28:04.690 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp) in 64.4241ms
+2026-04-07 18:28:04.692 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 18:28:04.693 +05:30 [INF] HTTP POST /Products/get-products responded 200 in 75.8400 ms
+2026-04-07 18:28:04.696 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-products - 200 null application/json; charset=utf-8 81.6114ms
+2026-04-07 22:27:24.353 +05:30 [INF] User profile is available. Using 'C:\Users\PadmaKumar.C\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-07 22:27:25.310 +05:30 [INF] Now listening on: https://localhost:7023
+2026-04-07 22:27:25.315 +05:30 [INF] Now listening on: http://localhost:5256
+2026-04-07 22:27:25.478 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-07 22:27:25.510 +05:30 [INF] Hosting environment: Development
+2026-04-07 22:27:25.512 +05:30 [INF] Content root path: C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp
+2026-04-07 22:27:44.381 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - null null
+2026-04-07 22:27:44.381 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Products/get-products - null null
+2026-04-07 22:27:44.483 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:27:44.483 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:27:44.497 +05:30 [INF] HTTP OPTIONS /Products/get-products responded 204 in 26.3650 ms
+2026-04-07 22:27:44.497 +05:30 [INF] HTTP OPTIONS /category/get-all-categories responded 204 in 26.6109 ms
+2026-04-07 22:27:44.510 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Products/get-products - 204 null null 142.8557ms
+2026-04-07 22:27:44.517 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - 204 null null 151.45ms
+2026-04-07 22:27:44.527 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-products - application/json 45
+2026-04-07 22:27:44.527 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/category/get-all-categories - application/json 45
+2026-04-07 22:27:44.555 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:27:44.555 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:27:45.001 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-07 22:27:45.001 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 22:27:45.074 +05:30 [INF] Route matched with {action = "GetAllCategories", controller = "Category"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllCategories(ShoppingApp.Models.DTOs.Category.GetAllCategoryRequestDTO) on controller ShoppingApp.Controllers.CategoryController (ShoppingApp).
+2026-04-07 22:27:45.074 +05:30 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProducts(ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-07 22:27:53.594 +05:30 [INF] Executed DbCommand (130ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+2026-04-07 22:27:53.872 +05:30 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-04-07 22:27:54.042 +05:30 [INF] Executed DbCommand (79ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p0].[ProductId], [p0].[CategoryId], [p0].[Name], [p0].[ImagePath], [p0].[Description], [c].[CategoryName], [p0].[Price], [s].[StockId], [s].[Quantity], [c].[CategoryId], [r].[ReviewId], [r].[CreatedAt], [r].[ProductId], [r].[ReviewPoints], [r].[Summary], [r].[UserId], [r0].[Summary], [r0].[ReviewPoints], [r0].[ReviewId]
+FROM (
+    SELECT [p].[ProductId], [p].[CategoryId], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+    FROM [Products] AS [p]
+    WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+    ORDER BY [p].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [p0]
+INNER JOIN [Category] AS [c] ON [p0].[CategoryId] = [c].[CategoryId]
+LEFT JOIN [Stock] AS [s] ON [p0].[ProductId] = [s].[ProductId]
+LEFT JOIN [Reviews] AS [r] ON [p0].[ProductId] = [r].[ProductId]
+LEFT JOIN [Reviews] AS [r0] ON [p0].[ProductId] = [r0].[ProductId]
+ORDER BY [p0].[Name], [p0].[ProductId], [c].[CategoryId], [s].[StockId], [r].[ReviewId]
+2026-04-07 22:27:54.099 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:27:54.181 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp) in 9091.7932ms
+2026-04-07 22:27:54.187 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 22:27:54.199 +05:30 [INF] HTTP POST /Products/get-products responded 200 in 9644.5368 ms
+2026-04-07 22:27:54.223 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-products - 200 null application/json; charset=utf-8 9695.6807ms
+2026-04-07 22:27:54.625 +05:30 [INF] Executed DbCommand (24ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CategoryId], [c].[CategoryName], (
+    SELECT COUNT(*)
+    FROM [Products] AS [p]
+    WHERE [c].[CategoryId] = [p].[CategoryId] AND [p].[ActiveStatus] = CAST(1 AS bit)) AS [ProductsCount], CONVERT(varchar(100), [c].[CreatedAt]) AS [CreatedAt]
+FROM [Category] AS [c]
+ORDER BY [c].[CategoryName]
+OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+2026-04-07 22:27:54.644 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Category.GetAllCategoryResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:27:54.657 +05:30 [INF] Executed action ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp) in 9576.9177ms
+2026-04-07 22:27:54.662 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-07 22:27:54.666 +05:30 [INF] HTTP POST /category/get-all-categories responded 200 in 10111.4052 ms
+2026-04-07 22:27:54.669 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/category/get-all-categories - 200 null application/json; charset=utf-8 10142.1176ms
+2026-04-07 22:32:50.907 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Products/suggestions?query=a - null null
+2026-04-07 22:32:50.920 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:32:50.923 +05:30 [INF] HTTP OPTIONS /Products/suggestions responded 204 in 2.9910 ms
+2026-04-07 22:32:50.927 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Products/suggestions?query=a - 204 null null 19.9278ms
+2026-04-07 22:32:50.962 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7023/Products/suggestions?query=a - null null
+2026-04-07 22:32:50.970 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:32:50.993 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetSuggestions (ShoppingApp)'
+2026-04-07 22:32:51.018 +05:30 [INF] Route matched with {action = "GetSuggestions", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetSuggestions(System.String) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-07 22:32:51.296 +05:30 [INF] Executed DbCommand (17ms) [Parameters=[@p='?' (DbType = Int32), @Format='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(@p) [p].[Name]
+FROM [Products] AS [p]
+WHERE [p].[ActiveStatus] = CAST(1 AS bit) AND [p].[Name] LIKE @Format
+ORDER BY [p].[Name]
+2026-04-07 22:32:51.313 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[System.Collections.Generic.List`1[[ShoppingApp.Models.DTOs.Product.ProductSuggestionDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-04-07 22:32:51.328 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetSuggestions (ShoppingApp) in 303.4956ms
+2026-04-07 22:32:51.334 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetSuggestions (ShoppingApp)'
+2026-04-07 22:32:51.338 +05:30 [INF] HTTP GET /Products/suggestions responded 200 in 367.9603 ms
+2026-04-07 22:32:51.343 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7023/Products/suggestions?query=a - 200 null application/json; charset=utf-8 380.7266ms
+2026-04-07 22:32:59.650 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Products/get-products - null null
+2026-04-07 22:32:59.657 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:32:59.659 +05:30 [INF] HTTP OPTIONS /Products/get-products responded 204 in 2.0031 ms
+2026-04-07 22:32:59.665 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Products/get-products - 204 null null 15.3588ms
+2026-04-07 22:32:59.671 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-products - application/json 45
+2026-04-07 22:32:59.683 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:32:59.686 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 22:32:59.690 +05:30 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProducts(ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-07 22:32:59.727 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+2026-04-07 22:32:59.755 +05:30 [INF] Executed DbCommand (14ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p0].[ProductId], [p0].[CategoryId], [p0].[Name], [p0].[ImagePath], [p0].[Description], [c].[CategoryName], [p0].[Price], [s].[StockId], [s].[Quantity], [c].[CategoryId], [r].[ReviewId], [r].[CreatedAt], [r].[ProductId], [r].[ReviewPoints], [r].[Summary], [r].[UserId], [r0].[Summary], [r0].[ReviewPoints], [r0].[ReviewId]
+FROM (
+    SELECT [p].[ProductId], [p].[CategoryId], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+    FROM [Products] AS [p]
+    WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+    ORDER BY [p].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [p0]
+INNER JOIN [Category] AS [c] ON [p0].[CategoryId] = [c].[CategoryId]
+LEFT JOIN [Stock] AS [s] ON [p0].[ProductId] = [s].[ProductId]
+LEFT JOIN [Reviews] AS [r] ON [p0].[ProductId] = [r].[ProductId]
+LEFT JOIN [Reviews] AS [r0] ON [p0].[ProductId] = [r0].[ProductId]
+ORDER BY [p0].[Name], [p0].[ProductId], [c].[CategoryId], [s].[StockId], [r].[ReviewId]
+2026-04-07 22:32:59.766 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:32:59.775 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp) in 75.4ms
+2026-04-07 22:32:59.784 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 22:32:59.786 +05:30 [INF] HTTP POST /Products/get-products responded 200 in 103.4523 ms
+2026-04-07 22:32:59.790 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-products - 200 null application/json; charset=utf-8 120.0061ms
+2026-04-07 22:33:03.796 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - null null
+2026-04-07 22:33:03.796 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-products - application/json 45
+2026-04-07 22:33:03.803 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:03.811 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:03.814 +05:30 [INF] HTTP OPTIONS /category/get-all-categories responded 204 in 10.2065 ms
+2026-04-07 22:33:03.818 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 22:33:03.822 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - 204 null null 26.2554ms
+2026-04-07 22:33:03.824 +05:30 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProducts(ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-07 22:33:03.832 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/category/get-all-categories - application/json 45
+2026-04-07 22:33:03.848 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+2026-04-07 22:33:03.852 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:03.861 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-07 22:33:03.862 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p0].[ProductId], [p0].[CategoryId], [p0].[Name], [p0].[ImagePath], [p0].[Description], [c].[CategoryName], [p0].[Price], [s].[StockId], [s].[Quantity], [c].[CategoryId], [r].[ReviewId], [r].[CreatedAt], [r].[ProductId], [r].[ReviewPoints], [r].[Summary], [r].[UserId], [r0].[Summary], [r0].[ReviewPoints], [r0].[ReviewId]
+FROM (
+    SELECT [p].[ProductId], [p].[CategoryId], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+    FROM [Products] AS [p]
+    WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+    ORDER BY [p].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [p0]
+INNER JOIN [Category] AS [c] ON [p0].[CategoryId] = [c].[CategoryId]
+LEFT JOIN [Stock] AS [s] ON [p0].[ProductId] = [s].[ProductId]
+LEFT JOIN [Reviews] AS [r] ON [p0].[ProductId] = [r].[ProductId]
+LEFT JOIN [Reviews] AS [r0] ON [p0].[ProductId] = [r0].[ProductId]
+ORDER BY [p0].[Name], [p0].[ProductId], [c].[CategoryId], [s].[StockId], [r].[ReviewId]
+2026-04-07 22:33:03.864 +05:30 [INF] Route matched with {action = "GetAllCategories", controller = "Category"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllCategories(ShoppingApp.Models.DTOs.Category.GetAllCategoryRequestDTO) on controller ShoppingApp.Controllers.CategoryController (ShoppingApp).
+2026-04-07 22:33:03.875 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:33:03.882 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp) in 39.5884ms
+2026-04-07 22:33:03.885 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 22:33:03.888 +05:30 [INF] HTTP POST /Products/get-products responded 200 in 77.1720 ms
+2026-04-07 22:33:03.892 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-products - 200 null application/json; charset=utf-8 96.0585ms
+2026-04-07 22:33:03.898 +05:30 [INF] Executed DbCommand (16ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CategoryId], [c].[CategoryName], (
+    SELECT COUNT(*)
+    FROM [Products] AS [p]
+    WHERE [c].[CategoryId] = [p].[CategoryId] AND [p].[ActiveStatus] = CAST(1 AS bit)) AS [ProductsCount], CONVERT(varchar(100), [c].[CreatedAt]) AS [CreatedAt]
+FROM [Category] AS [c]
+ORDER BY [c].[CategoryName]
+OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+2026-04-07 22:33:03.904 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Category.GetAllCategoryResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:33:03.907 +05:30 [INF] Executed action ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp) in 28.9276ms
+2026-04-07 22:33:03.909 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-07 22:33:03.911 +05:30 [INF] HTTP POST /category/get-all-categories responded 200 in 58.9752 ms
+2026-04-07 22:33:03.914 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/category/get-all-categories - 200 null application/json; charset=utf-8 82.1425ms
+2026-04-07 22:33:07.348 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Products/get-products - null null
+2026-04-07 22:33:07.358 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:07.361 +05:30 [INF] HTTP OPTIONS /Products/get-products responded 204 in 3.1326 ms
+2026-04-07 22:33:07.368 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Products/get-products - 204 null null 19.3693ms
+2026-04-07 22:33:07.375 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-products - application/json 45
+2026-04-07 22:33:07.393 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:07.395 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 22:33:07.399 +05:30 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProducts(ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-07 22:33:07.408 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+2026-04-07 22:33:07.421 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p0].[ProductId], [p0].[CategoryId], [p0].[Name], [p0].[ImagePath], [p0].[Description], [c].[CategoryName], [p0].[Price], [s].[StockId], [s].[Quantity], [c].[CategoryId], [r].[ReviewId], [r].[CreatedAt], [r].[ProductId], [r].[ReviewPoints], [r].[Summary], [r].[UserId], [r0].[Summary], [r0].[ReviewPoints], [r0].[ReviewId]
+FROM (
+    SELECT [p].[ProductId], [p].[CategoryId], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+    FROM [Products] AS [p]
+    WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+    ORDER BY [p].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [p0]
+INNER JOIN [Category] AS [c] ON [p0].[CategoryId] = [c].[CategoryId]
+LEFT JOIN [Stock] AS [s] ON [p0].[ProductId] = [s].[ProductId]
+LEFT JOIN [Reviews] AS [r] ON [p0].[ProductId] = [r].[ProductId]
+LEFT JOIN [Reviews] AS [r0] ON [p0].[ProductId] = [r0].[ProductId]
+ORDER BY [p0].[Name], [p0].[ProductId], [c].[CategoryId], [s].[StockId], [r].[ReviewId]
+2026-04-07 22:33:07.430 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:33:07.434 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp) in 28.9886ms
+2026-04-07 22:33:07.438 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 22:33:07.442 +05:30 [INF] HTTP POST /Products/get-products responded 200 in 49.1958 ms
+2026-04-07 22:33:07.445 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-products - 200 null application/json; charset=utf-8 70.4793ms
+2026-04-07 22:33:08.655 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Cart/add-to-cart - null null
+2026-04-07 22:33:08.667 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:08.671 +05:30 [INF] HTTP OPTIONS /Cart/add-to-cart responded 204 in 4.5108 ms
+2026-04-07 22:33:08.678 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Cart/add-to-cart - 204 null null 23.3309ms
+2026-04-07 22:33:08.686 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Cart/add-to-cart - application/json 65
+2026-04-07 22:33:08.706 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:08.724 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CartController.AddToCart (ShoppingApp)'
+2026-04-07 22:33:08.741 +05:30 [INF] Route matched with {action = "AddToCart", controller = "Cart"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] AddToCart(ShoppingApp.Models.DTOs.Cart.AddToCartRequestDTO) on controller ShoppingApp.Controllers.CartController (ShoppingApp).
+2026-04-07 22:33:08.885 +05:30 [INF] Executed DbCommand (8ms) [Parameters=[@p='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[ActiveStatus], [p].[CategoryId], [p].[CreatedAt], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+FROM [Products] AS [p]
+WHERE [p].[ProductId] = @p
+2026-04-07 22:33:09.146 +05:30 [INF] Executed DbCommand (8ms) [Parameters=[@8__locals1_UserId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [c].[CartId], [c].[CreatedAt], [c].[UserId]
+FROM [Carts] AS [c]
+WHERE [c].[UserId] = @8__locals1_UserId
+2026-04-07 22:33:09.519 +05:30 [INF] Executed DbCommand (14ms) [Parameters=[@p0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Carts] ([UserId])
+OUTPUT INSERTED.[CartId], INSERTED.[CreatedAt]
+VALUES (@p0);
+2026-04-07 22:33:09.606 +05:30 [INF] Executed DbCommand (5ms) [Parameters=[@cart_CartId='?' (DbType = Guid), @8__locals1_request_ProductId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [c].[CartItemId], [c].[CartId], [c].[CreatedAt], [c].[ProductId], [c].[Quantity]
+FROM [CartItems] AS [c]
+WHERE [c].[CartId] = @cart_CartId AND [c].[ProductId] = @8__locals1_request_ProductId
+2026-04-07 22:33:09.686 +05:30 [INF] Executed DbCommand (7ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [CartItems] ([CartId], [ProductId], [Quantity])
+OUTPUT INSERTED.[CartItemId], INSERTED.[CreatedAt]
+VALUES (@p0, @p1, @p2);
+2026-04-07 22:33:09.720 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Cart.AddToCartResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:33:09.728 +05:30 [INF] Executed action ShoppingApp.Controllers.CartController.AddToCart (ShoppingApp) in 978.8257ms
+2026-04-07 22:33:09.732 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CartController.AddToCart (ShoppingApp)'
+2026-04-07 22:33:09.735 +05:30 [INF] HTTP POST /Cart/add-to-cart responded 200 in 1028.7589 ms
+2026-04-07 22:33:09.739 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Cart/add-to-cart - 200 null application/json; charset=utf-8 1053.1192ms
+2026-04-07 22:33:11.288 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/User/get-user-by-id - null null
+2026-04-07 22:33:11.288 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Cart/get-user-cart - null null
+2026-04-07 22:33:11.298 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:11.305 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:11.307 +05:30 [INF] HTTP OPTIONS /User/get-user-by-id responded 204 in 9.6743 ms
+2026-04-07 22:33:11.309 +05:30 [INF] HTTP OPTIONS /Cart/get-user-cart responded 204 in 3.7295 ms
+2026-04-07 22:33:11.314 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/User/get-user-by-id - 204 null null 25.8893ms
+2026-04-07 22:33:11.320 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Cart/get-user-cart - 204 null null 32.1127ms
+2026-04-07 22:33:11.321 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7023/User/get-user-by-id - null null
+2026-04-07 22:33:11.327 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Cart/get-user-cart - application/json 45
+2026-04-07 22:33:11.359 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:11.364 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:11.370 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp)'
+2026-04-07 22:33:11.377 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CartController.GetCart (ShoppingApp)'
+2026-04-07 22:33:11.388 +05:30 [INF] Route matched with {action = "GetUserById", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetUserById() on controller ShoppingApp.Controllers.UserController (ShoppingApp).
+2026-04-07 22:33:11.398 +05:30 [INF] Route matched with {action = "GetCart", controller = "Cart"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetCart(ShoppingApp.Models.DTOs.Cart.GetCartRequestDTO) on controller ShoppingApp.Controllers.CartController (ShoppingApp).
+2026-04-07 22:33:11.431 +05:30 [INF] Executed DbCommand (4ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [c].[CartId], [c].[CreatedAt], [c].[UserId]
+FROM [Carts] AS [c]
+WHERE [c].[UserId] = @userId
+2026-04-07 22:33:11.445 +05:30 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-04-07 22:33:11.447 +05:30 [WRN] The query uses a row limiting operator ('Skip'/'Take') without an 'OrderBy' operator. This may lead to unpredictable results. If the 'Distinct' operator is used after 'OrderBy', then make sure to use the 'OrderBy' operator after 'Distinct' as the ordering would otherwise get erased.
+2026-04-07 22:33:11.461 +05:30 [INF] Executed DbCommand (12ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-07 22:33:11.474 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.User.GetUserByIdResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:33:11.476 +05:30 [INF] Executed DbCommand (11ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32), @userCart_CartId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c0].[CartItemId], [c0].[ProductId], [p].[CategoryId], [p].[Name] AS [ProductName], [p].[ImagePath], [p].[Description], [p].[Price], [c0].[Quantity]
+FROM (
+    SELECT [c].[CartItemId], [c].[CartId], [c].[ProductId], [c].[Quantity]
+    FROM [CartItems] AS [c]
+    ORDER BY (SELECT 1)
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [c0]
+INNER JOIN [Products] AS [p] ON [c0].[ProductId] = [p].[ProductId]
+WHERE [c0].[CartId] = @userCart_CartId
+2026-04-07 22:33:11.490 +05:30 [INF] Executed action ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp) in 97.5774ms
+2026-04-07 22:33:11.492 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Cart.GetCartResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:33:11.494 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp)'
+2026-04-07 22:33:11.498 +05:30 [INF] HTTP GET /User/get-user-by-id responded 200 in 138.7108 ms
+2026-04-07 22:33:11.501 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7023/User/get-user-by-id - 200 null application/json; charset=utf-8 180.3278ms
+2026-04-07 22:33:11.508 +05:30 [INF] Executed action ShoppingApp.Controllers.CartController.GetCart (ShoppingApp) in 102.5897ms
+2026-04-07 22:33:11.511 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CartController.GetCart (ShoppingApp)'
+2026-04-07 22:33:11.513 +05:30 [INF] HTTP POST /Cart/get-user-cart responded 200 in 148.9164 ms
+2026-04-07 22:33:11.516 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Cart/get-user-cart - 200 null application/json; charset=utf-8 189.6132ms
+2026-04-07 22:33:14.282 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Products/get-products - null null
+2026-04-07 22:33:14.292 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:14.294 +05:30 [INF] HTTP OPTIONS /Products/get-products responded 204 in 2.5715 ms
+2026-04-07 22:33:14.302 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Products/get-products - 204 null null 19.2524ms
+2026-04-07 22:33:14.308 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-products - application/json 45
+2026-04-07 22:33:14.313 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:14.315 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 22:33:14.319 +05:30 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProducts(ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-07 22:33:14.328 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+2026-04-07 22:33:14.338 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p0].[ProductId], [p0].[CategoryId], [p0].[Name], [p0].[ImagePath], [p0].[Description], [c].[CategoryName], [p0].[Price], [s].[StockId], [s].[Quantity], [c].[CategoryId], [r].[ReviewId], [r].[CreatedAt], [r].[ProductId], [r].[ReviewPoints], [r].[Summary], [r].[UserId], [r0].[Summary], [r0].[ReviewPoints], [r0].[ReviewId]
+FROM (
+    SELECT [p].[ProductId], [p].[CategoryId], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+    FROM [Products] AS [p]
+    WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+    ORDER BY [p].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [p0]
+INNER JOIN [Category] AS [c] ON [p0].[CategoryId] = [c].[CategoryId]
+LEFT JOIN [Stock] AS [s] ON [p0].[ProductId] = [s].[ProductId]
+LEFT JOIN [Reviews] AS [r] ON [p0].[ProductId] = [r].[ProductId]
+LEFT JOIN [Reviews] AS [r0] ON [p0].[ProductId] = [r0].[ProductId]
+ORDER BY [p0].[Name], [p0].[ProductId], [c].[CategoryId], [s].[StockId], [r].[ReviewId]
+2026-04-07 22:33:14.345 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:33:14.349 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp) in 26.8205ms
+2026-04-07 22:33:14.353 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 22:33:14.356 +05:30 [INF] HTTP POST /Products/get-products responded 200 in 43.2594 ms
+2026-04-07 22:33:14.360 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-products - 200 null application/json; charset=utf-8 52.2074ms
+2026-04-07 22:33:17.415 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/User/get-user-by-id - null null
+2026-04-07 22:33:17.416 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Cart/get-user-cart - null null
+2026-04-07 22:33:17.422 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:17.429 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:17.431 +05:30 [INF] HTTP OPTIONS /User/get-user-by-id responded 204 in 9.0229 ms
+2026-04-07 22:33:17.433 +05:30 [INF] HTTP OPTIONS /Cart/get-user-cart responded 204 in 3.8712 ms
+2026-04-07 22:33:17.442 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/User/get-user-by-id - 204 null null 26.4612ms
+2026-04-07 22:33:17.446 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Cart/get-user-cart - 204 null null 30.3532ms
+2026-04-07 22:33:17.448 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7023/User/get-user-by-id - null null
+2026-04-07 22:33:17.452 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Cart/get-user-cart - application/json 45
+2026-04-07 22:33:17.478 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:17.486 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:17.490 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp)'
+2026-04-07 22:33:17.493 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CartController.GetCart (ShoppingApp)'
+2026-04-07 22:33:17.496 +05:30 [INF] Route matched with {action = "GetUserById", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetUserById() on controller ShoppingApp.Controllers.UserController (ShoppingApp).
+2026-04-07 22:33:17.499 +05:30 [INF] Route matched with {action = "GetCart", controller = "Cart"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetCart(ShoppingApp.Models.DTOs.Cart.GetCartRequestDTO) on controller ShoppingApp.Controllers.CartController (ShoppingApp).
+2026-04-07 22:33:17.507 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-07 22:33:17.516 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.User.GetUserByIdResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:33:17.520 +05:30 [INF] Executed action ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp) in 15.9733ms
+2026-04-07 22:33:17.523 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp)'
+2026-04-07 22:33:17.527 +05:30 [INF] HTTP GET /User/get-user-by-id responded 200 in 49.3500 ms
+2026-04-07 22:33:17.529 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [c].[CartId], [c].[CreatedAt], [c].[UserId]
+FROM [Carts] AS [c]
+WHERE [c].[UserId] = @userId
+2026-04-07 22:33:17.534 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7023/User/get-user-by-id - 200 null application/json; charset=utf-8 85.8016ms
+2026-04-07 22:33:17.544 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32), @userCart_CartId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c0].[CartItemId], [c0].[ProductId], [p].[CategoryId], [p].[Name] AS [ProductName], [p].[ImagePath], [p].[Description], [p].[Price], [c0].[Quantity]
+FROM (
+    SELECT [c].[CartItemId], [c].[CartId], [c].[ProductId], [c].[Quantity]
+    FROM [CartItems] AS [c]
+    ORDER BY (SELECT 1)
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [c0]
+INNER JOIN [Products] AS [p] ON [c0].[ProductId] = [p].[ProductId]
+WHERE [c0].[CartId] = @userCart_CartId
+2026-04-07 22:33:17.554 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Cart.GetCartResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:33:17.558 +05:30 [INF] Executed action ShoppingApp.Controllers.CartController.GetCart (ShoppingApp) in 48.1624ms
+2026-04-07 22:33:17.561 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CartController.GetCart (ShoppingApp)'
+2026-04-07 22:33:17.564 +05:30 [INF] HTTP POST /Cart/get-user-cart responded 200 in 77.7187 ms
+2026-04-07 22:33:17.569 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Cart/get-user-cart - 200 null application/json; charset=utf-8 116.762ms
+2026-04-07 22:33:18.475 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-products - application/json 45
+2026-04-07 22:33:18.482 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:18.484 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 22:33:18.487 +05:30 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProducts(ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-07 22:33:18.495 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+2026-04-07 22:33:18.505 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p0].[ProductId], [p0].[CategoryId], [p0].[Name], [p0].[ImagePath], [p0].[Description], [c].[CategoryName], [p0].[Price], [s].[StockId], [s].[Quantity], [c].[CategoryId], [r].[ReviewId], [r].[CreatedAt], [r].[ProductId], [r].[ReviewPoints], [r].[Summary], [r].[UserId], [r0].[Summary], [r0].[ReviewPoints], [r0].[ReviewId]
+FROM (
+    SELECT [p].[ProductId], [p].[CategoryId], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+    FROM [Products] AS [p]
+    WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+    ORDER BY [p].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [p0]
+INNER JOIN [Category] AS [c] ON [p0].[CategoryId] = [c].[CategoryId]
+LEFT JOIN [Stock] AS [s] ON [p0].[ProductId] = [s].[ProductId]
+LEFT JOIN [Reviews] AS [r] ON [p0].[ProductId] = [r].[ProductId]
+LEFT JOIN [Reviews] AS [r0] ON [p0].[ProductId] = [r0].[ProductId]
+ORDER BY [p0].[Name], [p0].[ProductId], [c].[CategoryId], [s].[StockId], [r].[ReviewId]
+2026-04-07 22:33:18.511 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:33:18.518 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp) in 26.6138ms
+2026-04-07 22:33:18.525 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 22:33:18.527 +05:30 [INF] HTTP POST /Products/get-products responded 200 in 45.4552 ms
+2026-04-07 22:33:18.530 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-products - 200 null application/json; charset=utf-8 55.5328ms
+2026-04-07 22:33:20.470 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Cart/add-to-cart - null null
+2026-04-07 22:33:20.476 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:20.477 +05:30 [INF] HTTP OPTIONS /Cart/add-to-cart responded 204 in 1.2082 ms
+2026-04-07 22:33:20.480 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Cart/add-to-cart - 204 null null 9.8348ms
+2026-04-07 22:33:20.485 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Cart/add-to-cart - application/json 65
+2026-04-07 22:33:20.490 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:20.492 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CartController.AddToCart (ShoppingApp)'
+2026-04-07 22:33:20.493 +05:30 [INF] Route matched with {action = "AddToCart", controller = "Cart"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] AddToCart(ShoppingApp.Models.DTOs.Cart.AddToCartRequestDTO) on controller ShoppingApp.Controllers.CartController (ShoppingApp).
+2026-04-07 22:33:20.501 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[@p='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[ActiveStatus], [p].[CategoryId], [p].[CreatedAt], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+FROM [Products] AS [p]
+WHERE [p].[ProductId] = @p
+2026-04-07 22:33:20.507 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@8__locals1_UserId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [c].[CartId], [c].[CreatedAt], [c].[UserId]
+FROM [Carts] AS [c]
+WHERE [c].[UserId] = @8__locals1_UserId
+2026-04-07 22:33:20.513 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@cart_CartId='?' (DbType = Guid), @8__locals1_request_ProductId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [c].[CartItemId], [c].[CartId], [c].[CreatedAt], [c].[ProductId], [c].[Quantity]
+FROM [CartItems] AS [c]
+WHERE [c].[CartId] = @cart_CartId AND [c].[ProductId] = @8__locals1_request_ProductId
+2026-04-07 22:33:20.546 +05:30 [INF] Executed DbCommand (9ms) [Parameters=[@p1='?' (DbType = Guid), @p0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [CartItems] SET [Quantity] = @p0
+OUTPUT 1
+WHERE [CartItemId] = @p1;
+2026-04-07 22:33:20.558 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Cart.AddToCartResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:33:20.563 +05:30 [INF] Executed action ShoppingApp.Controllers.CartController.AddToCart (ShoppingApp) in 66.6372ms
+2026-04-07 22:33:20.565 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CartController.AddToCart (ShoppingApp)'
+2026-04-07 22:33:20.566 +05:30 [INF] HTTP POST /Cart/add-to-cart responded 200 in 76.0165 ms
+2026-04-07 22:33:20.569 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Cart/add-to-cart - 200 null application/json; charset=utf-8 83.8044ms
+2026-04-07 22:33:22.070 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Cart/get-user-cart - application/json 45
+2026-04-07 22:33:22.070 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7023/User/get-user-by-id - null null
+2026-04-07 22:33:22.078 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:22.085 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:22.088 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CartController.GetCart (ShoppingApp)'
+2026-04-07 22:33:22.090 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp)'
+2026-04-07 22:33:22.092 +05:30 [INF] Route matched with {action = "GetCart", controller = "Cart"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetCart(ShoppingApp.Models.DTOs.Cart.GetCartRequestDTO) on controller ShoppingApp.Controllers.CartController (ShoppingApp).
+2026-04-07 22:33:22.096 +05:30 [INF] Route matched with {action = "GetUserById", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetUserById() on controller ShoppingApp.Controllers.UserController (ShoppingApp).
+2026-04-07 22:33:22.106 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [c].[CartId], [c].[CreatedAt], [c].[UserId]
+FROM [Carts] AS [c]
+WHERE [c].[UserId] = @userId
+2026-04-07 22:33:22.115 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-07 22:33:22.119 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32), @userCart_CartId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c0].[CartItemId], [c0].[ProductId], [p].[CategoryId], [p].[Name] AS [ProductName], [p].[ImagePath], [p].[Description], [p].[Price], [c0].[Quantity]
+FROM (
+    SELECT [c].[CartItemId], [c].[CartId], [c].[ProductId], [c].[Quantity]
+    FROM [CartItems] AS [c]
+    ORDER BY (SELECT 1)
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [c0]
+INNER JOIN [Products] AS [p] ON [c0].[ProductId] = [p].[ProductId]
+WHERE [c0].[CartId] = @userCart_CartId
+2026-04-07 22:33:22.126 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.User.GetUserByIdResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:33:22.133 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Cart.GetCartResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:33:22.137 +05:30 [INF] Executed action ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp) in 29.1575ms
+2026-04-07 22:33:22.141 +05:30 [INF] Executed action ShoppingApp.Controllers.CartController.GetCart (ShoppingApp) in 39.1783ms
+2026-04-07 22:33:22.144 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp)'
+2026-04-07 22:33:22.147 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CartController.GetCart (ShoppingApp)'
+2026-04-07 22:33:22.150 +05:30 [INF] HTTP GET /User/get-user-by-id responded 200 in 64.3445 ms
+2026-04-07 22:33:22.152 +05:30 [INF] HTTP POST /Cart/get-user-cart responded 200 in 74.4359 ms
+2026-04-07 22:33:22.157 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7023/User/get-user-by-id - 200 null application/json; charset=utf-8 87.0496ms
+2026-04-07 22:33:22.162 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Cart/get-user-cart - 200 null application/json; charset=utf-8 91.9569ms
+2026-04-07 22:33:35.599 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Cart/update-user-cart - null null
+2026-04-07 22:33:35.608 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:35.612 +05:30 [INF] HTTP OPTIONS /Cart/update-user-cart responded 204 in 3.9937 ms
+2026-04-07 22:33:35.619 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Cart/update-user-cart - 204 null null 20.0899ms
+2026-04-07 22:33:35.624 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Cart/update-user-cart - application/json 165
+2026-04-07 22:33:35.631 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:35.635 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CartController.UpdateUserCart (ShoppingApp)'
+2026-04-07 22:33:35.656 +05:30 [INF] Route matched with {action = "UpdateUserCart", controller = "Cart"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UpdateUserCart(ShoppingApp.Models.DTOs.Cart.UpdateUserCartRequestDTO) on controller ShoppingApp.Controllers.CartController (ShoppingApp).
+2026-04-07 22:33:35.696 +05:30 [INF] Executed DbCommand (4ms) [Parameters=[@cartId='?' (DbType = Guid), @userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [c].[CartId], [c].[CreatedAt], [c].[UserId]
+FROM [Carts] AS [c]
+WHERE [c].[CartId] = @cartId AND [c].[UserId] = @userId
+2026-04-07 22:33:35.720 +05:30 [INF] Executed DbCommand (5ms) [Parameters=[@cartId='?' (DbType = Guid), @cartItemId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [c].[CartItemId], [c].[CartId], [c].[CreatedAt], [c].[ProductId], [c].[Quantity]
+FROM [CartItems] AS [c]
+WHERE [c].[CartId] = @cartId AND [c].[CartItemId] = @cartItemId
+2026-04-07 22:33:35.772 +05:30 [INF] Executed DbCommand (28ms) [Parameters=[@p1='?' (DbType = Guid), @p0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [CartItems] SET [Quantity] = @p0
+OUTPUT 1
+WHERE [CartItemId] = @p1;
+2026-04-07 22:33:35.783 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Cart.UpdateUserCartResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:33:35.793 +05:30 [INF] Executed action ShoppingApp.Controllers.CartController.UpdateUserCart (ShoppingApp) in 131.6255ms
+2026-04-07 22:33:35.797 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CartController.UpdateUserCart (ShoppingApp)'
+2026-04-07 22:33:35.800 +05:30 [INF] HTTP POST /Cart/update-user-cart responded 200 in 168.6614 ms
+2026-04-07 22:33:35.804 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Cart/update-user-cart - 200 null application/json; charset=utf-8 180.5098ms
+2026-04-07 22:33:37.623 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Cart/remove-from-cart - null null
+2026-04-07 22:33:37.628 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:37.629 +05:30 [INF] HTTP OPTIONS /Cart/remove-from-cart responded 204 in 1.2685 ms
+2026-04-07 22:33:37.632 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Cart/remove-from-cart - 204 null null 8.772ms
+2026-04-07 22:33:37.636 +05:30 [INF] Request starting HTTP/2 DELETE https://localhost:7023/Cart/remove-from-cart - application/json 152
+2026-04-07 22:33:37.642 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:37.644 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CartController.RemoveFromCart (ShoppingApp)'
+2026-04-07 22:33:37.659 +05:30 [INF] Route matched with {action = "RemoveFromCart", controller = "Cart"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] RemoveFromCart(ShoppingApp.Models.DTOs.Cart.RemoveFromCartRequestDTO) on controller ShoppingApp.Controllers.CartController (ShoppingApp).
+2026-04-07 22:33:37.682 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[@cartId='?' (DbType = Guid), @userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [c].[CartId], [c].[CreatedAt], [c].[UserId]
+FROM [Carts] AS [c]
+WHERE [c].[CartId] = @cartId AND [c].[UserId] = @userId
+2026-04-07 22:33:37.689 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@cartId='?' (DbType = Guid), @cartItemId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [c].[CartItemId], [c].[CartId], [c].[CreatedAt], [c].[ProductId], [c].[Quantity]
+FROM [CartItems] AS [c]
+WHERE [c].[CartId] = @cartId AND [c].[CartItemId] = @cartItemId
+2026-04-07 22:33:37.762 +05:30 [INF] Executed DbCommand (5ms) [Parameters=[@p0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+DELETE FROM [CartItems]
+OUTPUT 1
+WHERE [CartItemId] = @p0;
+2026-04-07 22:33:37.782 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Cart.RemoveFromCartResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:33:37.794 +05:30 [INF] Executed action ShoppingApp.Controllers.CartController.RemoveFromCart (ShoppingApp) in 132.3044ms
+2026-04-07 22:33:37.797 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CartController.RemoveFromCart (ShoppingApp)'
+2026-04-07 22:33:37.801 +05:30 [INF] HTTP DELETE /Cart/remove-from-cart responded 200 in 159.2921 ms
+2026-04-07 22:33:37.807 +05:30 [INF] Request finished HTTP/2 DELETE https://localhost:7023/Cart/remove-from-cart - 200 null application/json; charset=utf-8 171.3698ms
+2026-04-07 22:33:45.359 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Address/get-address - null null
+2026-04-07 22:33:45.369 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:45.375 +05:30 [INF] HTTP OPTIONS /Address/get-address responded 204 in 6.5012 ms
+2026-04-07 22:33:45.380 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Address/get-address - 204 null null 21.754ms
+2026-04-07 22:33:45.388 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Address/get-address - application/json 45
+2026-04-07 22:33:45.398 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:33:45.404 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.AddressController.GetUserAddress (ShoppingApp)'
+2026-04-07 22:33:45.428 +05:30 [INF] Route matched with {action = "GetUserAddress", controller = "Address"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetUserAddress(ShoppingApp.Models.DTOs.Address.GetUserAddressRequestDTO) on controller ShoppingApp.Controllers.AddressController (ShoppingApp).
+2026-04-07 22:33:45.510 +05:30 [INF] Executed DbCommand (9ms) [Parameters=[@UserId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Addresses] AS [a]
+        WHERE [a].[UserId] = @UserId) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-04-07 22:33:45.525 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Address.GetUserAddressResposneDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:33:45.536 +05:30 [INF] Executed action ShoppingApp.Controllers.AddressController.GetUserAddress (ShoppingApp) in 99.097ms
+2026-04-07 22:33:45.541 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.AddressController.GetUserAddress (ShoppingApp)'
+2026-04-07 22:33:45.544 +05:30 [INF] HTTP POST /Address/get-address responded 200 in 145.9625 ms
+2026-04-07 22:33:45.546 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Address/get-address - 200 null application/json; charset=utf-8 158.1166ms
+2026-04-07 22:34:00.369 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Products/get-products - null null
+2026-04-07 22:34:00.372 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - null null
+2026-04-07 22:34:00.388 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:34:00.395 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:34:00.398 +05:30 [INF] HTTP OPTIONS /Products/get-products responded 204 in 9.8577 ms
+2026-04-07 22:34:00.402 +05:30 [INF] HTTP OPTIONS /category/get-all-categories responded 204 in 6.9978 ms
+2026-04-07 22:34:00.411 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Products/get-products - 204 null null 42.5236ms
+2026-04-07 22:34:00.417 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - 204 null null 44.724ms
+2026-04-07 22:34:00.416 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-products - application/json 45
+2026-04-07 22:34:00.465 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/category/get-all-categories - application/json 45
+2026-04-07 22:34:00.493 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:34:00.498 +05:30 [INF] CORS policy execution successful.
+2026-04-07 22:34:00.499 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 22:34:00.500 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-07 22:34:00.503 +05:30 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProducts(ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-07 22:34:00.505 +05:30 [INF] Route matched with {action = "GetAllCategories", controller = "Category"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllCategories(ShoppingApp.Models.DTOs.Category.GetAllCategoryRequestDTO) on controller ShoppingApp.Controllers.CategoryController (ShoppingApp).
+2026-04-07 22:34:00.511 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+2026-04-07 22:34:00.518 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CategoryId], [c].[CategoryName], (
+    SELECT COUNT(*)
+    FROM [Products] AS [p]
+    WHERE [c].[CategoryId] = [p].[CategoryId] AND [p].[ActiveStatus] = CAST(1 AS bit)) AS [ProductsCount], CONVERT(varchar(100), [c].[CreatedAt]) AS [CreatedAt]
+FROM [Category] AS [c]
+ORDER BY [c].[CategoryName]
+OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+2026-04-07 22:34:00.518 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p0].[ProductId], [p0].[CategoryId], [p0].[Name], [p0].[ImagePath], [p0].[Description], [c].[CategoryName], [p0].[Price], [s].[StockId], [s].[Quantity], [c].[CategoryId], [r].[ReviewId], [r].[CreatedAt], [r].[ProductId], [r].[ReviewPoints], [r].[Summary], [r].[UserId], [r0].[Summary], [r0].[ReviewPoints], [r0].[ReviewId]
+FROM (
+    SELECT [p].[ProductId], [p].[CategoryId], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+    FROM [Products] AS [p]
+    WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+    ORDER BY [p].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [p0]
+INNER JOIN [Category] AS [c] ON [p0].[CategoryId] = [c].[CategoryId]
+LEFT JOIN [Stock] AS [s] ON [p0].[ProductId] = [s].[ProductId]
+LEFT JOIN [Reviews] AS [r] ON [p0].[ProductId] = [r].[ProductId]
+LEFT JOIN [Reviews] AS [r0] ON [p0].[ProductId] = [r0].[ProductId]
+ORDER BY [p0].[Name], [p0].[ProductId], [c].[CategoryId], [s].[StockId], [r].[ReviewId]
+2026-04-07 22:34:00.526 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Category.GetAllCategoryResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:34:00.532 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-07 22:34:00.535 +05:30 [INF] Executed action ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp) in 24.1597ms
+2026-04-07 22:34:00.540 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp) in 32.4913ms
+2026-04-07 22:34:00.544 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-07 22:34:00.549 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-07 22:34:00.552 +05:30 [INF] HTTP POST /category/get-all-categories responded 200 in 54.0692 ms
+2026-04-07 22:34:00.555 +05:30 [INF] HTTP POST /Products/get-products responded 200 in 61.6736 ms
+2026-04-07 22:34:00.559 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/category/get-all-categories - 200 null application/json; charset=utf-8 94.3291ms
+2026-04-07 22:34:00.563 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-products - 200 null application/json; charset=utf-8 146.8993ms

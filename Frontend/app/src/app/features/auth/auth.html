@@ -1,241 +1,252 @@
-<div class="min-h-screen flex flex-col sm:flex-row bg-gray-100">
-  <div class="hidden sm:flex sm:w-1/2 bg-indigo-600 items-center justify-center p-6">
-    <div class="text-white text-center">
-      <h1 class="text-3xl font-bold mb-4">Welcome to Shopping App</h1>
-      <p class="text-lg">Manage your shopping, wishlist, and orders easily in one place.</p>
+<div class="min-h-screen flex bg-gray-50">
+
+  <!-- Left panel -->
+  <div class="hidden lg:flex lg:w-1/2 bg-indigo-600 flex-col items-center justify-center p-12 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-10 left-10 w-64 h-64 rounded-full bg-white"></div>
+      <div class="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-white"></div>
+    </div>
+    <div class="relative text-white text-center max-w-md">
+      <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+      </div>
+      <h1 class="text-4xl font-bold mb-4">Shopping App</h1>
+      <p class="text-indigo-200 text-lg leading-relaxed">
+        {{ isLoginMode() ? 'Welcome back! Sign in to continue shopping.' : 'Join us today and start your shopping journey.' }}
+      </p>
     </div>
   </div>
-  <div class="flex flex-1 flex-col justify-center px-6 py-12 sm:w-1/2">
-    <div class="sm:mx-auto sm:w-full sm:max-w-sm text-center">
-      <h2 class="mt-10 text-2xl font-bold tracking-tight text-gray-800">
-        {{ isLoginMode() ? 'Sign in to your account' : 'Create your account' }}
-      </h2>
-    </div>
 
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      @if (isLoginMode()) {
-      <form
-        [formGroup]="loginForm"
-        (ngSubmit)="onLogin()"
-        class="space-y-6 bg-white rounded-lg p-6 shadow-md border border-gray-200"
-      >
-        <div>
-          <label for="login-email" class="block text-sm font-medium text-gray-700">
-            Email address
-          </label>
-          <div class="mt-2">
-            <input
-              id="login-email"
-              type="text"
-              name="email"
-              formControlName="email"
-              placeholder="you@example.com"
-              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
+  <!-- Right panel -->
+  <div class="flex flex-1 flex-col justify-center items-center px-6 py-12">
+    <div class="w-full max-w-md">
+
+      <!-- Logo (mobile) -->
+      <div class="lg:hidden text-center mb-8">
+        <div class="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
         </div>
+        <h1 class="text-xl font-bold text-gray-900">Shopping App</h1>
+      </div>
 
-        <div>
-          <div class="flex items-center justify-between">
-            <label for="login-password" class="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <div class="text-sm">
-              <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
-                Forgot password?
-              </a>
+      <!-- ── LOGIN ── -->
+      @if (isLoginMode()) {
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-1">Sign in</h2>
+        <p class="text-sm text-gray-500 mb-7">Enter your credentials to continue</p>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-5">
+          <div>
+            <label for="login-email" class="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
+            <input id="login-email" type="text" formControlName="email" placeholder="you@example.com"
+              class="block w-full rounded-xl border border-gray-300 px-4 py-2.5 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" />
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
+              <a href="#" class="text-xs font-medium text-indigo-600 hover:text-indigo-500">Forgot password?</a>
+            </div>
+            <div class="relative">
+              <input id="login-password" [type]="showLoginPassword() ? 'text' : 'password'" formControlName="password" placeholder="••••••••"
+                class="block w-full rounded-xl border border-gray-300 px-4 py-2.5 pr-11 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" />
+              <button type="button" (click)="showLoginPassword.set(!showLoginPassword())"
+                class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors">
+                @if (showLoginPassword()) {
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                  </svg>
+                } @else {
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                }
+              </button>
             </div>
           </div>
-          <div class="mt-2">
-            <input
-              id="login-password"
-              type="password"
-              name="password"
-              formControlName="password"
-              placeholder="********"
-              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-        </div>
 
-        <div>
-          <button
-            type="submit"
-            class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-white font-semibold hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
+          <button type="submit"
+            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition-colors mt-2">
             Sign In
           </button>
-        </div>
-      </form>
+        </form>
+      </div>
       }
 
+      <!-- ── REGISTER ── -->
       @if (!isLoginMode()) {
-      <form
-        [formGroup]="signUpForm"
-        (ngSubmit)="onSignup()"
-        class="space-y-6 bg-white rounded-lg p-6 shadow-md border border-gray-200"
-      >
-        <div>
-          <label for="signup-name" class="block text-sm font-medium text-gray-700">
-            Full Name
-          </label>
-          <div class="mt-2">
-            <input
-              id="signup-name"
-              type="text"
-              name="name"
-              formControlName="name"
-              placeholder="Your Name"
-              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+
+        <!-- Step header -->
+        <div class="mb-7">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900">
+                {{ registerStep() === 1 ? 'Create account' : 'Your address' }}
+              </h2>
+              <p class="text-sm text-gray-500 mt-0.5">
+                {{ registerStep() === 1 ? 'Start with your basic details' : 'Where should we deliver?' }}
+              </p>
+            </div>
+            <span class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100">
+              Step {{ registerStep() }} of 2
+            </span>
+          </div>
+
+          <!-- Progress bar -->
+          <div class="flex gap-2">
+            <div class="h-1.5 flex-1 rounded-full" [class]="registerStep() >= 1 ? 'bg-indigo-600' : 'bg-gray-200'"></div>
+            <div class="h-1.5 flex-1 rounded-full" [class]="registerStep() >= 2 ? 'bg-indigo-600' : 'bg-gray-200'"></div>
           </div>
         </div>
 
-        <div>
-          <label for="signup-email" class="block text-sm font-medium text-gray-700">
-            Email address
-          </label>
-          <div class="mt-2">
-            <input
-              id="signup-email"
-              type="email"
-              name="email"
-              formControlName="email"
-              placeholder="you@example.com"
-              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-        </div>
+        <form [formGroup]="signUpForm" (ngSubmit)="onSignup()">
 
-        <div>
-          <label for="signup-password" class="block text-sm font-medium text-gray-700">
-            Password
-          </label>
-          <div class="mt-2">
-            <input
-              id="signup-password"
-              type="password"
-              name="password"
-              formControlName="password"
-              placeholder="********"
-              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-        </div>
+          <!-- Step 1: Account details -->
+          @if (registerStep() === 1) {
+          <div class="space-y-4">
+            <div>
+              <label for="signup-name" class="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
+              <input id="signup-name" type="text" formControlName="name" placeholder="Your full name"
+                class="block w-full rounded-xl border border-gray-300 px-4 py-2.5 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" />
+            </div>
 
-        <div>
-          <label for="signup-phoneNumber" class="block text-sm font-medium text-gray-700">
-            Phone Number
-          </label>
-          <div class="mt-2">
-            <input
-              id="signup-phoneNumber"
-              type="text"
-              name="phoneNumber"
-              formControlName="phoneNumber"
-              placeholder="9876543210"
-              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-        </div>
+            <div>
+              <label for="signup-email" class="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
+              <input id="signup-email" type="email" formControlName="email" placeholder="you@example.com"
+                class="block w-full rounded-xl border border-gray-300 px-4 py-2.5 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" />
+            </div>
 
-        <div>
-          <label for="addressLine1" class="block text-sm font-medium text-gray-700"
-            >Address Line 1</label
-          >
-          <div class="mt-2">
-            <input
-              id="addressLine1"
-              type="text"
-              formControlName="addressLine1"
-              placeholder="Street / House No."
-              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-        </div>
+            <div>
+              <label for="signup-password" class="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+              <div class="relative">
+                <input id="signup-password" [type]="showRegisterPassword() ? 'text' : 'password'" formControlName="password" placeholder="Min. 6 characters"
+                  class="block w-full rounded-xl border border-gray-300 px-4 py-2.5 pr-11 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" />
+                <button type="button" (click)="showRegisterPassword.set(!showRegisterPassword())"
+                  class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors">
+                  @if (showRegisterPassword()) {
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    </svg>
+                  } @else {
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  }
+                </button>
+              </div>
+            </div>
 
-        <div>
-          <label for="addressLine2" class="block text-sm font-medium text-gray-700"
-            >Address Line 2</label
-          >
-          <div class="mt-2">
-            <input
-              id="addressLine2"
-              type="text"
-              formControlName="addressLine2"
-              placeholder="Landmark / Area"
-              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-        </div>
+            <div>
+              <label for="signup-phone" class="block text-sm font-medium text-gray-700 mb-1.5">Phone Number</label>
+              <input id="signup-phone" type="text" formControlName="phoneNumber" placeholder="9876543210"
+                class="block w-full rounded-xl border border-gray-300 px-4 py-2.5 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" />
+            </div>
 
-        <div>
-          <label for="state" class="block text-sm font-medium text-gray-700">State</label>
-          <div class="mt-2">
-            <select
-              id="state"
-              formControlName="state"
-              (change)="onStateChange($event)"
-              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
-            >
-              <option value="" disabled>Select State</option>
-              @for (state of states; track state) {
-                <option [value]="state">{{ state }}</option>
-              }
-            </select>
+            <button type="button" (click)="nextStep()"
+              class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 mt-2">
+              Continue
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
-        </div>
+          }
 
-        <div>
-          <label for="city" class="block text-sm font-medium text-gray-700">City</label>
-          <div class="mt-2">
-            <select
-              id="city"
-              formControlName="city"
-              [disabled]="availableCities().length === 0"
-              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
-            >
-              <option value="" disabled>{{ availableCities().length === 0 ? 'Select a state first' : 'Select City' }}</option>
-              @for (city of availableCities(); track city) {
-                <option [value]="city">{{ city }}</option>
-              }
-            </select>
+          <!-- Step 2: Address details -->
+          @if (registerStep() === 2) {
+          <div class="space-y-4">
+            <div>
+              <label for="addressLine1" class="block text-sm font-medium text-gray-700 mb-1.5">Address Line 1</label>
+              <input id="addressLine1" type="text" formControlName="addressLine1" placeholder="Street / House No."
+                class="block w-full rounded-xl border border-gray-300 px-4 py-2.5 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" />
+            </div>
+
+            <div>
+              <label for="addressLine2" class="block text-sm font-medium text-gray-700 mb-1.5">Address Line 2</label>
+              <input id="addressLine2" type="text" formControlName="addressLine2" placeholder="Landmark / Area"
+                class="block w-full rounded-xl border border-gray-300 px-4 py-2.5 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="state" class="block text-sm font-medium text-gray-700 mb-1.5">State</label>
+                <select id="state" formControlName="state" (change)="onStateChange($event)"
+                  class="block w-full rounded-xl border border-gray-300 px-4 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white transition">
+                  <option value="" disabled>Select State</option>
+                  @for (state of states; track state) {
+                    <option [value]="state">{{ state }}</option>
+                  }
+                </select>
+              </div>
+
+              <div>
+                <label for="city" class="block text-sm font-medium text-gray-700 mb-1.5">City</label>
+                <select id="city" formControlName="city" [disabled]="availableCities().length === 0"
+                  class="block w-full rounded-xl border border-gray-300 px-4 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition">
+                  <option value="" disabled>{{ availableCities().length === 0 ? 'Select state first' : 'Select City' }}</option>
+                  @for (city of availableCities(); track city) {
+                    <option [value]="city">{{ city }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label for="pincode" class="block text-sm font-medium text-gray-700 mb-1.5">Pincode</label>
+              <input id="pincode" type="text" formControlName="pincode" placeholder="123456"
+                class="block w-full rounded-xl border border-gray-300 px-4 py-2.5 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" />
+            </div>
+
+            <div class="flex gap-3 mt-2">
+              <button type="button" (click)="prevStep()"
+                class="flex-1 border border-gray-300 text-gray-700 font-semibold py-2.5 rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back
+              </button>
+              <button type="submit"
+                class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition-colors">
+                Create Account
+              </button>
+            </div>
           </div>
-        </div>
+          }
 
-        <div>
-          <label for="pincode" class="block text-sm font-medium text-gray-700">Pincode</label>
-          <div class="mt-2">
-            <input
-              id="pincode"
-              type="text"
-              formControlName="pincode"
-              placeholder="123456"
-              class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-        </div>
-
-        <div>
-          <button
-            type="submit"
-            class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-white font-semibold hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            Sign up
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
       }
 
-      <p class="mt-6 text-center text-sm text-gray-600">
-        {{ isLoginMode() ? 'Not a member?' : 'Already have an account?' }}
-        <span
-          (click)="toggleMode()"
-          class="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer ml-1"
-        >
+      <!-- Toggle login/register -->
+      <p class="mt-5 text-center text-sm text-gray-600">
+        {{ isLoginMode() ? "Don't have an account?" : 'Already have an account?' }}
+        <span (click)="toggleMode()" class="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer ml-1">
           {{ isLoginMode() ? 'Create Account' : 'Sign In' }}
         </span>
       </p>
+
+      <!-- Go to home -->
+      <div class="mt-4 text-center">
+        <a routerLink="/" class="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-xl transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          Continue browsing as guest
+        </a>
+      </div>
     </div>
   </div>
 </div>

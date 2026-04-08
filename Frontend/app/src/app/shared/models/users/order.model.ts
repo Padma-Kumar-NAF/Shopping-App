@@ -6,6 +6,7 @@ export interface GetUserOrderDetailsRequestDTO {
 
 export interface GetUserOrderDetailsResponseDTO {
   items: OrderDetailsResponseDTO[];
+  totalCount: number;
 }
 
 export interface OrderDetailsResponseDTO {

@@ -89,24 +89,6 @@
                   </button>
                 }
               </div>
-              <div class="pt-3 border-t border-gray-100 space-y-3">
-                <div>
-                  <div class="flex justify-between text-xs text-gray-500 mb-1">
-                    <span>Min</span><span>₹{{ priceRangeMin().toLocaleString() }}</span>
-                  </div>
-                  <input type="range" [min]="PRICE_MIN" [max]="PRICE_MAX" [value]="priceRangeMin()"
-                    (input)="priceRangeMin.set(+$any($event.target).value); onPriceSliderChange()"
-                    class="w-full h-1.5 bg-gray-200 rounded-full appearance-none cursor-pointer accent-blue-600" />
-                </div>
-                <div>
-                  <div class="flex justify-between text-xs text-gray-500 mb-1">
-                    <span>Max</span><span>₹{{ priceRangeMax().toLocaleString() }}</span>
-                  </div>
-                  <input type="range" [min]="PRICE_MIN" [max]="PRICE_MAX" [value]="priceRangeMax()"
-                    (input)="priceRangeMax.set(+$any($event.target).value); onPriceSliderChange()"
-                    class="w-full h-1.5 bg-gray-200 rounded-full appearance-none cursor-pointer accent-blue-600" />
-                </div>
-              </div>
             </div>
           </div>
         </aside>

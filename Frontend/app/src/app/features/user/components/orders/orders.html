@@ -8,7 +8,7 @@
     </div>
     @if (!isLoading() && orders().length > 0) {
     <span class="text-xs font-semibold px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full border border-indigo-100">
-      {{ orders().length }} order{{ orders().length !== 1 ? 's' : '' }}
+      {{ totalItems() }} order{{ totalItems() !== 1 ? 's' : '' }}
     </span>
     }
   </div>
@@ -129,21 +129,14 @@
         }
 
         @if (canReviewOrder(order)) {
-          @if (!hasReview(order.orderId)) {
           <button (click)="openReviewModal(order)"
             class="order-action-btn text-amber-600 hover:bg-amber-50 border-amber-100">
-            <mat-icon style="font-size:13px;width:13px;height:13px;line-height:13px">star_outline</mat-icon>
+            <mat-icon style="font-size:13px;width:13px;height:13px;line-height:13px">{{ hasReview(order.orderId) ? 'star' : 'star_outline' }}</mat-icon>
             Review
           </button>
-          } @else {
-          <span class="order-action-btn text-green-600 bg-green-50 border-green-100 cursor-default">
-            <mat-icon style="font-size:13px;width:13px;height:13px;line-height:13px">star</mat-icon>
-            Reviewed
-          </span>
-          }
         }
 
-        @if (canCancelOrder(order)) {
+        @if (canCancelOrder(order) && isWithinFiveDays(order.deliveryDate)) {
         <button (click)="openCancelModal(order)"
           class="order-action-btn text-red-500 hover:bg-red-50 border-red-100 ml-auto">
           <mat-icon style="font-size:13px;width:13px;height:13px;line-height:13px">cancel</mat-icon>
@@ -151,19 +144,12 @@
         </button>
         }
       </div>
-
     </div>
     }
   </div>
-
-  <app-pagination [currentPage]="currentPage()" [totalPages]="totalPages()" (pageChange)="onPageChange($event)" />
+  <!-- <app-pagination [currentPage]="currentPage()" [totalPages]="totalPages()" [totalItems]="totalItems()" [pageSize]="pageSize" [isLoading]="isLoading()" (pageChange)="onPageChange($event)" /> -->
   }
-
 </div>
-
-<!-- ══════════════════════════════════════════════════════════════
-     MODALS
-     ══════════════════════════════════════════════════════════════ -->
 
 <!-- ── Address sheet ───────────────────────────────────────────── -->
 @if (showAddress() && selectedOrder()) {

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { environment } from '../../../environments/environment';
 
@@ -34,7 +34,7 @@ interface CartItem {
 @Component({
   selector: 'app-payment',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './payment.html',
   styleUrl: './payment.css',
 })
@@ -70,6 +70,17 @@ export class PaymentComponent implements OnInit {
   availableAddresses = this.addressSelectionService.availableAddresses$;
   selectedAddress = signal<AddressDTO | null>(null);
   showAddressPicker = signal<boolean>(false);
+  // Add address modal (shown when no addresses exist)
+  showAddAddressModal = signal<boolean>(false);
+  isAddingAddress = signal<boolean>(false);
+  addAddressForm = new FormGroup({
+    addressLine1: new FormControl('', [Validators.required]),
+    addressLine2: new FormControl(''),
+    state: new FormControl('', [Validators.required]),
+    city: new FormControl('', [Validators.required]),
+    pincode: new FormControl('', [Validators.required]),
+  });
+  modalAvailableCities = signal<string[]>([]);
 
   states = INDIA_STATES;
   availableCities = signal<string[]>([]);
@@ -183,27 +194,88 @@ export class PaymentComponent implements OnInit {
   private loadAddresses(): void {
     const cached = this.addressSelectionService.getAvailableAddresses();
     if (cached.length === 0) {
-
       this.addressApiService.GetUserAddresses(this.pagination).subscribe({
         next: (response) => {
           if (response?.data?.addressList) {
             this.addressSelectionService.setAvailableAddresses(response.data.addressList);
+            if (response.data.addressList.length === 0) {
+              this.showAddAddressModal.set(true);
+            }
+          } else {
+            this.showAddAddressModal.set(true);
           }
         },
         error: (error: any) => {
           console.error('Address error:', error);
-          if (error.error?.message) {
-            console.error(error.error.message);
-          } else {
-            console.error('Server error occurred');
-          }
+          this.showAddAddressModal.set(true);
         },
       });
+    } else {
+      const sel = this.addressSelectionService.getSelectedAddress();
+      if (sel) {
+        this.applyAddress(sel);
+      }
     }
     const sel = this.addressSelectionService.getSelectedAddress();
     if (sel) {
       this.applyAddress(sel);
     }
+  }
+
+  openAddAddressModal(): void {
+    this.addAddressForm.reset();
+    this.modalAvailableCities.set([]);
+    this.showAddAddressModal.set(true);
+  }
+
+  closeAddAddressModal(): void {
+    if (this.availableAddresses().length > 0) {
+      this.showAddAddressModal.set(false);
+    }
+  }
+
+  onModalStateChange(event: Event): void {
+    const state = (event.target as HTMLSelectElement).value;
+    this.modalAvailableCities.set(INDIA_STATES_CITIES[state] ?? []);
+    this.addAddressForm.get('city')?.setValue('');
+  }
+
+  submitNewAddress(): void {
+    if (this.addAddressForm.invalid) {
+      this.addAddressForm.markAllAsTouched();
+      toast.error('Please fill all required fields');
+      return;
+    }
+    this.isAddingAddress.set(true);
+    const val = this.addAddressForm.value;
+    const newAddr: AddressDTO = {
+      addressId: '',
+      addressLine1: val.addressLine1 ?? '',
+      addressLine2: val.addressLine2 ?? '',
+      state: val.state ?? '',
+      city: val.city ?? '',
+      pincode: val.pincode ?? '',
+    };
+    const toastId = toast.loading('Saving address...');
+    this.addressApiService.AddNewAddress(newAddr).subscribe({
+      next: (res) => {
+        this.isAddingAddress.set(false);
+        toast.dismiss(toastId);
+        if (res.data?.addressId) {
+          newAddr.addressId = res.data.addressId;
+        }
+        const updated = [...this.addressSelectionService.getAvailableAddresses(), newAddr];
+        this.addressSelectionService.setAvailableAddresses(updated);
+        toast.success('Address added');
+        this.showAddAddressModal.set(false);
+        this.addAddressForm.reset();
+      },
+      error: (err: any) => {
+        this.isAddingAddress.set(false);
+        toast.dismiss(toastId);
+        toast.error(err?.error?.message || 'Failed to save address');
+      },
+    });
   }
 
   selectAddress(addr: AddressDTO): void {
@@ -363,7 +435,7 @@ export class PaymentComponent implements OnInit {
   }
 
   private validateShippingDetails(): boolean {
-    if (!this.fullName() || !this.email() || !this.phone() || !this.address() || !this.city() || !this.state() || !this.pincode()) {
+    if (!this.fullName() || !this.email() || !this.address() || !this.city() || !this.state() || !this.pincode()) {
       toast.error('Please fill all shipping details'); return false;
     }
     return true;

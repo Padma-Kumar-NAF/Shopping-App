@@ -1,4 +1,4 @@
 export class PaginationModel {
-    pageNumber : number = 0;
-    pageSize : number = 0
+    pageNumber : number = 1;
+    pageSize : number = 10;
 }
