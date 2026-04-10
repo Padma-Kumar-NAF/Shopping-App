@@ -307,3 +307,28 @@
     transform: translateY(-2px);
   }
 }
+
+/* ══════════════════════════════════════════════
+   Skeleton loader
+   ══════════════════════════════════════════════ */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.skeleton {
+  border-radius: 6px;
+  background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.skeleton--title    { height: 10px; width: 55%; }
+.skeleton--discount { height: 18px; width: 70%; margin-top: 4px; }
+.skeleton--code     { height: 28px; width: 100%; margin-top: 6px; }
+.skeleton--btn      { height: 30px; width: 100%; margin-top: 4px; border-radius: 8px; }
+
+.promo-card--skeleton {
+  border-top-color: #E5E7EB;
+  pointer-events: none;
+}

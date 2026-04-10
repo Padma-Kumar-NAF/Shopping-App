@@ -14,6 +14,7 @@ import {
   ValidatePromoCodeRequestDTO,
   ValidatePromoCodeResponseDTO,
 } from '../../../shared/models/admin/promocode.model';
+import { GetAllUserPromoCodesResponseDTO } from '../../../shared/models/users/promoCode.model';
 
 @Injectable({ providedIn: 'root' })
 export class PromoCodeService {
@@ -40,5 +41,9 @@ export class PromoCodeService {
 
   validatePromoCode(request: ValidatePromoCodeRequestDTO): Observable<ApiResponse<ValidatePromoCodeResponseDTO>> {
     return this.http.post<ApiResponse<ValidatePromoCodeResponseDTO>>(`https://localhost:7023/UserPromoCode/verify-promocode`, request);
+  }
+
+  getAllUserPromo() : Observable<ApiResponse<GetAllUserPromoCodesResponseDTO>>{
+    return this.http.get<ApiResponse<GetAllUserPromoCodesResponseDTO>>(`https://localhost:7023/UserPromoCode/get-user-promocodes`);
   }
 }

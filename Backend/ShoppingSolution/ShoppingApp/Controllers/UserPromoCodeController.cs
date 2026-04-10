@@ -33,7 +33,7 @@ namespace ShoppingApp.Controllers
             }
         }
 
-        [HttpPost("get-user-promocodes")]
+        [HttpGet("get-user-promocodes")]
         [ValidateRequest]
         public async Task<IActionResult> GetAllUserPromoCodes()
         {

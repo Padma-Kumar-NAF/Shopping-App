@@ -1,14 +1,14 @@
-import { Component, signal, output } from '@angular/core';
+import { Component, signal, output, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PromoCodeService } from '../../../features/admin/services/promocode.service';
+import { GetAllUserPromoCodesResponseDTO, UserPromoCodeItemDTO } from '../../models/users/promoCode.model';
+import { ApiResponse } from '../../models/users/apiResponse.model';
 
-export interface PromoCode {
-  id: number;
-  code: string;
-  title: string;
-  discount: string;
-  discountType: 'percent' | 'flat';
-  color: string;
-}
+const CARD_COLORS = [
+  '#4F46E5','#059669','#D97706','#7C3AED',
+  '#DC2626','#0891B2','#BE185D','#065F46',
+  '#92400E','#1D4ED8','#6D28D9','#B45309',
+];
 
 @Component({
   selector: 'app-promo-codes-modal',
@@ -17,29 +17,38 @@ export interface PromoCode {
   templateUrl: './promo-codes-modal.html',
   styleUrls: ['./promo-codes-modal.css'],
 })
-export class PromoCodesModalComponent {
-  close = output<void>();
+export class PromoCodesModalComponent implements OnInit {
+  private apiService = inject(PromoCodeService);
 
+  close = output<void>();
+  isLoading = signal(true);
+  promoCodes = signal<UserPromoCodeItemDTO[]>([]);
   copiedCode = signal<string | null>(null);
 
-  promoCodes: PromoCode[] = [
-    { id: 1,  code: 'WELCOME20', title: 'Welcome Offer',   discount: '20% OFF',        discountType: 'percent', color: '#4F46E5' },
-    { id: 2,  code: 'FLAT100',   title: 'Flat Discount',   discount: '₹100 OFF',       discountType: 'flat',    color: '#059669' },
-    { id: 3,  code: 'SUMMER30',  title: 'Summer Sale',     discount: '30% OFF',        discountType: 'percent', color: '#D97706' },
-    { id: 4,  code: 'FREESHIP',  title: 'Free Shipping',   discount: 'FREE DELIVERY',  discountType: 'flat',    color: '#7C3AED' },
-    { id: 5,  code: 'SAVE50',    title: 'Big Savings',     discount: '₹50 OFF',        discountType: 'flat',    color: '#DC2626' },
-    { id: 6,  code: 'FLASH15',   title: 'Flash Sale',      discount: '15% OFF',        discountType: 'percent', color: '#0891B2' },
-    { id: 7,  code: 'MEGA40',    title: 'Mega Deal',       discount: '40% OFF',        discountType: 'percent', color: '#BE185D' },
-    { id: 8,  code: 'EXTRA200',  title: 'Extra Savings',   discount: '₹200 OFF',       discountType: 'flat',    color: '#065F46' },
-    { id: 9,  code: 'FESTIVE25', title: 'Festive Special', discount: '25% OFF',        discountType: 'percent', color: '#92400E' },
-    { id: 10, code: 'NEWUSER10', title: 'New User',        discount: '10% OFF',        discountType: 'percent', color: '#1D4ED8' },
-    { id: 11, code: 'WEEKEND35', title: 'Weekend Offer',   discount: '35% OFF',        discountType: 'percent', color: '#6D28D9' },
-    { id: 12, code: 'FLAT500',   title: 'Super Saver',     discount: '₹500 OFF',       discountType: 'flat',    color: '#B45309' },
-  ];
+  ngOnInit(): void {
+    this.apiService.getAllUserPromo().subscribe({
+      next: (response: ApiResponse<GetAllUserPromoCodesResponseDTO>) => {
+        this.promoCodes.set(response.data?.promoCodes ?? []);
+      },
+      error: (err) => {
+        console.error(err);
+        this.isLoading.set(false);
+      },
+      complete: () => {
+        this.isLoading.set(false);
+      }
+    });
+  }
 
-  copyCode(code: string): void {
+  skeletonItems = Array(8);
+
+  getColor(index: number): string {
+    return CARD_COLORS[index % CARD_COLORS.length];
+  }
+
+  copyCode(id: string, code: string): void {
     navigator.clipboard.writeText(code).then(() => {
-      this.copiedCode.set(code);
+      this.copiedCode.set(id);
       setTimeout(() => this.copiedCode.set(null), 2000);
     });
   }

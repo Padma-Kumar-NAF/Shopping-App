@@ -53,6 +53,7 @@ select * from UserDetails
 
 select * from UserMonthlyProductLimit
 select * from UserPromoCodes
+update UserPromoCodes set IsDeleted = 0
 --delete from UserPromoCodes
 
 select * from Wallets

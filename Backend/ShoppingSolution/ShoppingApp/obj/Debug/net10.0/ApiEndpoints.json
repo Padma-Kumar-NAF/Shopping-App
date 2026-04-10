@@ -849,7 +849,7 @@
     "ContainingType": "ShoppingApp.Controllers.UserPromoCodeController",
     "Method": "GetAllUserPromoCodes",
     "RelativePath": "UserPromoCode/get-user-promocodes",
-    "HttpMethod": "POST",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],

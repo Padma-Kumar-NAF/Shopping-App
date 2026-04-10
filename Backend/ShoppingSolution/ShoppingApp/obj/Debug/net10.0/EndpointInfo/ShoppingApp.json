@@ -1478,7 +1478,7 @@
       }
     },
     "/UserPromoCode/get-user-promocodes": {
-      "post": {
+      "get": {
         "tags": [
           "UserPromoCode"
         ],
