@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ShoppingApp.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShoppingApp.Models
 {
@@ -30,7 +31,8 @@ namespace ShoppingApp.Models
         public decimal DiscountAmount { get; set; } = 0;
 
         // Navigation
-        public PromoCode? PromoCode { get; set; }
+        //public PromoCode? PromoCode { get; set; }
+        public UserPromoCode? UserPromoCode { get; set; }
         public Address? Address { get; set; } // many-to-one
         public User? User { get; set; } // one to many
         public Payment? Payment { get; set; } // one to one 

@@ -1,8 +1,9 @@
-﻿namespace ShoppingApp.Models
+﻿namespace ShoppingApp.Models.Entities
 {
-    public class PromoCode
+    public class UserPromoCode
     {
-        public Guid PromoCodeId { get; set; }
+        public Guid UserPromoCodeId { get; set; }
+        public Guid UserId { get; set; }
         public string PromoCodeName { get; set; } = string.Empty;
         public int DiscountPercentage { get; set; }
         public DateTime FromDate { get; set; }
@@ -11,6 +12,7 @@
         public bool IsDeleted { get; set; }
 
         // Navigation
-        //public ICollection<Order>? Orders { get; set; }
+        public User? User { get; set; }
+        public ICollection<Order>? Orders { get; set; }
     }
 }

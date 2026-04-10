@@ -42,20 +42,20 @@ namespace ShoppingApp.Controllers
         /// <summary>
         /// Verify promo code
         /// </summary>
-        [HttpPost("verify-promocode")]
-        [ValidateRequest]
-        public async Task<IActionResult> VerifyPromoCode([FromBody] VerifyPromoCodeRequestDTO request)
-        {
-            try
-            {
-                var result = await _promoService.VerifyPromoCode(request);
-                return Ok(result);
-            }
-            catch
-            {
-                throw;
-            }
-        }
+        //[HttpPost("verify-promocode")]
+        //[ValidateRequest]
+        //public async Task<IActionResult> VerifyPromoCode([FromBody] VerifyPromoCodeRequestDTO request)
+        //{
+        //    try
+        //    {
+        //        var result = await _promoService.VerifyPromoCode(request);
+        //        return Ok(result);
+        //    }
+        //    catch
+        //    {
+        //        throw;
+        //    }
+        //}
 
         [Authorize(Roles = "admin")]
         [HttpPost("get-all-promocode")]

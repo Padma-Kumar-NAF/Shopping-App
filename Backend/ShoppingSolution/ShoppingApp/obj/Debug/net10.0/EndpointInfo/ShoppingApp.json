@@ -1000,37 +1000,6 @@
         }
       }
     },
-    "/PromoCode/verify-promocode": {
-      "post": {
-        "tags": [
-          "PromoCode"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/VerifyPromoCodeRequestDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/VerifyPromoCodeRequestDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/VerifyPromoCodeRequestDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/PromoCode/get-all-promocode": {
       "post": {
         "tags": [
@@ -1470,6 +1439,49 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/UserPromoCode/verify-promocode": {
+      "post": {
+        "tags": [
+          "UserPromoCode"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyPromoCodeRequestDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyPromoCodeRequestDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyPromoCodeRequestDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/UserPromoCode/get-user-promocodes": {
+      "post": {
+        "tags": [
+          "UserPromoCode"
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -2752,6 +2764,9 @@
     },
     {
       "name": "UserMonthlyProductLimit"
+    },
+    {
+      "name": "UserPromoCode"
     },
     {
       "name": "Wallet"

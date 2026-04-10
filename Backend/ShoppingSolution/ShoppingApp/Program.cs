@@ -119,10 +119,11 @@ namespace ShoppingApp
             builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IUserMonthlyProductLimit, UserMonthlyProductLimitService>();
+            builder.Services.AddScoped<IUserPromoCodeService, UserPromoCodeService>();
             builder.Services.AddScoped<IWishListService, WishListService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IWalletService, WalletService>();
-            builder.Services.AddScoped<IUserMonthlyProductLimit, UserMonthlyProductLimitService>();
 
             builder.Services.AddScoped<MyResultFilter>();
             builder.Services.AddControllers(options =>

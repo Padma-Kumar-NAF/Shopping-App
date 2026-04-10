@@ -39,6 +39,6 @@ export class PromoCodeService {
   }
 
   validatePromoCode(request: ValidatePromoCodeRequestDTO): Observable<ApiResponse<ValidatePromoCodeResponseDTO>> {
-    return this.http.post<ApiResponse<ValidatePromoCodeResponseDTO>>(`${this.baseUrl}/verify-promocode`, request);
+    return this.http.post<ApiResponse<ValidatePromoCodeResponseDTO>>(`https://localhost:7023/UserPromoCode/verify-promocode`, request);
   }
 }

@@ -25,8 +25,9 @@ namespace ShoppingApp.Contexts
         public DbSet<WishList> WishList { get; set; }
         public DbSet<WishListItems> WishListItems { get; set; }
         public DbSet<UserMonthlyProductLimit> UserMonthlyProductLimit { get; set; }
+        public DbSet<UserPromoCode> UserPromoCodes { get; set; }
 
-        // Store procedure
+        // For Store procedure , But still no use
         public DbSet<Category> categoriesSP { get; set; }
         public ShoppingContext(DbContextOptions<ShoppingContext> options) : base(options)
         {
@@ -123,7 +124,6 @@ namespace ShoppingApp.Contexts
                 entity.Property(o => o.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
 
-
                 entity.HasIndex(c => c.CategoryName)
                 .IsUnique()
                 .HasDatabaseName("UX_Category_Name");
@@ -196,6 +196,12 @@ namespace ShoppingApp.Contexts
                     .WithOne(od => od.Order)
                     .HasForeignKey(od => od.OrderId)
                     .HasConstraintName("FK_OrderDetails_Order")
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(o => o.UserPromoCode)
+                    .WithMany(o => o.Orders)
+                    .HasForeignKey(u => u.PromoCodeId)
+                    .HasConstraintName("FK_UserPromoCode_Order")
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
@@ -289,10 +295,10 @@ namespace ShoppingApp.Contexts
                 entity.Property(o => o.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
 
-                entity.HasMany(p => p.Orders)
-                .WithOne(p => p.PromoCode)
-                .HasConstraintName("FK_Order")
-                .OnDelete(DeleteBehavior.Restrict);
+                //entity.HasMany(p => p.Orders)
+                //.WithOne(p => p.PromoCode)
+                //.HasConstraintName("FK_Order")
+                //.OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Refund>(entity =>
@@ -460,6 +466,23 @@ namespace ShoppingApp.Contexts
                 entity.HasOne(w => w.Product)
                 .WithOne(p => p.UserMonthlyProductLimit)
                 .HasForeignKey<UserMonthlyProductLimit>(w => w.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<UserPromoCode>(entity => {
+                entity.HasKey(w => w.UserPromoCodeId)
+                .HasName("Pk_UserPromoCodeId");
+
+                entity.Property(w => w.UserPromoCodeId)
+                .HasDefaultValueSql("NEWID()");
+
+                entity.Property(o => o.CreatedAt)
+                .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.HasOne(w => w.User)
+                .WithMany(u => u.UserPromoCodes)
+                .HasForeignKey(w => w.UserId)
+                .HasConstraintName("FK_UserPromoCode_User")
                 .OnDelete(DeleteBehavior.Restrict);
             });
 

@@ -660,22 +660,6 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ShoppingApp.Controllers.PromoCodeController",
-    "Method": "VerifyPromoCode",
-    "RelativePath": "PromoCode/verify-promocode",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "request",
-        "Type": "ShoppingApp.Models.DTOs.Promocode.VerifyPromoCodeRequestDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "ShoppingApp.Controllers.ReviewController",
     "Method": "AddReview",
     "RelativePath": "Review/add-review",
@@ -856,6 +840,32 @@
       {
         "Name": "request",
         "Type": "ShoppingApp.Models.DTOs.UserMonthlyProductLimit.GetAllUserMonthlyProductLimitRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.UserPromoCodeController",
+    "Method": "GetAllUserPromoCodes",
+    "RelativePath": "UserPromoCode/get-user-promocodes",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShoppingApp.Controllers.UserPromoCodeController",
+    "Method": "VerifyPromoCode",
+    "RelativePath": "UserPromoCode/verify-promocode",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "ShoppingApp.Models.DTOs.Promocode.VerifyPromoCodeRequestDTO",
         "IsRequired": true
       }
     ],

@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using ShoppingApp.Contexts;
 using ShoppingApp.Exceptions;
+using ShoppingApp.Interfaces.RepositoriesInterface;
+using ShoppingApp.Interfaces.ServicesInterface;
 using ShoppingApp.Models;
 using ShoppingApp.Models.DTOs;
 using ShoppingApp.Models.DTOs.Order;
@@ -31,10 +33,11 @@ namespace Testing.Services
                 new Repository<Guid, User>(context),
                 new Repository<Guid, Address>(context),
                 new Repository<Guid, Product>(context),
-                new Repository<Guid, OrderDetails>(context),
                 new Repository<Guid, PromoCode>(context),
+                new Repository<Guid, OrderDetails>(context),
                 new Repository<Guid, Wallet>(context),
                 new Repository<Guid, UserMonthlyProductLimit>(context),
+                new Repository<Guid,UserPromoCode>(context),
                 new UnitOfWork(context)
             );
         }

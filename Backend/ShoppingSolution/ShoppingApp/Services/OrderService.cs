@@ -18,10 +18,11 @@ namespace ShoppingApp.Services
         private readonly IRepository<Guid, User> _userRepository;
         private readonly IRepository<Guid, Address> _addressRepository;
         private readonly IRepository<Guid,Product> _productRepository;
-        private readonly IRepository<Guid, OrderDetails> _orderDetailsRepository;
         private readonly IRepository<Guid, PromoCode> _promoRepository;
+        private readonly IRepository<Guid, OrderDetails> _orderDetailsRepository;
         private readonly IRepository<Guid, Wallet> _walletRepository;
         private readonly IRepository<Guid, UserMonthlyProductLimit> _userMonthlyProductLimit;
+        private readonly IRepository<Guid, UserPromoCode> _userPromoCodeRepository;
 
         private readonly IUnitOfWork _unitOfWork;
 
@@ -33,10 +34,11 @@ namespace ShoppingApp.Services
             IRepository<Guid, User> userRepository,
             IRepository<Guid, Address> addressRepository,
             IRepository<Guid, Product> productRepository,
-            IRepository<Guid, OrderDetails> orderDetailsRepository,
             IRepository<Guid, PromoCode> promoRepository,
+            IRepository<Guid, OrderDetails> orderDetailsRepository,
             IRepository<Guid, Wallet> walletRepository,
             IRepository<Guid, UserMonthlyProductLimit> userMonthlyProductLimit,
+            IRepository<Guid, UserPromoCode> userPromoCodeRepository,
             IUnitOfWork unitOfWork)
         {
             _repository = repository;
@@ -47,10 +49,11 @@ namespace ShoppingApp.Services
             _unitOfWork = unitOfWork;
             _addressRepository = addressRepository;
             _productRepository = productRepository;
-            _orderDetailsRepository = orderDetailsRepository;
             _promoRepository = promoRepository;
+            _orderDetailsRepository = orderDetailsRepository;
             _walletRepository = walletRepository;
             _userMonthlyProductLimit = userMonthlyProductLimit;
+            _userPromoCodeRepository = userPromoCodeRepository;
         }
 
         public async Task<ApiResponse<CancelOrderResponseDTO>> CancelOrder(Guid userId, Guid orderId)
@@ -407,10 +410,12 @@ namespace ShoppingApp.Services
                 int discountPercentage = 0;
                 decimal discountAmount = 0;
                 Guid? promoCodeId = null;
+                bool IsPromoUsed = false;
+                bool changeMessage = false;
 
                 if (!string.IsNullOrWhiteSpace(request.PromoCode))
                 {
-                    var promo = await _promoRepository.GetQueryable()
+                    var promo = await _userPromoCodeRepository.GetQueryable()
                         .FirstOrDefaultAsync(p => p.PromoCodeName == request.PromoCode.Trim().ToUpper() && !p.IsDeleted);
 
                     if (promo == null)
@@ -426,10 +431,55 @@ namespace ShoppingApp.Services
 
                     discountPercentage = promo.DiscountPercentage;
                     discountAmount = Math.Round(request.TotalAmount * discountPercentage / 100, 2);
-                    promoCodeId = promo.PromoCodeId;
+                    promoCodeId = promo.UserPromoCodeId;
+                    IsPromoUsed = true;
+                    promo.IsDeleted = true;
+
+                    await _userPromoCodeRepository.UpdateAsync(promo.UserPromoCodeId, promo);
                 }
 
                 var amountAfterDiscount = request.TotalAmount - discountAmount;
+
+                if (request.TotalAmount + tax + shipping > 3000 && !IsPromoUsed)
+                {
+                    int rewardDiscountPercentage = CalculateDiscountPercentage(request.TotalAmount + tax + shipping);
+                    //Console.WriteLine("-------------------------------");
+                    //Console.WriteLine(rewardDiscountPercentage);
+                    //Console.WriteLine("-------------------------------");
+
+                    var existingUserPromo = await _userPromoCodeRepository.GetQueryable().AsNoTracking().FirstOrDefaultAsync(up =>
+                        up.UserId == userId &&
+                        up.DiscountPercentage == rewardDiscountPercentage &&
+                        !up.IsDeleted &&
+                        up.FromDate <= DateTime.Now &&
+                        up.ToDate >= DateTime.Now);
+
+                    if(existingUserPromo == null)
+                    {
+                        var rewardPromo = await _promoRepository.GetQueryable()
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(p =>
+                            p.DiscountPercentage == rewardDiscountPercentage &&
+                            !p.IsDeleted &&
+                            p.ToDate >= DateTime.Now);
+
+                        if (rewardPromo != null)
+                        {
+                            UserPromoCode userPromo = new UserPromoCode
+                            {
+                                UserId = userId,
+                                PromoCodeName = rewardPromo.PromoCodeName,
+                                DiscountPercentage = rewardDiscountPercentage,
+                                FromDate = rewardPromo.FromDate,
+                                ToDate = rewardPromo.ToDate,
+                                IsDeleted = false
+                            };
+                            changeMessage = true;
+                            await _userPromoCodeRepository.AddAsync(userPromo);
+                        }
+                    }
+                }
+                
 
                 decimal walletUsed = 0;
 
@@ -468,7 +518,9 @@ namespace ShoppingApp.Services
                         WalletUsed = walletUsed,
                         FinalAmount = finalAmount
                     },
-                    Message = "Order placed successfully",
+                    Message = changeMessage
+                        ? "Your order has been placed successfully! 🎉\nA promo code has been unlocked for your next order."
+                        : "Your order has been placed successfully!",
                     Action = "OrderedConfirmed"
                 };
             }
@@ -477,6 +529,27 @@ namespace ShoppingApp.Services
                 await _unitOfWork.RollbackAsync();
                 throw;
             }
+        }
+
+        public int CalculateDiscountPercentage(decimal purchaseAmount)
+        {
+            const decimal minPurchase = 3000m;
+            const decimal maxPurchase = 100000m;
+
+            const int minDiscount = 10;
+            const int maxDiscount = 100;
+
+            if (purchaseAmount <= minPurchase)
+                return 0;
+
+            decimal ratio = (purchaseAmount - minPurchase) / (maxPurchase - minPurchase);
+            ratio = Math.Max(0, Math.Min(1, ratio));
+
+            int rawDiscount = (int)(minDiscount + (ratio * (maxDiscount - minDiscount)));
+
+            int roundedDiscount = (int)(Math.Round(rawDiscount / 10.0) * 10);
+
+            return Math.Max(roundedDiscount, minDiscount);
         }
 
         private async Task ValidateMonthlyLimit(Guid userId, Guid productId, int requestedQty)

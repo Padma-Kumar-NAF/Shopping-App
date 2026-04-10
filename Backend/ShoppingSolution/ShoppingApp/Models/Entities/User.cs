@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using ShoppingApp.Models.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace ShoppingApp.Models
@@ -41,5 +41,6 @@ namespace ShoppingApp.Models
         public ICollection<Log>? Logs { get; set; }
         public ICollection<Address>? Addresses { get; set; }
         public ICollection<Order>? Orders { get; set; }
+        public ICollection<UserPromoCode>? UserPromoCodes { get; set; }
     }
 }

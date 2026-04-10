@@ -561,6 +561,8 @@ export class PaymentComponent implements OnInit {
           req.stripePaymentId = stripeResponse?.id ?? '';
           this.cartService.orderAllFromCart(req).subscribe({
             next: (res) => {
+              console.log("res")
+              console.log(res)
               this.isProcessing.set(false);
               toast.dismiss(toastId);
               if (res.data?.isSuccess) {
@@ -608,10 +610,12 @@ export class PaymentComponent implements OnInit {
       };
       this.orderService.placeOrder(req).subscribe({
         next: (res) => {
+          console.log("res")
+              console.log(res)
           this.isProcessing.set(false);
           toast.dismiss(toastId);
           if (res.data?.isSuccess) {
-            toast.success('Order placed successfully!');
+            toast.success(res?.message ?? 'Order placed successfully!');
             this.router.navigate(['/profile/orders']);
           }
           else {

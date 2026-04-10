@@ -184,65 +184,65 @@ public class PromoCodeService : IPromoCodeService
         }
     }
 
-    public async Task<ApiResponse<VerifyPromoCodeResponseDTO>> VerifyPromoCode(VerifyPromoCodeRequestDTO request)
-    {
-        var code = request.PromoCodeName.Trim().ToUpper();
+    //public async Task<ApiResponse<VerifyPromoCodeResponseDTO>> VerifyPromoCode(VerifyPromoCodeRequestDTO request)
+    //{
+    //    var code = request.PromoCodeName.Trim().ToUpper();
 
-        var promo = await _promoRepository.GetQueryable()
-            .FirstOrDefaultAsync(p => p.PromoCodeName == code && !p.IsDeleted);
+    //    var promo = await _promoRepository.GetQueryable()
+    //        .FirstOrDefaultAsync(p => p.PromoCodeName == code && !p.IsDeleted);
 
-        if (promo == null)
-        {
-            return new ApiResponse<VerifyPromoCodeResponseDTO>
-            {
-                StatusCode = 200,
-                Data = new VerifyPromoCodeResponseDTO
-                {
-                    IsValid = false,
-                    Message = "Invalid promo code"
-                }
-            };
-        }
+    //    if (promo == null)
+    //    {
+    //        return new ApiResponse<VerifyPromoCodeResponseDTO>
+    //        {
+    //            StatusCode = 200,
+    //            Data = new VerifyPromoCodeResponseDTO
+    //            {
+    //                IsValid = false,
+    //                Message = "Invalid promo code"
+    //            }
+    //        };
+    //    }
 
-        var now = DateTime.UtcNow.Date;
+    //    var now = DateTime.UtcNow.Date;
 
-        if (now < promo.FromDate.Date)
-        {
-            return new ApiResponse<VerifyPromoCodeResponseDTO>
-            {
-                StatusCode = 200,
-                Data = new VerifyPromoCodeResponseDTO
-                {
-                    IsValid = false,
-                    Message = "Promo code not active yet"
-                }
-            };
-        }
+    //    if (now < promo.FromDate.Date)
+    //    {
+    //        return new ApiResponse<VerifyPromoCodeResponseDTO>
+    //        {
+    //            StatusCode = 200,
+    //            Data = new VerifyPromoCodeResponseDTO
+    //            {
+    //                IsValid = false,
+    //                Message = "Promo code not active yet"
+    //            }
+    //        };
+    //    }
 
-        if (now > promo.ToDate.Date)
-        {
-            return new ApiResponse<VerifyPromoCodeResponseDTO>
-            {
-                StatusCode = 200,
-                Data = new VerifyPromoCodeResponseDTO
-                {
-                    IsValid = false,
-                    Message = "Promo code expired"
-                }
-            };
-        }
+    //    if (now > promo.ToDate.Date)
+    //    {
+    //        return new ApiResponse<VerifyPromoCodeResponseDTO>
+    //        {
+    //            StatusCode = 200,
+    //            Data = new VerifyPromoCodeResponseDTO
+    //            {
+    //                IsValid = false,
+    //                Message = "Promo code expired"
+    //            }
+    //        };
+    //    }
 
-        return new ApiResponse<VerifyPromoCodeResponseDTO>
-        {
-            StatusCode = 200,
-            Data = new VerifyPromoCodeResponseDTO
-            {
-                IsValid = true,
-                DiscountPercentage = promo.DiscountPercentage,
-                PromoCodeId = promo.PromoCodeId,
-                Message = "Promo code applied successfully"
-            },
-            Message = "Promo code applied successfully"
-        };
-    }
+    //    return new ApiResponse<VerifyPromoCodeResponseDTO>
+    //    {
+    //        StatusCode = 200,
+    //        Data = new VerifyPromoCodeResponseDTO
+    //        {
+    //            IsValid = true,
+    //            DiscountPercentage = promo.DiscountPercentage,
+    //            PromoCodeId = promo.PromoCodeId,
+    //            Message = "Promo code applied successfully"
+    //        },
+    //        Message = "Promo code applied successfully"
+    //    };
+    //}
 }

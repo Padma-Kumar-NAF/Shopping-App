@@ -17,8 +17,7 @@
           "Microsoft.EntityFrameworkCore.Tools": "10.0.3",
           "Serilog.AspNetCore": "10.0.0",
           "Serilog.Sinks.File": "7.0.0",
-          "Swashbuckle.AspNetCore": "10.1.7",
-          "Swashbuckle.AspNetCore.Swagger": "10.1.7"
+          "Swashbuckle.AspNetCore": "10.1.7"
         },
         "runtime": {
           "ShoppingApp.dll": {}
