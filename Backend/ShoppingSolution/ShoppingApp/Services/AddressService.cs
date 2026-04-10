@@ -78,10 +78,11 @@ namespace ShoppingApp.Services
             if (isUsedInOrder)
                 throw new AppException("Cannot delete address because it is associated with existing orders", 409);
 
-            //await _repository.DeleteAsync(request.AddressId);
             var deleted = await _repository.DeleteAsync(request.AddressId);
             if (deleted == null)
+            {
                 throw new AppException("Failed to delete address", 500);
+            }
             return new ApiResponse<DeleteUserAddressResponseDTO>()
             {
                 StatusCode = 200,
@@ -96,16 +97,19 @@ namespace ShoppingApp.Services
 
         public async Task<ApiResponse<EditUserAddressResponseDTO>> EditUserAddress(Guid UserId, EditUserAddressRequestDTO request)
         {
-            var address = await _repository.GetQueryable()
-            .FirstOrDefaultAsync(a => a.AddressId == request.AddressId && a.UserId == UserId);
+            var address = await _repository.GetQueryable().FirstOrDefaultAsync(a => a.AddressId == request.AddressId && a.UserId == UserId);
 
             if (address == null)
+            {
                 throw new AppException("Address not found or does not belong to user", 404);
+            }
 
             var isUsedInOrder = await _orderRepository.GetQueryable().AnyAsync(o => o.AddressId == request.AddressId);
 
             if (isUsedInOrder)
+            {
                 throw new AppException("Cannot edit address because it is associated with existing orders", 409);
+            }
 
             string normalize(string s) => (s ?? string.Empty).Trim().ToLower();
 

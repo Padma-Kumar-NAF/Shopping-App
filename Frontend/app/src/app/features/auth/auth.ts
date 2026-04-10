@@ -79,9 +79,9 @@ export class Auth {
       password: new FormControl('##pk545A', [Validators.required, Validators.minLength(6)]),
       phoneNumber: new FormControl('9876543213', [Validators.required, Validators.minLength(10)]),
       addressLine1: new FormControl('2/102 A Chennai', [Validators.required]),
-      addressLine2: new FormControl('2/102 A Chennai', [Validators.required]),
-      state: new FormControl('Tamil Nadu', [Validators.required]),
-      city: new FormControl('Coimbatore', [Validators.required]),
+      addressLine2: new FormControl('Sriram gateway', [Validators.required]),
+      state: new FormControl('', [Validators.required]),
+      city: new FormControl('', [Validators.required]),
       pincode: new FormControl('654321', [Validators.required]),
     });
   }

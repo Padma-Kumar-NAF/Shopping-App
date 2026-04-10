@@ -68,10 +68,10 @@ set Status = 'Delivered'
 update Wallets
 set WalletAmount = 1200
 
-delete from UserDetails
-delete from Addresses 
-delete from UserDetails
-delete from users
+--delete from UserDetails
+--delete from Addresses 
+--delete from UserDetails
+--delete from users
 
 --delete from Addresses where UserId = 'F56106AD-FEE7-4BD2-B761-4389FC32DCB1'
 --delete from UserDetails where userId = 'F56106AD-FEE7-4BD2-B761-4389FC32DCB1'

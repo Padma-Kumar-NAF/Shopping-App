@@ -241,7 +241,8 @@ public class PromoCodeService : IPromoCodeService
                 DiscountPercentage = promo.DiscountPercentage,
                 PromoCodeId = promo.PromoCodeId,
                 Message = "Promo code applied successfully"
-            }
+            },
+            Message = "Promo code applied successfully"
         };
     }
 }

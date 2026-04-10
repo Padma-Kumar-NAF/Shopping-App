@@ -7,6 +7,7 @@ import { filter, takeUntil, debounceTime, distinctUntilChanged, switchMap } from
 import { AuthStateService } from '../../../core/state/auth-state.service';
 import { AuthApiService } from '../../../core/services/auth.service';
 import { ProductSuggestionService } from '../../../features/user/services/product-suggestion.service';
+import { PromoCodesModalComponent } from '../promo-codes-modal/promo-codes-modal';
 
 const HIDDEN_ROUTES = ['/cart', '/auth', '/admin'];
 const NO_BACK_ROUTES = ['/'];
@@ -14,7 +15,7 @@ const NO_BACK_ROUTES = ['/'];
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, PromoCodesModalComponent],
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.css'],
 })
@@ -27,6 +28,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   showNavbar = signal<boolean>(true);
   showBackButton = signal<boolean>(false);
   mobileMenuOpen = signal<boolean>(false);
+  showPromoModal = signal<boolean>(false);
 
   isAuthenticated = this.authState.isAuthenticated;
   username = this.authState.username;
@@ -123,5 +125,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
   navigateTo(path: string): void {
     this.router.navigate([path]);
     this.closeMobileMenu();
+  }
+
+  openPromoModal(): void {
+    this.showPromoModal.set(true);
+    this.closeMobileMenu();
+  }
+
+  closePromoModal(): void {
+    this.showPromoModal.set(false);
   }
 }
