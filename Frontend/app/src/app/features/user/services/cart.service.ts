@@ -4,16 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../../../shared/models/users/apiResponse.model';
 import {
-  AddToCartRequestDTO,
-  AddToCartResponseDTO,
-  GetCartResponseDTO,
-  OrderAllFromCartRequestDTO,
-  OrderAllFromCartResponseDTO,
-  RemoveAllFromCartResponseDTO,
-  RemoveFromCartRequestDTO,
-  RemoveFromCartResponseDTO,
-  UpdateUserCartRequestDTO,
-  UpdateUserCartResponseDTO,
+  AddToCartRequestDTO, AddToCartResponseDTO, GetCartResponseDTO, OrderAllFromCartRequestDTO, OrderAllFromCartResponseDTO,
+  RemoveAllFromCartResponseDTO, RemoveFromCartRequestDTO, RemoveFromCartResponseDTO, UpdateUserCartRequestDTO, UpdateUserCartResponseDTO,
 } from '../../../shared/models/users/cart.model';
 
 @Injectable({
@@ -22,7 +14,7 @@ import {
 export class CartService {
   private baseUrl = 'https://localhost:7023/Cart';
 
-  constructor(private Http: HttpClient) {}
+  constructor(private Http: HttpClient) { }
 
   GetUserCart(pagination: PaginationModel): Observable<ApiResponse<GetCartResponseDTO>> {
     const body = { Pagination: pagination };

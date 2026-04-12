@@ -19,12 +19,12 @@ import {
 export class ProductLimitService {
   private baseUrl = 'https://localhost:7023/UserMonthlyProductLimit';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    
+  }
 
   getAllLimits(pagination: PaginationModel): Observable<ApiResponse<GetAllLimitsResponseDTO>> {
-    return this.http.post<ApiResponse<GetAllLimitsResponseDTO>>(`${this.baseUrl}/get-limits`, {
-      Pagination: pagination,
-    });
+    return this.http.post<ApiResponse<GetAllLimitsResponseDTO>>(`${this.baseUrl}/get-limits`, {Pagination: pagination,});
   }
 
   addLimit(payload: AddLimitRequestDTO): Observable<ApiResponse<AddLimitResponseDTO>> {
@@ -32,16 +32,10 @@ export class ProductLimitService {
   }
 
   editLimit(payload: EditLimitRequestDTO): Observable<ApiResponse<EditLimitResponseDTO>> {
-    return this.http.post<ApiResponse<EditLimitResponseDTO>>(
-      `${this.baseUrl}/edit-limit`,
-      payload,
-    );
+    return this.http.post<ApiResponse<EditLimitResponseDTO>>(`${this.baseUrl}/edit-limit`,payload,);
   }
 
   deleteLimit(payload: DeleteLimitRequestDTO): Observable<ApiResponse<DeleteLimitResponseDTO>> {
-    return this.http.delete<ApiResponse<DeleteLimitResponseDTO>>(
-      `${this.baseUrl}/delete-limit`,
-      { body: payload },
-    );
+    return this.http.delete<ApiResponse<DeleteLimitResponseDTO>>(`${this.baseUrl}/delete-limit`,{ body: payload },);
   }
 }

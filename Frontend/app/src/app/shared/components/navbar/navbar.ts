@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { filter, takeUntil, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { AuthStateService } from '../../../core/state/auth-state.service';
-import { AuthApiService } from '../../../core/services/auth.service';
 import { ProductSuggestionService } from '../../../features/user/services/product-suggestion.service';
 import { PromoCodesModalComponent } from '../promo-codes-modal/promo-codes-modal';
 

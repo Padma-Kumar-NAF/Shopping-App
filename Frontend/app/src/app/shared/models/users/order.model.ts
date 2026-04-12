@@ -82,3 +82,8 @@ export interface PlaceOrderResponseDTO {
   walletUsed: number;
   finalAmount: number;
 }
+
+export interface CancelOrderResponseDTO{
+  IsSuccess : boolean;
+  RefuncdAmount : number;
+}

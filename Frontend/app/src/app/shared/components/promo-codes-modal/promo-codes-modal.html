@@ -22,6 +22,15 @@
 
     <!-- Body -->
     <div class="promo-modal__body">
+
+      <!-- Empty state -->
+      @if (!isLoading() && promoCodes().length === 0) {
+        <div class="promo-modal__empty">
+          <!-- <span class="promo-modal__empty-icon">🎟️</span> -->
+          <p>No promo codes available</p>
+        </div>
+      }
+
       <div class="promo-modal__grid">
 
         <!-- Skeleton -->
@@ -37,7 +46,7 @@
         }
 
         <!-- Real cards -->
-        @if (!isLoading()) {
+        @if (!isLoading() && promoCodes().length > 0) {
           @for (promo of promoCodes(); track promo.promoCodeId; let i = $index) {
             <div class="promo-card" [style.--accent]="getColor(i)">
               <div class="promo-card__top">

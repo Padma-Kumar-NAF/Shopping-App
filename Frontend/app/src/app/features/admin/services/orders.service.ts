@@ -22,10 +22,7 @@ export class AdminOrderService {
     const requestBody = {
       Pagination: pagination,
     };
-    return this.http.post<ApiResponse<GetAllOrderResponseDTO>>(
-      `${this.baseUrl}/get-all-orders`,
-      requestBody,
-    );
+    return this.http.post<ApiResponse<GetAllOrderResponseDTO>>(`${this.baseUrl}/get-all-orders`,requestBody,);
   }
 
   updateOrder(orderId: string, status: string): Observable<ApiResponse<UpdateOrderResponseDTO>> {
@@ -33,16 +30,10 @@ export class AdminOrderService {
       OrderId: orderId,
       OrderStatus: status,
     };
-    return this.http.post<ApiResponse<UpdateOrderResponseDTO>>(
-      `${this.baseUrl}/update-order-status`,
-      updateOrderRequestDTO,
-    );
+    return this.http.post<ApiResponse<UpdateOrderResponseDTO>>(`${this.baseUrl}/update-order-status`,updateOrderRequestDTO,);
   }
 
   refundOrder(request: OrderRefundRequestDTO): Observable<ApiResponse<OrderRefundResponseDTO>> {
-    return this.http.post<ApiResponse<OrderRefundResponseDTO>>(
-      `${this.baseUrl}/refund-order`,
-      request,
-    );
+    return this.http.post<ApiResponse<OrderRefundResponseDTO>>(`${this.baseUrl}/refund-order`,request,);
   }
 }

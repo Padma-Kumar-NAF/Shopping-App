@@ -4,7 +4,6 @@ import { OrderDetailsResponseDTO } from '../../../shared/models/admin/orders.mod
 
 @Injectable({ providedIn: 'root' })
 export class InvoiceService {
-
   download(order: OrderDetailsResponseDTO): void {
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const pageW = doc.internal.pageSize.getWidth();
@@ -17,10 +16,7 @@ export class InvoiceService {
       doc.line(margin, yPos, pageW - margin, yPos);
     };
 
-    const text = (
-      str: string,
-      xPos: number,
-      yPos: number,
+    const text = (str: string,xPos: number,yPos: number,
       opts: { size?: number; bold?: boolean; color?: [number, number, number]; align?: 'left' | 'right' | 'center' } = {}
     ) => {
       doc.setFontSize(opts.size ?? 10);

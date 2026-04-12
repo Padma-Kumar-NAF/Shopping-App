@@ -10,9 +10,13 @@ export class RedirectService {
   private platformId = inject(PLATFORM_ID);
 
   storeIntendedRoute(url: string, queryParams?: any): void {
-    if (!isPlatformBrowser(this.platformId)) return;
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
 
-    if (url.startsWith('/auth')) return;
+    if (url.startsWith('/auth')) {
+      return;
+    }
 
     sessionStorage.setItem('redirectUrl', url);
     if (queryParams && Object.keys(queryParams).length > 0) {
@@ -48,7 +52,6 @@ export class RedirectService {
     this.clearRedirectData();
 
     if (redirectUrl) {
-      // navigateByUrl handles the full URL including query params and fragments
       console.log(redirectUrl)
       this.router.navigateByUrl(redirectUrl);
 
@@ -59,7 +62,6 @@ export class RedirectService {
 
   clearRedirectData(): void {
     if (!isPlatformBrowser(this.platformId)) return;
-
     sessionStorage.removeItem('redirectUrl');
     sessionStorage.removeItem('redirectQueryParams');
   }

@@ -12,6 +12,8 @@ import { toast } from 'ngx-sonner';
 import { isOrderCancellable, isOrderDelivered, OrderStatus } from '../../../../constants/order-status.constants';
 import { DEFAULT_PAGE_SIZE, calculateTotalPages } from '../../../../constants/pagination.constants';
 import { OrderDetailsResponseDTO } from '../../../../shared/models/admin/orders.model';
+import { ApiResponse } from '../../../../shared/models/users/apiResponse.model';
+import { CancelOrderResponseDTO } from '../../../../shared/models/users/order.model';
 
 interface ReviewData {
   productId: string;
@@ -122,7 +124,7 @@ export class OrdersComponent implements OnInit {
     if (!order) return; const toastId = toast.loading('Cancelling order...');
 
     this.orderService.cancelOrder(order.orderId).subscribe({
-      next: (response) => {
+      next: (response : ApiResponse<CancelOrderResponseDTO>) => {
         toast.dismiss(toastId);
         toast.success(response.message || 'Order cancelled successfully');
         this.orders.update((orders) =>

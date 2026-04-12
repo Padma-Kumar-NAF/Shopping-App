@@ -19,8 +19,11 @@ import { GetAllUserPromoCodesResponseDTO } from '../../../shared/models/users/pr
 @Injectable({ providedIn: 'root' })
 export class PromoCodeService {
   private baseUrl = 'https://localhost:7023/PromoCode';
+  private promoApiURl = 'https://localhost:7023/UserPromoCode'
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+
+  }
 
   getAllPromoCodes(pageNumber: number, pageSize: number): Observable<ApiResponse<GetAllPromocodesResponseDTO>> {
     const body: GetAllPromocodesRequestDTO = { pagination: { pageNumber, pageSize } };
@@ -40,10 +43,10 @@ export class PromoCodeService {
   }
 
   validatePromoCode(request: ValidatePromoCodeRequestDTO): Observable<ApiResponse<ValidatePromoCodeResponseDTO>> {
-    return this.http.post<ApiResponse<ValidatePromoCodeResponseDTO>>(`https://localhost:7023/UserPromoCode/verify-promocode`, request);
+    return this.http.post<ApiResponse<ValidatePromoCodeResponseDTO>>(`${this.promoApiURl}/verify-promocode`, request);
   }
 
   getAllUserPromo() : Observable<ApiResponse<GetAllUserPromoCodesResponseDTO>>{
-    return this.http.get<ApiResponse<GetAllUserPromoCodesResponseDTO>>(`https://localhost:7023/UserPromoCode/get-user-promocodes`);
+    return this.http.get<ApiResponse<GetAllUserPromoCodesResponseDTO>>(`${this.promoApiURl}/get-user-promocodes`);
   }
 }

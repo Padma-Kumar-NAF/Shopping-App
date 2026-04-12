@@ -1,14 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import {
-  AddressDTO,
-  AddressModel,
-  DeleteAddressRequestDTO,
-  DeleteAddressResponseDTO,
-  NewAddressResponseDTO,
-  UpdateAddressResponseDTO,
-} from '../../../shared/models/users/address.model';
+import {AddressDTO,AddressModel,DeleteAddressRequestDTO,DeleteAddressResponseDTO,NewAddressResponseDTO,UpdateAddressResponseDTO,} from '../../../shared/models/users/address.model';
 import { PaginationModel } from '../../../shared/models/users/pagination.model';
 import { ApiResponse } from '../../../shared/models/users/apiResponse.model';
 
@@ -32,15 +25,10 @@ export class AddressApiService {
   }
 
   DeleteAddress(deleteAddress: DeleteAddressRequestDTO): Observable<ApiResponse<DeleteAddressResponseDTO>> {
-    return this.Http.delete<ApiResponse<DeleteAddressResponseDTO>>(`${this.baseUrl}/delete-address`, {
-      body: deleteAddress,
-    });
+    return this.Http.delete<ApiResponse<DeleteAddressResponseDTO>>(`${this.baseUrl}/delete-address`, {body: deleteAddress,});
   }
 
   UpdateAddress(updatedAddress: AddressDTO): Observable<ApiResponse<UpdateAddressResponseDTO>> {
-    return this.Http.post<ApiResponse<UpdateAddressResponseDTO>>(
-      `${this.baseUrl}/edit-address`,
-      updatedAddress,
-    );
+    return this.Http.post<ApiResponse<UpdateAddressResponseDTO>>(`${this.baseUrl}/edit-address`,updatedAddress,);
   }
 }

@@ -109,6 +109,8 @@
   overflow-x: hidden;
   padding: 1rem 1.25rem 2rem;
   flex: 1;
+  display: flex;
+  flex-direction: column;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -331,4 +333,24 @@
 .promo-card--skeleton {
   border-top-color: #E5E7EB;
   pointer-events: none;
+}
+
+/* ── Empty state ── */
+.promo-modal__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 200px;
+  height: 100%;
+  width: 100%;
+  color: #9CA3AF;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.promo-modal__empty-icon {
+  font-size: 2.5rem;
+  opacity: 0.4;
 }

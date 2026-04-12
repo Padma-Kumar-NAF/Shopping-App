@@ -18,7 +18,9 @@ import { ApiResponse } from '../../shared/models/users/apiResponse.model';
 export class AuthApiService {
   private baseUrl = 'https://localhost:7023/';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+
+  }
 
   LoginApi(loginModel: LoginModel): Observable<ApiResponse<LoginResponseDTO>> {
     return this.http.post<ApiResponse<LoginResponseDTO>>(`${this.baseUrl}api/auth/login`, loginModel);
@@ -36,18 +38,12 @@ export class AuthApiService {
     try {
       const decoded: any = jwtDecode(token);
       const userInfo: UserDetails = new UserDetails();
-      userInfo.userName =
-        decoded.name || decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
-
-      userInfo.userEmail =
-        decoded.email ||
-        decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
-
-      userInfo.userRole =
-        decoded.role || decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-
+      userInfo.userName = decoded.name || decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
+      userInfo.userEmail =  decoded.email ||  decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
+      userInfo.userRole = decoded.role || decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
       return userInfo;
     } catch (error) {
+      console.error(error);
       console.error('Invalid token');
       return null;
     }

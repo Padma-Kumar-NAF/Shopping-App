@@ -23,10 +23,10 @@ set WalletAmount = 6480
 update orders 
 set DeliveryDate = '2026-03-08 09:55:48.1612008'
 
-delete from Refunds
-delete from Payments
-delete from OrderDetails
-delete from Orders
+--delete from Refunds
+--delete from Payments
+--delete from OrderDetails
+--delete from Orders
 
 select * from orders
 select * from OrderDetails

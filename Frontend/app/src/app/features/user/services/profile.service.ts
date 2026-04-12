@@ -20,14 +20,12 @@ export class ProfileApiService {
   GetUserProfile(): Observable<ApiResponse<GetUserByIdResponseDTO>> {
     return this.Http.get<ApiResponse<GetUserByIdResponseDTO>>(`${this.baseUrl}/get-user-by-id`);
   }
+
   updateUserDetails(updatedUserDetails: EditUserDetailsModel): Observable<ApiResponse<EditMailResponseDTOModel>> {
     return this.Http.post<ApiResponse<EditMailResponseDTOModel>>(`${this.baseUrl}/update-user-details`, updatedUserDetails);
   }
 
   updateUserEmail(newEmailRequestDTO: newEmailRequestDTO): Observable<ApiResponse<EditMailResponseDTOModel>> {
-    return this.Http.post<ApiResponse<EditMailResponseDTOModel>>(
-      `${this.baseUrl}/edit-user-email`,
-      newEmailRequestDTO,
-    );
+    return this.Http.post<ApiResponse<EditMailResponseDTOModel>>(`${this.baseUrl}/edit-user-email`,newEmailRequestDTO,);
   }
 }
