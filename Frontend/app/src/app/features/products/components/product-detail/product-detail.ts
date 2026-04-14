@@ -31,7 +31,7 @@ export class ProductDetail implements OnInit, OnDestroy {
   private wishlistService = inject(WishlistService);
 
   private destroy$ = new Subject<void>();
-  wishListpagination : PaginationModel;
+  wishListpagination: PaginationModel;
 
   paginaton: PaginationModel;
   constructor() {
@@ -173,7 +173,9 @@ export class ProductDetail implements OnInit, OnDestroy {
   openWishlistPopup(): void {
     if (!this.authState.isAuthenticated()) {
       const product = this.product();
-      if (product) this.productStateService.setSelectedProduct(product);
+      if (product) {
+        this.productStateService.setSelectedProduct(product);
+      }
       toast.info('Please login to add items to wishlist');
       this.redirectService.storeIntendedRoute(`/product-detail/${this.product()?.productId ?? ''}`);
       this.router.navigate(['/auth']);

@@ -114,15 +114,15 @@ namespace ShoppingApp
             builder.Services.AddScoped<ILogService, LogService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IPasswordService, PasswordService>();
-            builder.Services.AddScoped<IPromoCodeService, PromoCodeService>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IPromoCodeService, PromoCodeService>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
-            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IUserMonthlyProductLimit, UserMonthlyProductLimitService>();
             builder.Services.AddScoped<IUserPromoCodeService, UserPromoCodeService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IWishListService, WishListService>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IWalletService, WalletService>();
 
             builder.Services.AddScoped<MyResultFilter>();
@@ -131,12 +131,7 @@ namespace ShoppingApp
                 options.Filters.Add<MyResultFilter>();
             });
 
-
             var app = builder.Build();
-
-            app.UseSerilogRequestLogging();
-
-            app.UseCors("AllowAngular");
 
             if (app.Environment.IsDevelopment())
             {
@@ -149,17 +144,14 @@ namespace ShoppingApp
                 });
             }
 
-            //app.UseExceptionHandler("/error");
-
+            app.UseSerilogRequestLogging();
+            app.UseCors("AllowAngular");
             app.UseHttpsRedirection();
-
-            app.UseAuthentication();// Middleware
-            app.UseAuthorization();// Filter
-
+            app.UseAuthentication();
+            app.UseMiddleware<UserActiveMiddleware>();
+            app.UseAuthorization();
             app.UseIpRateLimiting();
-
             app.UseMiddleware<ExceptionMiddleware>();
-
             app.MapControllers();
 
             app.Run();

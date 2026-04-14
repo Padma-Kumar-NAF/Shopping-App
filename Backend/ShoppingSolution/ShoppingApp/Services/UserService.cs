@@ -245,6 +245,7 @@ namespace ShoppingApp.Services
                 UserId = user.UserId,
                 Name = user.Name,
                 Email = user.Email,
+                Active = user.Active,
                 UserDetails = new GetUserDetailsDTO
                 {
                     UserDetailsId = user.UserDetails!.UserDetailsId,

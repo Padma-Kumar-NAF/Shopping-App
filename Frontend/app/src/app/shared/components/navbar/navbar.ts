@@ -7,6 +7,7 @@ import { filter, takeUntil, debounceTime, distinctUntilChanged, switchMap } from
 import { AuthStateService } from '../../../core/state/auth-state.service';
 import { ProductSuggestionService } from '../../../features/user/services/product-suggestion.service';
 import { PromoCodesModalComponent } from '../promo-codes-modal/promo-codes-modal';
+import { toast } from 'ngx-sonner';
 
 const HIDDEN_ROUTES = ['/cart', '/auth', '/admin'];
 const NO_BACK_ROUTES = ['/'];
@@ -50,6 +51,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.mobileMenuOpen.set(false);
         this.closeSuggestions();
       });
+
+    // This is for 
     this.typeahead$.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -127,8 +130,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   openPromoModal(): void {
-    this.showPromoModal.set(true);
-    this.closeMobileMenu();
+    if (this.isAuthenticated()) {
+      this.showPromoModal.set(true);
+      this.closeMobileMenu();
+    }
+    else {
+      toast.info("Login Required")
+    }
   }
 
   closePromoModal(): void {

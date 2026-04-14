@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { PromoCodeService } from '../../../features/admin/services/promocode.service';
 import { GetAllUserPromoCodesResponseDTO, UserPromoCodeItemDTO } from '../../models/users/promoCode.model';
 import { ApiResponse } from '../../models/users/apiResponse.model';
+import { AuthStateService } from '../../../core/state/auth-state.service';
 
 const CARD_COLORS = [
-  '#4F46E5','#059669','#D97706','#7C3AED',
-  '#DC2626','#0891B2','#BE185D','#065F46',
-  '#92400E','#1D4ED8','#6D28D9','#B45309',
+  '#4F46E5', '#059669', '#D97706', '#7C3AED',
+  '#DC2626', '#0891B2', '#BE185D', '#065F46',
+  '#92400E', '#1D4ED8', '#6D28D9', '#B45309',
 ];
 
 @Component({
@@ -19,6 +20,7 @@ const CARD_COLORS = [
 })
 export class PromoCodesModalComponent implements OnInit {
   private apiService = inject(PromoCodeService);
+  private authState = inject(AuthStateService);
 
   close = output<void>();
   isLoading = signal(true);
@@ -26,18 +28,23 @@ export class PromoCodesModalComponent implements OnInit {
   copiedCode = signal<string | null>(null);
 
   ngOnInit(): void {
-    this.apiService.getAllUserPromo().subscribe({
-      next: (response: ApiResponse<GetAllUserPromoCodesResponseDTO>) => {
-        this.promoCodes.set(response.data?.promoCodes ?? []);
-      },
-      error: (err) => {
-        console.error(err);
-        this.isLoading.set(false);
-      },
-      complete: () => {
-        this.isLoading.set(false);
-      }
-    });
+    if (this.authState.isAuthenticated()) {
+      this.apiService.getAllUserPromo().subscribe({
+        next: (response: ApiResponse<GetAllUserPromoCodesResponseDTO>) => {
+          this.promoCodes.set(response.data?.promoCodes ?? []);
+        },
+        error: (err) => {
+          console.error(err);
+          this.isLoading.set(false);
+        },
+        complete: () => {
+          this.isLoading.set(false);
+        }
+      });
+    }
+    else {
+      this.isLoading.set(false)
+    }
   }
 
   skeletonItems = Array(8);

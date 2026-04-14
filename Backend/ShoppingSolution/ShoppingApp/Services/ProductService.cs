@@ -37,6 +37,13 @@ namespace ShoppingApp.Services
                 throw new AppException("User not found", 404);
             }
 
+            var existingProduct = await _productRepository.FirstOrDefaultAsync(p => p.Name == request.Name.Trim());
+
+            if (existingProduct != null)
+            {
+                throw new AppException("Product with this name already exists", 400);
+            }
+
             var Category = await _categoryRepository.GetAsync(request.CategoryId);
 
             if(Category == null)
@@ -76,7 +83,9 @@ namespace ShoppingApp.Services
                     Data = new AddNewProductResponseDTO()
                     {
                         ProductId = product.ProductId
-                    }
+                    },
+                    Message = "Product added successfully",
+                    Action = "ShowProductDetails"
                 };
             }
             catch (Exception)
