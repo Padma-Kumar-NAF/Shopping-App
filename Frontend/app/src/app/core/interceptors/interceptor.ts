@@ -12,8 +12,7 @@ export const authInterceptors: HttpInterceptorFn = (req, next) => {
   const authReq = token
     ? req.clone({ headers: req.headers.set('Authorization', `Bearer ${token}`) })
     : req;
-
-  // Endpoints that return 401 for validation reasons (not session expiry)
+    
   const skipLogoutUrls = ['/edit-user-email'];
   const shouldSkipLogout = skipLogoutUrls.some(url => req.url.includes(url));
 

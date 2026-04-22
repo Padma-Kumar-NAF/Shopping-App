@@ -69,9 +69,6 @@ export class ProductService {
   }
 
   getProductsWithFilter(request: GetProductsWithFilterRequestDTO): Observable<ApiResponse<GetProductsWithFilterResponseDTO>> {
-    return this.http.post<ApiResponse<GetProductsWithFilterResponseDTO>>(
-      `${this.baseUrl}/get-products-with-filter`,
-      request
-    );
+    return this.http.post<ApiResponse<GetProductsWithFilterResponseDTO>>(`${this.baseUrl}/get-products-with-filter`,request);
   }
 }

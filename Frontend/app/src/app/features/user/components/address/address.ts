@@ -180,8 +180,6 @@ export class Address implements OnInit {
               ...data,
               addressList: [...data.addressList, this.formAddress],
             }));
-            // Sync the updated list into the shared selection service
-            // so PaymentComponent and any other consumer sees the new address immediately
             this.addressSelectionService.setAvailableAddresses(this.addresses().addressList);
           }
           console.log('Add response', response);

@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { authRequiredGuard, publicGuard } from './core/guards/public-auth.guard';
 import { roleGuard } from './core/guards/auth.guard';
-
 import { HomeComponent } from './shared/components/home/home';
 import { AdminLayout } from './features/admin/components/admin-layout/admin-layout';
 import { DashboardOverview } from './features/admin/components/dashboard-overview/dashboard-overview';
@@ -40,7 +39,6 @@ export const routes: Routes = [
     canActivate: [publicGuard],
     component: ProductDetail,
   },
-
   {
     path: 'admin',
     canActivate: [roleGuard],
@@ -92,7 +90,6 @@ export const routes: Routes = [
     data: { role: 'user' },
     component: PaymentComponent,
   },
-
   {
     path: 'profile',
     canActivate: [authRequiredGuard],

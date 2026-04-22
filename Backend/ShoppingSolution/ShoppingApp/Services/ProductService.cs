@@ -28,6 +28,7 @@ namespace ShoppingApp.Services
             _categoryRepository = categoryRepository;
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
+            //Console.WriteLine("#########################"+ DateTime.Now);
         }
 
         public async Task<ApiResponse<AddNewProductResponseDTO>> AddProduct(Guid userId,AddNewProductRequestDTO request)

@@ -120,13 +120,13 @@
           Address
         </button>
 
-        @if (canDownloadInvoice(order)) {
+        <!-- @if (canDownloadInvoice(order)) {
         <button (click)="openInvoicePreview(order)"
           class="order-action-btn text-violet-600 hover:bg-violet-50 border-violet-100">
           <mat-icon style="font-size:13px;width:13px;height:13px;line-height:13px">receipt_long</mat-icon>
           Invoice
         </button>
-        }
+        } -->
 
         @if (canReviewOrder(order)) {
           <button (click)="openReviewModal(order)"

@@ -1,0 +1,32 @@
+2026-04-15 08:44:02 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: Insufficient stock
+   at ShoppingApp.Services.OrderService.PlaceOrder(Guid userId, PlaceOrderRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\OrderService.cs:line 404
+   at ShoppingApp.Services.OrderService.PlaceOrder(Guid userId, PlaceOrderRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\OrderService.cs:line 530
+   at ShoppingApp.Controllers.OrderController.PlaceOrder(PlaceOrderRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\OrderController.cs:line 140
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-15 08:44:02 [Error] Exception occurred - User: "user", Controller: "Order", Action: "PlaceOrder", Request Body: "{\"addressId\":\"4bee8fdd-73b7-4711-b9de-1ddc9f4909e5\",\"totalProductsCount\":1,\"totalAmount\":4999,\"paymentType\":\"stripe\",\"promoCode\":\"\",\"useWallet\":false,\"stripePaymentId\":\"pm_1TMJtt9nD0HMcuyOeprLe554\",\"orderProductdDetails\":{\"productId\":\"33ee6e7c-7b27-491f-bcf1-f99651327592\",\"productName\":\"Bedside Table African Cherry\",\"quantity\":1,\"productPrice\":4999}}"
+ShoppingApp.Exceptions.AppException: Insufficient stock
+   at ShoppingApp.Services.OrderService.PlaceOrder(Guid userId, PlaceOrderRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\OrderService.cs:line 404
+   at ShoppingApp.Services.OrderService.PlaceOrder(Guid userId, PlaceOrderRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\OrderService.cs:line 530
+   at ShoppingApp.Controllers.OrderController.PlaceOrder(PlaceOrderRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\OrderController.cs:line 140
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26

@@ -11,7 +11,6 @@ export const authRequiredGuard: CanActivateFn = (route, state) => {
   const user = authState.user();
 
   if (!user) {
-    // state.url already contains the full path + query string, e.g. /payment?fromProduct=true&quantity=2
     redirectService.storeIntendedRoute(state.url);
     return router.createUrlTree(['/auth']);
   }
@@ -19,7 +18,6 @@ export const authRequiredGuard: CanActivateFn = (route, state) => {
   const expectedRole: string | undefined = route.data?.['role'];
   const userRole = user.userRole?.toLowerCase();
 
-  // If admin try to see the page otherwise it will do to admin page
   if (expectedRole && userRole !== expectedRole.toLowerCase()) {
     const fallback = userRole === 'admin' ? '/admin' : '/';
     return router.createUrlTree([fallback]);

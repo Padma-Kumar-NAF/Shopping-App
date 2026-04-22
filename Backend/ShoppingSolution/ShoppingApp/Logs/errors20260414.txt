@@ -60,3 +60,34 @@ ShoppingApp.Exceptions.AppException: User is not activated
    at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
    at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
 2026-04-14 09:56:08 [Error] HTTP "POST" "/api/auth/login" responded 500 in 7520.5990 ms
+2026-04-14 14:01:01 [Error] Unhandled Exception occurred
+ShoppingApp.Exceptions.AppException: User is not activated
+   at ShoppingApp.Services.UserService.LoginUser(LoginRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 151
+   at ShoppingApp.Controllers.AuthenticationController.Login(LoginRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 64
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-14 14:01:01 [Error] Exception occurred - User: "Anonymous", Controller: "Authentication", Action: "Login", Request Body: "{\"email\":\"user@gmail.com\",\"password\":\"##pk545A\"}"
+ShoppingApp.Exceptions.AppException: User is not activated
+   at ShoppingApp.Services.UserService.LoginUser(LoginRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\UserService.cs:line 151
+   at ShoppingApp.Controllers.AuthenticationController.Login(LoginRequestDTO requestDTO) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\AuthenticationController.cs:line 64
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+2026-04-14 14:01:01 [Error] HTTP "POST" "/api/auth/login" responded 500 in 4598.2735 ms

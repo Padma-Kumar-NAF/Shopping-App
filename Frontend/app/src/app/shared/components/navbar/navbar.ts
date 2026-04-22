@@ -45,29 +45,35 @@ export class NavbarComponent implements OnInit, OnDestroy {
     // console.log(window.history.length)
     this.evaluateRoute(this.router.url);
 
-    this.router.events.pipe(filter((e) => e instanceof NavigationEnd), takeUntil(this.destroy$))
+    this.router.events
+      .pipe(
+        filter((e) => e instanceof NavigationEnd),
+        takeUntil(this.destroy$),
+      )
       .subscribe((e: NavigationEnd) => {
         this.evaluateRoute(e.urlAfterRedirects);
         this.mobileMenuOpen.set(false);
         this.closeSuggestions();
       });
 
-    // This is for 
-    this.typeahead$.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((q) => {
-        if (!q.trim()) {
-          this.closeSuggestions();
-          return [];
-        }
-        return this.suggestionService.getSuggestions(q);
-      }),
-      takeUntil(this.destroy$),
-    ).subscribe((results) => {
-      this.suggestions.set(results);
-      this.showSuggestions.set(results.length > 0);
-    });
+    // This is for search product in navbar
+    this.typeahead$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((q) => {
+          if (!q.trim()) {
+            this.closeSuggestions();
+            return [];
+          }
+          return this.suggestionService.getSuggestions(q);
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((results) => {
+        this.suggestions.set(results);
+        this.showSuggestions.set(results.length > 0);
+      });
   }
 
   ngOnDestroy(): void {
@@ -133,9 +139,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.isAuthenticated()) {
       this.showPromoModal.set(true);
       this.closeMobileMenu();
-    }
-    else {
-      toast.info("Login Required")
+    } else {
+      toast.info('Login Required');
     }
   }
 

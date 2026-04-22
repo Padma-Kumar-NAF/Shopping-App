@@ -1,0 +1,13 @@
+C:\PK\Project\Shopping-App\Microservices\ECommerce.SharedLibrarySolution\ECommerce.SharedLibrary\bin\Debug\net10.0\ECommerce.SharedLibrary.deps.json
+C:\PK\Project\Shopping-App\Microservices\ECommerce.SharedLibrarySolution\ECommerce.SharedLibrary\bin\Debug\net10.0\ECommerce.SharedLibrary.dll
+C:\PK\Project\Shopping-App\Microservices\ECommerce.SharedLibrarySolution\ECommerce.SharedLibrary\bin\Debug\net10.0\ECommerce.SharedLibrary.pdb
+C:\PK\Project\Shopping-App\Microservices\ECommerce.SharedLibrarySolution\ECommerce.SharedLibrary\obj\Debug\net10.0\ECommerce.SharedLibrary.csproj.AssemblyReference.cache
+C:\PK\Project\Shopping-App\Microservices\ECommerce.SharedLibrarySolution\ECommerce.SharedLibrary\obj\Debug\net10.0\ECommerce.SharedLibrary.GeneratedMSBuildEditorConfig.editorconfig
+C:\PK\Project\Shopping-App\Microservices\ECommerce.SharedLibrarySolution\ECommerce.SharedLibrary\obj\Debug\net10.0\ECommerce.SharedLibrary.AssemblyInfoInputs.cache
+C:\PK\Project\Shopping-App\Microservices\ECommerce.SharedLibrarySolution\ECommerce.SharedLibrary\obj\Debug\net10.0\ECommerce.SharedLibrary.AssemblyInfo.cs
+C:\PK\Project\Shopping-App\Microservices\ECommerce.SharedLibrarySolution\ECommerce.SharedLibrary\obj\Debug\net10.0\ECommerce.SharedLibrary.csproj.CoreCompileInputs.cache
+C:\PK\Project\Shopping-App\Microservices\ECommerce.SharedLibrarySolution\ECommerce.SharedLibrary\obj\Debug\net10.0\ECommerce.SharedLibrary.sourcelink.json
+C:\PK\Project\Shopping-App\Microservices\ECommerce.SharedLibrarySolution\ECommerce.SharedLibrary\obj\Debug\net10.0\ECommerce.SharedLibrary.dll
+C:\PK\Project\Shopping-App\Microservices\ECommerce.SharedLibrarySolution\ECommerce.SharedLibrary\obj\Debug\net10.0\refint\ECommerce.SharedLibrary.dll
+C:\PK\Project\Shopping-App\Microservices\ECommerce.SharedLibrarySolution\ECommerce.SharedLibrary\obj\Debug\net10.0\ECommerce.SharedLibrary.pdb
+C:\PK\Project\Shopping-App\Microservices\ECommerce.SharedLibrarySolution\ECommerce.SharedLibrary\obj\Debug\net10.0\ref\ECommerce.SharedLibrary.dll

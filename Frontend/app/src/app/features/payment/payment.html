@@ -315,7 +315,7 @@
           <select formControlName="state" (change)="onModalStateChange($event)"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
             [class.border-red-400]="addAddressForm.get('state')?.invalid && addAddressForm.get('state')?.touched">
-            <option value="" disabled>Select State</option>
+            <option value="Select state" disabled>Select State</option>
             @for (s of states; track s) { <option [value]="s">{{ s }}</option> }
           </select>
         </div>

@@ -1,0 +1,1132 @@
+2026-04-17 10:41:53.568 +05:30 [INF] User profile is available. Using 'C:\Users\PadmaKumar.C\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-04-17 10:41:54.197 +05:30 [INF] Now listening on: https://localhost:7023
+2026-04-17 10:41:54.203 +05:30 [INF] Now listening on: http://localhost:5256
+2026-04-17 10:41:54.296 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-17 10:41:54.306 +05:30 [INF] Hosting environment: Development
+2026-04-17 10:41:54.316 +05:30 [INF] Content root path: C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp
+2026-04-17 10:42:47.019 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Products/get-products - null null
+2026-04-17 10:42:47.020 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - null null
+2026-04-17 10:42:47.301 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:42:47.302 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:42:47.315 +05:30 [INF] HTTP OPTIONS /category/get-all-categories responded 204 in 17.6581 ms
+2026-04-17 10:42:47.315 +05:30 [INF] HTTP OPTIONS /Products/get-products responded 204 in 17.7013 ms
+2026-04-17 10:42:47.338 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Products/get-products - 204 null null 338.4697ms
+2026-04-17 10:42:47.338 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - 204 null null 336.8271ms
+2026-04-17 10:42:47.357 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/category/get-all-categories - application/json 45
+2026-04-17 10:42:47.357 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-products - application/json 45
+2026-04-17 10:42:47.372 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:42:47.372 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:42:48.282 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-17 10:42:48.282 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-17 10:42:48.370 +05:30 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProducts(ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-17 10:42:48.370 +05:30 [INF] Route matched with {action = "GetAllCategories", controller = "Category"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllCategories(ShoppingApp.Models.DTOs.Category.GetAllCategoryRequestDTO) on controller ShoppingApp.Controllers.CategoryController (ShoppingApp).
+2026-04-17 10:43:22.628 +05:30 [ERR] An error occurred using the connection to database 'ShoppingApp' on server '(localdb)\MSSQLLocalDB'.
+2026-04-17 10:43:22.628 +05:30 [ERR] An error occurred using the connection to database 'ShoppingApp' on server '(localdb)\MSSQLLocalDB'.
+2026-04-17 10:43:23.990 +05:30 [ERR] An exception occurred while iterating over the results of a query for context type 'ShoppingApp.Contexts.ShoppingContext'.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=26001; handshake=172; 
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.WaitForPendingOpen()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:3fd5d1cd-3bc1-4dce-bfb9-138f9a642c5d
+Error Number:-2,State:0,Class:11
+Microsoft.Data.SqlClient.SqlException (0x80131904): Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=26001; handshake=172; 
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.WaitForPendingOpen()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:3fd5d1cd-3bc1-4dce-bfb9-138f9a642c5d
+Error Number:-2,State:0,Class:11
+2026-04-17 10:43:23.990 +05:30 [ERR] An exception occurred while iterating over the results of a query for context type 'ShoppingApp.Contexts.ShoppingContext'.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=26001; handshake=172; 
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParserStateObject.ThrowExceptionAndWarning(Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParserStateObject.ReadSniError(TdsParserStateObject stateObj, UInt32 error)
+   at Microsoft.Data.SqlClient.TdsParserStateObject.ReadSniSyncOverAsync()
+   at Microsoft.Data.SqlClient.TdsParserStateObject.TryReadNetworkPacket()
+   at Microsoft.Data.SqlClient.TdsParser.ConsumePreLoginHandshake(SqlConnectionEncryptOption encrypt, Boolean trustServerCert, Boolean integratedSecurity, Boolean& marsCapable, Boolean& fedAuthRequired, Boolean tlsFirst, String serverCertificateFilename)
+   at Microsoft.Data.SqlClient.TdsParser.Connect(ServerInfo serverInfo, SqlInternalConnectionTds connHandler, TimeoutTimer timeout, SqlConnectionString connectionOptions, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, TimeoutTimer timeout, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, IDbConnectionPool pool, Func`3 accessTokenCallback)
+   at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionPoolGroupProviderInfo poolGroupProviderInfo, IDbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(IDbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.WaitForPendingOpen()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:3fd5d1cd-3bc1-4dce-bfb9-138f9a642c5d
+Error Number:-2,State:0,Class:11
+Microsoft.Data.SqlClient.SqlException (0x80131904): Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=26001; handshake=172; 
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParserStateObject.ThrowExceptionAndWarning(Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParserStateObject.ReadSniError(TdsParserStateObject stateObj, UInt32 error)
+   at Microsoft.Data.SqlClient.TdsParserStateObject.ReadSniSyncOverAsync()
+   at Microsoft.Data.SqlClient.TdsParserStateObject.TryReadNetworkPacket()
+   at Microsoft.Data.SqlClient.TdsParser.ConsumePreLoginHandshake(SqlConnectionEncryptOption encrypt, Boolean trustServerCert, Boolean integratedSecurity, Boolean& marsCapable, Boolean& fedAuthRequired, Boolean tlsFirst, String serverCertificateFilename)
+   at Microsoft.Data.SqlClient.TdsParser.Connect(ServerInfo serverInfo, SqlInternalConnectionTds connHandler, TimeoutTimer timeout, SqlConnectionString connectionOptions, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, TimeoutTimer timeout, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, IDbConnectionPool pool, Func`3 accessTokenCallback)
+   at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionPoolGroupProviderInfo poolGroupProviderInfo, IDbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(IDbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.WaitForPendingOpen()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:3fd5d1cd-3bc1-4dce-bfb9-138f9a642c5d
+Error Number:-2,State:0,Class:11
+2026-04-17 10:43:24.954 +05:30 [INF] Executed action ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp) in 36573.1357ms
+2026-04-17 10:43:25.553 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp) in 37178.6027ms
+2026-04-17 10:43:25.556 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-17 10:43:25.595 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-17 10:43:25.925 +05:30 [ERR] Unhandled Exception occurred
+Microsoft.Data.SqlClient.SqlException (0x80131904): Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=26001; handshake=172; 
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.WaitForPendingOpen()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at ShoppingApp.Services.CategoryService.GetAllCategories(Int32 limit, Int32 pageNumber) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\CategoryService.cs:line 126
+   at ShoppingApp.Controllers.CategoryController.GetAllCategories(GetAllCategoryRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\CategoryController.cs:line 88
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+ClientConnectionId:3fd5d1cd-3bc1-4dce-bfb9-138f9a642c5d
+Error Number:-2,State:0,Class:11
+2026-04-17 10:43:26.168 +05:30 [ERR] Unhandled Exception occurred
+Microsoft.Data.SqlClient.SqlException (0x80131904): Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=26001; handshake=172; 
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParserStateObject.ThrowExceptionAndWarning(Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParserStateObject.ReadSniError(TdsParserStateObject stateObj, UInt32 error)
+   at Microsoft.Data.SqlClient.TdsParserStateObject.ReadSniSyncOverAsync()
+   at Microsoft.Data.SqlClient.TdsParserStateObject.TryReadNetworkPacket()
+   at Microsoft.Data.SqlClient.TdsParser.ConsumePreLoginHandshake(SqlConnectionEncryptOption encrypt, Boolean trustServerCert, Boolean integratedSecurity, Boolean& marsCapable, Boolean& fedAuthRequired, Boolean tlsFirst, String serverCertificateFilename)
+   at Microsoft.Data.SqlClient.TdsParser.Connect(ServerInfo serverInfo, SqlInternalConnectionTds connHandler, TimeoutTimer timeout, SqlConnectionString connectionOptions, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, TimeoutTimer timeout, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, IDbConnectionPool pool, Func`3 accessTokenCallback)
+   at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionPoolGroupProviderInfo poolGroupProviderInfo, IDbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(IDbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.WaitForPendingOpen()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at ShoppingApp.Services.ProductService.GetProducts(GetAllProductsRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 104
+   at ShoppingApp.Controllers.ProductsController.GetProducts(GetAllProductsRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 37
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+ClientConnectionId:3fd5d1cd-3bc1-4dce-bfb9-138f9a642c5d
+Error Number:-2,State:0,Class:11
+2026-04-17 10:43:26.390 +05:30 [ERR] Exception occurred - User: Anonymous, Controller: Category, Action: GetAllCategories, Request Body: {"Pagination":{"pageNumber":1,"pageSize":80}}
+Microsoft.Data.SqlClient.SqlException (0x80131904): Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=26001; handshake=172; 
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.WaitForPendingOpen()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at ShoppingApp.Services.CategoryService.GetAllCategories(Int32 limit, Int32 pageNumber) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\CategoryService.cs:line 126
+   at ShoppingApp.Controllers.CategoryController.GetAllCategories(GetAllCategoryRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\CategoryController.cs:line 88
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+ClientConnectionId:3fd5d1cd-3bc1-4dce-bfb9-138f9a642c5d
+Error Number:-2,State:0,Class:11
+2026-04-17 10:43:26.453 +05:30 [ERR] Exception occurred - User: Anonymous, Controller: Products, Action: GetProducts, Request Body: {"pagination":{"pageNumber":1,"pageSize":80}}
+Microsoft.Data.SqlClient.SqlException (0x80131904): Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=26001; handshake=172; 
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParserStateObject.ThrowExceptionAndWarning(Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParserStateObject.ReadSniError(TdsParserStateObject stateObj, UInt32 error)
+   at Microsoft.Data.SqlClient.TdsParserStateObject.ReadSniSyncOverAsync()
+   at Microsoft.Data.SqlClient.TdsParserStateObject.TryReadNetworkPacket()
+   at Microsoft.Data.SqlClient.TdsParser.ConsumePreLoginHandshake(SqlConnectionEncryptOption encrypt, Boolean trustServerCert, Boolean integratedSecurity, Boolean& marsCapable, Boolean& fedAuthRequired, Boolean tlsFirst, String serverCertificateFilename)
+   at Microsoft.Data.SqlClient.TdsParser.Connect(ServerInfo serverInfo, SqlInternalConnectionTds connHandler, TimeoutTimer timeout, SqlConnectionString connectionOptions, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, TimeoutTimer timeout, Boolean withFailover)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+   at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, IDbConnectionPool pool, Func`3 accessTokenCallback)
+   at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionPoolGroupProviderInfo poolGroupProviderInfo, IDbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(IDbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.WaitForPendingOpen()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at ShoppingApp.Services.ProductService.GetProducts(GetAllProductsRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Services\ProductService.cs:line 104
+   at ShoppingApp.Controllers.ProductsController.GetProducts(GetAllProductsRequestDTO request) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Controllers\ProductController.cs:line 37
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at ShoppingApp.Middleware.ExceptionMiddleware.Invoke(HttpContext context) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 26
+ClientConnectionId:3fd5d1cd-3bc1-4dce-bfb9-138f9a642c5d
+Error Number:-2,State:0,Class:11
+2026-04-17 10:43:26.989 +05:30 [ERR] An error occurred using the connection to database 'ShoppingApp' on server '(localdb)\MSSQLLocalDB'.
+2026-04-17 10:43:26.989 +05:30 [ERR] An error occurred using the connection to database 'ShoppingApp' on server '(localdb)\MSSQLLocalDB'.
+2026-04-17 10:43:27.003 +05:30 [ERR] An exception occurred in the database while saving changes for context type 'ShoppingApp.Contexts.ShoppingContext'.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=26001; handshake=172; 
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 taskCompletionSource, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry, SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.InternalOpenAsync(SqlConnectionOverrides overrides, CancellationToken cancellationToken)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+ClientConnectionId:3fd5d1cd-3bc1-4dce-bfb9-138f9a642c5d
+Error Number:-2,State:0,Class:11
+Microsoft.Data.SqlClient.SqlException (0x80131904): Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=26001; handshake=172; 
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 taskCompletionSource, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry, SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.InternalOpenAsync(SqlConnectionOverrides overrides, CancellationToken cancellationToken)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+ClientConnectionId:3fd5d1cd-3bc1-4dce-bfb9-138f9a642c5d
+Error Number:-2,State:0,Class:11
+2026-04-17 10:43:27.003 +05:30 [ERR] An exception occurred in the database while saving changes for context type 'ShoppingApp.Contexts.ShoppingContext'.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=26001; handshake=172; 
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 taskCompletionSource, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry, SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.InternalOpenAsync(SqlConnectionOverrides overrides, CancellationToken cancellationToken)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+ClientConnectionId:3fd5d1cd-3bc1-4dce-bfb9-138f9a642c5d
+Error Number:-2,State:0,Class:11
+Microsoft.Data.SqlClient.SqlException (0x80131904): Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=26001; handshake=172; 
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 taskCompletionSource, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry, SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.InternalOpenAsync(SqlConnectionOverrides overrides, CancellationToken cancellationToken)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+ClientConnectionId:3fd5d1cd-3bc1-4dce-bfb9-138f9a642c5d
+Error Number:-2,State:0,Class:11
+2026-04-17 10:43:27.333 +05:30 [FTL] Failed to log exception to database. Original exception: Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=26001; handshake=172; 
+Microsoft.Data.SqlClient.SqlException (0x80131904): Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=26001; handshake=172; 
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 taskCompletionSource, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry, SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.InternalOpenAsync(SqlConnectionOverrides overrides, CancellationToken cancellationToken)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at ShoppingApp.Middleware.ExceptionMiddleware.HandleExceptionAsync(HttpContext context, Exception ex) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 79
+ClientConnectionId:3fd5d1cd-3bc1-4dce-bfb9-138f9a642c5d
+Error Number:-2,State:0,Class:11
+2026-04-17 10:43:27.657 +05:30 [FTL] Failed to log exception to database. Original exception: Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=26001; handshake=172; 
+Microsoft.Data.SqlClient.SqlException (0x80131904): Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=26001; handshake=172; 
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.SqlClient.ConnectionPool.WaitHandleDbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 taskCompletionSource, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at Microsoft.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at Microsoft.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry, SqlConnectionOverrides overrides)
+   at Microsoft.Data.SqlClient.SqlConnection.InternalOpenAsync(SqlConnectionOverrides overrides, CancellationToken cancellationToken)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at ShoppingApp.Middleware.ExceptionMiddleware.HandleExceptionAsync(HttpContext context, Exception ex) in C:\PK\Project\Shopping-App\Backend\ShoppingSolution\ShoppingApp\Middleware\ExceptionMiddleware.cs:line 79
+ClientConnectionId:3fd5d1cd-3bc1-4dce-bfb9-138f9a642c5d
+Error Number:-2,State:0,Class:11
+2026-04-17 10:43:27.833 +05:30 [ERR] HTTP POST /Products/get-products responded 500 in 40462.0121 ms
+2026-04-17 10:43:27.971 +05:30 [ERR] HTTP POST /category/get-all-categories responded 500 in 40599.4140 ms
+2026-04-17 10:43:28.008 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-products - 500 null application/json; charset=utf-8 40651.207ms
+2026-04-17 10:43:28.008 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/category/get-all-categories - 500 null application/json; charset=utf-8 40651.2272ms
+2026-04-17 10:43:32.975 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Products/get-products - null null
+2026-04-17 10:43:32.990 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:43:32.993 +05:30 [INF] HTTP OPTIONS /Products/get-products responded 204 in 2.9431 ms
+2026-04-17 10:43:33.000 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Products/get-products - 204 null null 25.5926ms
+2026-04-17 10:43:33.090 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-products - application/json 45
+2026-04-17 10:43:33.092 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - null null
+2026-04-17 10:43:33.099 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:43:33.105 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:43:33.108 +05:30 [INF] HTTP OPTIONS /category/get-all-categories responded 204 in 3.1363 ms
+2026-04-17 10:43:33.114 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - 204 null null 22.0704ms
+2026-04-17 10:43:33.123 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/category/get-all-categories - application/json 45
+2026-04-17 10:43:33.134 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:43:33.146 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-17 10:43:33.146 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-17 10:43:33.151 +05:30 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProducts(ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-17 10:43:33.153 +05:30 [INF] Route matched with {action = "GetAllCategories", controller = "Category"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllCategories(ShoppingApp.Models.DTOs.Category.GetAllCategoryRequestDTO) on controller ShoppingApp.Controllers.CategoryController (ShoppingApp).
+2026-04-17 10:43:34.301 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Products/get-products - null null
+2026-04-17 10:43:34.310 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:43:34.312 +05:30 [INF] HTTP OPTIONS /Products/get-products responded 204 in 2.5245 ms
+2026-04-17 10:43:34.318 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Products/get-products - 204 null null 17.1772ms
+2026-04-17 10:43:34.380 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - null null
+2026-04-17 10:43:34.389 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:43:34.392 +05:30 [INF] HTTP OPTIONS /category/get-all-categories responded 204 in 2.6325 ms
+2026-04-17 10:43:34.398 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - 204 null null 17.8064ms
+2026-04-17 10:43:34.429 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-products - application/json 45
+2026-04-17 10:43:34.441 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/category/get-all-categories - application/json 45
+2026-04-17 10:43:34.459 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:43:34.482 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:43:34.486 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-17 10:43:34.488 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-17 10:43:34.490 +05:30 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProducts(ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-17 10:43:34.493 +05:30 [INF] Route matched with {action = "GetAllCategories", controller = "Category"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllCategories(ShoppingApp.Models.DTOs.Category.GetAllCategoryRequestDTO) on controller ShoppingApp.Controllers.CategoryController (ShoppingApp).
+2026-04-17 10:43:36.408 +05:30 [INF] Executed DbCommand (566ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+2026-04-17 10:43:36.881 +05:30 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-04-17 10:43:37.220 +05:30 [INF] Executed DbCommand (261ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p0].[ProductId], [p0].[CategoryId], [p0].[Name], [p0].[ImagePath], [p0].[Description], [c].[CategoryName], [p0].[Price], [s].[StockId], [s].[Quantity], [c].[CategoryId], [r].[ReviewId], [r].[CreatedAt], [r].[ProductId], [r].[ReviewPoints], [r].[Summary], [r].[UserId], [r0].[Summary], [r0].[ReviewPoints], [r0].[ReviewId]
+FROM (
+    SELECT [p].[ProductId], [p].[CategoryId], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+    FROM [Products] AS [p]
+    WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+    ORDER BY [p].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [p0]
+INNER JOIN [Category] AS [c] ON [p0].[CategoryId] = [c].[CategoryId]
+LEFT JOIN [Stock] AS [s] ON [p0].[ProductId] = [s].[ProductId]
+LEFT JOIN [Reviews] AS [r] ON [p0].[ProductId] = [r].[ProductId]
+LEFT JOIN [Reviews] AS [r0] ON [p0].[ProductId] = [r0].[ProductId]
+ORDER BY [p0].[Name], [p0].[ProductId], [c].[CategoryId], [s].[StockId], [r].[ReviewId]
+2026-04-17 10:43:37.284 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:43:37.377 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp) in 4219.0611ms
+2026-04-17 10:43:37.383 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-17 10:43:37.386 +05:30 [INF] HTTP POST /Products/get-products responded 200 in 4286.4766 ms
+2026-04-17 10:43:37.389 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-products - 200 null application/json; charset=utf-8 4299.2893ms
+2026-04-17 10:43:37.404 +05:30 [INF] Executed DbCommand (266ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CategoryId], [c].[CategoryName], (
+    SELECT COUNT(*)
+    FROM [Products] AS [p]
+    WHERE [c].[CategoryId] = [p].[CategoryId] AND [p].[ActiveStatus] = CAST(1 AS bit)) AS [ProductsCount], CONVERT(varchar(100), [c].[CreatedAt]) AS [CreatedAt]
+FROM [Category] AS [c]
+ORDER BY [c].[CategoryName]
+OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+2026-04-17 10:43:37.418 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Category.GetAllCategoryResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:43:37.436 +05:30 [INF] Executed action ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp) in 4272.1556ms
+2026-04-17 10:43:37.439 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-17 10:43:37.442 +05:30 [INF] HTTP POST /category/get-all-categories responded 200 in 4308.3779 ms
+2026-04-17 10:43:37.447 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/category/get-all-categories - 200 null application/json; charset=utf-8 4324.7954ms
+2026-04-17 10:43:38.328 +05:30 [INF] Executed DbCommand (10ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CategoryId], [c].[CategoryName], (
+    SELECT COUNT(*)
+    FROM [Products] AS [p]
+    WHERE [c].[CategoryId] = [p].[CategoryId] AND [p].[ActiveStatus] = CAST(1 AS bit)) AS [ProductsCount], CONVERT(varchar(100), [c].[CreatedAt]) AS [CreatedAt]
+FROM [Category] AS [c]
+ORDER BY [c].[CategoryName]
+OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+2026-04-17 10:43:38.329 +05:30 [INF] Executed DbCommand (20ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+2026-04-17 10:43:38.335 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Category.GetAllCategoryResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:43:38.344 +05:30 [INF] Executed action ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp) in 3826.0163ms
+2026-04-17 10:43:38.348 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-17 10:43:38.350 +05:30 [INF] HTTP POST /category/get-all-categories responded 200 in 3868.5511 ms
+2026-04-17 10:43:38.355 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/category/get-all-categories - 200 null application/json; charset=utf-8 3913.3256ms
+2026-04-17 10:43:38.373 +05:30 [INF] Executed DbCommand (29ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p0].[ProductId], [p0].[CategoryId], [p0].[Name], [p0].[ImagePath], [p0].[Description], [c].[CategoryName], [p0].[Price], [s].[StockId], [s].[Quantity], [c].[CategoryId], [r].[ReviewId], [r].[CreatedAt], [r].[ProductId], [r].[ReviewPoints], [r].[Summary], [r].[UserId], [r0].[Summary], [r0].[ReviewPoints], [r0].[ReviewId]
+FROM (
+    SELECT [p].[ProductId], [p].[CategoryId], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+    FROM [Products] AS [p]
+    WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+    ORDER BY [p].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [p0]
+INNER JOIN [Category] AS [c] ON [p0].[CategoryId] = [c].[CategoryId]
+LEFT JOIN [Stock] AS [s] ON [p0].[ProductId] = [s].[ProductId]
+LEFT JOIN [Reviews] AS [r] ON [p0].[ProductId] = [r].[ProductId]
+LEFT JOIN [Reviews] AS [r0] ON [p0].[ProductId] = [r0].[ProductId]
+ORDER BY [p0].[Name], [p0].[ProductId], [c].[CategoryId], [s].[StockId], [r].[ReviewId]
+2026-04-17 10:43:38.382 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:43:38.389 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp) in 3888.5814ms
+2026-04-17 10:43:38.393 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-17 10:43:38.398 +05:30 [INF] HTTP POST /Products/get-products responded 200 in 3939.0623 ms
+2026-04-17 10:43:38.405 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-products - 200 null application/json; charset=utf-8 3975.5982ms
+2026-04-17 10:43:43.203 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Products/get-products - null null
+2026-04-17 10:43:43.210 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:43:43.212 +05:30 [INF] HTTP OPTIONS /Products/get-products responded 204 in 1.8219 ms
+2026-04-17 10:43:43.216 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Products/get-products - 204 null null 12.6728ms
+2026-04-17 10:43:43.223 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-products - application/json 45
+2026-04-17 10:43:43.231 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:43:43.235 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-17 10:43:43.238 +05:30 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProducts(ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-17 10:43:43.256 +05:30 [INF] Executed DbCommand (12ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+2026-04-17 10:43:43.298 +05:30 [INF] Executed DbCommand (32ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p0].[ProductId], [p0].[CategoryId], [p0].[Name], [p0].[ImagePath], [p0].[Description], [c].[CategoryName], [p0].[Price], [s].[StockId], [s].[Quantity], [c].[CategoryId], [r].[ReviewId], [r].[CreatedAt], [r].[ProductId], [r].[ReviewPoints], [r].[Summary], [r].[UserId], [r0].[Summary], [r0].[ReviewPoints], [r0].[ReviewId]
+FROM (
+    SELECT [p].[ProductId], [p].[CategoryId], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+    FROM [Products] AS [p]
+    WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+    ORDER BY [p].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [p0]
+INNER JOIN [Category] AS [c] ON [p0].[CategoryId] = [c].[CategoryId]
+LEFT JOIN [Stock] AS [s] ON [p0].[ProductId] = [s].[ProductId]
+LEFT JOIN [Reviews] AS [r] ON [p0].[ProductId] = [r].[ProductId]
+LEFT JOIN [Reviews] AS [r0] ON [p0].[ProductId] = [r0].[ProductId]
+ORDER BY [p0].[Name], [p0].[ProductId], [c].[CategoryId], [s].[StockId], [r].[ReviewId]
+2026-04-17 10:43:43.307 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:43:43.313 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp) in 71.7491ms
+2026-04-17 10:43:43.317 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-17 10:43:43.321 +05:30 [INF] HTTP POST /Products/get-products responded 200 in 89.5954 ms
+2026-04-17 10:43:43.327 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-products - 200 null application/json; charset=utf-8 103.8923ms
+2026-04-17 10:43:46.474 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/api/auth/login - null null
+2026-04-17 10:43:46.493 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:43:46.495 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 2.3152 ms
+2026-04-17 10:43:46.500 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/api/auth/login - 204 null null 26.2755ms
+2026-04-17 10:43:46.506 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/api/auth/login - application/json 48
+2026-04-17 10:43:46.516 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:43:46.519 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.AuthenticationController.Login (ShoppingApp)'
+2026-04-17 10:43:46.544 +05:30 [INF] Route matched with {action = "Login", controller = "Authentication"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(ShoppingApp.Models.DTOs.User.LoginRequestDTO) on controller ShoppingApp.Controllers.AuthenticationController (ShoppingApp).
+2026-04-17 10:43:46.642 +05:30 [INF] Executed DbCommand (9ms) [Parameters=[@email='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue]
+FROM [Users] AS [u]
+WHERE [u].[Email] = @email
+2026-04-17 10:43:47.651 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.User.LoginResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:43:47.660 +05:30 [INF] Executed action ShoppingApp.Controllers.AuthenticationController.Login (ShoppingApp) in 1109.73ms
+2026-04-17 10:43:47.666 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.AuthenticationController.Login (ShoppingApp)'
+2026-04-17 10:43:47.669 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 1152.7547 ms
+2026-04-17 10:43:47.673 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/api/auth/login - 200 null application/json; charset=utf-8 1167.3349ms
+2026-04-17 10:43:47.739 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Address/get-address - null null
+2026-04-17 10:43:47.756 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:43:47.759 +05:30 [INF] HTTP OPTIONS /Address/get-address responded 204 in 2.3431 ms
+2026-04-17 10:43:47.763 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Address/get-address - 204 null null 24.0282ms
+2026-04-17 10:43:47.769 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Address/get-address - application/json 45
+2026-04-17 10:43:47.807 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:43:48.061 +05:30 [INF] Executed DbCommand (27ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:43:48.107 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.AddressController.GetUserAddress (ShoppingApp)'
+2026-04-17 10:43:48.133 +05:30 [INF] Route matched with {action = "GetUserAddress", controller = "Address"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetUserAddress(ShoppingApp.Models.DTOs.Address.GetUserAddressRequestDTO) on controller ShoppingApp.Controllers.AddressController (ShoppingApp).
+2026-04-17 10:43:48.248 +05:30 [INF] Executed DbCommand (16ms) [Parameters=[@UserId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Addresses] AS [a]
+        WHERE [a].[UserId] = @UserId) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+2026-04-17 10:43:48.287 +05:30 [INF] Executed DbCommand (12ms) [Parameters=[@UserId='?' (DbType = Guid), @p='?' (DbType = Int32), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a].[AddressId], [a].[AddressLine1], [a].[AddressLine2], [a].[State], [a].[City], [a].[Pincode]
+FROM [Addresses] AS [a]
+WHERE [a].[UserId] = @UserId
+ORDER BY [a].[CreatedAt]
+OFFSET @p ROWS FETCH NEXT @p2 ROWS ONLY
+2026-04-17 10:43:48.297 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Address.GetUserAddressResposneDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:43:48.314 +05:30 [INF] Executed action ShoppingApp.Controllers.AddressController.GetUserAddress (ShoppingApp) in 175.3617ms
+2026-04-17 10:43:48.319 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.AddressController.GetUserAddress (ShoppingApp)'
+2026-04-17 10:43:48.323 +05:30 [INF] HTTP POST /Address/get-address responded 200 in 516.9291 ms
+2026-04-17 10:43:48.330 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Address/get-address - 200 null application/json; charset=utf-8 560.5412ms
+2026-04-17 10:44:02.833 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/orders/place-order - null null
+2026-04-17 10:44:02.843 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:02.847 +05:30 [INF] HTTP OPTIONS /orders/place-order responded 204 in 4.1112 ms
+2026-04-17 10:44:02.853 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/orders/place-order - 204 null null 20.1639ms
+2026-04-17 10:44:02.858 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/orders/place-order - application/json 345
+2026-04-17 10:44:02.878 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:02.899 +05:30 [INF] Executed DbCommand (12ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:44:02.910 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.OrderController.PlaceOrder (ShoppingApp)'
+2026-04-17 10:44:02.936 +05:30 [INF] Route matched with {action = "PlaceOrder", controller = "Order"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] PlaceOrder(ShoppingApp.Models.DTOs.Order.PlaceOrderRequestDTO) on controller ShoppingApp.Controllers.OrderController (ShoppingApp).
+2026-04-17 10:44:03.109 +05:30 [INF] Executed DbCommand (13ms) [Parameters=[@p='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue]
+FROM [Users] AS [u]
+WHERE [u].[UserId] = @p
+2026-04-17 10:44:03.261 +05:30 [INF] Executed DbCommand (23ms) [Parameters=[@p='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[AddressId], [a].[AddressLine1], [a].[AddressLine2], [a].[City], [a].[CreatedAt], [a].[Pincode], [a].[State], [a].[UserId]
+FROM [Addresses] AS [a]
+WHERE [a].[AddressId] = @p
+2026-04-17 10:44:03.383 +05:30 [INF] Executed DbCommand (9ms) [Parameters=[@p='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[ProductId], [p].[ActiveStatus], [p].[CategoryId], [p].[CreatedAt], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+FROM [Products] AS [p]
+WHERE [p].[ProductId] = @p
+2026-04-17 10:44:03.483 +05:30 [INF] Executed DbCommand (10ms) [Parameters=[@productId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[MonthlyLimit], [u].[ProductId]
+FROM [UserMonthlyProductLimit] AS [u]
+WHERE [u].[ProductId] = @productId
+2026-04-17 10:44:03.524 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[@product_ProductId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [s].[StockId], [s].[CreatedAt], [s].[ProductId], [s].[Quantity]
+FROM [Stock] AS [s]
+WHERE [s].[ProductId] = @product_ProductId
+2026-04-17 10:44:03.649 +05:30 [INF] Executed DbCommand (44ms) [Parameters=[@8__locals1_userId='?' (DbType = Guid), @rewardDiscountPercentage='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserPromoCodeId], [u].[CreatedAt], [u].[DiscountPercentage], [u].[FromDate], [u].[IsDeleted], [u].[PromoCodeName], [u].[ToDate], [u].[UserId]
+FROM [UserPromoCodes] AS [u]
+WHERE [u].[UserId] = @8__locals1_userId AND [u].[DiscountPercentage] = @rewardDiscountPercentage AND [u].[IsDeleted] = CAST(0 AS bit) AND [u].[FromDate] <= GETDATE() AND [u].[ToDate] >= GETDATE()
+2026-04-17 10:44:03.688 +05:30 [INF] Executed DbCommand (19ms) [Parameters=[@rewardDiscountPercentage='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [p].[PromoCodeId], [p].[CreatedAt], [p].[DiscountPercentage], [p].[FromDate], [p].[IsDeleted], [p].[PromoCodeName], [p].[ToDate]
+FROM [PromoCodes] AS [p]
+WHERE [p].[DiscountPercentage] = @rewardDiscountPercentage AND [p].[IsDeleted] = CAST(0 AS bit) AND [p].[ToDate] >= GETDATE()
+2026-04-17 10:44:04.037 +05:30 [INF] Executed DbCommand (42ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = DateTime2), @p2='?' (DbType = Boolean), @p3='?' (Size = 4000), @p4='?' (DbType = DateTime2), @p5='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [UserPromoCodes] ([DiscountPercentage], [FromDate], [IsDeleted], [PromoCodeName], [ToDate], [UserId])
+OUTPUT INSERTED.[UserPromoCodeId], INSERTED.[CreatedAt]
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5);
+2026-04-17 10:44:04.272 +05:30 [INF] Executed DbCommand (22ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime2), @p2='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p3='?' (DbType = Guid), @p4='?' (Size = 4000), @p5='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p6='?' (DbType = Int32), @p7='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Orders] ([AddressId], [DeliveryDate], [OrderTotalAmount], [PromoCodeId], [Status], [TotalAmount], [TotalProductsCount], [UserId])
+OUTPUT INSERTED.[OrderId], INSERTED.[CreatedAt], INSERTED.[DiscountAmount], INSERTED.[DiscountPercentage]
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7);
+2026-04-17 10:44:04.389 +05:30 [INF] Executed DbCommand (22ms) [Parameters=[@p1='?' (DbType = Guid), @p0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [Stock] SET [Quantity] = @p0
+OUTPUT 1
+WHERE [StockId] = @p1;
+2026-04-17 10:44:04.552 +05:30 [INF] Executed DbCommand (19ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (Size = 4000), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [OrderDetails] ([OrderId], [ProductId], [ProductName], [ProductPrice], [Quantity])
+OUTPUT INSERTED.[OrderDetailsId], INSERTED.[CreatedAt]
+VALUES (@p0, @p1, @p2, @p3, @p4);
+2026-04-17 10:44:04.709 +05:30 [INF] Executed DbCommand (14ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (Precision = 18) (Scale = 2) (DbType = Decimal), @p4='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [Payments] ([OrderId], [PaymentType], [StripePaymentId], [TotalAmount], [UserId])
+OUTPUT INSERTED.[PaymentId], INSERTED.[CreatedAt]
+VALUES (@p0, @p1, @p2, @p3, @p4);
+2026-04-17 10:44:04.791 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Order.PlaceOrderResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:44:04.840 +05:30 [INF] Executed action ShoppingApp.Controllers.OrderController.PlaceOrder (ShoppingApp) in 1896.2653ms
+2026-04-17 10:44:04.850 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.OrderController.PlaceOrder (ShoppingApp)'
+2026-04-17 10:44:04.855 +05:30 [INF] HTTP POST /orders/place-order responded 200 in 1976.6496 ms
+2026-04-17 10:44:04.871 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/orders/place-order - 200 null application/json; charset=utf-8 2013.0188ms
+2026-04-17 10:44:04.906 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/User/get-user-by-id - null null
+2026-04-17 10:44:04.908 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/orders/get-user-orders - null null
+2026-04-17 10:44:04.938 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:04.950 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:04.952 +05:30 [INF] HTTP OPTIONS /User/get-user-by-id responded 204 in 13.4596 ms
+2026-04-17 10:44:04.953 +05:30 [INF] HTTP OPTIONS /orders/get-user-orders responded 204 in 2.7428 ms
+2026-04-17 10:44:04.956 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/User/get-user-by-id - 204 null null 50.9261ms
+2026-04-17 10:44:04.960 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/orders/get-user-orders - 204 null null 51.9742ms
+2026-04-17 10:44:04.970 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/orders/get-user-orders - application/json 46
+2026-04-17 10:44:04.970 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7023/User/get-user-by-id - null null
+2026-04-17 10:44:04.987 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:05.026 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:05.034 +05:30 [INF] Executed DbCommand (15ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:44:05.051 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.OrderController.GetOrderByUserId (ShoppingApp)'
+2026-04-17 10:44:05.060 +05:30 [INF] Executed DbCommand (25ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:44:05.079 +05:30 [INF] Route matched with {action = "GetOrderByUserId", controller = "Order"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetOrderByUserId(ShoppingApp.Models.DTOs.Order.GetUserOrderDetailsRequestDTO) on controller ShoppingApp.Controllers.OrderController (ShoppingApp).
+2026-04-17 10:44:05.084 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp)'
+2026-04-17 10:44:05.125 +05:30 [INF] Route matched with {action = "GetUserById", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetUserById() on controller ShoppingApp.Controllers.UserController (ShoppingApp).
+2026-04-17 10:44:05.143 +05:30 [INF] Executed DbCommand (29ms) [Parameters=[@p='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue]
+FROM [Users] AS [u]
+WHERE [u].[UserId] = @p
+2026-04-17 10:44:05.144 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:44:05.156 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.User.GetUserByIdResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:44:05.184 +05:30 [INF] Executed action ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp) in 51.661ms
+2026-04-17 10:44:05.202 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp)'
+2026-04-17 10:44:05.206 +05:30 [INF] HTTP GET /User/get-user-by-id responded 200 in 180.4679 ms
+2026-04-17 10:44:05.216 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7023/User/get-user-by-id - 200 null application/json; charset=utf-8 245.3923ms
+2026-04-17 10:44:05.448 +05:30 [INF] Executed DbCommand (153ms) [Parameters=[@userId='?' (DbType = Guid), @p='?' (DbType = Int32), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [o0].[OrderId], [o0].[Status], [o0].[TotalProductsCount], [o0].[OrderTotalAmount], [o0].[DeliveryDate], CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Refunds] AS [r]
+        WHERE [r].[OrderId] = [o0].[OrderId]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END, [a].[AddressId], [a].[AddressLine1], [a].[AddressLine2], [a].[State], [a].[City], [a].[Pincode], [p].[PaymentId], [p].[PaymentType], [s].[OrderDetailsId], [s].[ProductId], [s].[ProductName], [s].[Quantity], [s].[ProductPrice], [s].[ImagePath], [s].[ProductId0]
+FROM (
+    SELECT [o].[OrderId], [o].[AddressId], [o].[CreatedAt], [o].[DeliveryDate], [o].[OrderTotalAmount], [o].[Status], [o].[TotalProductsCount]
+    FROM [Orders] AS [o]
+    WHERE [o].[UserId] = @userId
+    ORDER BY [o].[CreatedAt] DESC
+    OFFSET @p ROWS FETCH NEXT @p2 ROWS ONLY
+) AS [o0]
+INNER JOIN [Addresses] AS [a] ON [o0].[AddressId] = [a].[AddressId]
+LEFT JOIN [Payments] AS [p] ON [o0].[OrderId] = [p].[OrderId]
+LEFT JOIN (
+    SELECT [o1].[OrderDetailsId], [o1].[ProductId], [o1].[ProductName], [o1].[Quantity], [o1].[ProductPrice], [p0].[ImagePath], [p0].[ProductId] AS [ProductId0], [o1].[OrderId]
+    FROM [OrderDetails] AS [o1]
+    INNER JOIN [Products] AS [p0] ON [o1].[ProductId] = [p0].[ProductId]
+) AS [s] ON [o0].[OrderId] = [s].[OrderId]
+ORDER BY [o0].[CreatedAt] DESC, [o0].[OrderId], [a].[AddressId], [p].[PaymentId], [s].[ProductName], [s].[OrderDetailsId]
+2026-04-17 10:44:05.472 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Order.GetUserOrderDetailsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:44:05.515 +05:30 [INF] Executed action ShoppingApp.Controllers.OrderController.GetOrderByUserId (ShoppingApp) in 425.3364ms
+2026-04-17 10:44:05.518 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.OrderController.GetOrderByUserId (ShoppingApp)'
+2026-04-17 10:44:05.522 +05:30 [INF] HTTP POST /orders/get-user-orders responded 200 in 534.8202 ms
+2026-04-17 10:44:05.528 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/orders/get-user-orders - 200 null application/json; charset=utf-8 558.2459ms
+2026-04-17 10:44:15.513 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/api/auth/login - null null
+2026-04-17 10:44:15.523 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:15.526 +05:30 [INF] HTTP OPTIONS /api/auth/login responded 204 in 2.9561 ms
+2026-04-17 10:44:15.531 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/api/auth/login - 204 null null 18.1292ms
+2026-04-17 10:44:15.537 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/api/auth/login - application/json 49
+2026-04-17 10:44:15.550 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:15.554 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.AuthenticationController.Login (ShoppingApp)'
+2026-04-17 10:44:15.557 +05:30 [INF] Route matched with {action = "Login", controller = "Authentication"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(ShoppingApp.Models.DTOs.User.LoginRequestDTO) on controller ShoppingApp.Controllers.AuthenticationController (ShoppingApp).
+2026-04-17 10:44:15.572 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[@email='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue]
+FROM [Users] AS [u]
+WHERE [u].[Email] = @email
+2026-04-17 10:44:16.126 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.User.LoginResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:44:16.132 +05:30 [INF] Executed action ShoppingApp.Controllers.AuthenticationController.Login (ShoppingApp) in 569.6211ms
+2026-04-17 10:44:16.137 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.AuthenticationController.Login (ShoppingApp)'
+2026-04-17 10:44:16.142 +05:30 [INF] HTTP POST /api/auth/login responded 200 in 592.2357 ms
+2026-04-17 10:44:16.151 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/api/auth/login - 200 null application/json; charset=utf-8 613.6643ms
+2026-04-17 10:44:16.203 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/User/get-all-users - null null
+2026-04-17 10:44:16.206 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/orders/get-all-orders - null null
+2026-04-17 10:44:16.205 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Products/get-products - null null
+2026-04-17 10:44:16.206 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - null null
+2026-04-17 10:44:16.211 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:16.210 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/Products/get-products - null null
+2026-04-17 10:44:16.205 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/User/get-all-users - null null
+2026-04-17 10:44:16.204 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/orders/get-all-orders - null null
+2026-04-17 10:44:16.204 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - null null
+2026-04-17 10:44:16.226 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:16.235 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:16.244 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:16.246 +05:30 [INF] HTTP OPTIONS /User/get-all-users responded 204 in 34.6024 ms
+2026-04-17 10:44:16.251 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:16.278 +05:30 [INF] HTTP OPTIONS /orders/get-all-orders responded 204 in 52.4190 ms
+2026-04-17 10:44:16.281 +05:30 [INF] HTTP OPTIONS /Products/get-products responded 204 in 46.0352 ms
+2026-04-17 10:44:16.302 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/orders/get-all-orders - 204 null null 96.8978ms
+2026-04-17 10:44:16.315 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Products/get-products - 204 null null 110.1557ms
+2026-04-17 10:44:16.283 +05:30 [INF] HTTP OPTIONS /category/get-all-categories responded 204 in 39.5331 ms
+2026-04-17 10:44:16.288 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/User/get-all-users - 204 null null 85.8373ms
+2026-04-17 10:44:16.291 +05:30 [INF] HTTP OPTIONS /Products/get-products responded 204 in 39.8040 ms
+2026-04-17 10:44:16.262 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:16.270 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:16.276 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:16.312 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/orders/get-all-orders - application/json 45
+2026-04-17 10:44:16.299 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/User/get-all-users - application/json 45
+2026-04-17 10:44:16.327 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-products - application/json 45
+2026-04-17 10:44:16.352 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - 204 null null 146.2314ms
+2026-04-17 10:44:16.359 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/category/get-all-categories - application/json 45
+2026-04-17 10:44:16.373 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/Products/get-products - 204 null null 163.1408ms
+2026-04-17 10:44:16.376 +05:30 [INF] HTTP OPTIONS /User/get-all-users responded 204 in 114.7316 ms
+2026-04-17 10:44:16.379 +05:30 [INF] HTTP OPTIONS /orders/get-all-orders responded 204 in 108.4629 ms
+2026-04-17 10:44:16.383 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/Products/get-products - application/json 45
+2026-04-17 10:44:16.385 +05:30 [INF] HTTP OPTIONS /category/get-all-categories responded 204 in 109.0642 ms
+2026-04-17 10:44:16.396 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:16.403 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:16.408 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:16.424 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:16.436 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/User/get-all-users - 204 null null 230.165ms
+2026-04-17 10:44:16.442 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/User/get-all-users - application/json 45
+2026-04-17 10:44:16.454 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/category/get-all-categories - application/json 45
+2026-04-17 10:44:16.444 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/orders/get-all-orders - application/json 45
+2026-04-17 10:44:16.439 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/orders/get-all-orders - 204 null null 235.9195ms
+2026-04-17 10:44:16.449 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/category/get-all-categories - 204 null null 244.9686ms
+2026-04-17 10:44:16.458 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:44:16.457 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:44:16.444 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:16.457 +05:30 [INF] Executed DbCommand (4ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:44:16.479 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:16.486 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:16.492 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:16.511 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-17 10:44:16.517 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.UserController.GetAllUsers (ShoppingApp)'
+2026-04-17 10:44:16.521 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:44:16.523 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.OrderController.GetAllOrders (ShoppingApp)'
+2026-04-17 10:44:16.528 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:44:16.529 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:44:16.531 +05:30 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProducts(ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-17 10:44:16.543 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-17 10:44:16.556 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.UserController.GetAllUsers (ShoppingApp)'
+2026-04-17 10:44:16.564 +05:30 [INF] Route matched with {action = "GetAllUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllUsers(ShoppingApp.Models.DTOs.User.GetUsersRequestDTO) on controller ShoppingApp.Controllers.UserController (ShoppingApp).
+2026-04-17 10:44:16.567 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-17 10:44:16.576 +05:30 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProducts(ShoppingApp.Models.DTOs.Product.GetAllProductsRequestDTO) on controller ShoppingApp.Controllers.ProductsController (ShoppingApp).
+2026-04-17 10:44:16.576 +05:30 [INF] Route matched with {action = "GetAllOrders", controller = "Order"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllOrders(ShoppingApp.Models.DTOs.Order.GetAllOrderRequestDTO) on controller ShoppingApp.Controllers.OrderController (ShoppingApp).
+2026-04-17 10:44:16.579 +05:30 [INF] Route matched with {action = "GetAllUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllUsers(ShoppingApp.Models.DTOs.User.GetUsersRequestDTO) on controller ShoppingApp.Controllers.UserController (ShoppingApp).
+2026-04-17 10:44:16.583 +05:30 [INF] Executed DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+2026-04-17 10:44:16.586 +05:30 [INF] Route matched with {action = "GetAllCategories", controller = "Category"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllCategories(ShoppingApp.Models.DTOs.Category.GetAllCategoryRequestDTO) on controller ShoppingApp.Controllers.CategoryController (ShoppingApp).
+2026-04-17 10:44:16.596 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Products] AS [p]
+WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+2026-04-17 10:44:16.648 +05:30 [INF] Executed DbCommand (34ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p0].[ProductId], [p0].[CategoryId], [p0].[Name], [p0].[ImagePath], [p0].[Description], [c].[CategoryName], [p0].[Price], [s].[StockId], [s].[Quantity], [c].[CategoryId], [r].[ReviewId], [r].[CreatedAt], [r].[ProductId], [r].[ReviewPoints], [r].[Summary], [r].[UserId], [r0].[Summary], [r0].[ReviewPoints], [r0].[ReviewId]
+FROM (
+    SELECT [p].[ProductId], [p].[CategoryId], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+    FROM [Products] AS [p]
+    WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+    ORDER BY [p].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [p0]
+INNER JOIN [Category] AS [c] ON [p0].[CategoryId] = [c].[CategoryId]
+LEFT JOIN [Stock] AS [s] ON [p0].[ProductId] = [s].[ProductId]
+LEFT JOIN [Reviews] AS [r] ON [p0].[ProductId] = [r].[ProductId]
+LEFT JOIN [Reviews] AS [r0] ON [p0].[ProductId] = [r0].[ProductId]
+ORDER BY [p0].[Name], [p0].[ProductId], [c].[CategoryId], [s].[StockId], [r].[ReviewId]
+2026-04-17 10:44:16.657 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:44:16.661 +05:30 [INF] Executed DbCommand (36ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [p0].[ProductId], [p0].[CategoryId], [p0].[Name], [p0].[ImagePath], [p0].[Description], [c].[CategoryName], [p0].[Price], [s].[StockId], [s].[Quantity], [c].[CategoryId], [r].[ReviewId], [r].[CreatedAt], [r].[ProductId], [r].[ReviewPoints], [r].[Summary], [r].[UserId], [r0].[Summary], [r0].[ReviewPoints], [r0].[ReviewId]
+FROM (
+    SELECT [p].[ProductId], [p].[CategoryId], [p].[Description], [p].[ImagePath], [p].[Name], [p].[Price]
+    FROM [Products] AS [p]
+    WHERE [p].[ActiveStatus] = CAST(1 AS bit)
+    ORDER BY [p].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [p0]
+INNER JOIN [Category] AS [c] ON [p0].[CategoryId] = [c].[CategoryId]
+LEFT JOIN [Stock] AS [s] ON [p0].[ProductId] = [s].[ProductId]
+LEFT JOIN [Reviews] AS [r] ON [p0].[ProductId] = [r].[ProductId]
+LEFT JOIN [Reviews] AS [r0] ON [p0].[ProductId] = [r0].[ProductId]
+ORDER BY [p0].[Name], [p0].[ProductId], [c].[CategoryId], [s].[StockId], [r].[ReviewId]
+2026-04-17 10:44:16.664 +05:30 [INF] Executed DbCommand (44ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CategoryId], [c].[CategoryName], (
+    SELECT COUNT(*)
+    FROM [Products] AS [p]
+    WHERE [c].[CategoryId] = [p].[CategoryId] AND [p].[ActiveStatus] = CAST(1 AS bit)) AS [ProductsCount], CONVERT(varchar(100), [c].[CreatedAt]) AS [CreatedAt]
+FROM [Category] AS [c]
+ORDER BY [c].[CategoryName]
+OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+2026-04-17 10:44:16.665 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp) in 92.572ms
+2026-04-17 10:44:16.672 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Product.GetAllProductsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:44:16.679 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Category.GetAllCategoryResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:44:16.682 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-17 10:44:16.688 +05:30 [INF] Executed action ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp) in 96.1877ms
+2026-04-17 10:44:16.691 +05:30 [INF] Executed action ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp) in 74.5774ms
+2026-04-17 10:44:16.694 +05:30 [INF] HTTP POST /Products/get-products responded 200 in 285.3217 ms
+2026-04-17 10:44:16.697 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.ProductsController.GetProducts (ShoppingApp)'
+2026-04-17 10:44:16.701 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-17 10:44:16.705 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-products - 200 null application/json; charset=utf-8 378.4818ms
+2026-04-17 10:44:16.708 +05:30 [INF] HTTP POST /Products/get-products responded 200 in 263.4505 ms
+2026-04-17 10:44:16.710 +05:30 [INF] HTTP POST /category/get-all-categories responded 200 in 223.7290 ms
+2026-04-17 10:44:16.722 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/Products/get-products - 200 null application/json; charset=utf-8 338.5239ms
+2026-04-17 10:44:16.726 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/category/get-all-categories - 200 null application/json; charset=utf-8 271.6586ms
+2026-04-17 10:44:17.909 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:44:17.909 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:44:17.920 +05:30 [INF] Executed DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Users] AS [u]
+2026-04-17 10:44:17.920 +05:30 [INF] Executed DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Users] AS [u]
+2026-04-17 10:44:17.920 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-17 10:44:17.928 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.OrderController.GetAllOrders (ShoppingApp)'
+2026-04-17 10:44:17.942 +05:30 [INF] Route matched with {action = "GetAllCategories", controller = "Category"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllCategories(ShoppingApp.Models.DTOs.Category.GetAllCategoryRequestDTO) on controller ShoppingApp.Controllers.CategoryController (ShoppingApp).
+2026-04-17 10:44:17.944 +05:30 [INF] Route matched with {action = "GetAllOrders", controller = "Order"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetAllOrders(ShoppingApp.Models.DTOs.Order.GetAllOrderRequestDTO) on controller ShoppingApp.Controllers.OrderController (ShoppingApp).
+2026-04-17 10:44:17.955 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [c].[CategoryId], [c].[CategoryName], (
+    SELECT COUNT(*)
+    FROM [Products] AS [p]
+    WHERE [c].[CategoryId] = [p].[CategoryId] AND [p].[ActiveStatus] = CAST(1 AS bit)) AS [ProductsCount], CONVERT(varchar(100), [c].[CreatedAt]) AS [CreatedAt]
+FROM [Category] AS [c]
+ORDER BY [c].[CategoryName]
+OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+2026-04-17 10:44:17.963 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Category.GetAllCategoryResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:44:17.964 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Orders] AS [o]
+2026-04-17 10:44:17.965 +05:30 [INF] Executed DbCommand (11ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [u1].[UserId], [u0].[UserDetailsId], [u1].[Name], [u1].[Email], [u1].[Role], [u0].[PhoneNumber], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[State], [u0].[City], [u1].[Active] AS [ActiveStatus], [u0].[Pincode]
+FROM (
+    SELECT [u].[UserId], [u].[Active], [u].[Email], [u].[Name], [u].[Role]
+    FROM [Users] AS [u]
+    ORDER BY [u].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [u1]
+LEFT JOIN [UserDetails] AS [u0] ON [u1].[UserId] = [u0].[UserId]
+ORDER BY [u1].[Name]
+2026-04-17 10:44:17.965 +05:30 [INF] Executed DbCommand (11ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [u1].[UserId], [u0].[UserDetailsId], [u1].[Name], [u1].[Email], [u1].[Role], [u0].[PhoneNumber], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[State], [u0].[City], [u1].[Active] AS [ActiveStatus], [u0].[Pincode]
+FROM (
+    SELECT [u].[UserId], [u].[Active], [u].[Email], [u].[Name], [u].[Role]
+    FROM [Users] AS [u]
+    ORDER BY [u].[Name]
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [u1]
+LEFT JOIN [UserDetails] AS [u0] ON [u1].[UserId] = [u0].[UserId]
+ORDER BY [u1].[Name]
+2026-04-17 10:44:17.968 +05:30 [INF] Executed action ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp) in 16.7238ms
+2026-04-17 10:44:17.984 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.User.GetUsersResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:44:17.985 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.User.GetUsersResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:44:17.987 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.CategoryController.GetAllCategories (ShoppingApp)'
+2026-04-17 10:44:17.997 +05:30 [INF] HTTP POST /category/get-all-categories responded 200 in 1572.4223 ms
+2026-04-17 10:44:18.004 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/category/get-all-categories - 200 null application/json; charset=utf-8 1645.4746ms
+2026-04-17 10:44:18.009 +05:30 [INF] Executed action ShoppingApp.Controllers.UserController.GetAllUsers (ShoppingApp) in 1426.04ms
+2026-04-17 10:44:18.009 +05:30 [INF] Executed action ShoppingApp.Controllers.UserController.GetAllUsers (ShoppingApp) in 1405.2571ms
+2026-04-17 10:44:18.019 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.UserController.GetAllUsers (ShoppingApp)'
+2026-04-17 10:44:18.021 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.UserController.GetAllUsers (ShoppingApp)'
+2026-04-17 10:44:18.025 +05:30 [INF] HTTP POST /User/get-all-users responded 200 in 1621.7824 ms
+2026-04-17 10:44:18.028 +05:30 [INF] HTTP POST /User/get-all-users responded 200 in 1548.8440 ms
+2026-04-17 10:44:18.033 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/User/get-all-users - 200 null application/json; charset=utf-8 1734.558ms
+2026-04-17 10:44:18.039 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/User/get-all-users - 200 null application/json; charset=utf-8 1597.4335ms
+2026-04-17 10:44:18.164 +05:30 [INF] Executed DbCommand (50ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [o0].[OrderId], [o0].[AddressId], [o0].[CreatedAt], [o0].[DeliveryDate], [o0].[DiscountAmount], [o0].[DiscountPercentage], [o0].[OrderTotalAmount], [o0].[PromoCodeId], [o0].[Status], [o0].[TotalAmount], [o0].[TotalProductsCount], [o0].[UserId], [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [a].[AddressId], [a].[AddressLine1], [a].[AddressLine2], [a].[City], [a].[CreatedAt], [a].[Pincode], [a].[State], [a].[UserId], [p].[PaymentId], [p].[CreatedAt], [p].[OrderId], [p].[PaymentType], [p].[StripePaymentId], [p].[TotalAmount], [p].[UserId], [r].[RefundId], [r].[CreatedAt], [r].[OrderId], [r].[PaymentId], [r].[RefundAmount], [r].[UserId], [s].[OrderDetailsId], [s].[CreatedAt], [s].[OrderId], [s].[ProductId], [s].[ProductName], [s].[ProductPrice], [s].[Quantity], [s].[ProductId0], [s].[ActiveStatus], [s].[CategoryId], [s].[CreatedAt0], [s].[Description], [s].[ImagePath], [s].[Name], [s].[Price]
+FROM (
+    SELECT [o].[OrderId], [o].[AddressId], [o].[CreatedAt], [o].[DeliveryDate], [o].[DiscountAmount], [o].[DiscountPercentage], [o].[OrderTotalAmount], [o].[PromoCodeId], [o].[Status], [o].[TotalAmount], [o].[TotalProductsCount], [o].[UserId]
+    FROM [Orders] AS [o]
+    ORDER BY [o].[CreatedAt] DESC
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [o0]
+INNER JOIN [Users] AS [u] ON [o0].[UserId] = [u].[UserId]
+INNER JOIN [Addresses] AS [a] ON [o0].[AddressId] = [a].[AddressId]
+LEFT JOIN [Payments] AS [p] ON [o0].[OrderId] = [p].[OrderId]
+LEFT JOIN [Refunds] AS [r] ON [o0].[OrderId] = [r].[OrderId]
+LEFT JOIN (
+    SELECT [o1].[OrderDetailsId], [o1].[CreatedAt], [o1].[OrderId], [o1].[ProductId], [o1].[ProductName], [o1].[ProductPrice], [o1].[Quantity], [p0].[ProductId] AS [ProductId0], [p0].[ActiveStatus], [p0].[CategoryId], [p0].[CreatedAt] AS [CreatedAt0], [p0].[Description], [p0].[ImagePath], [p0].[Name], [p0].[Price]
+    FROM [OrderDetails] AS [o1]
+    INNER JOIN [Products] AS [p0] ON [o1].[ProductId] = [p0].[ProductId]
+) AS [s] ON [o0].[OrderId] = [s].[OrderId]
+ORDER BY [o0].[CreatedAt] DESC, [o0].[OrderId], [u].[UserId], [a].[AddressId], [p].[PaymentId], [r].[RefundId], [s].[OrderDetailsId]
+2026-04-17 10:44:18.215 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Order.GetAllOrderResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:44:18.223 +05:30 [INF] Executed action ShoppingApp.Controllers.OrderController.GetAllOrders (ShoppingApp) in 266.3153ms
+2026-04-17 10:44:18.226 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.OrderController.GetAllOrders (ShoppingApp)'
+2026-04-17 10:44:18.229 +05:30 [INF] HTTP POST /orders/get-all-orders responded 200 in 1737.6466 ms
+2026-04-17 10:44:18.235 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/orders/get-all-orders - 200 null application/json; charset=utf-8 1790.8655ms
+2026-04-17 10:44:19.078 +05:30 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM [Orders] AS [o]
+2026-04-17 10:44:19.103 +05:30 [INF] Executed DbCommand (12ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [o0].[OrderId], [o0].[AddressId], [o0].[CreatedAt], [o0].[DeliveryDate], [o0].[DiscountAmount], [o0].[DiscountPercentage], [o0].[OrderTotalAmount], [o0].[PromoCodeId], [o0].[Status], [o0].[TotalAmount], [o0].[TotalProductsCount], [o0].[UserId], [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [a].[AddressId], [a].[AddressLine1], [a].[AddressLine2], [a].[City], [a].[CreatedAt], [a].[Pincode], [a].[State], [a].[UserId], [p].[PaymentId], [p].[CreatedAt], [p].[OrderId], [p].[PaymentType], [p].[StripePaymentId], [p].[TotalAmount], [p].[UserId], [r].[RefundId], [r].[CreatedAt], [r].[OrderId], [r].[PaymentId], [r].[RefundAmount], [r].[UserId], [s].[OrderDetailsId], [s].[CreatedAt], [s].[OrderId], [s].[ProductId], [s].[ProductName], [s].[ProductPrice], [s].[Quantity], [s].[ProductId0], [s].[ActiveStatus], [s].[CategoryId], [s].[CreatedAt0], [s].[Description], [s].[ImagePath], [s].[Name], [s].[Price]
+FROM (
+    SELECT [o].[OrderId], [o].[AddressId], [o].[CreatedAt], [o].[DeliveryDate], [o].[DiscountAmount], [o].[DiscountPercentage], [o].[OrderTotalAmount], [o].[PromoCodeId], [o].[Status], [o].[TotalAmount], [o].[TotalProductsCount], [o].[UserId]
+    FROM [Orders] AS [o]
+    ORDER BY [o].[CreatedAt] DESC
+    OFFSET @p ROWS FETCH NEXT @p1 ROWS ONLY
+) AS [o0]
+INNER JOIN [Users] AS [u] ON [o0].[UserId] = [u].[UserId]
+INNER JOIN [Addresses] AS [a] ON [o0].[AddressId] = [a].[AddressId]
+LEFT JOIN [Payments] AS [p] ON [o0].[OrderId] = [p].[OrderId]
+LEFT JOIN [Refunds] AS [r] ON [o0].[OrderId] = [r].[OrderId]
+LEFT JOIN (
+    SELECT [o1].[OrderDetailsId], [o1].[CreatedAt], [o1].[OrderId], [o1].[ProductId], [o1].[ProductName], [o1].[ProductPrice], [o1].[Quantity], [p0].[ProductId] AS [ProductId0], [p0].[ActiveStatus], [p0].[CategoryId], [p0].[CreatedAt] AS [CreatedAt0], [p0].[Description], [p0].[ImagePath], [p0].[Name], [p0].[Price]
+    FROM [OrderDetails] AS [o1]
+    INNER JOIN [Products] AS [p0] ON [o1].[ProductId] = [p0].[ProductId]
+) AS [s] ON [o0].[OrderId] = [s].[OrderId]
+ORDER BY [o0].[CreatedAt] DESC, [o0].[OrderId], [u].[UserId], [a].[AddressId], [p].[PaymentId], [r].[RefundId], [s].[OrderDetailsId]
+2026-04-17 10:44:19.143 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Order.GetAllOrderResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:44:19.149 +05:30 [INF] Executed action ShoppingApp.Controllers.OrderController.GetAllOrders (ShoppingApp) in 2550.3739ms
+2026-04-17 10:44:19.153 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.OrderController.GetAllOrders (ShoppingApp)'
+2026-04-17 10:44:19.156 +05:30 [INF] HTTP POST /orders/get-all-orders responded 200 in 2759.9011 ms
+2026-04-17 10:44:19.164 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/orders/get-all-orders - 200 null application/json; charset=utf-8 2851.8495ms
+2026-04-17 10:44:24.919 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/orders/update-order-status - null null
+2026-04-17 10:44:24.934 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:24.940 +05:30 [INF] HTTP OPTIONS /orders/update-order-status responded 204 in 5.8064 ms
+2026-04-17 10:44:24.951 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/orders/update-order-status - 204 null null 33.9416ms
+2026-04-17 10:44:24.957 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/orders/update-order-status - application/json 76
+2026-04-17 10:44:24.970 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:24.990 +05:30 [INF] Executed DbCommand (13ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:44:25.004 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.OrderController.UpdateOrder (ShoppingApp)'
+2026-04-17 10:44:25.026 +05:30 [INF] Route matched with {action = "UpdateOrder", controller = "Order"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UpdateOrder(ShoppingApp.Models.DTOs.Order.UpdateOrderRequestDTO) on controller ShoppingApp.Controllers.OrderController (ShoppingApp).
+2026-04-17 10:44:25.050 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@p='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue]
+FROM [Users] AS [u]
+WHERE [u].[UserId] = @p
+2026-04-17 10:44:25.083 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[@p='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [o].[OrderId], [o].[AddressId], [o].[CreatedAt], [o].[DeliveryDate], [o].[DiscountAmount], [o].[DiscountPercentage], [o].[OrderTotalAmount], [o].[PromoCodeId], [o].[Status], [o].[TotalAmount], [o].[TotalProductsCount], [o].[UserId]
+FROM [Orders] AS [o]
+WHERE [o].[OrderId] = @p
+2026-04-17 10:44:25.106 +05:30 [INF] Executed DbCommand (11ms) [Parameters=[@p2='?' (DbType = Guid), @p0='?' (DbType = DateTime2), @p1='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [Orders] SET [DeliveryDate] = @p0, [Status] = @p1
+OUTPUT 1
+WHERE [OrderId] = @p2;
+2026-04-17 10:44:25.114 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Order.UpdateOrderResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:44:25.123 +05:30 [INF] Executed action ShoppingApp.Controllers.OrderController.UpdateOrder (ShoppingApp) in 92.1519ms
+2026-04-17 10:44:25.128 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.OrderController.UpdateOrder (ShoppingApp)'
+2026-04-17 10:44:25.132 +05:30 [INF] HTTP POST /orders/update-order-status responded 200 in 161.4877 ms
+2026-04-17 10:44:25.139 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/orders/update-order-status - 200 null application/json; charset=utf-8 182.5375ms
+2026-04-17 10:44:38.627 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/User/get-user-by-id - null null
+2026-04-17 10:44:38.633 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:38.635 +05:30 [INF] Request starting HTTP/2 OPTIONS https://localhost:7023/orders/get-user-orders - null null
+2026-04-17 10:44:38.635 +05:30 [INF] HTTP OPTIONS /User/get-user-by-id responded 204 in 2.0557 ms
+2026-04-17 10:44:38.639 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:38.642 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/User/get-user-by-id - 204 null null 15.2141ms
+2026-04-17 10:44:38.644 +05:30 [INF] HTTP OPTIONS /orders/get-user-orders responded 204 in 4.5373 ms
+2026-04-17 10:44:38.690 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7023/User/get-user-by-id - null null
+2026-04-17 10:44:38.702 +05:30 [INF] Request finished HTTP/2 OPTIONS https://localhost:7023/orders/get-user-orders - 204 null null 66.8768ms
+2026-04-17 10:44:38.706 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:38.707 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7023/orders/get-user-orders - application/json 46
+2026-04-17 10:44:38.715 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:44:38.717 +05:30 [INF] CORS policy execution successful.
+2026-04-17 10:44:38.721 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp)'
+2026-04-17 10:44:38.723 +05:30 [INF] Route matched with {action = "GetUserById", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetUserById() on controller ShoppingApp.Controllers.UserController (ShoppingApp).
+2026-04-17 10:44:38.724 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:44:38.729 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@userId='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue], [u0].[UserDetailsId], [u0].[AddressLine1], [u0].[AddressLine2], [u0].[City], [u0].[CreatedAt], [u0].[Email], [u0].[Name], [u0].[PhoneNumber], [u0].[Pincode], [u0].[State], [u0].[UserId]
+FROM [Users] AS [u]
+LEFT JOIN [UserDetails] AS [u0] ON [u].[UserId] = [u0].[UserId]
+WHERE [u].[UserId] = @userId
+2026-04-17 10:44:38.733 +05:30 [INF] Executing endpoint 'ShoppingApp.Controllers.OrderController.GetOrderByUserId (ShoppingApp)'
+2026-04-17 10:44:38.736 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.User.GetUserByIdResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:44:38.738 +05:30 [INF] Route matched with {action = "GetOrderByUserId", controller = "Order"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetOrderByUserId(ShoppingApp.Models.DTOs.Order.GetUserOrderDetailsRequestDTO) on controller ShoppingApp.Controllers.OrderController (ShoppingApp).
+2026-04-17 10:44:38.740 +05:30 [INF] Executed action ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp) in 13.8687ms
+2026-04-17 10:44:38.746 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@p='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[UserId], [u].[Active], [u].[CreatedAt], [u].[Email], [u].[Name], [u].[Password], [u].[Role], [u].[SaltValue]
+FROM [Users] AS [u]
+WHERE [u].[UserId] = @p
+2026-04-17 10:44:38.747 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.UserController.GetUserById (ShoppingApp)'
+2026-04-17 10:44:38.753 +05:30 [INF] HTTP GET /User/get-user-by-id responded 200 in 47.5108 ms
+2026-04-17 10:44:38.756 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[@userId='?' (DbType = Guid), @p='?' (DbType = Int32), @p2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [o0].[OrderId], [o0].[Status], [o0].[TotalProductsCount], [o0].[OrderTotalAmount], [o0].[DeliveryDate], CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Refunds] AS [r]
+        WHERE [r].[OrderId] = [o0].[OrderId]) THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END, [a].[AddressId], [a].[AddressLine1], [a].[AddressLine2], [a].[State], [a].[City], [a].[Pincode], [p].[PaymentId], [p].[PaymentType], [s].[OrderDetailsId], [s].[ProductId], [s].[ProductName], [s].[Quantity], [s].[ProductPrice], [s].[ImagePath], [s].[ProductId0]
+FROM (
+    SELECT [o].[OrderId], [o].[AddressId], [o].[CreatedAt], [o].[DeliveryDate], [o].[OrderTotalAmount], [o].[Status], [o].[TotalProductsCount]
+    FROM [Orders] AS [o]
+    WHERE [o].[UserId] = @userId
+    ORDER BY [o].[CreatedAt] DESC
+    OFFSET @p ROWS FETCH NEXT @p2 ROWS ONLY
+) AS [o0]
+INNER JOIN [Addresses] AS [a] ON [o0].[AddressId] = [a].[AddressId]
+LEFT JOIN [Payments] AS [p] ON [o0].[OrderId] = [p].[OrderId]
+LEFT JOIN (
+    SELECT [o1].[OrderDetailsId], [o1].[ProductId], [o1].[ProductName], [o1].[Quantity], [o1].[ProductPrice], [p0].[ImagePath], [p0].[ProductId] AS [ProductId0], [o1].[OrderId]
+    FROM [OrderDetails] AS [o1]
+    INNER JOIN [Products] AS [p0] ON [o1].[ProductId] = [p0].[ProductId]
+) AS [s] ON [o0].[OrderId] = [s].[OrderId]
+ORDER BY [o0].[CreatedAt] DESC, [o0].[OrderId], [a].[AddressId], [p].[PaymentId], [s].[ProductName], [s].[OrderDetailsId]
+2026-04-17 10:44:38.757 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7023/User/get-user-by-id - 200 null application/json; charset=utf-8 66.9175ms
+2026-04-17 10:44:38.762 +05:30 [INF] Executing OkObjectResult, writing value of type 'ShoppingApp.Models.ApiResponse`1[[ShoppingApp.Models.DTOs.Order.GetUserOrderDetailsResponseDTO, ShoppingApp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-17 10:44:38.772 +05:30 [INF] Executed action ShoppingApp.Controllers.OrderController.GetOrderByUserId (ShoppingApp) in 27.6674ms
+2026-04-17 10:44:38.774 +05:30 [INF] Executed endpoint 'ShoppingApp.Controllers.OrderController.GetOrderByUserId (ShoppingApp)'
+2026-04-17 10:44:38.777 +05:30 [INF] HTTP POST /orders/get-user-orders responded 200 in 60.0936 ms
+2026-04-17 10:44:38.780 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7023/orders/get-user-orders - 200 null application/json; charset=utf-8 73.5356ms
