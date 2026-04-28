@@ -1,0 +1,12 @@
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Domain\bin\Debug\net10.0\ProductApi.Domain.deps.json
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Domain\bin\Debug\net10.0\ProductApi.Domain.dll
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Domain\bin\Debug\net10.0\ProductApi.Domain.pdb
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Domain\obj\Debug\net10.0\ProductApi.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Domain\obj\Debug\net10.0\ProductApi.Domain.AssemblyInfoInputs.cache
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Domain\obj\Debug\net10.0\ProductApi.Domain.AssemblyInfo.cs
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Domain\obj\Debug\net10.0\ProductApi.Domain.csproj.CoreCompileInputs.cache
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Domain\obj\Debug\net10.0\ProductApi.Domain.sourcelink.json
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Domain\obj\Debug\net10.0\ProductApi.Domain.dll
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Domain\obj\Debug\net10.0\refint\ProductApi.Domain.dll
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Domain\obj\Debug\net10.0\ProductApi.Domain.pdb
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Domain\obj\Debug\net10.0\ref\ProductApi.Domain.dll
