@@ -176,3 +176,6 @@ C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi
 C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Presentation\bin\Debug\net10.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
 C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Presentation\bin\Debug\net10.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.resources.dll
 C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Presentation\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Presentation\bin\Debug\net10.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Presentation\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Presentation\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerUI.dll

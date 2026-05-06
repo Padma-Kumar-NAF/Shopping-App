@@ -1,7 +1,22 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.ProductApiSolution\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{C4AF70BB-4A9A-41E3-BB50-0FA2BCAC5252}|..\\ECommerce.SharedLibrarySolution\\ECommerce.SharedLibrary\\ECommerce.SharedLibrary.csproj|c:\\pk\\project\\shopping-app\\microservices\\ecommerce.sharedlibrarysolution\\ecommerce.sharedlibrary\\logs\\logexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C4AF70BB-4A9A-41E3-BB50-0FA2BCAC5252}|..\\ECommerce.SharedLibrarySolution\\ECommerce.SharedLibrary\\ECommerce.SharedLibrary.csproj|c:\\pk\\project\\shopping-app\\microservices\\ecommerce.sharedlibrarysolution\\ecommerce.sharedlibrary\\middleware\\listentoonlyapigateway.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{10C14DD9-53FF-78D1-447C-E91F171A5217}|ProductApi.Presentation\\ProductApi.Presentation.csproj|c:\\pk\\project\\shopping-app\\microservices\\ecommerce.productapisolution\\productapi.presentation\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{10C14DD9-53FF-78D1-447C-E91F171A5217}|ProductApi.Presentation\\ProductApi.Presentation.csproj|solutionrelative:productapi.presentation\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{768C84DC-A07C-130E-F83A-2D46F58FCD08}|ProductApi.Infrastructure\\ProductApi.Infrastructure.csproj|c:\\pk\\project\\shopping-app\\microservices\\ecommerce.productapisolution\\productapi.infrastructure\\data\\productdbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{768C84DC-A07C-130E-F83A-2D46F58FCD08}|ProductApi.Infrastructure\\ProductApi.Infrastructure.csproj|solutionrelative:productapi.infrastructure\\data\\productdbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 1,
@@ -9,7 +24,7 @@
       "DocumentGroups": [
         {
           "DockedHeight": 313,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -18,6 +33,55 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "LogException.cs",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.SharedLibrarySolution\\ECommerce.SharedLibrary\\Logs\\LogException.cs",
+              "RelativeDocumentMoniker": "..\\ECommerce.SharedLibrarySolution\\ECommerce.SharedLibrary\\Logs\\LogException.cs",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.SharedLibrarySolution\\ECommerce.SharedLibrary\\Logs\\LogException.cs",
+              "RelativeToolTip": "..\\ECommerce.SharedLibrarySolution\\ECommerce.SharedLibrary\\Logs\\LogException.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-29T04:56:56.881Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ListenToOnlyApiGateway.cs",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.SharedLibrarySolution\\ECommerce.SharedLibrary\\Middleware\\ListenToOnlyApiGateway.cs",
+              "RelativeDocumentMoniker": "..\\ECommerce.SharedLibrarySolution\\ECommerce.SharedLibrary\\Middleware\\ListenToOnlyApiGateway.cs",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.SharedLibrarySolution\\ECommerce.SharedLibrary\\Middleware\\ListenToOnlyApiGateway.cs",
+              "RelativeToolTip": "..\\ECommerce.SharedLibrarySolution\\ECommerce.SharedLibrary\\Middleware\\ListenToOnlyApiGateway.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-29T04:53:34.793Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ProductDbContextFactory.cs",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.ProductApiSolution\\ProductApi.Infrastructure\\Data\\ProductDbContextFactory.cs",
+              "RelativeDocumentMoniker": "ProductApi.Infrastructure\\Data\\ProductDbContextFactory.cs",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.ProductApiSolution\\ProductApi.Infrastructure\\Data\\ProductDbContextFactory.cs",
+              "RelativeToolTip": "ProductApi.Infrastructure\\Data\\ProductDbContextFactory.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAoAAABRAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-29T04:42:27.425Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ProductController.cs",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.ProductApiSolution\\ProductApi.Presentation\\Controllers\\ProductController.cs",
+              "RelativeDocumentMoniker": "ProductApi.Presentation\\Controllers\\ProductController.cs",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.ProductApiSolution\\ProductApi.Presentation\\Controllers\\ProductController.cs",
+              "RelativeToolTip": "ProductApi.Presentation\\Controllers\\ProductController.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAqwEYAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-29T03:04:44.271Z"
             }
           ]
         },

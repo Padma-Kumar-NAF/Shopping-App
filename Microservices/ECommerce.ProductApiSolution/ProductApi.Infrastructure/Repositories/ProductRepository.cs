@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace ProductApi.Infrastructure.Repositories
 {
-    public class ProductRepository(ProductContext context) : IProduct
+    public class ProductRepository(ProductDbContext context) : IProduct
     {
         public async Task<Response> CreateAsync(Product entity)
         {
@@ -47,10 +47,10 @@ namespace ProductApi.Infrastructure.Repositories
 
                 if (getProduct is null)
                 {
-                    return new Response(false, $"{entity.Name} not fpund");
+                    return new Response(false, $"{entity.Name} not found");
                 }
 
-                context.Prodcuts.Remove(entity);
+                context.Products.Remove(getProduct);
                 await context.SaveChangesAsync();
                 return new Response(true, $"{entity.Name} is deleted successfully");
 
@@ -67,7 +67,7 @@ namespace ProductApi.Infrastructure.Repositories
         {
             try
             {
-                var getProduct = await context.Prodcuts.FindAsync(id);
+                var getProduct = await context.Products.FindAsync(id);
 
                 if (getProduct is null)
                 {
@@ -87,7 +87,7 @@ namespace ProductApi.Infrastructure.Repositories
         {
             try
             {
-                var getProduct = await context.Prodcuts.AsNoTracking().ToListAsync();
+                var getProduct = await context.Products.AsNoTracking().ToListAsync();
                 if(getProduct is null)
                 {
                     return Enumerable.Empty<Product>();
@@ -106,7 +106,7 @@ namespace ProductApi.Infrastructure.Repositories
         {
             try
             {
-                var getProduct = await context.Prodcuts.Where(predicate).FirstOrDefaultAsync();
+                var getProduct = await context.Products.Where(predicate).FirstOrDefaultAsync();
 
                 if (getProduct is null)
                 {
@@ -136,7 +136,7 @@ namespace ProductApi.Infrastructure.Repositories
                 }
 
                 context.Entry(getProduct).State = EntityState.Detached;
-                context.Prodcuts.Update(entity);
+                context.Products.Update(entity);
                 await context.SaveChangesAsync();
 
                 return new Response(true,$"{entity.Name} is updated");

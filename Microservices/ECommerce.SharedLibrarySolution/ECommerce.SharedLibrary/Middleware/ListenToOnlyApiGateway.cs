@@ -9,18 +9,23 @@ namespace ECommerce.SharedLibrary.Middleware
     {
         public async Task InvokeAsync(HttpContext context)
         {
+            var path = context.Request.Path.Value;
+            if (path.Contains("swagger"))
+            {
+                await next(context);
+                return;
+            }
+
             var signedHeader = context.Request.Headers["Api-Gateway"];
 
-            if(signedHeader.FirstOrDefault() is null)
+            if (signedHeader.FirstOrDefault() is null)
             {
                 context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
                 await context.Response.WriteAsync("Forbidden access! Only API Gateway can access this resource.");
                 return;
             }
-            else
-            {
-                await next(context);
-            }              
+
+            await next(context);
         }
     }
 }

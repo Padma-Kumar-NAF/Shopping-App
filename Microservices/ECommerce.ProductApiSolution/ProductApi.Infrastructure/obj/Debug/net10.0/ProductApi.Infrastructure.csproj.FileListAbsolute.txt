@@ -18,3 +18,5 @@ C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi
 C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Infrastructure\obj\Debug\net10.0\refint\ProductApi.Infrastructure.dll
 C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Infrastructure\obj\Debug\net10.0\ProductApi.Infrastructure.pdb
 C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Infrastructure\obj\Debug\net10.0\ref\ProductApi.Infrastructure.dll
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Infrastructure\bin\Debug\net10.0\ProductApi.Infrastructure.runtimeconfig.json
+C:\PK\Project\Shopping-App\Microservices\ECommerce.ProductApiSolution\ProductApi.Infrastructure\obj\Debug\net10.0\ProductApi.Infrastructure.genruntimeconfig.cache

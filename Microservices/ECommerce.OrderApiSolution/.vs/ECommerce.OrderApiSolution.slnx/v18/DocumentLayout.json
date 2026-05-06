@@ -1,0 +1,138 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.OrderApiSolution\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2D7A29EF-F109-BE97-8E42-F043FE4B87E8}|OrderApi.Infrastructure\\OrderApi.Infrastructure.csproj|c:\\pk\\project\\shopping-app\\microservices\\ecommerce.orderapisolution\\orderapi.infrastructure\\data\\orderdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2D7A29EF-F109-BE97-8E42-F043FE4B87E8}|OrderApi.Infrastructure\\OrderApi.Infrastructure.csproj|solutionrelative:orderapi.infrastructure\\data\\orderdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\PadmaKumar.C\\AppData\\Roaming\\NuGet\\NuGet.Config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2D7A29EF-F109-BE97-8E42-F043FE4B87E8}|OrderApi.Infrastructure\\OrderApi.Infrastructure.csproj|c:\\pk\\project\\shopping-app\\microservices\\ecommerce.orderapisolution\\orderapi.infrastructure\\orderapi.infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{2D7A29EF-F109-BE97-8E42-F043FE4B87E8}|OrderApi.Infrastructure\\OrderApi.Infrastructure.csproj|solutionrelative:orderapi.infrastructure\\orderapi.infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C4AF70BB-4A9A-41E3-BB50-0FA2BCAC5252}|..\\ECommerce.SharedLibrarySolution\\ECommerce.SharedLibrary\\ECommerce.SharedLibrary.csproj|c:\\pk\\project\\shopping-app\\microservices\\ecommerce.sharedlibrarysolution\\ecommerce.sharedlibrary\\ecommerce.sharedlibrary.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7AE8B0E2-9E12-F4D3-B25F-C644877005CB}|OrderApi.Domain\\OrderApi.Domain.csproj|c:\\pk\\project\\shopping-app\\microservices\\ecommerce.orderapisolution\\orderapi.domain\\orderapi.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{7AE8B0E2-9E12-F4D3-B25F-C644877005CB}|OrderApi.Domain\\OrderApi.Domain.csproj|solutionrelative:orderapi.domain\\orderapi.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{327B1C51-71BA-95E2-5616-1F29D61BAD52}|OrderApi.Presentation\\OrderApi.Presentation.csproj|c:\\pk\\project\\shopping-app\\microservices\\ecommerce.orderapisolution\\orderapi.presentation\\orderapi.presentation.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{327B1C51-71BA-95E2-5616-1F29D61BAD52}|OrderApi.Presentation\\OrderApi.Presentation.csproj|solutionrelative:orderapi.presentation\\orderapi.presentation.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 313,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "OrderApi.Presentation",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.OrderApiSolution\\OrderApi.Presentation\\OrderApi.Presentation.csproj",
+              "RelativeDocumentMoniker": "OrderApi.Presentation\\OrderApi.Presentation.csproj",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.OrderApiSolution\\OrderApi.Presentation\\OrderApi.Presentation.csproj",
+              "RelativeToolTip": "OrderApi.Presentation\\OrderApi.Presentation.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-05-05T10:26:32.452Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "NuGet.Config",
+              "DocumentMoniker": "C:\\Users\\PadmaKumar.C\\AppData\\Roaming\\NuGet\\NuGet.Config",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Users\\PadmaKumar.C\\AppData\\Roaming\\NuGet\\NuGet.Config",
+              "ToolTip": "C:\\Users\\PadmaKumar.C\\AppData\\Roaming\\NuGet\\NuGet.Config",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\Users\\PadmaKumar.C\\AppData\\Roaming\\NuGet\\NuGet.Config",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
+              "WhenOpened": "2026-05-05T09:22:00.342Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{c6f34f0d-7ae5-4f3a-be61-fe0c21ae9eb8}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "OrderDbContext.cs",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.OrderApiSolution\\OrderApi.Infrastructure\\Data\\OrderDbContext.cs",
+              "RelativeDocumentMoniker": "OrderApi.Infrastructure\\Data\\OrderDbContext.cs",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.OrderApiSolution\\OrderApi.Infrastructure\\Data\\OrderDbContext.cs",
+              "RelativeToolTip": "OrderApi.Infrastructure\\Data\\OrderDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T09:11:33.232Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ECommerce.SharedLibrary.csproj",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.SharedLibrarySolution\\ECommerce.SharedLibrary\\ECommerce.SharedLibrary.csproj",
+              "RelativeDocumentMoniker": "..\\ECommerce.SharedLibrarySolution\\ECommerce.SharedLibrary\\ECommerce.SharedLibrary.csproj",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.SharedLibrarySolution\\ECommerce.SharedLibrary\\ECommerce.SharedLibrary.csproj",
+              "RelativeToolTip": "..\\ECommerce.SharedLibrarySolution\\ECommerce.SharedLibrary\\ECommerce.SharedLibrary.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-05-05T09:11:42.296Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "OrderApi.Infrastructure",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.OrderApiSolution\\OrderApi.Infrastructure\\OrderApi.Infrastructure.csproj",
+              "RelativeDocumentMoniker": "OrderApi.Infrastructure\\OrderApi.Infrastructure.csproj",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.OrderApiSolution\\OrderApi.Infrastructure\\OrderApi.Infrastructure.csproj",
+              "RelativeToolTip": "OrderApi.Infrastructure\\OrderApi.Infrastructure.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-05-05T09:13:32.702Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "OrderApi.Domain",
+              "DocumentMoniker": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.OrderApiSolution\\OrderApi.Domain\\OrderApi.Domain.csproj",
+              "RelativeDocumentMoniker": "OrderApi.Domain\\OrderApi.Domain.csproj",
+              "ToolTip": "C:\\PK\\Project\\Shopping-App\\Microservices\\ECommerce.OrderApiSolution\\OrderApi.Domain\\OrderApi.Domain.csproj",
+              "RelativeToolTip": "OrderApi.Domain\\OrderApi.Domain.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-05-05T09:13:48.365Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedHeight": 87,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
